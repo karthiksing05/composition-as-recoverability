@@ -1,0 +1,16 @@
+# SLURM logs and scratch
+slurm/
+__pycache__/
+*.pyc
+# per-job frozen copies of drivers (sbatch runs these so edits cannot splice into running jobs)
+experiments/*_run.py
+experiments/*_run2.py
+experiments/dbg_*.py
+experiments/results/*_smoke/
+# rendered page previews and third-party reference material
+notes/pages/
+notes/style_ref.pdf
+notes/style_ref.txt
+notes/ref_html/
+recoverability-theory/main.log
+recoverability-theory/main.blg

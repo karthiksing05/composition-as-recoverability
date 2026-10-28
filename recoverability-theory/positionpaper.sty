@@ -1,0 +1,85 @@
+% positionpaper.sty
+% A generic conference-paper style modeled on the layout conventions of
+% NeurIPS-style submissions (US letter, 5.5in x 9in text block, Times,
+% boxed title). It is not the official NeurIPS style file. Before
+% submitting to a specific venue, replace it with that venue's style file.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{positionpaper}[2026/10/19 Generic conference style]
+
+\newif\if@ppfinal \@ppfinalfalse
+\DeclareOption{final}{\@ppfinaltrue}
+\ProcessOptions\relax
+
+\RequirePackage[letterpaper,textwidth=5.5in,textheight=9in,top=1in,headheight=12pt,headsep=25pt,footskip=30pt]{geometry}
+\RequirePackage{times}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{microtype}
+
+\widowpenalty=10000
+\clubpenalty=10000
+\flushbottom
+\sloppy
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.5pt}
+
+% Section headings
+\renewcommand{\section}{\@startsection{section}{1}{\z@}{-2.0ex \@plus -0.5ex \@minus -0.2ex}{1.5ex \@plus 0.3ex \@minus 0.2ex}{\large\bfseries\raggedright}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}{-1.8ex \@plus -0.5ex \@minus -0.2ex}{0.8ex \@plus 0.2ex}{\normalsize\bfseries\raggedright}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}{-1.5ex \@plus -0.5ex \@minus -0.2ex}{0.5ex \@plus 0.2ex}{\normalsize\bfseries\raggedright}}
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}{1.5ex \@plus 0.5ex \@minus 0.2ex}{-1em}{\normalsize\bfseries}}
+
+% Title block
+\renewcommand{\@maketitle}{%
+  \vbox{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vskip 0.1in
+    \hrule height 4pt
+    \vskip 0.25in
+    \centering
+    {\LARGE\bfseries \@title\par}
+    \vskip 0.25in
+    \hrule height 1pt
+    \vskip 0.09in
+    \if@ppfinal
+      {\begin{tabular}[t]{c}\bfseries\@author\end{tabular}\par}
+    \else
+      {\begin{tabular}[t]{c}\bfseries Anonymous Author(s)\\ \normalfont Affiliation\\ \normalfont Address\\ \normalfont\texttt{email}\end{tabular}\par}
+    \fi
+    \vskip 0.3in
+  }%
+}
+\renewcommand{\maketitle}{%
+  \par\begingroup
+    \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+    \thispagestyle{empty}
+    \@maketitle
+    \@thanks
+  \endgroup
+  \setcounter{footnote}{0}
+  \let\maketitle\relax
+  \let\@maketitle\relax
+}
+
+% Abstract
+\renewenvironment{abstract}{%
+  \centerline{\large\bfseries Abstract}
+  \vspace{0.5ex}
+  \begin{quote}
+}{%
+  \par\end{quote}
+  \vskip 1ex
+}
+
+% Footer note on the first page
+\def\@ppfootnote{\if@ppfinal Working draft.\else Preprint. Under review.\fi}
+\AtBeginDocument{%
+  \let\@ppoldmaketitle\maketitle
+}
+\def\ps@empty{\def\@oddhead{}\def\@evenhead{}\def\@oddfoot{\small\itshape\@ppfootnote\hfill}\def\@evenfoot{\@oddfoot}}
+\pagestyle{plain}
+
+% Captions
+\RequirePackage[font=small,labelfont=bf,skip=4pt]{caption}
+
+\endinput

@@ -1,0 +1,64 @@
+% Preprint style modelled on the generic arXiv preprint layout:
+% US letter, 6.5in text block, Times text with Computer Modern math,
+% small-caps title, running head with PREPRINT, Keywords line, tinted boxes.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{preprint}[2026/10/27 recoverability preprint style]
+
+\RequirePackage[letterpaper,textwidth=6.5in,textheight=9in,top=1in,headsep=0.25in]{geometry}
+\renewcommand{\rmdefault}{ptm}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{fancyhdr}
+\RequirePackage{xcolor}
+\RequirePackage[most]{tcolorbox}
+
+\definecolor{refnavy}{HTML}{001473}
+\definecolor{boxframe}{HTML}{B2D9D9}
+\definecolor{boxfill}{HTML}{F7FBFB}
+
+\newcommand{\@runninghead}{}
+\newcommand{\runninghead}[1]{\renewcommand{\@runninghead}{#1}}
+\newcommand{\@keywords}{}
+\newcommand{\keywords}[1]{\renewcommand{\@keywords}{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \@runninghead}
+\fancyhead[R]{\small \textsc{Preprint}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\renewcommand{\@maketitle}{%
+  \newpage\null\vskip 0.5em
+  \begin{center}
+    {\LARGE\scshape \@title \par}
+    \vskip 1.4em
+    {\large \lineskip .5em \begin{tabular}[t]{c}\@author\end{tabular}\par}
+    \vskip 0.8em
+    {\normalsize \@date \par}
+  \end{center}
+  \par\vskip 1.2em}
+
+\renewenvironment{abstract}{%
+  \begin{center}{\small\scshape Abstract}\end{center}
+  \begin{quote}\small}{%
+  \par\vskip 0.6em\noindent\textbf{Keywords}\ \ \@keywords
+  \end{quote}\vskip 0.8em}
+
+% Section headings: numbered, bold, compact.
+\RequirePackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.8em}{}
+\titlespacing*{\section}{0pt}{1.4ex plus 0.5ex}{0.8ex}
+\titlespacing*{\subsection}{0pt}{1.1ex plus 0.4ex}{0.6ex}
+
+% Tinted boxes for the formal definitions and technical notes.
+\tcbset{recbox/.style={enhanced, breakable, colback=boxfill, colframe=boxframe, boxrule=0.6pt,
+  sharp corners, left=6pt, right=6pt, top=4pt, bottom=4pt, fonttitle=\bfseries, coltitle=black,
+  attach title to upper, after title={.\ }, separator sign={.}, description delimiters none,
+  description font=\bfseries}}
+\newtcbtheorem{defbox}{Definition}{recbox}{def}
+\newtcbtheorem{notebox}{Note}{recbox}{note}
+
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+\endinput
