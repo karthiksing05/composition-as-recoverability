@@ -1,0 +1,161 @@
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 0 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 0 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 0 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 0 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 1 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 1 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 1 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 1 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 2 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 2 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 2 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 2 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 3 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 3 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 3 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 3 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 4 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 4 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 4 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 4 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 5 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 5 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 5 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 5 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 6 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 6 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 6 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 6 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 7 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 7 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 7 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 7 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 8 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 8 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 8 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 8 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 8 --seeds 9 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 9 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 9 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 9 --outdir results/e2v2
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 0 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 0 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 0 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 1 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 1 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 1 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 2 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 2 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 2 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 3 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 3 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 3 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 4 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 4 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 4 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 5 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 5 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 5 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 6 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 6 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 6 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 7 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 7 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 7 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 8 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 8 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 8 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 16 --seeds 9 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 32 --seeds 9 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 8+16+32+64 --Vs 64 --seeds 9 --second occ --outdir results/e2v2occ
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 0 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 0 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 0 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 1 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 1 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 1 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 2 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 2 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 2 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 3 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 3 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 3 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 4 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 4 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 4 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 5 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 5 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 5 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 6 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 6 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 6 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 7 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 7 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 7 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 8 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 8 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 8 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 9 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 9 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 64 --seeds 9 --npairs 140 --outdir results/e6pairs
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 0 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 0 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 0 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 1 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 1 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 1 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 2 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 2 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 2 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 3 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 3 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 3 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 4 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 4 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 4 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 5 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 5 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 5 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 6 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 6 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 6 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 7 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 7 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 7 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 8 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 8 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 8 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 8 --seeds 9 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 16 --seeds 9 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn+tf --ms 64 --Vs 32 --seeds 9 --auxs 1 --outdir results/e6aux
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 0 --q 4 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 1 --q 4 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 2 --q 4 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 3 --q 4 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 4 --q 4 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 0 --q 16 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 1 --q 16 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 2 --q 16 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 3 --q 16 --outdir results/e2q
+e2_glyph.py --archs slot+mlp+cnn --ms 8+16+32+64+128 --Vs 64 --seeds 4 --q 16 --outdir results/e2q
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 0 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 0 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 0 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 0 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 1 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 1 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 1 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 1 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 2 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 2 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 2 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 2 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 3 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 3 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 3 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 3 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 4 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 16 --seeds 4 --second occ --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 4 --second over --outdir results/e5
+e5_structure.py --archs slot+mlp+cnn+tf --ms 32+64 --Vs 64 --seeds 4 --second occ --outdir results/e5
+e3_depth.py --hrr-only --ws 16+32+64+128+256+1024 --Vs 16+64 --seeds 0+1+2+3+4 --outdir results/e3hrr2

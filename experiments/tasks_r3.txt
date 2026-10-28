@@ -1,0 +1,211 @@
+e1_calibration.py --V 4 --seed 0 --out results/e1v2/gauss_V4_s0.json
+e1_calibration.py --V 8 --seed 0 --out results/e1v2/gauss_V8_s0.json
+e1_calibration.py --V 12 --seed 0 --out results/e1v2/gauss_V12_s0.json
+e1_calibration.py --V 16 --seed 0 --out results/e1v2/gauss_V16_s0.json
+e1_calibration.py --V 24 --seed 0 --out results/e1v2/gauss_V24_s0.json
+e1_calibration.py --V 32 --seed 0 --out results/e1v2/gauss_V32_s0.json
+e1_calibration.py --V 64 --seed 0 --out results/e1v2/gauss_V64_s0.json
+e1_calibration.py --V 128 --seed 0 --out results/e1v2/gauss_V128_s0.json
+e1_calibration.py --V 32 --seed 0 --dist uniform --out results/e1v2/uniform_V32_s0.json
+e1_calibration.py --V 128 --seed 0 --dist uniform --out results/e1v2/uniform_V128_s0.json
+e1_calibration.py --V 32 --seed 0 --dist sparse --out results/e1v2/sparse_V32_s0.json
+e1_calibration.py --V 128 --seed 0 --dist sparse --out results/e1v2/sparse_V128_s0.json
+e1_calibration.py --V 32 --seed 0 --dist corr --out results/e1v2/corr_V32_s0.json
+e1_calibration.py --V 128 --seed 0 --dist corr --out results/e1v2/corr_V128_s0.json
+e1_calibration.py --V 32 --seed 0 --kernel --out results/e1v2k/gauss_V32_s0.json
+e1_calibration.py --V 128 --seed 0 --kernel --out results/e1v2k/gauss_V128_s0.json
+e3_depth.py --ws 16 --Vs 16 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 16 --Vs 64 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 16 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 64 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 16 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 64 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 16 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 64 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 16 --seeds 0 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 64 --seeds 0 --outdir results/e3v2
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 0 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 0 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 0 --second occ --outdir results/e5c
+e1_calibration.py --V 4 --seed 1 --out results/e1v2/gauss_V4_s1.json
+e1_calibration.py --V 8 --seed 1 --out results/e1v2/gauss_V8_s1.json
+e1_calibration.py --V 12 --seed 1 --out results/e1v2/gauss_V12_s1.json
+e1_calibration.py --V 16 --seed 1 --out results/e1v2/gauss_V16_s1.json
+e1_calibration.py --V 24 --seed 1 --out results/e1v2/gauss_V24_s1.json
+e1_calibration.py --V 32 --seed 1 --out results/e1v2/gauss_V32_s1.json
+e1_calibration.py --V 64 --seed 1 --out results/e1v2/gauss_V64_s1.json
+e1_calibration.py --V 128 --seed 1 --out results/e1v2/gauss_V128_s1.json
+e1_calibration.py --V 32 --seed 1 --dist uniform --out results/e1v2/uniform_V32_s1.json
+e1_calibration.py --V 128 --seed 1 --dist uniform --out results/e1v2/uniform_V128_s1.json
+e1_calibration.py --V 32 --seed 1 --dist sparse --out results/e1v2/sparse_V32_s1.json
+e1_calibration.py --V 128 --seed 1 --dist sparse --out results/e1v2/sparse_V128_s1.json
+e1_calibration.py --V 32 --seed 1 --dist corr --out results/e1v2/corr_V32_s1.json
+e1_calibration.py --V 128 --seed 1 --dist corr --out results/e1v2/corr_V128_s1.json
+e1_calibration.py --V 32 --seed 1 --kernel --out results/e1v2k/gauss_V32_s1.json
+e1_calibration.py --V 128 --seed 1 --kernel --out results/e1v2k/gauss_V128_s1.json
+e3_depth.py --ws 16 --Vs 16 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 16 --Vs 64 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 16 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 64 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 16 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 64 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 16 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 64 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 16 --seeds 1 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 64 --seeds 1 --outdir results/e3v2
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 1 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 1 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 1 --second occ --outdir results/e5c
+e1_calibration.py --V 4 --seed 2 --out results/e1v2/gauss_V4_s2.json
+e1_calibration.py --V 8 --seed 2 --out results/e1v2/gauss_V8_s2.json
+e1_calibration.py --V 12 --seed 2 --out results/e1v2/gauss_V12_s2.json
+e1_calibration.py --V 16 --seed 2 --out results/e1v2/gauss_V16_s2.json
+e1_calibration.py --V 24 --seed 2 --out results/e1v2/gauss_V24_s2.json
+e1_calibration.py --V 32 --seed 2 --out results/e1v2/gauss_V32_s2.json
+e1_calibration.py --V 64 --seed 2 --out results/e1v2/gauss_V64_s2.json
+e1_calibration.py --V 128 --seed 2 --out results/e1v2/gauss_V128_s2.json
+e1_calibration.py --V 32 --seed 2 --dist uniform --out results/e1v2/uniform_V32_s2.json
+e1_calibration.py --V 128 --seed 2 --dist uniform --out results/e1v2/uniform_V128_s2.json
+e1_calibration.py --V 32 --seed 2 --dist sparse --out results/e1v2/sparse_V32_s2.json
+e1_calibration.py --V 128 --seed 2 --dist sparse --out results/e1v2/sparse_V128_s2.json
+e1_calibration.py --V 32 --seed 2 --dist corr --out results/e1v2/corr_V32_s2.json
+e1_calibration.py --V 128 --seed 2 --dist corr --out results/e1v2/corr_V128_s2.json
+e1_calibration.py --V 32 --seed 2 --kernel --out results/e1v2k/gauss_V32_s2.json
+e1_calibration.py --V 128 --seed 2 --kernel --out results/e1v2k/gauss_V128_s2.json
+e3_depth.py --ws 16 --Vs 16 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 16 --Vs 64 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 16 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 64 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 16 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 64 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 16 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 64 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 16 --seeds 2 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 64 --seeds 2 --outdir results/e3v2
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 2 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 2 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 2 --second occ --outdir results/e5c
+e1_calibration.py --V 4 --seed 3 --out results/e1v2/gauss_V4_s3.json
+e1_calibration.py --V 8 --seed 3 --out results/e1v2/gauss_V8_s3.json
+e1_calibration.py --V 12 --seed 3 --out results/e1v2/gauss_V12_s3.json
+e1_calibration.py --V 16 --seed 3 --out results/e1v2/gauss_V16_s3.json
+e1_calibration.py --V 24 --seed 3 --out results/e1v2/gauss_V24_s3.json
+e1_calibration.py --V 32 --seed 3 --out results/e1v2/gauss_V32_s3.json
+e1_calibration.py --V 64 --seed 3 --out results/e1v2/gauss_V64_s3.json
+e1_calibration.py --V 128 --seed 3 --out results/e1v2/gauss_V128_s3.json
+e1_calibration.py --V 32 --seed 3 --dist uniform --out results/e1v2/uniform_V32_s3.json
+e1_calibration.py --V 128 --seed 3 --dist uniform --out results/e1v2/uniform_V128_s3.json
+e1_calibration.py --V 32 --seed 3 --dist sparse --out results/e1v2/sparse_V32_s3.json
+e1_calibration.py --V 128 --seed 3 --dist sparse --out results/e1v2/sparse_V128_s3.json
+e1_calibration.py --V 32 --seed 3 --dist corr --out results/e1v2/corr_V32_s3.json
+e1_calibration.py --V 128 --seed 3 --dist corr --out results/e1v2/corr_V128_s3.json
+e1_calibration.py --V 32 --seed 3 --kernel --out results/e1v2k/gauss_V32_s3.json
+e1_calibration.py --V 128 --seed 3 --kernel --out results/e1v2k/gauss_V128_s3.json
+e3_depth.py --ws 16 --Vs 16 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 16 --Vs 64 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 16 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 64 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 16 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 64 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 16 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 64 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 16 --seeds 3 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 64 --seeds 3 --outdir results/e3v2
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 3 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 3 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 3 --second occ --outdir results/e5c
+e1_calibration.py --V 4 --seed 4 --out results/e1v2/gauss_V4_s4.json
+e1_calibration.py --V 8 --seed 4 --out results/e1v2/gauss_V8_s4.json
+e1_calibration.py --V 12 --seed 4 --out results/e1v2/gauss_V12_s4.json
+e1_calibration.py --V 16 --seed 4 --out results/e1v2/gauss_V16_s4.json
+e1_calibration.py --V 24 --seed 4 --out results/e1v2/gauss_V24_s4.json
+e1_calibration.py --V 32 --seed 4 --out results/e1v2/gauss_V32_s4.json
+e1_calibration.py --V 64 --seed 4 --out results/e1v2/gauss_V64_s4.json
+e1_calibration.py --V 128 --seed 4 --out results/e1v2/gauss_V128_s4.json
+e1_calibration.py --V 32 --seed 4 --dist uniform --out results/e1v2/uniform_V32_s4.json
+e1_calibration.py --V 128 --seed 4 --dist uniform --out results/e1v2/uniform_V128_s4.json
+e1_calibration.py --V 32 --seed 4 --dist sparse --out results/e1v2/sparse_V32_s4.json
+e1_calibration.py --V 128 --seed 4 --dist sparse --out results/e1v2/sparse_V128_s4.json
+e1_calibration.py --V 32 --seed 4 --dist corr --out results/e1v2/corr_V32_s4.json
+e1_calibration.py --V 128 --seed 4 --dist corr --out results/e1v2/corr_V128_s4.json
+e1_calibration.py --V 32 --seed 4 --kernel --out results/e1v2k/gauss_V32_s4.json
+e1_calibration.py --V 128 --seed 4 --kernel --out results/e1v2k/gauss_V128_s4.json
+e3_depth.py --ws 16 --Vs 16 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 16 --Vs 64 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 16 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 32 --Vs 64 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 16 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 64 --Vs 64 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 16 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 128 --Vs 64 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 16 --seeds 4 --outdir results/e3v2
+e3_depth.py --ws 256 --Vs 64 --seeds 4 --outdir results/e3v2
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 16 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 16 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 16 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 16 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 4 --second over --outdir results/e5c
+e5_structure.py --archs slot --ms 32+64 --Vs 64 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs mlp --ms 32+64 --Vs 64 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs cnn --ms 32+64 --Vs 64 --seeds 4 --second occ --outdir results/e5c
+e5_structure.py --archs tf --ms 32+64 --Vs 64 --seeds 4 --second occ --outdir results/e5c
+e3_depth.py --hrr-only --ws 16+32+64+128+256+1024 --Vs 16 --seeds 0+1+2+3+4 --outdir results/e3hrr3

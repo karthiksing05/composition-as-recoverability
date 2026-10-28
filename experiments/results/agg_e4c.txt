@@ -1,0 +1,325 @@
+srun: job 4309234 queued and waiting for resources
+srun: job 4309234 has been allocated resources
+selected on validation nouns (n_fit=165):
+                           layer     code   rec_val
+model                                             
+bert-base-uncased            L9  carrier  0.651320
+bert-large-uncased          L12   phrase  0.584902
+clip-b32                     L6  carrier  0.523858
+clip-h14                    L12  carrier  0.686427
+gpt2                         L6   phrase  0.906532
+gpt2-large                  L18   phrase  0.901339
+gpt2-medium                 L12   phrase  0.896392
+rand-bert-base-uncased   pooled  carrier  0.680122
+rand-bert-large-uncased      L6  carrier  0.561122
+rand-clip-b32            pooled   phrase  0.541234
+rand-clip-h14            pooled   phrase  0.482617
+rand-gpt2                pooled  carrier  0.490231
+rand-gpt2-large          pooled  carrier  0.554253
+rand-gpt2-medium         pooled  carrier  0.557918
+rand-sd15-clip-l         pooled   phrase  0.511122
+rand-t5-base                 L3   phrase  0.424760
+rand-t5-large                L6   phrase  0.415407
+rand-t5-small                L1   phrase  0.434226
+sd15-clip-l              pooled  carrier  0.541444
+t5-base                      L9  carrier  0.851198
+t5-large                    L12   phrase  0.674124
+t5-small                     L3   phrase  0.728656
+
+=== n_fit = 165, mean over asymmetric relations and seeds
+                                     rec_pairs  rec_fresh  rec_fresh_role1  rec_fresh_role2  id_fresh  role_fresh  rev_sim  inter
+model                   system                                                                                                  
+bert-base-uncased       model           0.825      0.642            0.661            0.623     0.682       0.968    0.683  0.187
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.011  0.000
+                        ref_sum         0.486      0.483            0.481            0.485     0.359       0.498    1.000  0.000
+bert-large-uncased      model           0.721      0.589            0.575            0.602     0.587       0.918    0.828  0.138
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.012  0.000
+                        ref_sum         0.478      0.481            0.477            0.486     0.392       0.499    1.000  0.000
+clip-b32                model           0.583      0.508            0.554            0.463     0.549       0.856    0.690  0.007
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.443  0.000
+                        ref_sum         0.455      0.470            0.483            0.457     0.325       0.504    1.000  0.000
+clip-h14                model           0.770      0.695            0.795            0.595     0.772       0.972    0.689  0.029
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.036  0.000
+                        ref_sum         0.475      0.481            0.482            0.481     0.347       0.502    1.000  0.000
+gpt2                    model           0.983      0.916            0.918            0.914     0.813       0.908    0.805  0.007
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.980  0.000
+                        ref_sum         0.492      0.498            0.494            0.503     0.160       0.501    0.998  0.000
+gpt2-large              model           0.981      0.908            0.906            0.910     0.847       0.937    0.686  0.012
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.931  0.000
+                        ref_sum         0.490      0.498            0.493            0.503     0.194       0.500    1.000  0.000
+gpt2-medium             model           0.971      0.903            0.904            0.902     0.825       0.889    0.734  0.011
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.952  0.000
+                        ref_sum         0.489      0.497            0.492            0.502     0.216       0.504    1.000  0.000
+rand-bert-base-uncased  model           0.826      0.692            0.709            0.675     0.209       0.643    0.981  0.101
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.018  0.000
+                        ref_sum         0.480      0.486            0.475            0.497     0.301       0.504    1.000  0.000
+rand-bert-large-uncased model           0.624      0.586            0.600            0.572     0.390       0.663    0.890  0.017
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.012  0.000
+                        ref_sum         0.471      0.476            0.468            0.484     0.445       0.505    1.000  0.000
+rand-clip-b32           model           0.745      0.552            0.768            0.336     0.725       0.887    0.637  0.022
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.009  0.000
+                        ref_sum         0.480      0.477            0.477            0.477     0.454       0.503    1.000  0.000
+rand-clip-h14           model           0.680      0.495            0.742            0.248     0.646       0.819    0.603  0.022
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.010  0.000
+                        ref_sum         0.476      0.470            0.470            0.471     0.460       0.497    1.000  0.000
+rand-gpt2               model           0.701      0.464            0.496            0.432     0.228       0.742    0.380  0.096
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.008  0.000
+                        ref_sum         0.482      0.490            0.485            0.495     0.363       0.498    1.000  0.000
+rand-gpt2-large         model           0.789      0.540            0.602            0.479     0.159       0.729    0.306  0.122
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.009  0.000
+                        ref_sum         0.480      0.489            0.485            0.494     0.369       0.501    1.000  0.000
+rand-gpt2-medium        model           0.772      0.541            0.576            0.507     0.192       0.765    0.345  0.108
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.008  0.000
+                        ref_sum         0.481      0.491            0.486            0.496     0.367       0.499    1.000  0.000
+rand-sd15-clip-l        model           0.706      0.518            0.741            0.296     0.687       0.848    0.637  0.022
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.010  0.000
+                        ref_sum         0.477      0.471            0.471            0.471     0.467       0.504    1.000  0.000
+rand-t5-base            model           0.460      0.428            0.428            0.429     0.437       0.498    1.000  0.034
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.016  0.000
+                        ref_sum         0.475      0.470            0.471            0.470     0.447       0.497    1.000  0.000
+rand-t5-large           model           0.456      0.423            0.424            0.421     0.438       0.500    1.000  0.043
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.014  0.000
+                        ref_sum         0.474      0.472            0.474            0.471     0.453       0.501    1.000  0.000
+rand-t5-small           model           0.465      0.443            0.444            0.441     0.450       0.497    1.000  0.020
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.018  0.000
+                        ref_sum         0.475      0.472            0.473            0.472     0.453       0.503    1.000  0.000
+sd15-clip-l             model           0.647      0.524            0.528            0.521     0.531       0.848    0.853  0.108
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.009  0.000
+                        ref_sum         0.480      0.477            0.476            0.477     0.376       0.496    1.000  0.000
+t5-base                 model           0.954      0.816            0.825            0.807     0.501       0.954    0.775  0.090
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.478  0.000
+                        ref_sum         0.469      0.464            0.459            0.469     0.288       0.496    1.000  0.000
+t5-large                model           0.871      0.641            0.629            0.653     0.700       0.974    0.913  0.129
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.051  0.000
+                        ref_sum         0.466      0.461            0.458            0.465     0.367       0.502    1.000  0.000
+t5-small                model           0.844      0.714            0.740            0.688     0.784       0.982    0.836  0.108
+                        ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.044  0.000
+                        ref_sum         0.471      0.465            0.462            0.467     0.369       0.497    1.000  0.000
+
+=== curve: rec_fresh by n_fit
+ n_fit                                 40     80     120    165
+model                   system                                
+bert-base-uncased       model       0.450  0.568  0.612  0.642
+                        ref_concat  0.921  0.990  0.999  1.000
+                        ref_sum     0.452  0.485  0.483  0.483
+bert-large-uncased      model       0.352  0.496  0.556  0.589
+                        ref_concat  0.785  0.947  0.989  1.000
+                        ref_sum     0.381  0.461  0.475  0.481
+clip-b32                model       0.331  0.471  0.495  0.508
+                        ref_concat  0.723  0.995  0.999  1.000
+                        ref_sum     0.352  0.465  0.471  0.470
+clip-h14                model       0.475  0.608  0.667  0.695
+                        ref_concat  0.764  0.940  0.987  1.000
+                        ref_sum     0.371  0.462  0.476  0.481
+gpt2                    model       0.771  0.866  0.891  0.916
+                        ref_concat  0.999  1.000  1.000  1.000
+                        ref_sum     0.489  0.496  0.499  0.498
+gpt2-large              model       0.733  0.862  0.894  0.908
+                        ref_concat  0.998  1.000  1.000  1.000
+                        ref_sum     0.488  0.495  0.498  0.498
+gpt2-medium             model       0.735  0.840  0.885  0.903
+                        ref_concat  0.998  1.000  1.000  1.000
+                        ref_sum     0.488  0.497  0.498  0.497
+rand-bert-base-uncased  model         NaN    NaN    NaN  0.692
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.486
+rand-bert-large-uncased model         NaN    NaN    NaN  0.586
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.476
+rand-clip-b32           model         NaN    NaN    NaN  0.552
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.477
+rand-clip-h14           model         NaN    NaN    NaN  0.495
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.470
+rand-gpt2               model         NaN    NaN    NaN  0.464
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.490
+rand-gpt2-large         model         NaN    NaN    NaN  0.540
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.489
+rand-gpt2-medium        model         NaN    NaN    NaN  0.541
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.491
+rand-sd15-clip-l        model         NaN    NaN    NaN  0.518
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.471
+rand-t5-base            model         NaN    NaN    NaN  0.428
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.470
+rand-t5-large           model         NaN    NaN    NaN  0.423
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.472
+rand-t5-small           model         NaN    NaN    NaN  0.443
+                        ref_concat    NaN    NaN    NaN  1.000
+                        ref_sum       NaN    NaN    NaN  0.472
+sd15-clip-l             model       0.367  0.449  0.492  0.524
+                        ref_concat  0.821  0.958  0.992  1.000
+                        ref_sum     0.401  0.468  0.476  0.477
+t5-base                 model       0.742  0.771  0.795  0.816
+                        ref_concat  0.982  0.997  0.999  1.000
+                        ref_sum     0.482  0.485  0.483  0.464
+t5-large                model       0.455  0.509  0.585  0.641
+                        ref_concat  0.886  0.975  0.996  1.000
+                        ref_sum     0.433  0.476  0.476  0.461
+t5-small                model       0.559  0.604  0.674  0.714
+                        ref_concat  0.893  0.976  0.997  1.000
+                        ref_sum     0.437  0.473  0.477  0.465
+
+=== curve: id_fresh by n_fit (model)
+ n_fit                      40     80     120    165
+model                                              
+bert-base-uncased        0.382  0.562  0.633  0.682
+bert-large-uncased       0.302  0.464  0.539  0.587
+clip-b32                 0.320  0.409  0.507  0.549
+clip-h14                 0.441  0.642  0.716  0.772
+gpt2                     0.401  0.626  0.745  0.813
+gpt2-large               0.483  0.724  0.806  0.847
+gpt2-medium              0.456  0.672  0.764  0.825
+rand-bert-base-uncased     NaN    NaN    NaN  0.209
+rand-bert-large-uncased    NaN    NaN    NaN  0.390
+rand-clip-b32              NaN    NaN    NaN  0.725
+rand-clip-h14              NaN    NaN    NaN  0.646
+rand-gpt2                  NaN    NaN    NaN  0.228
+rand-gpt2-large            NaN    NaN    NaN  0.159
+rand-gpt2-medium           NaN    NaN    NaN  0.192
+rand-sd15-clip-l           NaN    NaN    NaN  0.687
+rand-t5-base               NaN    NaN    NaN  0.437
+rand-t5-large              NaN    NaN    NaN  0.438
+rand-t5-small              NaN    NaN    NaN  0.450
+sd15-clip-l              0.289  0.424  0.489  0.531
+t5-base                  0.269  0.362  0.448  0.501
+t5-large                 0.342  0.510  0.625  0.700
+t5-small                 0.458  0.625  0.732  0.784
+
+=== kappa (n_fit=165)
+ system                   model  ref_concat  ref_sum  kappa
+model                                                     
+bert-base-uncased        0.642         1.0    0.483  0.308
+bert-large-uncased       0.589         1.0    0.481  0.208
+clip-b32                 0.508         1.0    0.470  0.072
+clip-h14                 0.695         1.0    0.481  0.412
+gpt2                     0.916         1.0    0.498  0.833
+gpt2-large               0.908         1.0    0.498  0.817
+gpt2-medium              0.903         1.0    0.497  0.807
+rand-bert-base-uncased   0.692         1.0    0.486  0.401
+rand-bert-large-uncased  0.586         1.0    0.476  0.210
+rand-clip-b32            0.552         1.0    0.477  0.143
+rand-clip-h14            0.495         1.0    0.470  0.047
+rand-gpt2                0.464         1.0    0.490 -0.051
+rand-gpt2-large          0.540         1.0    0.489  0.100
+rand-gpt2-medium         0.541         1.0    0.491  0.098
+rand-sd15-clip-l         0.518         1.0    0.471  0.089
+rand-t5-base             0.428         1.0    0.470 -0.079
+rand-t5-large            0.423         1.0    0.472 -0.093
+rand-t5-small            0.443         1.0    0.472 -0.055
+sd15-clip-l              0.524         1.0    0.477  0.090
+t5-base                  0.816         1.0    0.464  0.657
+t5-large                 0.641         1.0    0.461  0.334
+t5-small                 0.714         1.0    0.465  0.465
+
+rank by rec_fresh: ['gpt2', 'gpt2-large', 'gpt2-medium', 't5-base', 't5-small', 'clip-h14', 'rand-bert-base-uncased', 'bert-base-uncased', 't5-large', 'bert-large-uncased', 'rand-bert-large-uncased', 'rand-clip-b32', 'rand-gpt2-medium', 'rand-gpt2-large', 'sd15-clip-l', 'rand-sd15-clip-l', 'clip-b32', 'rand-clip-h14', 'rand-gpt2', 'rand-t5-small', 'rand-t5-base', 'rand-t5-large']
+rank by id_fresh: ['gpt2-large', 'gpt2-medium', 'gpt2', 't5-small', 'clip-h14', 'rand-clip-b32', 't5-large', 'rand-sd15-clip-l', 'bert-base-uncased', 'rand-clip-h14', 'bert-large-uncased', 'clip-b32', 'sd15-clip-l', 't5-base', 'rand-t5-small', 'rand-t5-large', 'rand-t5-base', 'rand-bert-large-uncased', 'rand-gpt2', 'rand-bert-base-uncased', 'rand-gpt2-medium', 'rand-gpt2-large']
+
+id_fresh model vs own sum reference:
+ system                   model  ref_concat  ref_sum
+model                                              
+bert-base-uncased        0.682         1.0    0.359
+bert-large-uncased       0.587         1.0    0.392
+clip-b32                 0.549         1.0    0.325
+clip-h14                 0.772         1.0    0.347
+gpt2                     0.813         1.0    0.160
+gpt2-large               0.847         1.0    0.194
+gpt2-medium              0.825         1.0    0.216
+rand-bert-base-uncased   0.209         1.0    0.301
+rand-bert-large-uncased  0.390         1.0    0.445
+rand-clip-b32            0.725         1.0    0.454
+rand-clip-h14            0.646         1.0    0.460
+rand-gpt2                0.228         1.0    0.363
+rand-gpt2-large          0.159         1.0    0.369
+rand-gpt2-medium         0.192         1.0    0.367
+rand-sd15-clip-l         0.687         1.0    0.467
+rand-t5-base             0.437         1.0    0.447
+rand-t5-large            0.438         1.0    0.453
+rand-t5-small            0.450         1.0    0.453
+sd15-clip-l              0.531         1.0    0.376
+t5-base                  0.501         1.0    0.288
+t5-large                 0.700         1.0    0.367
+t5-small                 0.784         1.0    0.369
+
+'and' control (model):
+                          rec_fresh  role_fresh  rev_sim
+model                                                  
+bert-base-uncased            0.607       0.948    0.791
+bert-large-uncased           0.613       0.932    0.861
+clip-b32                     0.533       0.848    0.761
+clip-h14                     0.684       0.964    0.754
+gpt2                         0.898       0.905    0.832
+gpt2-large                   0.915       0.938    0.742
+gpt2-medium                  0.908       0.918    0.785
+rand-bert-base-uncased       0.669       0.636    0.980
+rand-bert-large-uncased      0.576       0.652    0.896
+rand-clip-b32                0.553       0.884    0.686
+rand-clip-h14                0.505       0.817    0.651
+rand-gpt2                    0.498       0.774    0.398
+rand-gpt2-large              0.537       0.724    0.326
+rand-gpt2-medium             0.520       0.741    0.367
+rand-sd15-clip-l             0.517       0.838    0.688
+rand-t5-base                 0.433       0.501    1.000
+rand-t5-large                0.432       0.503    1.000
+rand-t5-small                0.448       0.498    1.000
+sd15-clip-l                  0.498       0.767    0.925
+t5-base                      0.815       0.943    0.814
+t5-large                     0.646       0.974    0.934
+t5-small                     0.714       0.982    0.866
+
+rec_fresh by part code at the selected layer:
+ code                     carrier  phrase  static
+model                                           
+bert-base-uncased          0.642   0.544   0.371
+bert-large-uncased         0.508   0.589   0.394
+clip-b32                   0.508   0.478   0.375
+clip-h14                   0.695   0.610   0.447
+gpt2                       0.908   0.916   0.080
+gpt2-large                 0.899   0.908   0.118
+gpt2-medium                0.892   0.903   0.103
+rand-bert-base-uncased     0.692   0.666   0.042
+rand-bert-large-uncased    0.586   0.577   0.063
+rand-clip-b32              0.535   0.552   0.039
+rand-clip-h14              0.462   0.495   0.044
+rand-gpt2                  0.464   0.433  -0.018
+rand-gpt2-large            0.540   0.449  -0.026
+rand-gpt2-medium           0.541   0.433  -0.023
+rand-sd15-clip-l           0.498   0.518   0.048
+rand-t5-base               0.407   0.428   0.214
+rand-t5-large              0.390   0.423   0.185
+rand-t5-small              0.416   0.443   0.233
+sd15-clip-l                0.524   0.504   0.259
+t5-base                    0.816   0.452   0.280
+t5-large                   0.608   0.641   0.273
+t5-small                   0.699   0.714   0.468
+
+selected alphas (model, role1):
+ model
+bert-base-uncased              31.622777
+bert-large-uncased            100.000000
+clip-b32                       10.000000
+clip-h14                      100.000000
+gpt2                          100.000000
+gpt2-large                    316.227766
+gpt2-medium                  1000.000000
+rand-bert-base-uncased         31.622777
+rand-bert-large-uncased       316.227766
+rand-clip-b32                 100.000000
+rand-clip-h14                 316.227766
+rand-gpt2                    3162.277660
+rand-gpt2-large              1000.000000
+rand-gpt2-medium             1000.000000
+rand-sd15-clip-l              316.227766
+rand-t5-base                 3162.277660
+rand-t5-large               10000.000000
+rand-t5-small                 316.227766
+sd15-clip-l                  3162.277660
+t5-base                    100000.000000
+t5-large                   100000.000000
+t5-small                   100000.000000

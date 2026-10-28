@@ -1,0 +1,69 @@
+best layers {'bert-base-uncased': ('L6', 'carrier'), 'bert-large-uncased': ('L12', 'phrase'), 'clip-b32': ('L6', 'phrase'), 'clip-h14': ('L6', 'carrier'), 'gpt2': ('L6', 'carrier'), 'gpt2-large': ('L18', 'carrier'), 'gpt2-medium': ('L18', 'phrase'), 'sd15-clip-l': ('L3', 'carrier'), 't5-base': ('L12', 'phrase'), 't5-large': ('L12', 'phrase'), 't5-small': ('L3', 'phrase')}
+random, own codes {'bert-base-uncased': np.float64(0.471), 'bert-large-uncased': np.float64(0.461), 'clip-b32': np.float64(0.556), 'clip-h14': np.float64(0.498), 'gpt2': np.float64(0.433), 'gpt2-large': np.float64(0.414), 'gpt2-medium': np.float64(0.429), 'sd15-clip-l': np.float64(0.519), 't5-base': np.float64(0.424), 't5-large': np.float64(0.417), 't5-small': np.float64(0.439)}
+random, trained codes {'bert-base-uncased': np.float64(0.027), 'bert-large-uncased': np.float64(0.027), 'clip-b32': np.float64(-0.013), 'clip-h14': np.float64(-0.012), 'gpt2': np.float64(0.025), 'gpt2-large': np.float64(0.031), 'gpt2-medium': np.float64(0.035), 'sd15-clip-l': np.float64(-0.012), 't5-base': np.float64(0.008), 't5-large': np.float64(0.006), 't5-small': np.float64(0.017)}
+clip-b32
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.663      0.576     0.709       0.895    0.690  0.007
+ref_concat      1.000      1.000     1.000       1.000   -0.718  0.000
+ref_sum         0.477      0.478     0.416       0.503    1.000  0.000
+sd15-clip-l
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.717      0.613     0.786       0.957    0.751  0.002
+ref_concat      1.000      1.000     1.000       1.000   -0.817  0.000
+ref_sum         0.476      0.478     0.413       0.505    0.997  0.000
+clip-h14
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.757      0.664     0.824       0.977    0.682  0.019
+ref_concat      1.000      1.000     1.000       1.000   -0.051  0.000
+ref_sum         0.475      0.479     0.405       0.502    1.000  0.000
+t5-small
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.683      0.608     0.816       0.960    0.836  0.108
+ref_concat      1.000      1.000     1.000       1.000   -0.044  0.000
+ref_sum         0.480      0.480     0.436       0.505    1.000  0.000
+t5-base
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.717      0.588     0.749       0.971    0.717  0.193
+ref_concat      1.000      1.000     1.000       1.000   -0.010  0.000
+ref_sum         0.478      0.477     0.430       0.497    1.000  0.000
+t5-large
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.662      0.559     0.758       0.935    0.913  0.129
+ref_concat      1.000      1.000     1.000       1.000   -0.051  0.000
+ref_sum         0.480      0.478     0.431       0.499    1.000  0.000
+bert-base-uncased
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.707      0.559     0.732       0.948    0.787  0.136
+ref_concat      1.000      1.000     1.000       1.000   -0.014  0.000
+ref_sum         0.480      0.482     0.429       0.501    1.000  0.000
+bert-large-uncased
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.642      0.510     0.646       0.899    0.828  0.138
+ref_concat      1.000      1.000     1.000       1.000   -0.012  0.000
+ref_sum         0.476      0.477     0.436       0.498    1.000  0.000
+gpt2
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.810      0.708     0.915       0.996    0.805  0.007
+ref_concat      1.000      1.000     1.000       1.000   -0.861  0.000
+ref_sum         0.478      0.476     0.432       0.499    1.000  0.000
+gpt2-medium
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.843      0.724     0.923       0.993    0.611  0.012
+ref_concat      1.000      1.000     1.000       1.000   -0.899  0.000
+ref_sum         0.478      0.479     0.414       0.498    1.000  0.000
+gpt2-large
+            rec_pairs  rec_fresh  id_fresh  role_fresh  rev_sim  inter
+system                                                                
+model           0.869      0.741     0.939       0.995    0.686  0.012
+ref_concat      1.000      1.000     1.000       1.000   -0.663  0.000
+ref_sum         0.479      0.480     0.420       0.500    1.000  0.000

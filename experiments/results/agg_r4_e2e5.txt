@@ -1,0 +1,149 @@
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_r4.py:55: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  print("    ratio of means:", {t: g.apply(lambda x: x[f"ctl_{t}_dright_r1"].mean() / x[f"ctl_{t}_dleft_r1"].mean()).round(3).to_dict() for t in ctl if t != "swapB2"})
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_r4.py:55: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  print("    ratio of means:", {t: g.apply(lambda x: x[f"ctl_{t}_dright_r1"].mean() / x[f"ctl_{t}_dleft_r1"].mean()).round(3).to_dict() for t in ctl if t != "swapB2"})
+=== E2h: runs 576 matched 512 max |beh_fresh_r11 - old| 0.16087874719186157
+max |vocab_cv - old vocab readout| 0.5153472997614854
+V                    8      16     32     64
+vocab_cv          0.094  0.476  0.703  0.795
+vocab_glyph       0.186  0.508  0.714  0.798
+vocab_fresh       0.237  0.526  0.718  0.800
+pool_cv           0.675  0.738  0.795  0.827
+pool_glyph        0.675  0.738  0.795  0.828
+pool_fresh        0.675  0.738  0.795  0.827
+init_cv           0.587  0.587  0.587  0.587
+init_glyph        0.587  0.587  0.587  0.587
+init_fresh        0.587  0.587  0.587  0.587
+inputvocab_cv     0.261  0.566  0.150  0.779
+inputvocab_glyph  0.353  0.656  0.807  0.867
+inputvocab_fresh  0.410  0.691  0.823  0.874
+         vocab_cv  vocab_glyph  vocab_fresh  inputvocab_cv  inputvocab_glyph  inputvocab_fresh
+arch V                                                                                        
+cnn  8      0.210        0.303        0.317          0.261             0.353             0.410
+     16     0.580        0.603        0.613          0.566             0.656             0.691
+     32     0.768        0.782        0.791          0.150             0.807             0.823
+     64     0.850        0.854        0.860          0.779             0.867             0.874
+mlp  8      0.225        0.246        0.320          0.261             0.353             0.410
+     16     0.550        0.620        0.638          0.566             0.656             0.691
+     32     0.747        0.786        0.793          0.150             0.807             0.823
+     64     0.841        0.852        0.855          0.779             0.867             0.874
+slot 8      0.231        0.260        0.319          0.261             0.353             0.410
+     16     0.558        0.609        0.636          0.566             0.656             0.691
+     32     0.755        0.781        0.786          0.150             0.807             0.823
+     64     0.846        0.852        0.854          0.779             0.867             0.874
+tf   8     -0.196        0.023        0.053          0.261             0.353             0.410
+     16     0.232        0.316        0.373          0.566             0.656             0.691
+     32     0.628        0.659        0.671          0.150             0.807             0.823
+     64     0.802        0.808        0.813          0.779             0.867             0.874
+per-seed spread of inputvocab at V=32: [0.17, 0.16, 0.43, -0.4, 0.41, -0.11, 0.19, 0.35] [0.83, 0.84, 0.77, 0.8, 0.83, 0.76, 0.81, 0.81]
+corr(vocab_cv, beh): within=0.676 pooled=0.948 n=512
+corr(vocab_glyph, beh): within=0.755 pooled=0.970 n=512
+corr(vocab_fresh, beh): within=0.741 pooled=0.969 n=512
+corr(pool_cv, beh): within=0.396 pooled=0.736 n=512
+corr(pool_glyph, beh): within=0.396 pooled=0.736 n=512
+corr(pool_fresh, beh): within=0.396 pooled=0.736 n=512
+corr(init_cv, beh): within=0.261 pooled=0.316 n=512
+corr(init_glyph, beh): within=0.267 pooled=0.317 n=512
+corr(init_fresh, beh): within=0.261 pooled=0.316 n=512
+corr(inputvocab_cv, beh): within=0.162 pooled=0.342 n=512
+corr(inputvocab_glyph, beh): within=0.545 pooled=0.867 n=512
+corr(inputvocab_fresh, beh): within=0.506 pooled=0.867 n=512
+vocab_glyph_alpha_role1 {'min': 0.0001, '50%': 1.0, 'max': 31.622776601683793}
+vocab_fresh_alpha_role1 {'min': 0.0001, '50%': 3.1622776601683795, 'max': 1000.0}
+inputvocab_glyph_alpha_role1 {'min': 0.0001, '50%': 1.0, 'max': 3.1622776601683795}
+pool_fresh_alpha_role1 {'min': 0.0001, '50%': 0.01, 'max': 31.622776601683793}
+kappa (m=64, non-tf) from pool readout:
+     pool_cv  pool_fresh
+V                      
+8     0.728       0.728
+16    0.762       0.762
+32    0.798       0.798
+64    0.826       0.826 
+refs 0.98 0.484
+=== E5d runs 160 {('occ', 16): 40, ('occ', 64): 40, ('over', 16): 40, ('over', 64): 40}
+--- over: spill, mean of per-run ratios (sem)
+             swap         swapB2           rand         randB1      randB1cov        natural       natural1
+V                                                                                                          
+16   0.36 (0.025)   0.47 (0.029)  0.941 (0.013)  0.834 (0.015)   0.48 (0.027)  0.852 (0.014)  0.428 (0.024)
+64  0.158 (0.006)  0.206 (0.009)  0.951 (0.012)  0.752 (0.012)  0.296 (0.012)  0.897 (0.009)  0.252 (0.005)
+    ratio of means: {'swap': {16: 0.342, 64: 0.157}, 'rand': {16: 0.937, 64: 0.948}, 'randB1': {16: 0.828, 64: 0.749}, 'randB1cov': {16: 0.463, 64: 0.294}, 'natural': {16: 0.844, 64: 0.893}, 'natural1': {16: 0.408, 64: 0.251}}
+V                             16     64
+newpart_role1_before       0.049  0.812
+newpart_role2_before      -0.126  0.746
+newpart_heldout_before     0.973  0.979
+newpart_role1_replay0      0.762  0.916
+newpart_role2_replay0     -0.693  0.620
+newpart_heldout_replay0    0.629  0.903
+newpart_role1_before_old   0.741  0.926
+newpart_role2_before_old   0.709  0.947
+newpart_role1_oldctl       0.767  0.916
+newpart_role2_oldctl       0.547  0.868
+newpart_heldout_oldctl     0.854  0.937
+newpart_role1_bothroles    0.572  0.894
+newpart_role2_bothroles    0.659  0.914
+newpart_heldout_bothroles  0.662  0.914
+newpart_role1_replay1      0.693  0.921
+newpart_role2_replay1     -0.078  0.768
+newpart_heldout_replay1    0.968  0.977
+newpart_role2_addcode     -0.167  0.746
+newpart_role2_addcode_avg -0.188  0.747
+V                      16     64
+dr2           mean  0.567  0.125
+              sem   0.068  0.023
+dho           mean  0.344  0.076
+              sem   0.025  0.005
+diff          mean  0.223  0.049
+              sem   0.064  0.021
+dr2o          mean  0.162  0.079
+              sem   0.033  0.007
+dho_o         mean  0.119  0.043
+              sem   0.017  0.003
+diff_o        mean  0.043  0.036
+              sem   0.024  0.006
+add_vs_ft     mean  0.526  0.125
+              sem   0.063  0.025
+add_vs_before mean -0.041  0.000
+              sem   0.031  0.012
+--- occ: spill, mean of per-run ratios (sem)
+             swap         swapB2           rand         randB1      randB1cov        natural       natural1
+V                                                                                                          
+16   0.607 (0.03)  0.174 (0.008)  1.345 (0.033)  1.459 (0.037)  0.781 (0.035)  1.137 (0.025)  0.867 (0.033)
+64  0.314 (0.016)  0.087 (0.004)  1.426 (0.036)   1.09 (0.025)  0.484 (0.024)   1.06 (0.015)  0.536 (0.019)
+    ratio of means: {'swap': {16: 0.598, 64: 0.309}, 'rand': {16: 1.353, 64: 1.436}, 'randB1': {16: 1.442, 64: 1.083}, 'randB1cov': {16: 0.769, 64: 0.477}, 'natural': {16: 1.133, 64: 1.056}, 'natural1': {16: 0.852, 64: 0.528}}
+V                             16     64
+newpart_role1_before      -0.141  0.675
+newpart_role2_before      -0.001  0.755
+newpart_heldout_before     0.972  0.976
+newpart_role1_replay0      0.725  0.887
+newpart_role2_replay0     -0.716  0.517
+newpart_heldout_replay0    0.560  0.847
+newpart_role1_before_old   0.751  0.916
+newpart_role2_before_old   0.766  0.951
+newpart_role1_oldctl       0.750  0.886
+newpart_role2_oldctl       0.591  0.812
+newpart_heldout_oldctl     0.828  0.902
+newpart_role1_bothroles    0.598  0.864
+newpart_role2_bothroles    0.597  0.867
+newpart_heldout_bothroles  0.637  0.880
+newpart_role1_replay1      0.713  0.916
+newpart_role2_replay1      0.040  0.784
+newpart_heldout_replay1    0.971  0.975
+newpart_role2_addcode     -0.079  0.734
+newpart_role2_addcode_avg -0.084  0.734
+V                      16     64
+dr2           mean  0.715  0.237
+              sem   0.063  0.029
+dho           mean  0.412  0.129
+              sem   0.030  0.010
+diff          mean  0.303  0.109
+              sem   0.048  0.022
+dr2o          mean  0.175  0.138
+              sem   0.025  0.015
+dho_o         mean  0.144  0.074
+              sem   0.022  0.007
+diff_o        mean  0.031  0.064
+              sem   0.020  0.010
+add_vs_ft     mean  0.637  0.216
+              sem   0.073  0.026
+add_vs_before mean -0.078 -0.021
+              sem   0.047  0.015

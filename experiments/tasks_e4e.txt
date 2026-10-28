@@ -1,0 +1,132 @@
+e4_pretrained.py --models clip-b32 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-b32 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-b32 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models sd15-clip-l --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models sd15-clip-l --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models sd15-clip-l --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-h14 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-h14 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-h14 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-small --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-small --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-small --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-base --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-base --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-base --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-large --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-large --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models t5-large --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-base-uncased --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-base-uncased --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-base-uncased --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-large-uncased --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-large-uncased --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models bert-large-uncased --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-medium --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-medium --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-medium --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-large --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 0 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-large --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 1 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models gpt2-large --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 2 --wide --whiten --outdir results/e4w
+e4_pretrained.py --models clip-b32 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models clip-b32 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models clip-b32 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-b32 --codes-from clip-b32 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models sd15-clip-l --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models sd15-clip-l --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models sd15-clip-l --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-sd15-clip-l --codes-from sd15-clip-l --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models clip-h14 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models clip-h14 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models clip-h14 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-clip-h14 --codes-from clip-h14 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-small --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-small --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-small --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-small --codes-from t5-small --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-base --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-base --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-base --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-base --codes-from t5-base --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-large --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-large --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models t5-large --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-t5-large --codes-from t5-large --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-base-uncased --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-base-uncased --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-base-uncased --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-base-uncased --codes-from bert-base-uncased --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-large-uncased --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-large-uncased --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models bert-large-uncased --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-bert-large-uncased --codes-from bert-large-uncased --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2 --codes-from gpt2 --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-medium --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-medium --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-medium --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-medium --codes-from gpt2-medium --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-large --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 0 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-large --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 1 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models gpt2-large --seeds 2 --wide --whiten --detok --outdir results/e4wd
+e4_pretrained.py --models rand-gpt2-large --codes-from gpt2-large --seeds 2 --wide --whiten --detok --outdir results/e4wd

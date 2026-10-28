@@ -6,11 +6,11 @@ from figstyle import *
 TINT = {BLUE: "#e4ebf5", GREY: "#efefef", ORANGE: "#f9eadf"}
 
 
-def box(ax, x, y, w, h, title, body, color, dashed=False, fs=7.5):
+def box(ax, x, y, w, h, title, body, color, dashed=False, fs=7.5, ty=0.68, by=0.3):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.008,rounding_size=0.015",
                                 fc=TINT.get(color, "white"), ec=color, lw=1.4, ls="--" if dashed else "-"))
-    ax.text(x + w / 2, y + h * 0.68, title, ha="center", va="center", fontsize=fs, fontweight="bold", color="#222222")
-    ax.text(x + w / 2, y + h * 0.3, body, ha="center", va="center", fontsize=6.2, color=DGREY, linespacing=1.15)
+    ax.text(x + w / 2, y + h * ty, title, ha="center", va="center", fontsize=fs, fontweight="bold", color="#222222")
+    ax.text(x + w / 2, y + h * by, body, ha="center", va="center", fontsize=6.2, color=DGREY, linespacing=1.15)
 
 
 def line(ax, pts):
@@ -22,23 +22,23 @@ def line(ax, pts):
 fig, ax = plt.subplots(figsize=(6.5, 2.75))
 ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
 box(ax, 0.25, 0.83, 0.48, 0.15, "Combination of parts", "the whole is a function of its parts", "#222222")
-box(ax, 0.77, 0.83, 0.22, 0.15, "Chunking", "orthogonal: stores a\ncomposite as a unit", GREY, dashed=True)
+box(ax, 0.77, 0.83, 0.22, 0.15, "Chunking", "orthogonal: stores a\ncomposite as a unit", GREY, dashed=True, ty=0.78, by=0.3)
 line(ax, [(0.5, 0.83), (0.5, 0.76)]); line(ax, [(0.15, 0.76), (0.85, 0.76)])
 for x in (0.15, 0.5, 0.85):
     line(ax, [(x, 0.76), (x, 0.70)])
-box(ax, 0.01, 0.50, 0.28, 0.20, "Blending", "parts not recoverable, even\nfrom a vocabulary, or roles collide", ORANGE)
+box(ax, 0.01, 0.50, 0.28, 0.20, "Blending", "fresh parts not recoverable;\nroles collide when symmetric", ORANGE)
 box(ax, 0.335, 0.50, 0.33, 0.20, "Fixed-width superposition", "role-distinct; recoverable only by\nclean-up over a known vocabulary", GREY)
-box(ax, 0.71, 0.50, 0.28, 0.20, "Role–filler composition", "parts recoverable, including\nparts never seen before", BLUE)
-ax.text(0.15, 0.39, "symmetric: $x+y$, $x\\odot y$;\nhead\u2013modifier, prototypes;\nconceptual blending", ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
-ax.text(0.5, 0.39, "HRR, MAP, $x+0.5y$,\nprojections with $m<kd$\n(fresh-part ceiling $\\mathrm{rank}/kd$)",
+box(ax, 0.71, 0.50, 0.28, 0.20, "Role–filler composition", "parts recoverable, including parts\nthe readout was not fitted on", BLUE)
+ax.text(0.15, 0.39, "symmetric: $x+y$, $x\\odot y$;\nconceptual blending", ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
+ax.text(0.5, 0.39, "HRR, MAP, head\u2013modifier $x+\\alpha y$,\nprojections with $m<kd$\n(fresh-part ceiling $\\mathrm{rank}/kd$)",
         ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
-ax.text(0.85, 0.39, "tensor products, concatenation,\nsuperposition in disjoint regions,\nslots and templates",
+ax.text(0.85, 0.39, "tensor products, concatenation,\nsuperposition in disjoint regions",
         ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
 ax.add_patch(FancyBboxPatch((0.01, 0.02), 0.655, 0.13, boxstyle="round,pad=0.006,rounding_size=0.012", fc="#fbfbfb", ec=LGREY, lw=0.8))
-ax.text(0.3375, 0.085, "Familiar parts: decodable whenever the relation is injective on the vocabulary\n"
-        "Systematicity and productivity are contingent on the data", ha="center", va="center", fontsize=6.6, color=DGREY)
+ax.text(0.3375, 0.085, "Familiar parts: decodable when the relation is injective on the vocabulary\n"
+        "Systematicity and productivity are contingent on the data", ha="center", va="center", fontsize=6.2, color=DGREY)
 ax.add_patch(FancyBboxPatch((0.71, 0.02), 0.28, 0.13, boxstyle="round,pad=0.006,rounding_size=0.012", fc=TINT[BLUE], ec=BLUE, lw=0.8))
-ax.text(0.85, 0.085, "Fresh parts: recoverable\nSystematicity is necessary", ha="center", va="center", fontsize=6.6, color=BLUE)
+ax.text(0.85, 0.085, "Fresh parts: recoverable\nReversals fixed by the state", ha="center", va="center", fontsize=6.6, color=BLUE)
 fig.savefig(f"{FIGDIR}/fig_taxonomy.pdf")
 fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_taxonomy.png", dpi=200)
 

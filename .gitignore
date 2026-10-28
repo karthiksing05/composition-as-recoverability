@@ -14,3 +14,5 @@ notes/style_ref.txt
 notes/ref_html/
 recoverability-theory/main.log
 recoverability-theory/main.blg
+*.bak
+notes/tectonic.log

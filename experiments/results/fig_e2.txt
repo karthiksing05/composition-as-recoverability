@@ -1,0 +1,3 @@
+n runs 576 480 120 r_vocab 0.957 r_pool 0.728
+vocab_fresh_1 within-condition (0.642998624499224, 0.9529619837276284, 576)
+pool_fresh_1 within-condition (0.40495485812104304, 0.7298438159397184, 576)

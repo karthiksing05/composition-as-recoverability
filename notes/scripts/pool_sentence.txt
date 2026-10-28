@@ -1,0 +1,1 @@
+recovery still rises with the number of fitting nouns: from 120 to 165 nouns it grows by 0.02--0.05 for every encoder while the concatenation reference gains 0.01--0.02, so the values are lower bounds on the population quantity; over this step the $\kappa$ of GPT-2 large rises from 0.46 to 0.50, and how far it would climb with more nouns is open.

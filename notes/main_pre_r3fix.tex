@@ -1,0 +1,593 @@
+\documentclass[10pt]{article}
+
+\usepackage{preprint}
+\usepackage[utf8]{inputenc}
+\usepackage[round,authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{epigraph}
+
+\hypersetup{colorlinks=true,linkcolor=refnavy,citecolor=refnavy,urlcolor=refnavy}
+\graphicspath{{figures/}}
+\raggedbottom
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Voc}{\mathcal{V}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlist{itemsep=1pt,topsep=3pt,parsep=0pt}
+\setlength{\epigraphwidth}{0.62\textwidth}
+\setlength{\epigraphrule}{0pt}
+
+\title{Defining Compositional Representations\\ by Recoverability}
+\author{Karthik Singaravadivelan\\ College of Computing, Georgia Institute of Technology}
+\date{October 27, 2026}
+\runninghead{Defining Compositional Representations by Recoverability}
+\keywords{compositionality, systematicity, representation, binding, neural networks}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+People understand a sentence they have never heard because they can build its meaning from parts they already know, and they can take the meaning apart again into the same parts. Machine learning now calls almost any successful recombination of familiar material \emph{compositional}, and recent work has rightly separated behavioral evidence of compositionality from representational evidence. Yet what a representation must be like to count as compositional remains unsettled. Here, we formalize a simple idea: a representation is compositional when it combines parts through a relation from which every part, \emph{including a part the procedure was never fitted on}, can be read back in its role by the same fixed procedure of a declared kind, such as an affine map, and into which each part enters every role through one shared code. We show that recovery must be measured over the distribution of parts, on parts not used to fit the readout. On any finite vocabulary, almost every way of combining parts can be decoded by lookup, so recovery of familiar parts cannot separate composition from blending; recovery of freshly drawn parts can, its ceiling is set by the rank of a linear relation and, for affine readouts, by the width of any state, and a shared part code fixes every role reversal from a single composite. We then test the definition. Analytic modes of combination match the predicted ceilings, and fixed-width vector-symbolic superposition of dense parts behaves, under affine readouts, like a lossy blend. In small networks trained on glyph composites, the states keep fresh glyphs recoverable at every vocabulary size; the networks' own decoders read them only after training on many distinct glyphs, like readouts fitted on the training glyphs alone; and the role components we recover are the ones the decoders use. The learned recursive composer shows the same split one level beyond its training depths. Pretrained text encoders recover nouns on which the readout was not fitted only partly; GPT-2 comes closest to a role--filler reference, and CLIP's text encoders do no better than the same architecture with random weights. Finally, we discuss what a network must do to earn the term: allocate room for every part, learn its own procedures from many distinct parts, share one part code across roles, use the role components it represents, and keep its relation invertible on its own outputs.
+\end{abstract}
+
+%=====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+\epigraph{What we mean when we say that linguistic capacities are systematic is that the ability to produce/understand some sentences is intrinsically connected to the ability to produce/understand certain others.}{\citet{fodor1988}}
+
+Compositionality is among the oldest ideas in the study of mind and language. \citet{frege1923} observed that we understand sentences we have never heard because we can build the sense of a sentence from parts that correspond to its words, and \citet{fodor1988} argued that the systematicity and productivity of human thought are explained by representations with constituent structure. In machine learning the idea appears as \emph{compositional generalization}, the ability to produce correct outputs for novel combinations of familiar atoms \citep{lake2018,keysers2020,kim2020cogs}. Text-to-image models are described as composing concepts into new scenes \citep{ramesh2021,okawa2023}, and language models as reasoning compositionally \citep{press2023}; yet the same models often fail to place objects in requested relations \citep{conwell2022} and express an attribute named for one object on another \citep{rassin2022}.
+
+Most uses of the term rest on a colloquial principle that descends from Frege and \citet{montague1970}: the meaning or representation of a complex is determined by those of its parts and the way they are combined. Any system that computes a function of its inputs satisfies it \citep{zadrozny1994,westerstahl1998}, so it cannot distinguish, in representational form, an avocado placed \emph{on} a chair from an armchair in the shape of an avocado (Figure~\ref{fig:ops}). \citet{vegner2025} distinguished \emph{behavioral} from \emph{representational} systematicity, the first a property of outputs on unseen combinations and the second of the internal states, and argued that benchmarks of the first do not establish the second. Existing proposals measure the simplicity of a symbolic redescription \citep{elmoznino2024}, the novel structure in the best model of a whole beyond the best models of its parts \citep{elmoznino2026}, or how well an explicit composition of inferred primitives reproduces a state \citep{andreas2019}. A separate line of work proves that additive, invertible decoders generalize to unseen combinations of slots \citep{lachapelle2023,wiedemer2024}, and that linear, orthogonal factors are necessary for compositional generalization in embedding models \citep{uselis2026}. What none of these settles is when recovering parts from a representation is evidence of compositional structure, and when it is evidence only of a familiar vocabulary.
+
+Our starting point is that a compositional representation must let its parts be read back, in their roles, by a fixed procedure that does not depend on which parts they are. It is close to the \emph{reverse compositionality} that \citet{fodor2002} defended and \citet{robbins2005} criticized, the claim that understanding a complex expression includes understanding its constituents. It also bears on \citet{vangelder1990}'s distinction: a representation can be functionally compositional, with parts that are recoverable, without being concatenative, with parts that are tokened. Section~\ref{sec:intuition} develops this idea and shows, with one running example, why the decisive test is recovery of parts on which the reading procedure was never fitted.
+
+Section~\ref{sec:definition} formalizes the definition. A relation is \emph{recoverable} when readouts from a declared class return each part in its role across the whole distribution of parts, which we estimate on parts that played no role in fitting the readouts; it is \emph{role-factorized} when each part enters every role through one shared code. We prove that unrestricted versions of both properties are vacuous, give ceilings on recovery for linear relations and, under affine readouts, for arbitrary ones, and show that under a role-factorized relation every role reversal and every new assignment of a known part to a role is fixed by a single composite.
+
+We test the definition in Section~\ref{sec:experiments} on analytic modes of combination, on networks trained from scratch, including interventions on their states, on recursive composition, and on eleven pretrained text encoders. We close in Section~\ref{sec:discussion} by stating what a network must do to count as compositional, and by discussing implications for terminology, architecture, and evaluation.
+
+%=====================================================================
+\section{Intuition for recoverable composition}
+\label{sec:intuition}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig1_avocado.pdf}
+  \caption{\textbf{Two modes of combining the same parts.} Role--filler composition places the avocado in a role of the relation \emph{on}, so that both parts remain intact and either can be read back from the whole. Blending merges the features of the two concepts into an armchair in the shape of an avocado, a prompt made familiar by DALL$\cdot$E \citep{openai2021dalle}, from which neither part can be read back. All four images were generated for this paper with Canva's text-to-image tool.}
+  \label{fig:ops}
+\end{figure}
+
+Consider two ways of combining an avocado and a chair (Figure~\ref{fig:ops}). In the first, the avocado fills a role of the relation \emph{on}: the scene contains both objects intact, and an observer can say which object rests on which. In the second, the features of the two concepts merge into an avocado-shaped armchair, and neither concept survives as a part. Both are functions of the two parts, and both can be produced for a pair of parts never seen together, so the colloquial principle and behavioral tests treat them alike.
+
+The difference lies in what can be read back. Suppose a system represents composites as vectors and combines two part vectors $x$ and $y$ by adding them. Every pair on the line $x + y = z$ yields the same composite $z$ (Figure~\ref{fig:fibers}a), so no procedure, however clever, can return the parts. A tensor product binding, $x \otimes \rho_1 + y \otimes \rho_2$ with independent role vectors, keeps one decomposition for each composite (Figure~\ref{fig:fibers}b). Three cases illustrate how this difference appears in practice.
+
+\emph{A small vocabulary hides the difference.} If the system only ever combines parts from a vocabulary of, say, seven known vectors, few vocabulary pairs lie on any one line $x + y = z$, and a lookup over the vocabulary recovers the parts of almost every sum. The sum then looks recoverable. The recoverability comes from the sparsity of the vocabulary, not from the relation, and it disappears for a part outside the vocabulary.
+
+\emph{Fresh parts expose it.} If we draw a new pair of parts and add them, the composite lies on a line that contains infinitely many other decompositions, and nothing distinguishes the true one. Under the tensor product, the same fixed readout that worked for familiar parts returns the new ones.
+
+\emph{A shared code fixes reversals.} If each part enters each role through one code, transformed only by the role, then reading a composite once determines its role reversal and where a part seen only in one role would go in the other. Nothing about the training data is needed beyond what fixed the role maps.
+
+For an arbitrary system, then, the question is whether some fixed readout, of a kind declared in advance, recovers each part in its role from composites of parts the readout was not fitted on. Whether the system \emph{itself} can do so is a further question, about its own decoding procedure, and the two can come apart. The next section makes this precise.
+
+%=====================================================================
+\section{Defining representational compositionality}
+\label{sec:definition}
+
+\subsection{Preliminaries}
+
+A \emph{part} is drawn from a distribution $\D$ over a space of possible parts, which may be continuous (glyphs, vectors, images) or very large (the nouns of a language). A system assigns each part $x$ a \emph{part code} $e(x) \in \R^d$, its representation of the part on its own, and assigns a composite $r(x_1, \ldots, x_k)$ of $k$ parts in roles $1, \ldots, k$ of a relation $r$ an internal state $h = g_r(x_1, \ldots, x_k) \in \R^m$. Training exposes the system to a finite \emph{vocabulary} $\Voc$ of parts drawn from $\D$; a \emph{fresh} part is a further draw from $\D$ outside $\Voc$. Freshness is always relative to a procedure: a part is fresh to a procedure if no composite containing it was used to fit that procedure, even if the part itself is known. Definition~\ref{def:recoverable} needs only parts fresh to the readout; whether a system's \emph{own} decoding procedure handles parts fresh to it is a separate, behavioral question (Table~\ref{tab:twobytwo}). For glyphs and objects, a part can be fresh to both. For a word in a pretrained model it can be fresh only to the readout. For a concept in a person, the relevant sense is fresh to the person's composition procedure: a word or object learned in isolation, or in one role, and never yet combined, since a concept the person does not possess cannot be a constituent of a thought they entertain \citep{fodor2002}. What $\D$ is for concepts is an idealization; for words it can be operationalized by nonce forms with taught meanings. Composites can serve as parts, so the setup is closed under combination. A \emph{readout class} $\U$, such as affine maps, is the family of procedures we allow for recovering a part's code from a composite state; a readout $u_i \in \U$ is fitted for each role $i$ and then held fixed.
+
+Two observations, proved in Appendix~\ref{app:proofs}, show why the class of readouts and the use of fresh parts cannot be left open. First, if the coordinates in which a relation is required to be additive are unrestricted, every invertible relation is additive in some coordinates, so additivity adds nothing to invertibility (Lemma~\ref{lem:psi}). Second, on a finite vocabulary every relation that is injective on the vocabulary is inverted exactly by a lookup table, so recovery of familiar parts cannot separate composition from blending (Lemma~\ref{lem:lookup}). Both properties have content only when the readouts and coordinates are restricted in advance and recovery is measured on parts that played no role in fitting them.
+
+\subsection{The definition}
+
+\begin{defbox}{Recoverable and role-factorized relations}{recoverable}
+Fix a part distribution $\D$, a part code $e$, and a readout class $\U$. A relation $r$, realized in a system by $g_r$, is \emph{$\varepsilon$-recoverable} if for every role $i$ some $u_i \in \U$ satisfies, with parts $x_1, \ldots, x_k$ drawn independently from $\D$,
+\begin{equation}
+  \frac{\mathbb{E}\,\lVert u_i(g_r(x_1,\ldots,x_k)) - e(x_i) \rVert^2}{\mathbb{E}\,\lVert e(x) - \mathbb{E}\,e(x) \rVert^2} \;\le\; \varepsilon .
+  \label{eq:recover}
+\end{equation}
+The relation is \emph{$\delta$-role-factorized} if there exist $c \in \R^m$ and matrices $B_1, \ldots, B_k \in \R^{m \times d}$, one per role and shared by all parts, such that the state is affine in the part codes up to a residual,
+\begin{equation}
+  g_r(x_1, \ldots, x_k) = c + \textstyle\sum_{i} B_i\, e(x_i) + \eta(x_1, \ldots, x_k), \qquad \mathbb{E}\,\lVert \eta \rVert^2 \le \delta\, \mathbb{E}\,\lVert g_r - \mathbb{E}\,g_r \rVert^2 .
+  \label{eq:factor}
+\end{equation}
+Both quantities are population quantities over $\D$. They are estimated by fitting $u_i$, $c$, and $B_i$ on composites of a \emph{probe pool} of parts drawn from $\D$ and evaluating on composites of other parts drawn from $\D$, never on the parts used for fitting.
+\end{defbox}
+
+This criterion asks two things of a relation. Recoverability, Eq.~\eqref{eq:recover}, asks that a fixed procedure of a declared kind return each part in its role across the whole part distribution, not only for the parts from which the procedure was learned; $1 - \varepsilon$ is the population $R^2$ of the best readout in $\U$. The definition does not depend on how many parts a system or an experimenter happens to have seen. Its estimation does: a readout fitted on composites of a small vocabulary is undetermined outside the span of that vocabulary (Proposition~\ref{prop:span}), and scoring it on the same vocabulary inflates it (Lemma~\ref{lem:lookup}). Both biases vanish when the readout is fitted on a large probe pool and evaluated on fresh parts, which is why fresh parts are the unit of evidence. Role-factorization, Eq.~\eqref{eq:factor}, asks that each part contribute the same code to every whole, transformed only by its role, which is the classical requirement that a constituent contribute the same thing to every complex in which it occurs \citep{fodor1988}, with the coordinates restricted to affine maps so that the requirement has content. Intuitively, a relation fails the first criterion when it discards information about its parts, as, under affine readouts, every blend into a space smaller than its parts must (Proposition~\ref{prop:ey}), and fails the second when what a part contributes depends on its co-parts, as in prototype combination \citep{smith1988,hampton1987}.
+
+\begin{defbox}{Representational compositionality}{repcomp}
+A system is \emph{representationally compositional} with respect to a relation $r$, relative to a declared readout class $\U$ and a declared class $\M$ of methods for finding part codes, to the degree that, for some part code $e$ found under $\M$ that is informative about the parts, its realization of $r$ is $\varepsilon$-recoverable and $\delta$-role-factorized. We report the degree by $\delta$ and by the normalized score $\kappa = (\varepsilon_{\mathrm{blend}} - \varepsilon)/(\varepsilon_{\mathrm{blend}} - \varepsilon_{\mathrm{ref}})$, where $\varepsilon_{\mathrm{ref}}$ and $\varepsilon_{\mathrm{blend}}$ are obtained by the same procedure from a role--filler operator and a symmetric blend applied to the same part codes; the system is compositional at tolerance $\tau$ if $\kappa \ge 1 - \tau$ and $\delta \le \tau$. A part code is \emph{informative} if parts can be identified from it among held-out candidates, or if it retains a declared share of the variance of a description of the parts that does not depend on the system. The relation is \emph{productive to depth $n$} if the same holds when the parts are themselves composites of depth up to $n - 1$, with the state of each composite as its part code.
+\end{defbox}
+
+Note that Definition~\ref{def:repcomp} is graded and relative. It is graded because $\varepsilon$ and $\delta$ are continuous, and we calibrate them against reference operators built from the system's own part codes, since the best attainable values depend on the parts and on the readout class (Section~\ref{sec:pretrained}). It is relative to $\U$ and $\M$ because the decomposition must be found by search; a negative result is therefore reported as the absence of a decomposition under declared methods, and the methods must be validated on systems whose decomposition is known. Restricting $\U$ is not a convenience: with unrestricted readouts, as with unrestricted causal alignment maps \citep{sutter2025} and unrestricted probes \citep{hewitt2019}, any injective system passes. Requiring the part code to be informative closes a second loophole: the blend $g(x, y) = (Px, Py)$ with $P$ a projection of rank $r < d$ discards $d - r$ dimensions of each part, yet with the code $e(x) = Px$ it is exactly recoverable and role-factorized. A verdict about blending is therefore always relative to a declared part code, and we report how much of a system-independent description of the parts each code retains.
+
+\begin{notebox}{What the definition does not require}{scope}
+The definition does not require that parts be interpretable to people, that constituents be tokened as separate symbols \citep{fodor1990}, or that the part code be the input embedding; part codes found without supervision are admitted under $\M$. Nor does it require recovery at unbounded depth: a state of fixed dimension cannot invertibly and continuously encode trees of unbounded depth over continuous parts (the Remark after Proposition~\ref{prop:fiber}), so productivity is reported as a curve over depth, and its limits, as \citet{fodor1988} argued, are matters of performance.
+\end{notebox}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_taxonomy.pdf}
+  \caption{\textbf{Modes of combination, sorted by what survives fresh parts.} Every mode satisfies the colloquial principle. Blends discard their parts or confuse their roles. Fixed-width superposition into fewer dimensions than the parts occupy ($m < kd$), which includes holographic reduced representations (HRR) and other vector-symbolic architectures at that width, keeps roles distinct but returns parts only by clean-up over a known vocabulary; its fresh-part recovery is bounded by the rank of the relation (Proposition~\ref{prop:ceiling}). Only role--filler composition, which includes superposition in disjoint regions, recovers parts never seen before and so satisfies Definition~\ref{def:repcomp}. Chunking stores a composite of any mode as a unit and is orthogonal to the distinction.}
+  \label{fig:taxonomy}
+\end{figure}
+
+\subsection{What the definition accounts for}
+\label{sec:consequences}
+
+Appendix~\ref{app:proofs} proves two lemmas and ten propositions; we state the four results that carry the argument.
+
+\textbf{Blends cannot be read back, and how much they lose is computable.} If a relation is linear, $g(x_1, \ldots, x_k) = A x$ with $A = [A_1 \cdots A_k]$, and its image is smaller than the space of its parts, each composite has an affine family of decompositions of dimension $kd - \mathrm{rank}\,A$ (Proposition~\ref{prop:fiber}). For Gaussian parts the loss is exact: no readout of any kind recovers role $i$ with $R^2$ above $\mathrm{tr}(A_i^{\top}(AA^{\top})^{+}A_i)/d$, and the average over roles is $\mathrm{rank}\,A/(kd)$ (Proposition~\ref{prop:ceiling}). The ceiling is $0.8$ for role~1 of $x + 0.5y$, $0.5$ for either role of $x + y$, and $m/(kd)$ for a generic projection into $m < kd$ dimensions. Intuitively, a blend keeps only as many dimensions of its parts as its image has room for.
+
+For trained systems, whose relations are nonlinear, a weaker but general bound applies: whatever the relation and whatever the distribution of parts, an affine readout of an $m$-dimensional state explains at most the share of the parts' variance carried by the top $m$ principal components of the stacked part codes, which is $m/(kd)$ for isotropic codes (Proposition~\ref{prop:ey}).
+
+\textbf{Familiar parts can be decoded anyway.} When parts come from a finite vocabulary, a non-invertible relation can be injective on that vocabulary, and its parts can be decoded by clean-up \citep{plate1995,plate2003,frady2018}. This recoverability comes from the sparsity of the vocabulary rather than from the relation, and it fails for parts outside the vocabulary. The same holds for any procedure learned from a vocabulary, whether an experimenter's readout or a network's own decoder: an affine procedure fitted on composites is determined only on the span of the fitted states, which covers fresh composites only if the codes of the parts in each role span $\R^d$ (Proposition~\ref{prop:span}). A procedure therefore has to be learned from enough distinct parts before it can handle new ones.
+
+\textbf{Role-factorization fixes reversals and new role assignments from single composites.} If a relation is role-factorized with $\delta = 0$ and the stacked matrix $[B_1 \cdots B_k]$ has full column rank, then every role reversal and every assignment of a known part to a role it has never occupied is an affine function of a single composite containing it (Proposition~\ref{prop:systematic}). This is the unbinding argument of tensor-product representations \citep{smolensky1990}, and it is a statement about what the states determine, not about what a system does with them. \citet{fodor1990} objected to exactly this defence that constituents which are merely recoverable need not be causally efficacious in processing. Read in interventionist terms, as a claim that the components need not make a difference to processing, the objection becomes testable for a given system: an interchange intervention that replaces one role's component of a state should change the system's behavior for that role alone (Section~\ref{sec:structure}). Without role-factorization, observed composites constrain unobserved ones only when the set of observed pairs connects every part to every role (Proposition~\ref{prop:separable}), so behavior on a new role assignment depends on the training data and is in this sense contingent \citep{aizawa2003}. Whether a learner acquires a role-factorized relation in the first place remains contingent on its training, which is the part of the systematicity challenge that a criterion on states cannot remove.
+
+\textbf{Productivity requires invertibility on the relation's own outputs.} A nested linear blend of depth $n$ loses at least $(2^n - 1)d$ dimensions of its leaves (Proposition~\ref{prop:depth}). A relation that is invertible on composites of parts need not be invertible on composites of composites, which are drawn from a different distribution; productivity therefore requires that the relation remain recoverable when applied to its own outputs, a property we test directly.
+
+\subsection{Relationship to other accounts}
+\label{sec:related}
+
+\textbf{Identifiability of additive decoders.} Our two conditions are not new as mathematics. Additive decoders, which render each slot separately and sum the results, together with an encoder that inverts the decoder on recombined slots, are the sufficient conditions under which object-centric models provably generalize to unseen combinations of slots \citep{brady2023,lachapelle2023,wiedemer2024}, and \citet{wiedemer2023} locate compositional generalization in the data-generating process rather than the data. Our role-factorization is their additivity with affine coordinates, and our recoverability is a readout-side, affine analogue of their consistency condition, which requires an encoder to invert the decoder on recombined latents, and their caveat that additivity fails under occlusion is our prediction for overlapping roles (Section~\ref{sec:networks}). Two things are new. We use the conditions to \emph{define} a representational property and not as sufficient conditions for a behavioral one, and we separate recovery by a population readout from recovery by procedures learned on the system's own vocabulary, which separates what the relation guarantees from what a vocabulary supplies; in trained networks the two dissociate (Section~\ref{sec:networks}). Fresh draws from $\D$ lie inside each role's support, so our criterion is an affine, readout-side analogue of their target, not an extrapolation beyond it.
+
+\textbf{Necessary structure.} \citet{uselis2026} argue that compositional generalization in embedding models requires representations that decompose linearly into per-concept components, orthogonal across concepts. Their result runs from behavior to structure; Proposition~\ref{prop:systematic} runs from structure to what the states determine. Our condition is weaker than theirs: role-factorization asks that $[B_1 \cdots B_k]$ have full column rank, not that the role subspaces be orthogonal, and a full-rank but ill-conditioned $B$ is recoverable with amplified noise. \citet{schug2024} show that a number of training tasks linear in the number of modules suffices when the training support is connected, which is the learning-theoretic analogue of Proposition~\ref{prop:separable}, and \citet{lippl2025} show that kernel models generalize compositionally only through conjunction-wise additive computations, with a ``memorization leak'' that corresponds to our residual $\eta$.
+
+\textbf{Decodability and generalization.} Measuring whether a readout trained on some conditions transfers to held-out conditions is standard in neuroscience as cross-condition generalization \citep{bernardi2020,ito2022}, and linear decodability of constituents accompanies compositional generalization as models scale \citep{redhardt2025}. Decodable, disentangled factors do not by themselves ensure that a decoder generalizes \citep{montero2021}, and models can generalize without compositional messages \citep{chaabouni2020}; these are the two off-diagonal cells of Table~\ref{tab:twobytwo}. Discovered tensor-product decompositions of trained networks \citep{mccoy2019,soulos2020}, binding identifiers in language models \citep{feng2024}, and interchange interventions \citep{geiger2021,geiger2024das} are methods that $\M$ can contain. What we add is the requirement that the readouts be evaluated on parts outside the vocabulary from which they and the system were fitted.
+
+\textbf{Compression-based accounts.} \citet{elmoznino2024} define representational compositionality by the description length of a representation under a simple symbolic redescription, and \citet{elmoznino2026} measure the novel structure in the best model of a whole that the best models of its parts cannot recover. Both are compression-based and neither requires that parts be read back from the whole; a fixed-width superposition over a small vocabulary compresses well and is decodable by clean-up, and it fails our criterion only on fresh parts. The accounts are complementary: theirs asks how much shared structure a decomposition reveals, ours asks whether the decomposition can be recovered by a fixed procedure.
+
+\textbf{The classical debate.} \citet{fodor1988} argued that systematicity requires constituent structure, and \citet{fodor1990} that classical constituents are tokened whenever the complex is; they rejected Smolensky's view \citep{smolensky1987,smolensky1988,smolensky1990} that tensor-product constituents, recoverable but not tokened, suffice, arguing that such constituents are not causally efficacious in processing. \citet{hadley1994} sharpened the behavioral side into weak and strong systematicity, and \citet{hupkes2020} and \citet{vegner2025} turned it into tests for networks. Our criterion takes Smolensky's side on what a representation must contain and recasts Fodor and McLaughlin's causal-efficacy objection in interventionist terms, which interchange interventions can test for a given system \citep{geiger2021}; their stronger demands, that constituents be tokened and that their efficacy follow from the architecture, are not addressed by any criterion on states. \citet{goodale2026} restate the challenge as one about what an architecture guarantees by default, and \citet{woydt2025} argue that meta-learning \citep{lake2023} has not yet produced human-like systematicity. Our criterion is a property of states, not of architectures, so a network can meet it by training; Section~\ref{sec:discussion} returns to this point.
+
+\begin{table}[t]
+  \caption{Behavioral and representational compositionality vary independently \citep[cf.][]{vegner2025}.}
+  \label{tab:twobytwo}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{3.2cm}YY@{}}
+    \toprule
+    & Behavior succeeds on new combinations and new parts & Behavior fails \\
+    \midrule
+    Parts recoverable from fresh composites & Compositional; reversals and new role assignments are fixed by the relation & Failure of performance: the parts are in the state but the decoder does not read them (Section~\ref{sec:networks}; cf.\ \citealt{montero2021}) \\
+    Parts recoverable only from familiar composites & Vocabulary-bound generalization; systematicity is contingent on the data \citep{chaabouni2020} & Neither: parts lost and behavior fails \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+%=====================================================================
+\section{Testing recoverability}
+\label{sec:experiments}
+
+The definition is useful only if it separates systems that differ in the way it claims. We ask five questions: \emph{do analytic modes of combination meet the predicted ceilings? do the states of networks trained from scratch keep fresh parts recoverable, and does the network itself use them? do the structural consequences of role-factorization hold in trained networks, and are the role components causally used? does recovery survive recursion? and do pretrained encoders recover nouns on which the readout was not fitted?} Each experiment below is fully characterized by:
+\begin{itemize}
+  \item \textbf{Composites:} the parts, their distribution $\D$, and the relation;
+  \item \textbf{Readouts:} the declared class $\U$, the parts on which it is fitted, and the parts on which it is evaluated, which are always disjoint from the former;
+  \item \textbf{Measures:} recovery ($R^2$ of the part code or identification among candidates) and, for systems that act, behavior on held-out pairs of training parts, on training parts in roles they never occupied, and on fresh parts.
+\end{itemize}
+Methods are summarized below; Appendix~\ref{app:protocol} gives full details, and every number is a mean over seeds with standard errors in the figures.
+
+\subsection{Calibration on analytic modes of combination}
+\label{sec:calibration}
+
+\textbf{Composites.} Parts are Gaussian vectors in $\R^{16}$. We combine pairs with fourteen operators (Figure~\ref{fig:calibration}a): concatenation and a tensor product with two random roles (role--filler); random linear projections into $m = 0.5$ to $1.5$ times $kd = 32$ dimensions, HRR and MAP binding in 16 dimensions, and weighted addition $x + 0.5y$ (fixed-width superposition); $x + y$ and $x \odot y$ (symmetric blends); and a random $\tanh$ layer of three widths.
+
+\textbf{Readouts.} We fit ridge (linear), unregularized least-squares, and two-layer MLP readouts for the role-1 part on 6{,}000 composites of a vocabulary of $V$ parts, and evaluate them on unseen pairs of vocabulary parts and on 2{,}000 composites of a fixed pool of 2{,}000 fresh parts, with $R^2$ taken against the population variance of the parts as in Eq.~\eqref{eq:recover}. A lookup decoder matches each composite to the table of all composites of a candidate set, given the candidates.
+
+\textbf{Results.} We ran 5 seeds for each $V \in \{4, \ldots, 128\}$. Given the candidates, lookup identifies the role-1 part of every operator that is injective on the vocabulary, including half-rank projections, HRR, and the narrowest $\tanh$ layer, with accuracy 1.00; only the symmetric blends fall to 0.52, a role collision (Figure~\ref{fig:calibration}a). Recovery of familiar parts therefore does not discriminate. Recovery of fresh parts does, and it matches the ceiling of Proposition~\ref{prop:ceiling} (Figure~\ref{fig:calibration}b): with $V = 128$, $R^2 = 1.00$ for concatenation, the tensor product, and full-rank projections; $0.71$ and $0.47$ for projections at $m/kd = 0.75$ and $0.5$; $0.80$ for $x + 0.5y$, whose ceiling is $0.80$; $0.50$ for $x + y$; and $0.44$ and $0.47$ for HRR and MAP, within 0.06 of the same ceiling of $1/2$ as the half-rank projection. Vector-symbolic superposition of dense parts is therefore not invertible in the sense of Definition~\ref{def:recoverable} under affine readouts; it is decodable over a vocabulary. With sparse parts and a readout class that includes sparse recovery, a projection into fewer dimensions can recover fresh parts; whether superposition is compositional is then a question about the declared $\U$ and $\D$, as Definition~\ref{def:repcomp} intends.
+
+Figure~\ref{fig:calibration}c shows that the readout must itself be learned from enough parts. With $V = 8$ parts in $\R^{16}$, the least-squares readout of concatenated parts, which is perfect in principle, recovers fresh parts with $R^2 = 0.38$ while recovering familiar ones perfectly; it reaches $0.93$ at $V = d = 16$ and $1.00$ from $V = 24$. These values match the closed form of Proposition~\ref{prop:span}, $0.37$, $0.93$, and $1.00$, to within 0.01. Figure~\ref{fig:calibration}d shows that the readout class matters: MLP readouts fit familiar parts at least as well as linear ones but transfer worse to fresh parts, for instance $0.11$ against $0.47$ at $m/kd = 0.5$. A flexible readout memorizes the vocabulary, which is why $\U$ must be declared and restricted. These recovery profiles serve as the references against which the states of trained systems are placed.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_calibration.pdf}
+  \caption{\textbf{Calibration on analytic modes of combination.} \textbf{a.} Given a set of candidate parts, a lookup over their composites identifies the role-1 part of every operator that is injective on the vocabulary (blue: role--filler; grey: fixed-width superposition), and fails only for symmetric blends (orange), whose roles collide; $V = 32$. \textbf{b.} A linear readout fitted on vocabulary composites and evaluated on fresh parts recovers what the ceiling of Proposition~\ref{prop:ceiling} allows; HRR and MAP fall with half-rank projections. $V = 128$. \textbf{c.} Recovery of familiar (dashed) and fresh (solid) parts as a function of the number of training parts; the readout transfers only once the parts span the part space ($V \ge d + 1 = 17$). For concatenation the readout is unregularized least squares, and the dotted line is the closed form of Proposition~\ref{prop:span}. Values below $-0.2$ are clipped. \textbf{d.} MLP readouts transfer worse than linear ones to fresh parts. \textbf{Seeds.} Means over 5 seeds; bands and error bars show standard errors.}
+  \label{fig:calibration}
+\end{figure}
+
+\subsection{Networks trained from scratch}
+\label{sec:networks}
+
+\textbf{Composites.} A part is a latent $z \in \R^{8}$ rendered as an $8 \times 8$ glyph by a fixed random nonlinear generator, and a composite of two parts is rendered on an $8 \times 16$ canvas under one of three relations (Figure~\ref{fig:networks}a): \textsc{beside} places the glyphs in disjoint regions; \textsc{over} draws both in the same region, the second mirrored; and \textsc{occlude} draws the second glyph at half scale over the brightest quadrant of the first, so that where a part goes depends on its host. \textsc{beside} and \textsc{over} are exactly additive in the rendered pixels; \textsc{occlude} is not (interaction 12--16\% of composite variance, mean 14\%). \textsc{beside} and \textsc{over} are invertible in the latents; under \textsc{occlude} the latents are plausibly recoverable, but the occluded pixels of the host are not.
+
+\textbf{Task and systems.} An encoder sees only a composite and writes a bottleneck state $h \in \R^m$; a decoder receives $h$ and a flag for a target relation and must render the same parts, in the same roles, under that relation. The state $h$ is therefore the system's representation of the composite, and the decoder is the system's own procedure for reading it. We compare an MLP, a CNN, and a transformer over pixel columns, each with an MLP decoder, and a \emph{role--filler decoder} that splits $h$ into two slots, decodes each with one shared glyph decoder, and renders the relation with a fixed renderer. A quarter of the vocabulary never occupies role~2 in training (a novel-role split in the spirit of \citeauthor{hadley1994}'s strong systematicity, \citeyear{hadley1994}, without embedding), and a random fifth of the remaining pairs is withheld as a difficulty-matched baseline. We vary $m \in \{8, 16, 32, 64\}$ around $kq = 16$, the dimension of a pair of latents, and $V \in \{8, 16, 32, 64\}$, with 9 seeds each.
+
+\textbf{Readouts.} Ridge readouts map $h$ to each role's glyph. A \emph{population readout} is fitted on 2{,}000 composites of a pool of 400 glyphs that the network never saw, which estimates Definition~\ref{def:recoverable}; a \emph{vocabulary readout} is fitted on the network's training composites, as a probing study would; and the population readout is also fitted to the state of the same network before training. All three are evaluated on composites of a further 256 fresh glyphs. We also compute the Eckart--Young ceiling of Proposition~\ref{prop:ey} from the principal components of glyph pixels.
+
+\textbf{Results.} Every architecture reproduces unseen pairs of training glyphs well, with output $R^2$ between 0.85 and 1.00 in every condition except the transformer trained on eight glyphs (0.53--0.61; Figure~\ref{fig:networks}b, dashed). Behavior on held-out pairs therefore barely separates the systems. Behavior on fresh glyphs does, and it is governed by the number of distinct training glyphs: with $m = 64$, output $R^2$ rises from 0.20--0.34 at $V = 8$ (below zero for the transformer) to 0.85--0.91 at $V = 64$ (Figure~\ref{fig:networks}b, solid).
+
+The states tell a different story (Figure~\ref{fig:networks}c). The population readout recovers fresh glyphs from the states of the MLP, CNN, and role--filler networks with $R^2$ between 0.83 and 0.86 already at $V = 8$, and 0.89 at $V = 64$; the same readout recovers 0.82--0.83 from the untrained networks and 0.91 from the input composite itself. Against the references of Definition~\ref{def:repcomp} at the same width, concatenated glyphs projected to $m = 64$ dimensions (0.98) and summed glyphs (0.48), the trained states score $\kappa \approx 0.82$; relative to what the input makes linearly available, they lose almost nothing. By Definition~\ref{def:recoverable}, then, the states of these networks are recoverable whatever their vocabulary, largely because they inherit an invertible input. What the small vocabulary breaks is the networks' use of their own states. A readout fitted on the network's own training composites recovers only 0.21--0.24 at $V = 8$, and it predicts the network's own fresh-glyph behavior across runs with $r = 0.96$ ($r = 0.64$ within conditions), against $r = 0.73$ ($0.40$ within conditions) for the population readout; the difference between the within-condition correlations has a 95\% bootstrap interval of $0.14$ to $0.36$ (Figure~\ref{fig:networks}d). The vocabulary readout does not predict behavior merely because it shares the network's vocabulary: the same readout fitted on the raw input composites of that vocabulary correlates with behavior at only $r = 0.10$ within conditions, and adds nothing once the trained-state readout is known. The network's decoder behaves like a readout fitted on its vocabulary, consistent with the mechanism of Proposition~\ref{prop:span}. These networks therefore occupy the upper right cell of Table~\ref{tab:twobytwo}: the parts are in the state, and the system fails to read them, a failure of performance. The transformer is the exception: training on few glyphs leaves its state less recoverable (0.59 at $V = 8$) though more than its untrained state (0.41).
+
+Two controls show that distinct parts matter beyond combinations. Holding the number of training pairs at 140 while drawing them from 16, 32, or 64 glyphs raises fresh-glyph behavior of the MLP, CNN, and role--filler networks from 0.47--0.64 to 0.81--0.82 (the transformer's from 0.32 to 0.45), while behavior on held-out pairs falls by 0.05--0.10 (by 0.32 for the transformer); with all 2{,}420 pairs of 64 glyphs, fresh-glyph behavior is a further 0.04--0.09 higher (Figure~\ref{fig:networks}e). Adding an auxiliary loss that reconstructs each glyph from the state raises fresh-glyph behavior at $V = 8$ by at most 0.14 (Appendix~\ref{app:protocol}). Width matters only below $kq$: at $m = 8$ the population readout reaches 0.67--0.71 against an Eckart--Young ceiling of 0.79, and from $m = 16$ on it stays 0.08--0.14 below the ceiling (Figure~\ref{fig:networks}f).
+
+The non-additive \textsc{occlude} relation costs every architecture. At $m = V = 64$, the population readout falls to 0.75--0.83 and fresh-glyph behavior to 0.65--0.79, against 0.85--0.89 and 0.85--0.91 under \textsc{over}; the states carry 2--5\% interaction between parts against 14\% in the input, so the networks approximate the non-additive relation by a nearly additive one. The role--filler decoder, which shares one glyph decoder across roles, places training glyphs in a role they never occupied best when the vocabulary is large (0.94 at $V = 64$, against 0.88--0.93), as role-factorization predicts, but no architecture does so reliably at $V = 8$ (at most 0.21), and across seeds the standard deviation of this behavior falls from 0.23--0.29 at $V = 8$ (0.90 for the transformer) to 0.01--0.02 at $V = 64$. Part of this spread reflects which two glyphs are withheld from role 2 at $V = 8$, so it bounds, rather than measures, the contingency on training that \citet{mccoy2020berts} found with a fixed test set. The role--filler decoder pays for its advantage on new roles with fresh parts: at $m = 64$ its fresh-glyph behavior is 0.47 against 0.58--0.64 at $V = 16$, and it is the lowest under \textsc{occlude} at $V = 64$ (0.68 against 0.76--0.79).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_networks.pdf}
+  \caption{\textbf{Networks trained from scratch on glyph composites.} \textbf{a.} One pair of glyphs under the three relations. \textbf{b.} Output $R^2$ on unseen pairs of training glyphs (dashed) and on pairs of fresh glyphs (solid) against the number of training glyphs ($m = 64$, \textsc{over}). \textbf{c.} Recovery of fresh glyphs from the state by a population readout fitted on composites of 400 other glyphs (solid) and by a vocabulary readout fitted on the training composites (dashed); dotted lines show the population readout of each untrained architecture, and the black dashed line a population readout of the input pixels. \textbf{d.} Each point is one run; the inset gives the pooled correlation and the mean correlation within conditions (architecture, $V$, $m$). The network's own fresh-glyph behavior follows the vocabulary readout (colored) and not the population readout (grey). \textbf{e.} With the number of training pairs fixed at 140, more distinct glyphs improve behavior on fresh glyphs (solid) at a small cost on held-out pairs (dashed). \textbf{f.} Population readout against bottleneck width for \textsc{over} (solid) and \textsc{occlude} (dashed), with the Eckart--Young ceiling of Proposition~\ref{prop:ey} ($V = 64$). \textbf{Seeds.} 9 seeds per condition for \textsc{over}, 10 for \textsc{occlude} and the fixed-pairs control; bands show standard errors.}
+  \label{fig:networks}
+\end{figure}
+
+\subsection{Structure and causal use in trained networks}
+\label{sec:structure}
+
+\textbf{Composites and systems.} We retrain the four architectures of Section~\ref{sec:networks} with $m \in \{32, 64\}$ and $V \in \{16, 64\}$, under \textsc{over} and \textsc{occlude}, with 5 seeds each.
+
+\textbf{Method.} We declare a part code $e$ that does not depend on the system: the top 16 principal components of glyph pixels, which carry 98\% of their variance. On composites of the 400-glyph pool we fit the role-factorized model of Eq.~\eqref{eq:factor} by ridge regression and a ridge readout $\hat{e}_i$ of each role's code. Each test of Proposition~\ref{prop:systematic} then replaces a code by the corresponding prediction and is evaluated on fresh glyphs. \emph{Reversal} predicts $h(b, a)$ from the single state $h(a, b)$ as $c + B_1 \hat{e}_2(h) + B_2 \hat{e}_1(h)$. \emph{New role} predicts the state of a fresh glyph $u$ in role 1 and a training glyph $x$ that never occupied role 2, using $x$'s code read from a composite in which it occupies role 1. The \emph{interchange intervention} edits $h(a, b)$ by $B_1(\hat{e}_1(h(a', b')) - \hat{e}_1(h(a, b)))$, with a donor that shares neither glyph, which by Proposition~\ref{prop:systematic}(iv) should change the role-1 glyph to $a'$ and leave $b$ intact. We measure locality by the \emph{spill}, the mean change in the untouched half of the decoded \textsc{beside} output divided by the mean change in the edited half, and compare it with the same intervention on role 2 and with three edits of the same norm: a random direction, a random direction inside the range of $B_1$, and the natural direction $h(a', b') - h(a, b)$, which changes both parts. Each predicted or edited state is passed to the network's own decoder. Finally, we fine-tune each network for 200 steps on five composites of a fresh glyph in role 1, with and without replay of training composites. Two controls separate ordinary forgetting from the role structure: the same fine-tuning on a training glyph, and fine-tuning on the fresh glyph in both roles.
+
+\textbf{Results.} Under \textsc{over}, the states are close to role-factorized: the residual $\delta$ is 0.02--0.04 for the MLP, CNN, and role--filler networks and 0.06--0.13 for the transformer. The predicted reversals match the true reversed states with $R^2$ of 0.96 to 0.99 (0.84--0.92 for the transformer), and the decoder renders them as well as it renders the true reversed states, 0.86 against 0.86 at $V = 64$ and 0.48 against 0.49 at $V = 16$ (Figure~\ref{fig:structure}a). Placing a glyph in a new role from its code read elsewhere reproduces the network's own output for that composite, 0.81 against 0.81 at $V = 64$ (Figure~\ref{fig:structure}b). At $V = 64$, the interchange intervention on role 1 renders the donor glyph with $R^2 = 0.78$, against 0.81 when the network is given a composite containing the donor itself, and keeps the other glyph at 0.78 against 0.80 without intervention; its spill is 0.16. The intervention on role 2 is equally local (spill 0.19). Edits of the same norm that do not follow a role's code are not: the spill is 0.90 for the natural direction, 0.75 for a random direction inside the range of $B_1$, and 0.96 for a random direction (Figure~\ref{fig:structure}c). Locality is therefore a property of the role components that the readouts identify, not of any edit in the range of $B_1$. At $V = 16$ the spill of the role-1 intervention is larger (0.35, or 0.28 without the transformer) but still well below the natural direction (0.85). The role components identified by the readouts are thus the ones the decoder uses: for these networks, the recovered constituents make the selective difference to processing that an interventionist reading of \citet{fodor1990}'s objection asks for. Because the states are nearly role-factorized, this result is close to what Proposition~\ref{prop:systematic}(iv) predicts, and the informative quantity is the spill. Under \textsc{occlude} the states are less factorized ($\delta = 0.11$--$0.22$, up to 0.34 for the transformer), predicted reversals decode worse than true ones (0.56 against 0.70 at $V = 64$; 0.17 against 0.25 at $V = 16$), and the interventions spill more (0.32 at $V = 64$ and 0.61 at $V = 16$, against 1.06 and 1.15 for the natural direction). The predicted new-role states nevertheless decode better than the network's own states (0.76 against 0.68 at $V = 64$), which suggests that the network's encoder, not the readout, is the less systematic of the two.
+
+Learning a new glyph exposes what the role-factorized description leaves out (Figure~\ref{fig:structure}d). Networks trained on 64 glyphs render a fresh glyph in role 1 and role 2 with $R^2$ 0.81 and 0.75 before any fine-tuning. Fine-tuned on it in role 1 alone, without replay, they forget held-out pairs (0.98 to 0.91), and they render it in role 2 \emph{worse} than before (0.63), although its role-1 rendering improves to 0.92. Part of the forgetting is ordinary: the same fine-tuning on a training glyph costs held-out pairs 0.04 (to 0.94), against 0.07 for the fresh glyph. The damage to role 2 is specific to learning in one role: fine-tuning on the fresh glyph in both roles, with the same number of composites, renders it at 0.89 and 0.91. With 16 training glyphs the same pattern is larger (held-out pairs 0.97 to 0.63 against 0.85 for a training glyph). Replay of training composites prevents both the forgetting and the damage to role 2 (0.98 and 0.77). A role-factorized state permits adding a part by adding its code; fine-tuning on one role does not exploit that structure.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_structure.pdf}
+  \caption{\textbf{Role-factorization in trained networks, tested through the networks' own decoders.} \textbf{a.} Output $R^2$ for the role reversal of a fresh composite, decoded from the true reversed state, from a state predicted from the unreversed composite alone (Proposition~\ref{prop:systematic}ii), and from the unreversed state ($V = 64$). \textbf{b.} A training glyph placed in a role it never occupied: the network's own output and the output decoded from a state predicted from the glyph's code in its familiar role ($V \in \{16, 64\}$). \textbf{c.} Spill of an edit into the untouched half of the output, relative to the change in the edited half, for interventions on role 1 and role 2 and for edits of the same norm along the natural direction $h(a', b') - h(a, b)$, a random direction inside the range of $B_1$, and a random direction ($V \in \{16, 64\}$). \textbf{d.} Old pairs and a fresh glyph in each role, before fine-tuning and after fine-tuning on the glyph in one role, in one role with replay, in both roles, and, as a control, on a training glyph in one role (\textsc{over}, $V = 64$). \textbf{Seeds.} 5 seeds per architecture and width; means over four architectures and two widths; error bars show standard errors; bars in a are clipped at $-0.5$.}
+  \label{fig:structure}
+\end{figure}
+
+\subsection{Recursion}
+\label{sec:depth}
+
+\textbf{Composites.} Balanced binary trees of depth $n$ have leaves drawn from a vocabulary of $V$ Gaussian parts in $\R^8$, or fresh.
+
+\textbf{Systems and readouts.} A recursive auto-associative memory \citep{pollack1990} applies one learned composer $\R^w \times \R^w \to \R^w$ at every node and one learned decomposer recursively, trained end to end on trees of depth 1 and 2. We compare HRR of the same width with one pair of unitary role vectors per level of the tree, which is needed because circular convolution commutes and a single pair would let roles cancel across levels; its leaves are decoded by recursive unbinding and identified by clean-up. Each system thus has its own decoding procedure. For both, we also fit a population readout of Definition~\ref{def:recoverable}: a ridge map from the depth-$n$ state to all $2^n$ leaves, fitted on 6{,}000 trees of fresh leaves and evaluated on 2{,}000 others.
+
+\textbf{Results.} We ran 5 seeds for each width $w \in \{16, \ldots, 256\}$ and $V \in \{16, 64\}$ (Figure~\ref{fig:depth}a,b). Within the trained depths the learned composer's own decomposer recovers fresh leaves almost perfectly whenever $w \ge 32$ ($R^2 \ge 0.95$; at $w = 16$, depth 1 reaches only 0.56--0.76). At depth 3 it fails even with ample width: at $w = 256$, where the ceiling of Proposition~\ref{prop:depth} is still 1, fresh-leaf $R^2$ is 0.26 and familiar leaves are identified only 49\% of the time with $V = 16$. The population readout shows that the failure lies in the decomposer, not the state: it recovers fresh leaves from the composer's depth-3 state with $R^2 = 0.99$ at $w = 256$, and at every width and depth it stays within 0.13 of the ceiling $\min(1, w/(2^n d))$, including depths 4 and 5, at which the composer was never trained. The composer's relation remains invertible on its own outputs; its decomposer, learned at depths 1 and 2, does not extend one level deeper. HRR is the mirror case. A population readout recovers its leaves exactly ($R^2 \ge 0.999$) whenever $w \ge 2^n d$, as Proposition~\ref{prop:ceiling} requires for a linear relation of full rank, while recursive unbinding by correlation, which treats crosstalk between superposed bindings as noise, loses about $(2^n - 1)d/w$ of the variance: at $w = 256$ its $R^2$ falls from 0.96 at depth 1 to 0.75 at depth 3 and $-0.13$ at depth 5, against $0.97$, $0.78$, and $0.03$ predicted by that formula, and clean-up identifies familiar leaves with accuracy 1.00, 0.97, and 0.66. Under Definition~\ref{def:repcomp} both relations are productive up to the width ceiling; the procedures the two systems use to read them are not, and the depth curve shows how each falls short.
+
+\subsection{Pretrained text encoders}
+\label{sec:pretrained}
+
+\textbf{Composites.} Sentences place two nouns in the roles of five asymmetric relations, such as ``a $x$ on a $y$'' and ``a $x$ to the left of a $y$'', and of the control ``a $x$ and a $y$''. We use 305 concrete nouns, split at random into 165 for fitting readouts, 40 for validation, and 100 as fresh parts. No noun is fresh to the models; the fresh nouns are fresh to the readout, the second sense of Section~\ref{sec:definition}.
+
+\textbf{Systems and readouts.} We examine the text encoders of three CLIP models \citep{radford2021clip}, including the one that conditions Stable Diffusion 1.5 \citep{rombach2022}; T5-small, -base, and -large \citep{raffel2020t5}; BERT-base and -large \citep{devlin2019bert}; and GPT-2 small, medium, and large \citep{radford2019gpt2}. We consider three declared part codes, the state of ``a $x$'', the state of ``there is a $x$ here'', and the input embedding, each reduced to 16 principal components, and states mean-pooled at four depths or taken from the pooled output. The part-code components are fitted on the fitting nouns only. Ridge readouts map the composite state to each role's part code; the ridge penalty, the layer, and the part code are chosen on the validation nouns, so that no choice uses a composite of a reported noun and penalties are not tuned to composites that share nouns. To calibrate, we apply the identical pipeline to two reference operators built from each model's own part codes: concatenation, which is role--filler, and the sum, a symmetric blend, and we report the normalized score $\kappa$ of Definition~\ref{def:repcomp}. As a selectivity control \citep{hewitt2019}, we run the same pipeline on each architecture with random weights and the same tokenizer.
+
+\textbf{Results.} We ran 3 seeds per model, each a random split of the nouns, and report means over the asymmetric relations. The pipeline recovers fresh nouns from the concatenation reference with $R^2 = 1.00$ and from the sum reference with 0.46 to 0.50, so the method separates the two modes with these part codes. Every model recovers nouns from new pairs of fitting nouns with $R^2$ between 0.58 and 0.98 (Figure~\ref{fig:depth}c). On fresh nouns the models spread out. The three GPT-2 models reach 0.90--0.92 ($\kappa = 0.81$--$0.83$) and T5-base 0.82 ($\kappa = 0.66$), far above the same architectures with random weights (0.46--0.54 and 0.43); T5-small, the largest CLIP model, BERT, and T5-large reach 0.59 to 0.71 ($\kappa = 0.21$--$0.47$); and the two smaller CLIP encoders, including Stable Diffusion's, reach 0.51 and 0.52, barely above the sum reference ($\kappa = 0.07$ and $0.09$) and no better than the same encoders with random weights (0.55 and 0.52). Training adds nothing measurable for BERT either (0.64 and 0.59 against 0.69 and 0.59 with random weights). Every trained model assigns roles to fresh nouns far better than the sum reference (0.85--0.98 against 0.50) and identifies them among 100 candidates far above chance (0.50--0.85) and above its own sum reference (0.16--0.39; Figure~\ref{fig:depth}d). Selecting the penalty on composites instead of nouns, as in a standard probe, fits the fitting nouns more closely and transfers worse; in an earlier version of this experiment, which also fitted the target components on all nouns, it gave the smaller CLIP encoders $R^2$ of $-0.35$ and $0.01$. The unit on which a readout is selected matters as much as the readout class.
+
+Four caveats bound these results. First, the control ``a $x$ and a $y$'' gives nearly the same recovery and role assignment as the asymmetric relations (for GPT-2 large, 0.92 and 0.94 against 0.91 and 0.94), so what these readouts recover is the order of the nouns in the sentence, which is the relation the encoders represent, not the semantics of \emph{on} or \emph{behind}. Second, in causal encoders, which include GPT-2 and the CLIP text transformer, the tokens of the first noun do not see the second, which could favor role~1 under mean pooling; GPT-2 shows no such advantage (0.90--0.92 for both roles), and the GPT-2 results hold with the part code ``there is a $x$ here'', whose states the composite does not contain (0.89--0.91). Third, recovery still rises with the number of fitting nouns for most models: from 120 to 165 nouns it grows by 0.01--0.06 while the concatenation reference has saturated, so the values are lower bounds on the population quantity, and least so for CLIP ViT-B/32, whose curve has flattened (0.50 to 0.51). Fourth, rankings depend on the metric: by identification, T5-base falls from fourth to last among trained models (0.50), so the $R^2$ and identification of a model can disagree about how much of a noun survives. The composite states of the two smaller CLIP encoders are nearly invariant to role reversal (normalized reversal similarity 0.69 and 0.85), consistent with reports that CLIP behaves like a bag of words \citep{yuksekgonul2023}. Under the declared readouts and part codes, then, no encoder we tested matches the concatenation reference; GPT-2 comes closest, and the CLIP encoders that condition text-to-image models do no better than random weights.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_depth_pretrained.pdf}
+  \caption{\textbf{Recursion and pretrained text encoders.} \textbf{a.} Recovery of fresh leaves from a learned recursive composer of width $w$, trained on depths 1 and 2 (shaded), by its own decomposer (solid) and by a population readout of its state (dashed); dotted lines show the ceiling of Proposition~\ref{prop:depth}. The decomposer fails at depth 3, while the state stays at the ceiling. \textbf{b.} The same for HRR: recursive unbinding by correlation (solid), a population readout (dashed), and the crosstalk prediction $1 - (2^n - 1)d/w$ (dotted). Values below $-0.5$ are clipped. \textbf{c.} Recovery of nouns from sentence states at the layer and part code chosen on validation nouns: new pairs of fitting nouns (grey) and fresh nouns (orange), against references built from the same model's part codes (blue: concatenation; dark grey: sum); crosses show fresh nouns for the same architecture with random weights. \textbf{d.} On fresh nouns, the fraction of readouts that assign the right role and the identification of the noun among 100 candidates; dark grey marks show identification from each model's own sum reference. Means over five asymmetric relations. \textbf{Seeds.} 5 seeds (a, b) and 3 seeds (c, d) per condition; bands show standard errors.}
+  \label{fig:depth}
+\end{figure}
+
+%=====================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+We proposed that a representation is compositional when it combines parts through a relation from which every part, including a part never seen before, can be read back in its role by a fixed procedure of a declared kind, and when each part enters every role through one shared code. Formally, the relation is recoverable and role-factorized over the distribution of parts, relative to declared readouts and declared methods for finding parts, and it is estimated on parts that played no role in fitting the readouts. Measuring recovery over the part distribution, on parts not used for fitting, is what gives the definition content: on a finite vocabulary nearly every mode of combination can be decoded, and the evidence usually offered for compositional representations, recovery of familiar parts and generalization to unseen pairs of them, is satisfied by systems whose states lose their parts.
+
+Our experiments also show what the definition does not settle by itself. The states of small networks trained on glyph composites were recoverable, and nearly role-factorized, whatever their training, largely because an invertible input survives a random encoder; what training on few glyphs failed to produce was a decoder that could use the state for new glyphs. The learned recursive composer showed the same split across depth: its state kept every leaf one and two levels beyond its training, while its decomposer did not. In the pretrained encoders, by contrast, training itself made the difference for GPT-2 and T5 and none for CLIP. A representational criterion and a criterion on the system's own procedures are therefore both needed, and they can come apart in either direction (Table~\ref{tab:twobytwo}).
+
+\textbf{What a network must do.} Our results suggest five requirements, each tied to a proposition and an experiment. \emph{First, the composite state must have room for every part:} a state narrower than the parts it combines loses them, and an affine readout can recover at most the share of their variance that its width allows (Propositions~\ref{prop:ceiling} and~\ref{prop:ey}; Figures~\ref{fig:calibration}b and~\ref{fig:networks}f). \emph{Second, the system's own procedure for reading parts must be learned from many distinct parts, not many combinations:} a network trained on eight glyphs solves unseen pairs and fails on new glyphs although its state contains them, because its decoder, like any procedure fitted to composites, is determined only where its training composites constrain it (Proposition~\ref{prop:span}; Figure~\ref{fig:networks}b--e). Coverage of combinations, which benchmarks reward, matters less than the number of distinct parts. \emph{Third, parts should enter every role through one code:} when they do, reversals and new role assignments are fixed by single composites, and the networks' own decoders render the predicted states as well as their true ones (Proposition~\ref{prop:systematic}; Figure~\ref{fig:structure}a,b). \emph{Fourth, the role components must be the ones the system uses:} replacing one role's component with that of another composite changes the output for that role and leaves the other nearly untouched (spill 0.16 against 0.90 for a natural change of the same size; Figure~\ref{fig:structure}c), although this holds for in-distribution changes only. \emph{Fifth, the relation must stay invertible on its own outputs, and the system's procedure must follow it:} the learned composer's relation stayed invertible beyond its training depths, but its decomposer, learned at depths 1 and 2, failed one level deeper (Figure~\ref{fig:depth}a). A network that meets all five, verified on fresh parts against references built from its own part codes, has earned the term in our sense; one that meets only the behavioral tests should be described as generalizing compositionally.
+
+\textbf{Terminology.} Behavioral evidence should be reported as compositional generalization, with the split it was measured on; the bare term should be reserved for systems whose parts are recoverable from composites of fresh parts and whose own procedures use them. Reports of recovered parts should state the readout class and whether the parts were among those used to fit the readout; a readout fitted on a network's training vocabulary measures the reach of a vocabulary-trained procedure, not what the state contains.
+
+\textbf{Architecture and learning.} \citet{fodor1990} asked that systematicity follow from the architecture. Our criterion is a property of states and procedures, and a trained network can come to satisfy it; within such a network, the states fix what every arrangement of known parts should look like, but whether the network learns such states and a decoder that uses them remains contingent on training, as the seed spread at small vocabularies shows. Learning is contingent in a second way: fine-tuning on a new part in one role damaged that part in the other role and damaged old pairs, although a role-factorized state allows a part to be added by adding its code alone (Figure~\ref{fig:structure}d). Architectures that build in role-factorized slots move part of the guarantee into the architecture, but our role--filler decoder shows that the encoder must still learn a recoverable relation and the decoder must still see enough distinct parts. Whether any training regime reliably leads a network without built-in roles to a role-factorized relation under overlapping roles, and to learning that respects it, is open.
+
+\textbf{People.} Human evidence shows role-separated codes and recombination of known parts, but almost none of it was gathered with parts that are fresh in our sense. Agent and patient are decoded from separate cortical codes that generalize to new sentences, but over a closed set of nouns and verbs \citep{frankland2015}; people represent novel objects as compositions of known elements \citep{schwartenbeck2023}, use a newly learned word in combinations they have never seen \citep{lake2019}, and endorse inferences across arbitrary contents \citep{rips1994}. Novel noun--noun compounds are often interpreted by linking the two concepts through a thematic relation, a role--filler mode; often by mapping one property of the modifier onto the head, which keeps the head and only a fragment of the modifier; and less often by hybridizing them, a blend \citep{wisniewski1997}; and belief overrides validity \citep{evans1983}. A human analogue of our test would teach a new word, object, or face and ask whether it can be read back from a scene or sentence in a role it was never shown in. The paradigms that come closest are the wug test \citep{berko1958}, rule learning over novel syllables \citep{marcus1999}, and syntactic bootstrapping of novel verbs \citep{gleitman1990,naigles1990}; illusory conjunctions \citep{treisman1982} and binding limits in working memory \citep{wheeler2002} suggest that human recovery of fresh conjunctions is capacity-limited and graded. Appendix~\ref{app:human} collects this evidence into a reference profile against which systems can be compared.
+
+\textbf{Future work and limitations.} Our trained networks are small and our domains synthetic, chosen so that every state could be examined and fresh parts could be drawn; the pretrained encoders were probed with three declared part codes and a linear readout, on nouns that were fresh only to the readout, and a richer class $\M$, including discovered tensor-product decompositions \citep{soulos2020} or contextual token states, might find a decomposition we did not. Can unsupervised methods reliably discover the part codes of a large network, so that a negative result reflects the network and not the method? Does scale, which brings decodability of constituents \citep{redhardt2025}, also bring recovery of fresh parts? And can a system keep its parts recoverable while matching networks in perception and graded similarity? Structured systems that build in parts of the criterion, such as DORA \citep{doumas2022}, CHREST \citep{gobet2000}, and \textsc{Trellis} \citep{singaravadivelan2026}, are natural next candidates for the same tests.
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+%=====================================================================
+\clearpage
+\appendix
+\titleformat{\section}{\large\bfseries}{Appendix \thesection}{0.8em}{}
+
+\section{Formal results}
+\label{app:proofs}
+
+Throughout, a relation acts on parts $x_1, \ldots, x_k$ with codes in $\R^d$ and produces a state in $\R^m$. Stacking the codes gives $x = (x_1, \ldots, x_k) \in \R^{kd}$.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{fig_fibers.pdf}
+  \caption{\textbf{Why a vocabulary hides a blend.} \textbf{a.} Under $x + y$, every pair on the line yields the same composite. Few pairs of a finite vocabulary (dark points) fall on any one line, so the parts of familiar composites can be decoded, but fresh pairs (diamonds) can lie anywhere on it. \textbf{b.} Under a role--filler relation each composite has one decomposition, for familiar and fresh parts alike.}
+  \label{fig:fibers}
+\end{figure}
+
+\begin{lemma}[Unrestricted coordinates make separability vacuous]
+\label{lem:psi}
+Call $g$ separable if $\psi(g(x_1, \ldots, x_k)) = \sum_i \varphi_i(x_i)$ for some invertible $\psi$ and some maps $\varphi_i$. If $\psi$ is unrestricted, every injective $g$ is separable.
+\end{lemma}
+
+\begin{proof}
+Let $\varphi_i(x_i)$ place $x_i$ in the $i$-th block of $\R^{kd}$ and zeros elsewhere, so that $\sum_i \varphi_i(x_i) = x$. On the image of $g$ define $\psi = g^{-1}$, which exists because $g$ is injective; then $\psi(g(x)) = x = \sum_i \varphi_i(x_i)$.
+\end{proof}
+
+\noindent
+Intuitively, separability in arbitrary coordinates says only that the parts can be recovered, so it cannot add anything to invertibility. Definition~\ref{def:recoverable} therefore fixes the coordinates to be affine (Eq.~\ref{eq:factor}). Whether a relation is additive under some monotone transformation of each coordinate is the classical question of additive conjoint measurement \citep{luce1964}, which characterizes it by cancellation conditions; a declared class of coordinate maps between affine and unrestricted is a natural extension.
+
+\begin{lemma}[Lookup decodes any relation that is injective on a vocabulary]
+\label{lem:lookup}
+Let $\Voc$ be finite and let $g$ be injective on $\Voc^k$. Then the readout that matches a state to the stored table $\{g(t) : t \in \Voc^k\}$ returns every part of every composite of vocabulary parts.
+\end{lemma}
+
+\begin{proof}
+Each state in the table has exactly one preimage in $\Voc^k$.
+\end{proof}
+
+\noindent
+Every relation except those with collisions on the vocabulary passes this test, including random codes that have no structure at all; Figure~\ref{fig:calibration}a confirms it for every injective operator we tried.
+
+\begin{proposition}[Role collisions]
+\label{prop:blend}
+If $g(a, b) = g(b, a)$ for some parts $a \neq b$, no readout of the state can determine which of $a$ and $b$ occupies which role.
+\end{proposition}
+
+\begin{proof}
+Any function of identical states returns identical values.
+\end{proof}
+
+\begin{proposition}[Non-identifiability of linear blends]
+\label{prop:fiber}
+Let $g(x) = Ax$ with $A = [A_1 \cdots A_k] \in \R^{m \times kd}$, which covers symmetric blending, weighted addition, superposition, and HRR or MAP binding with fixed roles. If $\mathrm{rank}\,A < kd$, which holds whenever $m < kd$, then for every composite $z$ in the image of $g$ the parts with $g(x) = z$ form an affine subspace of dimension $kd - \mathrm{rank}\,A \geq 1$, and no readout recovers the parts of every composite.
+\end{proposition}
+
+\begin{proof}
+If $Ax_0 = z$, the solutions of $Ax = z$ are $x_0 + \ker A$, of dimension $kd - \mathrm{rank}\,A$ by rank--nullity. Any nonzero $n \in \ker A$ has a nonzero block $n_i$, so $x_0$ and $x_0 + n$ share the composite but differ in their $i$-th part.
+\end{proof}
+
+\begin{remark}
+No continuous map from $\R^{kd}$ to $\R^m$ with $m < kd$ is injective, so the conclusion extends to continuous nonlinear relations; discontinuous injections exist. A tensor product with linearly independent roles has $\mathrm{rank}\,A = kd$.
+\end{remark}
+
+\begin{proposition}[Ceiling on fresh-part recovery]
+\label{prop:ceiling}
+Let $x \sim \mathcal{N}(0, I_{kd})$ and $z = Ax$. The readout that minimizes the expected squared error of $x_i$ given $z$, among all measurable functions, is linear, and its $R^2$ for role $i$ is
+\begin{equation}
+  R^2_i = \frac{1}{d}\,\mathrm{tr}\big(A_i^{\top} (A A^{\top})^{+} A_i\big), \qquad \frac{1}{k}\sum_i R^2_i = \frac{\mathrm{rank}\,A}{kd}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+$x$ and $z$ are jointly Gaussian with $\mathrm{Cov}(x, z) = A^{\top}$ and $\mathrm{Cov}(z) = AA^{\top}$, so $\mathbb{E}[x \mid z] = A^{\top}(AA^{\top})^{+}z$, which is linear and is the minimum-mean-square-error estimator over all functions. Its residual covariance is $I - P$ with $P = A^{\top}(AA^{\top})^{+}A$, the orthogonal projection onto the row space of $A$. The variance of $x_i$ explained is the trace of the $i$-th diagonal block of $P$, which is $\mathrm{tr}(A_i^{\top}(AA^{\top})^{+}A_i)$, out of a total of $d$. Summing over blocks gives $\mathrm{tr}\,P = \mathrm{rank}\,A$.
+\end{proof}
+
+\noindent
+Intuitively, a blend keeps only the components of its parts that lie in the row space of the relation. For $x + \alpha y$ the ceiling is $1/(1 + \alpha^2)$ for role~1 and $\alpha^2/(1 + \alpha^2)$ for role~2; for $x + y$ it is $1/2$ for each; for HRR or MAP binding of two parts in $d$ dimensions with fixed roles it averages $1/2$; and for a generic projection into $m < kd$ dimensions it is close to $m/(kd)$ for each role. Figure~\ref{fig:calibration}b compares these values with fitted readouts. For Gaussian codes with covariance $\Sigma$, the same argument gives $R^2_i = \mathrm{tr}(\Sigma_i A_i^{\top}(A\Sigma A^{\top})^{+}A_i\Sigma_i)/\mathrm{tr}\,\Sigma_i$, where $\Sigma_i$ is the covariance of role $i$ and the roles are independent.
+
+\begin{proposition}[Ceiling for any relation under affine readouts]
+\label{prop:ey}
+Let the stacked part codes $x \in \R^{kd}$ have finite second moments and covariance $\Sigma$ with eigenvalues $\lambda_1 \ge \cdots \ge \lambda_{kd}$, and let $h = g(x) \in \R^m$ for any measurable $g$. For any affine readouts $u_i(h) = W_i h + b_i$, one per role,
+\begin{equation}
+  \frac{\sum_i \mathbb{E}\,\lVert u_i(h) - x_i \rVert^2}{\mathrm{tr}\,\Sigma} \;\ge\; \frac{\sum_{j > m} \lambda_j}{\mathrm{tr}\,\Sigma},
+\end{equation}
+so the variance-weighted mean $R^2$ over roles is at most $\sum_{j \le m} \lambda_j / \mathrm{tr}\,\Sigma$, which equals $\min(1, m/(kd))$ for isotropic codes.
+\end{proposition}
+
+\begin{proof}
+Stack the readouts into $u(h) = Wh + b$ with $W = [W_1; \ldots; W_k] \in \R^{kd \times m}$. Its values lie in the affine subspace $b + \mathrm{range}\,W$ of dimension at most $m$. For every fixed affine subspace $L$ of dimension at most $m$ and every random vector $y \in L$, $\mathbb{E}\,\lVert x - y \rVert^2 \ge \mathbb{E}\,\lVert x - \Pi_L x \rVert^2$, where $\Pi_L$ is the orthogonal projection onto $L$, and the right side is minimized over $L$ by the span of the top $m$ principal directions of $x$ through its mean, with value $\sum_{j > m} \lambda_j$ \citep{eckart1936}.
+\end{proof}
+
+\noindent
+The bound does not depend on $g$ at all: it limits any affine function of any $m$-dimensional vector, as in reduced-rank regression \citep{izenman1975}. Unlike Proposition~\ref{prop:ceiling}, it therefore holds for nonlinear relations, such as trained encoders, and for non-Gaussian parts; it does not bound nonlinear readouts, which can exploit a nonlinear relation's curvature. In Section~\ref{sec:networks} we compute it from the principal components of the declared part code.
+
+\begin{proposition}[Fitted affine procedures are determined only on the span of the fitted composites]
+\label{prop:span}
+Let $g(x) = c + Bx$ with $B = [B_1 \cdots B_k]$ of full column rank, and let an affine procedure $u(h) = Wh + b$ be fitted to return the stacked codes $x_t$ exactly on composites $t = 1, \ldots, n$. Let $T = \mathrm{span}\{x_t - \bar{x}\}$. Then every such $u$ returns $x$ exactly on composites with $x - \bar{x} \in T$, and two such procedures can disagree arbitrarily on any composite with a component outside $T$. Since $T \subseteq S_1 \oplus \cdots \oplus S_k$, where $S_i$ is the span of the centred role-$i$ codes of the fitted composites, fresh parts are recovered by every exact fit only if each $S_i = \R^d$, which requires at least $d + 1$ distinct parts in every role. Conversely, if $B$ has orthonormal columns (as for concatenation) and the fitted pairs vary each role independently enough that $T = S_1 \oplus \cdots \oplus S_k$, the minimum-norm fit returns $\bar{x}_i + \Pi_{S_i}(x_i - \bar{x}_i)$ for each role, so that for isotropic codes with mean zero $R^2_i = \dim S_i/d - \mathbb{E}\,\lVert (I - \Pi_{S_i})\bar{x}_i \rVert^2/d$. For general $B$ the minimum-norm fit returns the projection of $x - \bar{x}$ onto $T$ in the metric $B^{\top}B$, which mixes roles.
+\end{proposition}
+
+\begin{proof}
+Exact fit means $WBx_t + Wc + b = x_t$ for all $t$; subtracting the mean gives $WBv = v$ for $v \in T$, which fixes $u$ on $\bar{x} + T$. Any $W'$ with $W'BT = 0$ can be added, together with the intercept $b' = -W'(c + B\bar{x})$, without changing the fit, and since $B$ is injective, $W'$ can be chosen to be nonzero on $B v$ for any $v \notin T$. The span of $V$ centred points has dimension at most $V - 1$. For the converse, the minimum-norm $W$ vanishes on $(BT)^{\perp}$ and inverts $B$ on $BT$, so $u(h) - \bar{x}$ is the $B^{\top}B$-orthogonal projection of $x - \bar{x}$ onto $T$; when $B^{\top}B = I$ this is the Euclidean projection, whose $i$-th block is $\Pi_{S_i}$ when $T$ is the direct sum. The error in role $i$ is then $(I - \Pi_{S_i})(x_i - \bar{x}_i)$, whose expected squared norm for isotropic $x_i$ independent of $\bar{x}_i$ is $d - \dim S_i + \mathbb{E}\,\lVert (I - \Pi_{S_i})\bar{x}_i \rVert^2$.
+\end{proof}
+
+\noindent
+For concatenation of $V$ isotropic parts in $\R^d$, $\dim S_i = V - 1$ and $\mathbb{E}\,\lVert(I - \Pi_{S_i})\bar{x}_i\rVert^2 = (d - V + 1)/V$, so the minimum-norm readout has $R^2 = (V-1)/d - (d - V + 1)/(Vd)$ on fresh parts, which Figure~\ref{fig:calibration}c compares with fitted readouts. The proposition concerns affine procedures; a nonlinear decoder learned from composites is likewise unconstrained outside the region its training composites cover, and the mechanism is the same. It predicts that the number of distinct parts governs whether a learned procedure transfers to fresh parts more than the number of observed combinations does (Figures~\ref{fig:calibration}c and~\ref{fig:networks}). It also explains why a population estimate of Definition~\ref{def:recoverable} needs a probe pool of many more than $d$ parts.
+
+\begin{proposition}[Substitutivity under affine separability]
+\label{prop:separable}
+Let $g(x, y) = c + \varphi_1(x) + \varphi_2(y)$, and let $O$ be a set of observed pairs whose bipartite graph, with role-1 fillers and role-2 fillers as vertices and observed pairs as edges, is connected. Then the values of $g$ on $O$ determine its value on every pair of vertices, including pairs never observed together. If $g$ is unrestricted, its values on $O$ place no constraint on any unobserved pair.
+\end{proposition}
+
+\begin{proof}
+For edges $(x, y'), (x', y'), (x', y) \in O$, separability gives
+\[
+  g(x, y) = g(x, y') - g(x', y') + g(x', y).
+\]
+Along a path $x = x_0, y_1, x_1, \ldots, y_\ell = y$ in the graph the same identity telescopes, giving
+\[
+  g(x, y) = \sum_{j=1}^{\ell} g(x_{j-1}, y_j) - \sum_{j=1}^{\ell-1} g(x_j, y_j),
+\]
+a combination of observed values. For an unrestricted $g$ the value at an unobserved pair can be set independently.
+\end{proof}
+
+\noindent
+This is the classical estimability of a two-way additive model under a connected design, and the analogue of the connected-support condition of \citet{schug2024}. Note that a part never observed in role 2 is not a vertex on the role-2 side, so separability with role-specific $\varphi_i$ says nothing about it; that case requires role-factorization.
+
+\begin{proposition}[Unbinding under role-factorization]
+\label{prop:systematic}
+Let $g(x_1, \ldots, x_k) = c + \sum_i B_i e(x_i)$ with $B = [B_1 \cdots B_k]$ of full column rank, and let $B^{+} = [P_1; \ldots; P_k]$ be its pseudo-inverse in row blocks. Then (i) each part code is read back by $e(x_i) = P_i(h - c)$; (ii) for any permutation $\pi$ of roles, the state of the permuted composite is $h_\pi = c + \sum_i B_{\pi(i)} P_i (h - c)$, an affine function of $h$; (iii) the contribution of a part observed only in role $i$ to any role $j$ is $B_j P_i (h - c)$ computed from any single composite containing it; and (iv) replacing the part in role $i$ changes $h$ only within the range of $B_i$ and leaves every readout $P_j$, $j \ne i$, unchanged.
+\end{proposition}
+
+\begin{proof}
+(i) $B^{+}B = I$, so $B^{+}(h - c)$ returns the stacked codes. (ii) The permuted composite has state $c + \sum_i B_{\pi(i)} e(x_i)$; substitute (i). (iii) The same substitution with $j$ in place of $\pi(i)$. (iv) Only the term $B_i e(x_i)$ depends on $x_i$, and $P_j B_i = 0$ for $j \neq i$.
+\end{proof}
+
+\noindent
+Intuitively, reading one composite yields every part's code, and the shared role maps say where each code goes in any other arrangement. This is the unbinding property of tensor-product representations \citep{smolensky1990}, stated for any role-factorized relation. It says what the states determine; whether a system uses that information when it acts is a separate, empirical question, which the interchange interventions of Section~\ref{sec:structure} test. The residual $\delta$ plays the role of the reconstruction error of a tensor-product decomposition network \citep{mccoy2019}. When the relation is only approximately role-factorized, the two quantities of Definition~\ref{def:recoverable} jointly bound the error of the prediction, as the next result states.
+
+\begin{proposition}[Approximate unbinding]
+\label{prop:approx}
+Let $h = c + Bx + \eta$ with roles exchangeable, so that the parts are independent and identically distributed across roles, and let $\hat{e}_i$ be any readouts of the part codes with $\varepsilon$ as in Eq.~\eqref{eq:recover} and $\delta$ as in Eq.~\eqref{eq:factor}. The predicted permuted state $\hat{h}_\pi = c + \sum_i B_{\pi(i)}\hat{e}_i(h)$ satisfies
+\begin{equation}
+  \mathbb{E}\,\lVert \hat{h}_\pi - h_\pi \rVert^2 \;\le\; 2\lVert B \rVert^2\, k\,\varepsilon\, \mathbb{E}\,\lVert e - \mathbb{E}\,e \rVert^2 + 2\,\delta\, \mathbb{E}\,\lVert g - \mathbb{E}\,g \rVert^2 .
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+$\hat{h}_\pi - h_\pi = B_\pi(\hat{e}(h) - x) - \eta_\pi$, where $B_\pi$ permutes the blocks of $B$ and $\eta_\pi$ is the residual of the permuted composite. A block permutation is an orthogonal right factor, so $\lVert B_\pi \rVert = \lVert B \rVert$; $\mathbb{E}\,\lVert \hat{e}(h) - x \rVert^2 \le k\,\varepsilon\,\mathbb{E}\,\lVert e - \mathbb{E}\,e\rVert^2$ by Eq.~\eqref{eq:recover}; and $\mathbb{E}\,\lVert \eta_\pi \rVert^2 = \mathbb{E}\,\lVert \eta \rVert^2$ because the parts are exchangeable. The bound follows from $\lVert a + b \rVert^2 \le 2\lVert a \rVert^2 + 2\lVert b \rVert^2$.
+\end{proof}
+
+\noindent
+With $\hat{e} = B^{+}(h - c)$ the first term is replaced by $\lVert B_\pi B^{+} \rVert^2 \le \kappa(B)^2$ times $\mathbb{E}\,\lVert \eta \rVert^2$, so the conditioning of $B$ also matters. This is the one place where the two quantities of Definition~\ref{def:recoverable} jointly predict a behavioral quantity, and Section~\ref{sec:structure} measures it.
+
+\begin{proposition}[Depth]
+\label{prop:depth}
+Let leaves in $\R^d$ be lifted to $\R^w$ by a linear map and composed by $g(x, y) = Ax + By$ with $A, B \in \R^{w \times w}$. The map from the $2^n$ leaves of a balanced composite of depth $n$ to its state has rank at most $\min(w, 2^n d)$, so its kernel has dimension at least $2^n d - w$ (at least $(2^n - 1)d$ when $w = d$), and for Gaussian leaves the average fresh-leaf $R^2$ of any readout is at most $\min(1, w/(2^n d))$. For any relation, linear or not, the same bound holds for affine readouts by Proposition~\ref{prop:ey}.
+\end{proposition}
+
+\begin{proof}
+The map is linear from $\R^{2^n d}$ to $\R^w$, so its rank is at most $\min(w, 2^n d)$, and rank--nullity gives the kernel. The bound on $R^2$ is Proposition~\ref{prop:ceiling} applied to the composite linear map; the last statement is Proposition~\ref{prop:ey} with $m = w$ and $kd = 2^n d$.
+\end{proof}
+
+\noindent
+A learned nonlinear composer is covered by the bound for affine readouts, and Section~\ref{sec:depth} compares it with a population readout of the composer's state and with the composer's own decomposer.
+
+\begin{proposition}[Dissociation of content and context]
+\label{prop:context}
+Under the conditions of Proposition~\ref{prop:separable}, the contribution $\varphi_1(x)$ of a filler determined from observed composites does not depend on which of its co-parts were used to determine it, up to a constant common to all fillers of its role.
+\end{proposition}
+
+\begin{proof}
+For every $y$ observed with $x$, $\varphi_1(x) = g(x, y) - c - \varphi_2(y)$, and $\varphi_2$ is determined up to a constant by the connected graph. Every choice of $y$ yields the same value.
+\end{proof}
+
+\noindent
+When the relation is only approximately separable, a least-squares additive fit absorbs part of the interaction into $\varphi_1$, so features of the co-parts with which a part was learned can leak into its contribution elsewhere; \citet{lippl2025} characterize this memorization leak for kernel models. The leak is a component of the projection of the interaction onto additive functions under the observed design; it vanishes for a complete balanced design and is otherwise at most a design-dependent constant times the interaction's norm on the observed pairs.
+
+%=====================================================================
+\section{Modes of combination}
+\label{app:forms}
+
+Table~\ref{tab:forms} classifies widely discussed modes of combination by the properties of Definition~\ref{def:recoverable}. In the selective modification model, the modifier changes the values and weights of those attributes of the head to which it applies \citep{smith1988}; in composite prototypes, attribute conflicts are resolved and emergent attributes appear according to the particular pair combined \citep{hampton1987}. Language models find conceptual blends hardest among combinatorial tasks, failing mainly to find a shared abstraction between their inputs \citep{schapiro2025}. Sparse features can be stored in superposition and read out with limited interference \citep{elhage2022}; such a relation is recoverable on its sparse domain and should be tested with fresh parts drawn from that domain.
+
+\begin{table}[h]
+  \caption{Modes of combination and the properties of Definition~\ref{def:recoverable}.}
+  \label{tab:forms}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{2.5cm}P{2.9cm}P{2.2cm}P{2.5cm}Y@{}}
+    \toprule
+    Mode & Exemplar $g$ & Role-factorized & Recoverable for fresh parts & Sources \\
+    \midrule
+    Symmetric blending & $x + y$; $x \odot y$ & Yes for $x + y$, with $B_1 = B_2$ (roles collide) & No; ceiling $1/2$ & \citet{mitchell2010} \\
+    Head--modifier blending & $x + \alpha y$ & Yes & No; ceiling $1/(1+\alpha^2)$ for role 1 & \citet{mitchell2010} \\
+    Prototype combination & Selective modification; composite prototypes & Default inheritance only; overrides and emergent attributes form $\eta$ & Not determined & \citet{smith1988}; \citet{hampton1987} \\
+    Fixed-width superposition & HRR, MAP; $Ax + By$ with $m < kd$ & Yes & No; ceiling $\mathrm{rank}/kd$; decodable by clean-up over a vocabulary & \citet{plate1995,plate2003}; \citet{frady2018} \\
+    Conceptual blending & Structural mapping, then integration & No & Not determined & \citet{fauconnier2002} \\
+    Role--filler composition & $\sum_i x_i \otimes \rho_i$; concatenation; superposition in disjoint regions & Yes & Yes & \citet{smolensky1990}; \citet{wiedemer2024} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\noindent
+Chunking is orthogonal: it stores a composite of any mode as a unit. EPAM stores chunks only as wholes \citep{feigenbaum1984}, whereas CHREST adds templates with slots for variable fillers \citep{gobet1996templates,gobet2000}; whether the slots of a template are recoverable for fresh fillers is the test our definition proposes.
+
+The framework also locates the pet-fish debate. \citet{osherson1981} and \citet{fodor1996} argued that prototypes do not compose, because the typicality of a conjunction is not fixed by the typicalities of its parts; \citet{kamp1995} and \citet{hampton2012} replied that prototypes compose by default with overrides. In our terms, default inheritance is a role-factorized component, and overrides and emergent attributes are the residual $\eta$; the debate is about the size and structure of $\delta$, not about whether composition occurs.
+
+%=====================================================================
+\section{Capacities and the human reference profile}
+\label{app:cases}
+
+Table~\ref{tab:cases} lists capacities that depend on recoverability, the guarantee each requires, and evidence that current networks lack it or possess it only for familiar combinations. Table~\ref{tab:human} summarizes the human reference profile.
+
+\begin{table}[h]
+  \caption{Capacities that depend on recoverability.}
+  \label{tab:cases}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{3.4cm}P{4.4cm}Y@{}}
+    \toprule
+    Capacity & Guarantee required & Evidence of deficit in networks \\
+    \midrule
+    Who did what to whom & Distinct role reversals (Prop.~\ref{prop:blend}, \ref{prop:systematic}) & DALL-E 2 images matched only about 22\% of prompts describing fifteen basic relations, as judged by people \citep{conwell2022} \\
+    Known part, new role & Role-factorization (Prop.~\ref{prop:systematic}) & Transformers reach at most 40.6\% on the structural cases of SLOG, against near-ceiling lexical generalization on COGS \citep{li2023slog} \\
+    Reasoning about constituents & Recoverability (Prop.~\ref{prop:fiber}) & Models answer sub-questions more often than the composed question \citep{press2023}; accuracy declines with depth \citep{dziri2023} \\
+    Editing one part & Locality in the range of $B_i$ (Prop.~\ref{prop:systematic}iv) & Attributes leak across objects \citep{rassin2022,huang2023t2i}; edits fail to propagate \citep{cohen2024} \\
+    New contexts & Content--context dissociation (Prop.~\ref{prop:context}) & Shortcut features \citep{geirhos2020}; novel images as patch mosaics, which \citet{kamb2025} present as a mechanism of creativity \\
+    Arbitrary depth & Recoverability on the relation's own outputs (Prop.~\ref{prop:depth}) & The best architecture tested on the SCAN length split reached 20.8\% \citep{lake2018} \\
+    New parts without forgetting & Shared role maps; a new part adds only its code & Catastrophic interference \citep{mccloskey1989,french1999}; fine-tuning on a new glyph in one role damages it in the other (Figure~\ref{fig:structure}d) \\
+    Explaining outputs & Recoverable parts (Prop.~\ref{prop:fiber}) & Data attribution identifies examples, not reused parts \citep{koh2017,grosse2023} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\label{app:human}
+\begin{table}[h]
+  \caption{A human reference profile drawn from the literature.}
+  \label{tab:human}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{3.3cm}YP{3.2cm}@{}}
+    \toprule
+    Signature & Human evidence & Sources \\
+    \midrule
+    Separate codes for roles & Agent and patient decoded from separate regions, generalizing to new sentences over a closed set of nouns and verbs & \citet{frankland2015} \\
+    Composition of known parts & Novel objects represented and inferred as compositions of known elements & \citet{schwartenbeck2023} \\
+    Known part, new role & A newly learned word applied correctly in unseen combinations & \citet{lake2019} \\
+    Parts kept within chunks & Expert recall organized by chunks of familiar configurations, which later work extended to templates with slots for variable pieces; the expert advantage largely disappears for random positions, so recall depends on familiar configurations & \citet{chase1973}; \citet{gobet1996templates}; \citet{gobet1996} \\
+    Form-based inference & Valid inferences endorsed across arbitrary contents; logical concepts learned as compositions & \citet{rips1994}; \citet{piantadosi2016} \\
+    Both modes in concept combination & Compounds interpreted by relation linking (role--filler), by property mapping (head kept, a fragment of the modifier), and less often by hybridization (blend) & \citet{wisniewski1997} \\
+    Limits & Belief overrides validity; people fail to seek falsifying cases of an abstract rule, and content alters which cases they select & \citet{evans1983}; \citet{wason1968}; \citet{griggs1982} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\noindent
+Several of these failures concern text-to-image models whose objects must overlap. Summing separately conditioned scores composes objects in separate regions \citep{liu2022composable}, but a sum of scores is a superposition, and our analysis predicts that it cannot keep both parts of a composite in which one object must occupy a region of another.
+
+%=====================================================================
+\section{Experimental protocol}
+\label{app:protocol}
+
+All experiments ran on CPU nodes; code is provided with the paper. Seeds control the vocabulary, the fresh parts, network initialization, and data order.
+
+\subsection{Calibration}
+Parts are $\mathcal{N}(0, I_{16})$. Projections $A, B$ have i.i.d.\ $\mathcal{N}(0, 1/d)$ entries; HRR uses circular convolution with Gaussian role vectors; MAP multiplies by random $\pm 1$ role vectors; the tensor product uses two random role vectors in $\R^2$; the $\tanh$ layer has $\mathcal{N}(0, 1/2d)$ weights. Of the $V(V-1)$ ordered pairs, a random 20\% are withheld for the familiar test; 6{,}000 training composites are sampled from the rest and 2{,}000 test composites from each split. Composites are standardized with training statistics. Ridge readouts choose the penalty from $10^{-4}$ to $10^{3}$ by generalized cross-validation; MLP readouts have two hidden layers of 256 units with early stopping. Identification is by cosine nearest neighbor among $V$ candidates.
+
+\textbf{Robustness.} We repeated the calibration with uniform parts, sparse parts (10\% nonzero), and correlated Gaussian parts with a spectrum decaying as $1/j$, all with unit variance, for $V \in \{32, 128\}$ and 5 seeds, and with an unregularized least-squares readout and a kernel ridge readout with a Gaussian kernel. With linear readouts at $V = 128$, the role--filler operators reach $R^2 = 1.00$ under every distribution, and the half-rank projection reaches 0.47 (Gaussian), 0.47 (uniform), 0.38 (sparse), and 0.64 (correlated). The last exceeds $1/2$ because, with a decaying spectrum, a projection keeps more of the leading components; it lies below the variance-weighted ceiling of Proposition~\ref{prop:ey}, 0.80, and its exact value is given by the covariance form of Proposition~\ref{prop:ceiling}. The kernel readout transfers to fresh parts worse than the linear readout for every operator (for instance 0.01 against 0.47 for the half-rank projection with Gaussian parts), which confirms that a flexible readout fits the vocabulary. At $V = 8$ the ridge readout on standardized composites recovers fresh concatenated parts with $R^2 = 0.27$ and the least-squares readout on centred composites with 0.38, against a closed form of 0.37; standardization changes the metric in which the fit projects, as Proposition~\ref{prop:span} describes, and the failure at small $V$ is the span and not regularization.
+
+\subsection{Networks}
+The generator maps $z \in \R^8$ through a random $\tanh$ layer of 48 units and a spatially smoothed linear map to $8 \times 8$ pixels with a sigmoid. Encoders: MLP with two hidden layers of 256 units; CNN with three convolutional layers (32, 64, 64 channels) and a linear map; transformer with 16 column tokens, two layers, four heads, width 64, and a classification token. Decoders: MLP with two hidden layers of 256 units, conditioned on a one-hot target relation. The role--filler decoder splits $h$ into halves and decodes each with one shared MLP glyph decoder before a fixed renderer. Training: 4{,}000 steps of Adam with learning rate $10^{-3}$, cosine decay, batch 256, mean squared error, with input and target relations drawn independently. Readouts are ridge maps from standardized $h$ to the 64 pixels of each role's glyph, with the penalty chosen from $10^{-4}$ to $10^{3}$ by generalized cross-validation. The population readout is fitted on 2{,}000 composites of a pool of 400 latents that no network trained on; the vocabulary readout on the network's training composites; the untrained readout on the pool composites passed through the network's initialization. Behavior is evaluated on 256 composites of 256 fresh latents (128 pairs and their reversals), and readouts on a disjoint set of 256 fresh latents arranged the same way. Interaction is the share of variance left by a two-way additive fit on a $10 \times 10$ grid of fresh parts. The fixed-pairs control samples 140 training pairs uniformly from the pairs of $V$ glyphs that are not withheld. The auxiliary-loss control adds a jointly trained linear map from $h$ to both glyphs, with weight 1, to the training loss. A control with latent dimension $q = 4$ ($kq = 8$) behaves like the main experiment, with fresh-glyph behavior within 0.04 of its maximum from $m = 16$.
+
+For Section~\ref{sec:structure}, the role maps $c, B_1, B_2$ are fitted by ridge (penalty $10^{-3}$) from the stacked 16-dimensional codes of the two glyphs to $h$, and the code readouts by ridge with a cross-validated penalty from $h$ to the stacked codes, both on the pool composites. We use the readouts instead of the pseudo-inverse of $B$ because $B$ is nearly square at $m = 32$, and its pseudo-inverse amplifies the residual. Fine-tuning uses Adam with learning rate $3 \times 10^{-4}$ on five composites of a fresh glyph with five training glyphs, alternating input relations, and, with replay, 32 training composites per step.
+
+\subsection{Recursion}
+Leaves are $\mathcal{N}(0, I_8)$. The composer and decomposer are MLPs with one hidden layer of 256 $\tanh$ units, with learned linear maps between $\R^8$ and $\R^w$; training uses 6{,}000 steps of Adam on batches of 128 trees, alternating depths 1 and 2. HRR lifts leaves to $\R^w$ by a random linear map, binds with one pair of unitary role vectors per level of the tree, and reads leaves by recursive circular correlation and the pseudo-inverse of the lift; identification is by nearest neighbor among $V$ candidates.
+
+\subsection{Pretrained encoders}
+Sentence states are mean-pooled over tokens at layers $L/4$, $L/2$, $3L/4$, and $L$, together with the pooled output (the end-of-text state for CLIP and the last token otherwise). For each relation and seed, the 305 nouns are split at random into 165 fitting, 40 validation, and 100 fresh nouns; 3{,}000 sentences are sampled from pairs of fitting nouns for fitting, 800 further pairs of fitting nouns for the new-pairs test, 600 pairs of validation nouns, and 1{,}000 pairs of fresh nouns. Each part code is reduced to 16 principal components fitted on the 165 fitting nouns. Ridge readouts take the penalty from 17 values between $10^{-3}$ and $10^{5}$ that maximizes $R^2$ on the validation nouns, so the penalty, like the layer and code, is chosen on nouns the readout was not fitted on. The random-weight control loads each architecture and tokenizer with freshly initialized weights (seed 0) and runs the same protocol. The pool-size curve fits the readouts on the first 40, 80, 120, or 165 fitting nouns, with validation and fresh nouns unchanged. Layer and part code are chosen per model to maximize mean $R^2$ on validation nouns over the asymmetric relations. Identification is by cosine nearest neighbor among the 100 fresh nouns. The reversal similarity is the cosine between the states of a sentence and its role reversal, normalized so that 0 is the similarity of unrelated sentences and 1 is identity.
+
+\begin{table}[h]
+  \caption{Threats to validity and the corresponding controls.}
+  \label{tab:controls}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}YY@{}}
+    \toprule
+    Threat to validity & Control \\
+    \midrule
+    Recovery reflects a memorized vocabulary rather than the relation & Readouts are evaluated on fresh parts as well as on held-out pairs of familiar parts \\
+    The readout class is too weak, or too strong & The class is declared in advance and calibrated on analytic operators and on references built from each system's own part codes \\
+    Held-out items are harder rather than structurally different & A difficulty-matched baseline of randomly withheld pairs \\
+    The criteria cannot be met by any learner & Role--filler references and a role--filler decoder are run on every test \\
+    The system composes over parts we did not specify & Results are stated relative to the declared part code; discovered codes under a richer $\M$ remain to be tested \\
+    A probe fitted on a system's training parts mistakes a vocabulary-trained procedure for the state & Population readouts fitted on a pool of parts the system never saw, compared with vocabulary readouts and with the untrained network \\
+    Recovered components are decodable but unused & Interchange interventions through the system's own decoder, against random edits of the same norm \\
+    Layer or code selection inflates pretrained results & Selection on validation nouns disjoint from the reported fresh nouns \\
+    Seed variance & 9--10 seeds for trained networks in Section~\ref{sec:networks}, 5 in Section~\ref{sec:structure}, 5 for analytic and recursive systems, 3 for pretrained encoders \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\end{document}

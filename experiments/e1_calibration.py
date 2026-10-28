@@ -3,8 +3,10 @@
 For each operator g(x, y) over Gaussian parts in R^d we fit readouts that recover
 the role-1 part from the composite, on composites built from a finite vocabulary,
 and evaluate them on (a) unseen pairs of vocabulary parts ("familiar") and
-(b) pairs of freshly drawn parts ("fresh").  Recovery is reported as
-  - R2: variance of the part explained by a regression readout (linear / MLP),
+(b) pairs of freshly drawn parts ("fresh", from a pool of 2,000 parts independent of V).
+Recovery is reported as
+  - R2: variance of the part explained by a regression readout (linear / MLP), against
+        the population variance of the parts,
   - ID: identification of the part among V candidates by nearest neighbour on
         the regression output (chance 1/V),
   - ROLE: fraction of composites whose role-1 readout is closer to the role-1
@@ -15,8 +17,24 @@ operator and degrades with V.
 """
 import argparse, json, os, time
 import numpy as np
-from sklearn.linear_model import RidgeCV
+from sklearn.linear_model import RidgeCV, LinearRegression
 from sklearn.neural_network import MLPRegressor
+from sklearn.kernel_ridge import KernelRidge
+
+
+def sample_parts(rng, n, d, dist):
+    """Part distributions: Gaussian (the ceiling of Prop. 3 is exact), uniform, sparse
+    (10% nonzero), and correlated (Gaussian with a decaying spectrum), all unit variance."""
+    if dist == "gauss":
+        return rng.normal(size=(n, d))
+    if dist == "uniform":
+        return rng.uniform(-np.sqrt(3), np.sqrt(3), size=(n, d))
+    if dist == "sparse":
+        return rng.normal(size=(n, d)) * (rng.random((n, d)) < 0.1) / np.sqrt(0.1)
+    if dist == "corr":
+        s = 1.0 / np.arange(1, d + 1)
+        return rng.normal(size=(n, d)) * np.sqrt(s * d / s.sum())
+    raise ValueError(dist)
 
 
 def circ_conv(a, b):
@@ -62,11 +80,21 @@ def role_ok(pred, x, y):
     return float((((pred - x) ** 2).sum(1) < ((pred - y) ** 2).sum(1)).mean())
 
 
-def run(d, V, seed, n_train=6000, n_test=2000):
+def r2_pop(pred, true):
+    """R^2 against the population variance of the parts (d: every distribution has unit
+    variance per coordinate), as in Eq. (1); the sample spread of a few test parts is not used."""
+    return float(1 - ((pred - true) ** 2).sum() / (len(true) * true.shape[1]))
+
+
+N_FRESH = 2000  # fresh parts are drawn from a fixed pool independent of V
+
+
+def run(d, V, seed, n_train=6000, n_test=2000, dist="gauss", kernel=False):
     rng = np.random.default_rng(seed)
     ops = make_ops(d, rng)
-    vocab = rng.normal(size=(V, d))
-    fresh = rng.normal(size=(V, d))
+    vocab = sample_parts(rng, V, d, dist)
+    fresh = sample_parts(rng, V, d, dist)          # V fresh candidates, for identification only
+    pool = sample_parts(rng, N_FRESH, d, dist)     # fresh parts for R^2
     # hold out 20% of ordered pairs (i != j) for the familiar test
     pairs = np.array([(i, j) for i in range(V) for j in range(V) if i != j])
     rng.shuffle(pairs)
@@ -76,27 +104,35 @@ def run(d, V, seed, n_train=6000, n_test=2000):
     te = test_pairs[rng.integers(0, len(test_pairs), n_test)]
     fr = np.stack([rng.integers(0, V, n_test), rng.integers(0, V, n_test)], 1)
     fr = fr[fr[:, 0] != fr[:, 1]]
+    fp = rng.integers(0, N_FRESH, (n_test, 2))
+    fp = fp[fp[:, 0] != fp[:, 1]]
     out = []
     for name, g in ops.items():
-        Xtr = g(vocab[tr[:, 0]], vocab[tr[:, 1]])
-        Xte = g(vocab[te[:, 0]], vocab[te[:, 1]])
-        Xfr = g(fresh[fr[:, 0]], fresh[fr[:, 1]])
-        mu, sd = Xtr.mean(0), Xtr.std(0) + 1e-8
-        Xtr, Xte, Xfr = (Xtr - mu) / sd, (Xte - mu) / sd, (Xfr - mu) / sd
+        Xtr0 = g(vocab[tr[:, 0]], vocab[tr[:, 1]])
+        Xte0 = g(vocab[te[:, 0]], vocab[te[:, 1]])
+        Xfr0 = g(fresh[fr[:, 0]], fresh[fr[:, 1]])
+        Xfp0 = g(pool[fp[:, 0]], pool[fp[:, 1]])
+        mu, sd = Xtr0.mean(0), Xtr0.std(0) + 1e-8
+        Xtr, Xte, Xfr, Xfp = (Xtr0 - mu) / sd, (Xte0 - mu) / sd, (Xfr0 - mu) / sd, (Xfp0 - mu) / sd
         Ytr = vocab[tr[:, 0]]
         readouts = {
             "linear": RidgeCV(alphas=np.logspace(-4, 3, 15)),
+            "ols": LinearRegression(),  # minimum-norm least squares
+            "ols_raw": LinearRegression(),  # minimum-norm least squares on centred, unstandardized composites
             "mlp": MLPRegressor(hidden_layer_sizes=(256, 256), max_iter=400, early_stopping=True, random_state=seed),
+            **({"kernel": KernelRidge(alpha=1e-2, kernel="rbf", gamma=1.0 / Xtr.shape[1])} if kernel else {}),
         }
         for rname, model in readouts.items():
             t0 = time.time()
-            model.fit(Xtr, Ytr)
-            pte, pfr = model.predict(Xte), model.predict(Xfr)
+            A = (lambda X0, X: X0 - mu) if rname == "ols_raw" else (lambda X0, X: X)
+            model.fit(A(Xtr0, Xtr), Ytr)
+            pte, pfr, pfp = model.predict(A(Xte0, Xte)), model.predict(A(Xfr0, Xfr)), model.predict(A(Xfp0, Xfp))
             out.append(dict(op=name, readout=rname, d=d, V=V, seed=seed, m=int(Xtr.shape[1]),
-                            fam_r2=r2(pte, vocab[te[:, 0]]), fresh_r2=r2(pfr, fresh[fr[:, 0]]),
+                            fam_r2=r2(pte, vocab[te[:, 0]]), fresh_r2=r2_pop(pfp, pool[fp[:, 0]]),
+                            fresh_r2_small=r2(pfr, fresh[fr[:, 0]]),
                             fam_id=ident(pte, te[:, 0], vocab), fresh_id=ident(pfr, fr[:, 0], fresh),
                             fam_role=role_ok(pte, vocab[te[:, 0]], vocab[te[:, 1]]),
-                            fresh_role=role_ok(pfr, fresh[fr[:, 0]], fresh[fr[:, 1]]),
+                            fresh_role=role_ok(pfp, pool[fp[:, 0]], pool[fp[:, 1]]),
                             secs=time.time() - t0))
         # nearest-neighbour decoder: match composite to the stored composite table of all
         # vocabulary pairs (pure vocabulary lookup; for fresh parts the table is the
@@ -122,9 +158,13 @@ if __name__ == "__main__":
     ap.add_argument("--d", type=int, default=16)
     ap.add_argument("--V", type=int, default=32)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--dist", default="gauss")
+    ap.add_argument("--kernel", action="store_true")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    res = run(a.d, a.V, a.seed)
+    res = run(a.d, a.V, a.seed, dist=a.dist, kernel=a.kernel)
+    for row in res:
+        row["dist"] = a.dist
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(res, f, indent=1)

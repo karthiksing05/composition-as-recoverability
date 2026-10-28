@@ -22,6 +22,19 @@ def r2(p, t):
     return float(1 - ((p - t) ** 2).sum() / ((t - t.mean(0)) ** 2).sum())
 
 
+def pop_readout(encode, n, rng, n_fit=6000, n_test=2000):
+    """Definition 1 for a depth-n state: a ridge readout fitted on states of trees whose
+    leaves are fresh draws (every leaf distinct) and evaluated on other fresh trees; R^2
+    against the population variance of the leaves (unit per coordinate)."""
+    from sklearn.linear_model import RidgeCV
+    Lf = rng.normal(size=(n_fit, 2 ** n, D_PART)); Lt = rng.normal(size=(n_test, 2 ** n, D_PART))
+    Hf, Ht = encode(Lf), encode(Lt)
+    mu = Hf.mean(0)
+    reg = RidgeCV(alphas=np.logspace(-4, 3, 15)).fit(Hf - mu, Lf.reshape(n_fit, -1))
+    p = reg.predict(Ht - mu)
+    return float(1 - ((p - Lt.reshape(n_test, -1)) ** 2).sum() / (n_test * 2 ** n * D_PART))
+
+
 def ident(p, t_idx, cands):
     d = ((p[:, None] - cands[None]) ** 2).sum(-1)
     return float((d.argmin(1) == t_idx).mean())
@@ -78,8 +91,10 @@ def run_raam(w, V, seed, steps, train_depths=(1, 2), test_depths=(1, 2, 3, 4, 5)
             cidx = torch.randint(0, V, (512, 2 ** n))
             cout = model.decode(model.encode(cand[cidx]), n).reshape(-1, D_PART).numpy()
             fr_id = ident(cout, cidx.reshape(-1).numpy(), cand.numpy())
+            enc = lambda L: model.encode(torch.tensor(L, dtype=torch.float32)).numpy()
             res.append(dict(model="raam", w=w, V=V, seed=seed, depth=n, fam_id=fam_id, fam_r2=fam_r2,
-                            fresh_r2=fr_r2, fresh_id=fr_id, bound=min(1.0, w / (2 ** n * D_PART))))
+                            fresh_r2=fr_r2, fresh_id=fr_id, bound=min(1.0, w / (2 ** n * D_PART)),
+                            pop_r2=pop_readout(enc, n, np.random.default_rng(1000 + seed))))
     return res
 
 
@@ -101,16 +116,41 @@ def run_hrr(w, V, seed, test_depths=(1, 2, 3, 4, 5)):
     def unitary():
         f = np.fft.fft(rng.normal(size=w))
         return np.real(np.fft.ifft(f / np.abs(f)))
-    rL, rR = unitary(), unitary()
+    # one pair of roles per height: with a single pair, circular convolution commutes and
+    # role vectors cancel across levels, leaking whole leaves into other leaves' readouts
+    roles = [(unitary(), unitary()) for _ in range(max(test_depths))]
+
+    def compose(leaves):  # leaves: B x 2^n x D_PART -> B x w
+        x = leaves @ P
+        ht = 0
+        while x.shape[1] > 1:
+            rL, rR = roles[ht]
+            x = (cconv(x[:, 0::2], rL) + cconv(x[:, 1::2], rR)) / np.sqrt(2)
+            ht += 1
+        return x[:, 0]
+
     res = []
     for n in test_depths:
+        pop = pop_readout(compose, n, np.random.default_rng(2000 + seed))
+        # correlation unbinding on a fixed pool of fresh leaves, R^2 against the population variance
+        Lt = rng.normal(size=(2000, 2 ** n, D_PART))
+        x = compose(Lt)[:, None]
+        for ht in reversed(range(n)):
+            rL, rR = roles[ht]
+            x = np.stack([ccorr(x, rL), ccorr(x, rR)], 2).reshape(len(x), -1, w) * np.sqrt(2)
+        unb = float(1 - ((x.reshape(-1, w) @ Pinv - Lt.reshape(-1, D_PART)) ** 2).sum() / Lt.size)
+        res.append(dict(model="hrr", w=w, V=V, seed=seed, depth=n, split="pool", pop_r2=pop, r2=unb,
+                        crosstalk_pred=1 - (2 ** n - 1) * D_PART / w))
         for split, cands in (("fam", vocab), ("fresh", fresh)):
             idx = rng.integers(0, V, (512, 2 ** n))
             x = cands[idx] @ P
+            ht = 0
             while x.shape[1] > 1:
-                x = cconv(x[:, 0::2], rL) + cconv(x[:, 1::2], rR)
-                x = x / np.sqrt(2)
-            for _ in range(n):
+                rL, rR = roles[ht]
+                x = (cconv(x[:, 0::2], rL) + cconv(x[:, 1::2], rR)) / np.sqrt(2)
+                ht += 1
+            for ht in reversed(range(n)):
+                rL, rR = roles[ht]
                 x = np.stack([ccorr(x, rL), ccorr(x, rR)], 2).reshape(len(x), -1, w) * np.sqrt(2)
             out = x.reshape(-1, w) @ Pinv
             tgt = cands[idx].reshape(-1, D_PART)

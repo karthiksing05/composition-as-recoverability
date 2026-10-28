@@ -1,0 +1,11 @@
+e4_refmix.py --model bert-base-uncased --layer L6 --code carrier
+e4_refmix.py --model bert-large-uncased --layer L12 --code phrase
+e4_refmix.py --model clip-b32 --layer L6 --code phrase
+e4_refmix.py --model clip-h14 --layer L6 --code carrier
+e4_refmix.py --model gpt2 --layer L6 --code carrier
+e4_refmix.py --model gpt2-large --layer L18 --code carrier
+e4_refmix.py --model gpt2-medium --layer L18 --code phrase
+e4_refmix.py --model sd15-clip-l --layer L3 --code carrier
+e4_refmix.py --model t5-base --layer L12 --code phrase
+e4_refmix.py --model t5-large --layer L12 --code phrase
+e4_refmix.py --model t5-small --layer L3 --code phrase

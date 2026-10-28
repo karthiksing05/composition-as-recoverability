@@ -1,0 +1,11 @@
+import sys
+p = sys.argv[1]; s = open(p, encoding="utf-8").read()
+R = [
+(r"the trained states score $\kappa \approx 0.82$;", r"the trained states of the MLP, CNN, and role--filler networks score $\kappa = 0.73$ at $V = 8$, rising to $0.83$ at $V = 64$;"),
+(r"A readout fitted on the network's own training composites recovers only 0.21--0.24 at $V = 8$, and it predicts the network's own fresh-glyph behavior across runs with $r = 0.95$ ($r = 0.64$ within conditions), against $r = 0.73$ ($0.40$ within conditions) for the population readout; the difference between the within-condition correlations has a 95\% bootstrap interval of $0.14$ to $0.36$ (Figure~\ref{fig:networks}d). The vocabulary readout does not predict behavior merely because it shares the network's vocabulary: the same readout fitted on the raw input composites of that vocabulary correlates with behavior at only $r = 0.10$ within conditions, and adds nothing once the trained-state readout is known.",
+ r"A readout fitted on the network's own training composites, with its penalty chosen by leaving training glyphs out, recovers only 0.23--0.29 at $V = 8$, and it predicts the network's own fresh-glyph behavior across runs with $r = 0.93$ ($r = 0.50$ within conditions), against $r = 0.73$ ($0.30$ within conditions) for the population readout; the difference between the within-condition correlations has a 95\% bootstrap interval of $0.09$ to $0.32$ (Figure~\ref{fig:networks}d). Part of this reflects the geometry of the vocabulary: the same readout fitted on the raw input composites of that vocabulary also correlates with behavior ($r = 0.35$ within conditions). Once the trained-state readout is known, however, the input readout adds nothing (standardized coefficient $-0.04$, 95\% interval $-0.19$ to $0.13$, against $0.53$, interval $0.36$ to $0.69$, for the trained-state readout). The comparison holds when the penalty is chosen by leave-one-composite-out cross-validation or on fresh validation glyphs (Appendix~\ref{app:protocol})."),
+(r"and by a vocabulary readout fitted on the training composites (dashed);", r"and by a vocabulary readout fitted on the training composites with its penalty chosen by leaving training glyphs out (dashed);"),
+]
+for a, b in R:
+    assert s.count(a) == 1, a[:80]; s = s.replace(a, b)
+open(p, "w", encoding="utf-8").write(s); print("ok")

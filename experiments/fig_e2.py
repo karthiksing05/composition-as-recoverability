@@ -1,27 +1,19 @@
-"""Figure: trained networks on glyph composites (E2)."""
+"""Figure: trained networks on glyph composites (E2, v2 evaluation; E6 fixed-pairs control)."""
 import json, glob
 import numpy as np, pandas as pd
 from figstyle import *
 import e2_glyph as E
+from agg_r2 import load, e2cols, within_corr
 
-
-def load(d):
-    df = pd.DataFrame([json.load(open(f)) for f in glob.glob(f"{d}/*.json")])
-    for s in ("train", "heldout", "strong", "fresh"):
-        df[f"b_{s}"] = df[[f"beh_{s}_r{i}{o}" for i in "01" for o in "01"]].mean(1)
-        df[f"b_{s}_in1"] = df[[f"beh_{s}_r1{o}" for o in "01"]].mean(1)
-        df[f"b_{s}_in0"] = df[[f"beh_{s}_r0{o}" for o in "01"]].mean(1)
-    df["p_fresh"] = df[[f"probe_pix_fresh_r{i}_role{k}" for i in "01" for k in "12"]].mean(1)
-    df["p_held"] = df[[f"probe_pix_heldout_r{i}_role{k}" for i in "01" for k in "12"]].mean(1)
-    df["p_strong"] = df[[f"probe_pix_strong_r{i}_role2" for i in "01"]].mean(1)
-    return df
-
-
-df = load("results/e2")
-occ = load("results/e2occ")
+df = e2cols(load("e2v2"))
+occ = e2cols(load("e2v2occ"))
+fp = e2cols(load("e6pairs"))
+# readouts with the penalty chosen by leaving training glyphs out (e2h, the same systems retrained)
+eh = pd.DataFrame([json.load(open(f, encoding="utf-8")) for f in glob.glob("results/e2h/*.json")])
+for s_ in ("vocab", "pool"):
+    eh[f"{s_}_g"] = eh[[f"{s_}_glyph_role1", f"{s_}_glyph_role2"]].mean(1)
 ARCH = {"slot": ("role-filler decoder", BLUE, "o"), "mlp": ("MLP", ORANGE, "s"),
         "cnn": ("CNN", GREEN, "^"), "tf": ("transformer", PURPLE, "D")}
-LOG2 = dict(base=2)
 
 fig = plt.figure(figsize=(6.5, 4.5))
 gs = fig.add_gridspec(2, 3, wspace=0.5, hspace=0.72)
@@ -47,82 +39,87 @@ for s in ax.spines.values():
 panel(ax, "a", "Composites")
 
 
-def curve(ax, d, key, xkey, ls="-", marker=True):
-    for a, (name, c, mk) in ARCH.items():
+def curve(ax, d, key, xkey, ls="-", marker=True, archs=ARCH):
+    for a in archs:
+        name, c, mk = ARCH[a]
         t = d[d.arch == a].groupby(xkey)[key].agg(["mean", "sem"])
-        band(ax, t.index, t["mean"].clip(lower=-0.1), t["sem"], c, ls=ls, marker=mk if marker else None, ms=3)
+        if len(t):
+            band(ax, t.index, t["mean"].clip(lower=-0.1), t["sem"].fillna(0), c, ls=ls, marker=mk if marker else None, ms=3)
 
 
 def log2axis(ax, ticks):
-    ax.set_xscale("log", **LOG2); ax.set_xticks(ticks); ax.set_xticklabels([str(t) for t in ticks])
+    ax.set_xscale("log", base=2); ax.set_xticks(ticks); ax.set_xticklabels([str(t) for t in ticks])
     ax.minorticks_off()
 
 
-# b: behaviour vs bottleneck width (V = 64)
+# b: behaviour vs number of training parts (m = 64)
 ax = axs[1]
-d = df[df.V == 64]
-curve(ax, d, "b_heldout", "m", ls="--", marker=False)
-curve(ax, d, "b_fresh", "m")
-ax.axvline(16, color=LGREY, lw=0.6, ls=":"); ax.text(17, 0.02, "$m=kq$", fontsize=6.3, color=DGREY)
-log2axis(ax, [8, 16, 32, 64])
-ax.set_ylim(-0.02, 1.03); ax.set_xlabel("bottleneck width $m$"); ax.set_ylabel("output $R^2$")
-panel(ax, "b", "Bottleneck width")
-
-# c: behaviour vs vocabulary (m = 64)
-ax = axs[2]
 d = df[df.m == 64]
-curve(ax, d, "b_heldout", "V", ls="--", marker=False)
-curve(ax, d, "b_fresh", "V")
+curve(ax, d, "beh_heldout_1", "V", ls="--", marker=False)
+curve(ax, d, "beh_fresh_1", "V")
 log2axis(ax, [8, 16, 32, 64])
 ax.set_ylim(-0.02, 1.03); ax.set_xlabel("training parts $V$"); ax.set_ylabel("output $R^2$")
-panel(ax, "c", "Part diversity")
+panel(ax, "b", "Behavior")
 
-# d: representation predicts behaviour on fresh parts
-ax = axs[3]
-c_ = lambda x: x.clip(lower=-0.2)
-for a, (name, c, mk) in ARCH.items():
-    s = df[df.arch == a]
-    ax.scatter(c_(s.p_fresh), c_(s.b_heldout), s=4, color=LGREY, marker=mk, lw=0, alpha=0.6, zorder=0)
-    ax.scatter(c_(s.p_fresh), c_(s.b_fresh), s=5, color=c, marker=mk, lw=0, alpha=0.7, label=name)
-r_f = np.corrcoef(c_(df.p_fresh), c_(df.b_fresh))[0, 1]
-r_h = np.corrcoef(c_(df.p_fresh), c_(df.b_heldout))[0, 1]
-ax.text(0.97, 0.03, f"fresh parts: $r$={r_f:.2f}\nheld-out pairs (grey): $r$={r_h:.2f}", transform=ax.transAxes, ha="right",
-        va="bottom", fontsize=6.3, color=DGREY)
-ax.set_xlim(-0.2, 1); ax.set_ylim(-0.2, 1.03)
-ax.set_xlabel("recovery of fresh parts from $h$ ($R^2$)"); ax.set_ylabel("output $R^2$")
-fig.legend(*ax.get_legend_handles_labels(), loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.04), markerscale=2.2, fontsize=7)
-panel(ax, "d", "Recovery predicts transfer")
-
-# e: relations (m = 64, V = 64), by input relation
-ax = axs[4]
-rows = []
-for a in ARCH:
-    s = df[(df.arch == a) & (df.m == 64) & (df.V == 64)]
-    o = occ[(occ.arch == a) & (occ.m == 64) & (occ.V == 64)]
-    for lab, x in (("BESIDE", s.b_fresh_in0), ("OVER", s.b_fresh_in1), ("OCCLUDE", o.b_fresh_in1)):
-        rows.append((a, lab, x.mean(), x.sem()))
-t = pd.DataFrame(rows, columns=["arch", "rel", "mean", "sem"])
-for j, a in enumerate(ARCH):
-    s = t[t.arch == a]
-    ax.bar(np.arange(3) + (j - 1.5) * 0.2, s["mean"], 0.19, yerr=s["sem"], color=ARCH[a][1], error_kw=dict(lw=0.5))
-ax.set_xticks(range(3)); ax.set_xticklabels(["BESIDE", "OVER", "OCCLUDE"], fontsize=6.5)
-ax.set_ylim(0, 1.03); ax.set_ylabel("output $R^2$ on fresh parts")
-panel(ax, "e", "Relations")
-
-# f: contingency: spread across seeds of new-role (strong) behaviour
-ax = axs[5]
-for a, (name, c, mk) in ARCH.items():
-    t2 = df[(df.arch == a) & (df.m >= 32)].groupby("V")["b_strong"].std()
-    ax.plot(t2.index, t2.values, color=c, marker=mk, ms=3)
+# c: what the state holds (m = 64): population readout, untrained network, vocabulary readout
+ax = axs[2]
+curve(ax, d, "pool_fresh_1", "V")
+curve(ax, eh[eh.m == 64], "vocab_g", "V", ls="--", marker=False)
+for a in ARCH:  # untrained networks, one dotted line per architecture
+    t = d[d.arch == a].groupby("V")["init_fresh_1"].mean()
+    ax.plot(t.index, t.values, color=ARCH[a][1], ls=":", lw=0.9)
+ax.text(64, 0.47, "untrained (dotted)", fontsize=6.0, color=DGREY, ha="right")
+refs = pd.DataFrame(json.load(open("results/e2refs/refs.json", encoding="utf-8")))
+ax.axhline(refs.input_pool_over_r1.mean(), color="k", lw=0.8, ls=(0, (4, 2)))
+ax.text(8.2, refs.input_pool_over_r1.mean() + 0.025, "input", fontsize=6.0, color="k")
 log2axis(ax, [8, 16, 32, 64])
-ax.set_xlabel("training parts $V$"); ax.set_ylabel("s.d. over seeds")
-panel(ax, "f", "Seed spread, new roles")
+ax.set_ylim(-0.02, 1.03); ax.set_xlabel("training parts $V$"); ax.set_ylabel("readout $R^2$, fresh parts")
+panel(ax, "c", "State")
+
+# d: the network's own decoder behaves like a readout fitted on its vocabulary
+ax = axs[3]
+cl = lambda x: x.clip(lower=-0.2)
+for a, (name, c, mk) in ARCH.items():
+    s = eh[eh.arch == a]
+    ax.scatter(cl(s.pool_g), cl(s.beh_fresh_r11), s=4, color=LGREY, marker=mk, lw=0, alpha=0.6, zorder=0)
+    ax.scatter(cl(s.vocab_g), cl(s.beh_fresh_r11), s=5, color=c, marker=mk, lw=0, alpha=0.7, label=name)
+ax.plot([-0.2, 1], [-0.2, 1], color=LGREY, lw=0.6, ls=":")
+# correlations on unclipped values, as in the text
+wv, r_v, _ = within_corr(eh, "vocab_g", "beh_fresh_r11", ["arch", "V", "m"])
+wp, r_p, _ = within_corr(eh, "pool_g", "beh_fresh_r11", ["arch", "V", "m"])
+ax.text(0.03, 0.97, f"vocabulary: $r$={r_v:.2f} ({wv:.2f} within)\npopulation (grey): $r$={r_p:.2f} ({wp:.2f} within)",
+        transform=ax.transAxes, ha="left", va="top", fontsize=5.6, color=DGREY,
+        bbox=dict(boxstyle="square,pad=0.15", fc="white", ec="none", alpha=0.85))
+ax.set_xlim(-0.2, 1); ax.set_ylim(-0.2, 1.03)
+ax.set_xlabel("readout $R^2$, fresh parts"); ax.set_ylabel("output $R^2$, fresh parts")
+fig.legend(*ax.get_legend_handles_labels(), loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.04), markerscale=2.2, fontsize=7)
+panel(ax, "d", "Decoder vs. readouts")
+
+# e: parts, not pairs: 140 training pairs drawn from V parts, against the full design
+ax = axs[4]
+for a in ARCH:
+    name, c, mk = ARCH[a]
+    t = fp[fp.arch == a].groupby("V")["beh_fresh_1"].agg(["mean", "sem"])
+    band(ax, t.index, t["mean"], t["sem"].fillna(0), c, marker=mk, ms=3)
+    t = fp[fp.arch == a].groupby("V")["beh_heldout_1"].mean()
+    ax.plot(t.index, t.values, color=c, ls="--", lw=0.9)
+log2axis(ax, [16, 32, 64])
+ax.set_ylim(-0.02, 1.03); ax.set_xlabel("training parts $V$ (140 pairs)"); ax.set_ylabel("output $R^2$")
+ax.minorticks_off()
+panel(ax, "e", "Parts, not pairs")
+
+# f: width and interaction: population readout vs bottleneck, with the Eckart-Young ceiling (V = 64)
+ax = axs[5]
+d = df[df.V == 64]; o = occ[occ.V == 64]
+curve(ax, d, "pool_fresh_1", "m")
+curve(ax, o, "pool_fresh_1", "m", ls="--", marker=False)
+t = d.groupby("m")["ey_ceiling"].mean()
+ax.plot(t.index, t.values, color="k", ls=":", lw=1.0)
+ax.text(64, t.values[-1] + 0.02, "ceiling", fontsize=6.0, color="k", ha="right", va="bottom")
+log2axis(ax, [8, 16, 32, 64])
+ax.set_ylim(-0.02, 1.03); ax.set_xlabel("bottleneck width $m$"); ax.set_ylabel("readout $R^2$, fresh parts")
+panel(ax, "f", "Width and occlusion")
 
 fig.savefig(f"{FIGDIR}/fig_networks.pdf")
 fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_networks.png", dpi=200)
-print("n runs", len(df), len(occ), "r_fresh", round(r_f, 3), "r_held", round(r_h, 3))
-pd.set_option("display.width", 250)
-print(df.groupby(["arch", "m", "V"])[["b_heldout", "b_strong", "b_fresh", "p_held", "p_strong", "p_fresh"]].agg("mean").round(2).to_string())
-print(t.round(2).to_string())
-print(occ.groupby(["arch", "m", "V"])[["b_heldout_in1", "b_strong_in1", "b_fresh_in1", "inter_fresh_r1", "inter_input_fresh_r1"]].mean().round(3).to_string())
-print(df.groupby(["arch"])[["inter_fresh_r1", "rolefac_fresh_r1", "rolefac_fam_r1", "leak_fresh_r1", "leak_heldout_r1"]].mean().round(3).to_string())
+print("n runs", len(df), len(occ), len(fp), len(eh), "r_vocab", round(r_v, 3), round(wv, 3), "r_pool", round(r_p, 3), round(wp, 3))

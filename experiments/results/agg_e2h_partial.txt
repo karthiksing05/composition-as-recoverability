@@ -1,0 +1,25 @@
+runs 576
+cv within corr {'vocab': 0.416, 'pool': 0.301, 'inputvocab': 0.061} | std. betas (trained, input) [ 0.447 -0.091] CI trained [0.315 0.65 ] CI input [-0.16  -0.031] | vocab-pool within diff CI [-0.005  0.253]
+   pooled r: {'vocab': 0.901, 'pool': 0.729, 'inputvocab': 0.356}
+glyph within corr {'vocab': 0.501, 'pool': 0.3, 'inputvocab': 0.345} | std. betas (trained, input) [ 0.528 -0.036] CI trained [0.358 0.689] CI input [-0.19   0.128] | vocab-pool within diff CI [0.093 0.322]
+   pooled r: {'vocab': 0.932, 'pool': 0.729, 'inputvocab': 0.824}
+fresh within corr {'vocab': 0.483, 'pool': 0.3, 'inputvocab': 0.264} | std. betas (trained, input) [ 0.726 -0.308] CI trained [0.545 0.899] CI input [-0.468 -0.141] | vocab-pool within diff CI [0.078 0.302]
+   pooled r: {'vocab': 0.928, 'pool': 0.729, 'inputvocab': 0.82}
+         beh_fresh_r11  vocab_cv  vocab_glyph  pool_glyph  init_glyph  inputvocab_glyph
+V  arch                                                                                
+8  cnn           0.517     0.195        0.293       0.826       0.826             0.337
+   mlp           0.370     0.201        0.229       0.853       0.825             0.337
+   slot          0.311     0.189        0.236       0.854       0.825             0.337
+   tf            0.080    -0.225        0.005       0.586       0.394             0.337
+16 cnn           0.782     0.572        0.599       0.846       0.826             0.651
+   mlp           0.708     0.541        0.614       0.868       0.825             0.651
+   slot          0.543     0.542        0.605       0.872       0.825             0.651
+   tf            0.487     0.218        0.318       0.709       0.394             0.651
+32 cnn           0.927     0.771        0.785       0.875       0.826             0.809
+   mlp           0.892     0.750        0.788       0.884       0.825             0.809
+   slot          0.756     0.758        0.783       0.882       0.825             0.809
+   tf            0.787     0.633        0.662       0.802       0.394             0.809
+64 cnn           0.965     0.851        0.855       0.893       0.826             0.868
+   mlp           0.947     0.842        0.853       0.895       0.825             0.868
+   slot          0.894     0.848        0.854       0.894       0.825             0.868
+   tf            0.917     0.802        0.808       0.857       0.394             0.868

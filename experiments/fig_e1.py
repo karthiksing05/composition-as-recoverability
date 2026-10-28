@@ -4,7 +4,7 @@ import numpy as np, pandas as pd
 from figstyle import *
 
 rows = []
-for f in glob.glob("results/e1/*.json"):
+for f in glob.glob("results/e1v2/gauss_*.json"):  # fresh parts from a fixed 2,000-part pool
     rows += json.load(open(f))
 df = pd.DataFrame(rows)
 reg = df[df.readout != "nn_table"]
@@ -54,12 +54,17 @@ panel(ax, "b", "Fresh parts expose the relation")
 ax = axs[2]
 for op, c, mk in (("concat", BLUE, "o"), ("proj_m0.5", GREY, "s"), ("sum", ORANGE, "^")):
     for split, ls in (("fam_r2", "--"), ("fresh_r2", "-")):
-        sub = reg[(reg.op == op) & (reg.readout == "linear")].copy()
+        # concatenation: minimum-norm least squares on centred composites, the setting of Prop. span
+        sub = reg[(reg.op == op) & (reg.readout == ("ols_raw" if op == "concat" else "linear"))].copy()
         sub[split] = sub[split].clip(lower=-0.2)
         t = sub.groupby("V")[split].agg(["mean", "sem"])
         band(ax, t.index, t["mean"], t["sem"], c, ls=ls, marker=mk if split == "fresh_r2" else None, ms=3)
+Vg = np.array([4, 6, 8, 12, 16, 17, 24, 32, 64, 128]); dd = 16
+cf = np.minimum(Vg - 1, dd) / dd - np.maximum(dd - Vg + 1, 0) / (Vg * dd)
+ax.plot(Vg, cf, color="k", ls=":", lw=1.0)
+ax.text(5.0, 0.5, "closed form", fontsize=6.0, color="k")
 ax.set_xscale("log", base=2); ax.set_xticks([4, 16, 64]); ax.set_xticklabels(["4", "16", "64"])
-ax.axvline(16, color=LGREY, lw=0.6, ls=":"); ax.text(17, -0.15, "$V=d$", fontsize=6.3, color=DGREY)
+ax.axvline(17, color=LGREY, lw=0.6, ls=":"); ax.text(18, -0.15, "$V=d+1$", fontsize=6.3, color=DGREY)
 for txt, c, yy in (("concatenation", BLUE, 0.93), ("projection, $m/kd$=0.5", GREY, 0.18), ("$x+y$", ORANGE, 0.62)):
     ax.text(150, yy, txt, color=c, fontsize=6.3, ha="right")
 ax.set_ylim(-0.2, 1.05); ax.set_xlabel("vocabulary size $V$"); ax.set_ylabel("$R^2$ (dashed: familiar)")

@@ -23,7 +23,7 @@ readouts of each role's latent from h (fit on train composites), additivity of h
 over a grid of parts (two-way ANOVA interaction fraction), and edit leakage
 (change in role-2 output region when only the role-1 part changes).
 """
-import argparse, json, os, time
+import argparse, copy, json, os, time
 import numpy as np
 import torch
 import torch.nn as nn
@@ -199,7 +199,10 @@ def anova_interaction(Hgrid):
     return float((resid ** 2).sum() / ((Hgrid - mu) ** 2).sum())
 
 
-def run(arch, m, V, seed, steps, coverage=1.0, q=Q):
+def train_model(arch, m, V, seed, steps, coverage=1.0, q=Q, npairs=None, aux=0.0):
+    """Train one system.  npairs fixes the number of distinct training pairs (to vary
+    part diversity at a fixed number of combinations); aux > 0 adds a jointly trained
+    linear readout from h to both glyphs, an auxiliary pressure toward recoverability."""
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     world = World(seed, q)
@@ -208,13 +211,21 @@ def run(arch, m, V, seed, steps, coverage=1.0, q=Q):
     train, heldout, strong = splits(V, rng)
     if coverage < 1.0:
         train = train[: max(2, int(round(coverage * len(train))))]
+    if npairs is not None:
+        train = train[:npairs]
     model = make_model(arch, m)
-    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    init_model = copy.deepcopy(model)  # untrained copy for the selectivity control (consumes no RNG)
+    # created only when used, so that default runs keep the original random stream
+    head = nn.Linear(m, 128) if aux > 0 else None
+    params = list(model.parameters()) + (list(head.parameters()) if aux > 0 else [])
+    opt = torch.optim.Adam(params, lr=1e-3)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, steps)
     # precompute all training composites
     cache = {}
     for rin in (0, 1):
         cache[rin] = torch.tensor(world.render(vocab[train[:, 0]], vocab[train[:, 1]], rin), dtype=torch.float32)
+    gcache = torch.tensor(np.concatenate([world.glyph(vocab[train[:, 0]]).reshape(len(train), -1),
+                                          world.glyph(vocab[train[:, 1]]).reshape(len(train), -1)], 1), dtype=torch.float32)
     t0 = time.time()
     bs = 256
     for step in range(steps):
@@ -223,83 +234,91 @@ def run(arch, m, V, seed, steps, coverage=1.0, q=Q):
         rout = torch.randint(0, 2, (bs,))
         x = torch.where(rin.view(-1, 1, 1) == 0, cache[0][idx], cache[1][idx])
         y = torch.where(rout.view(-1, 1, 1) == 0, cache[0][idx], cache[1][idx])
-        loss = F.mse_loss(model.decode(model.encode(x), rout), y)
-        opt.zero_grad(); loss.backward(); opt.step(); sched.step()
-    train_secs = time.time() - t0
+        h = model.encode(x)
+        loss = F.mse_loss(model.decode(h, rout), y)
+        total = loss + aux * F.mse_loss(head(h), gcache[idx]) if aux > 0 else loss
+        opt.zero_grad(); total.backward(); opt.step(); sched.step()
     model.eval()
+    init_model.eval()
+    return dict(model=model, init_model=init_model, world=world, vocab=vocab, fresh=fresh, train=train, heldout=heldout, strong=strong,
+                loss=float(loss), train_secs=time.time() - t0, rng=rng)
 
-    def enc(za, zb, rin):
+
+def ey_ceiling(world, m, rng, n=4000):
+    """Eckart-Young ceiling: the largest R^2 any affine readout from an m-dimensional
+    state can reach for the stacked pixels of two independent glyphs."""
+    g = world.glyph(rng.normal(size=(n, world.q))).reshape(n, -1)
+    ev = np.sort(np.linalg.eigvalsh(np.cov(g.T)))[::-1]
+    ev2 = np.sort(np.concatenate([ev, ev]))[::-1]
+    return float(ev2[:m].sum() / ev2.sum())
+
+
+def run(arch, m, V, seed, steps, coverage=1.0, q=Q, npairs=None, aux=0.0):
+    ctx = train_model(arch, m, V, seed, steps, coverage, q, npairs, aux)
+    model, world, vocab = ctx["model"], ctx["world"], ctx["vocab"]
+    train, heldout, strong, loss, train_secs = ctx["train"], ctx["heldout"], ctx["strong"], ctx["loss"], ctx["train_secs"]
+    # parts never seen in training: a probe pool (to fit population readouts) and two
+    # disjoint evaluation sets (one for behaviour, one for readouts)
+    prng = np.random.default_rng(20_000 + seed)
+    pool = prng.normal(size=(400, q))
+    pool_pairs = prng.integers(0, 400, (2000, 2))
+    fresh_b, fresh_p = prng.normal(size=(256, q)), prng.normal(size=(256, q))
+    fpairs = np.stack([np.arange(0, 256, 2), np.arange(1, 256, 2)], 1)
+    fpairs = np.concatenate([fpairs, fpairs[:, ::-1]])
+
+    def enc(za, zb, rin, mdl=model):
         with torch.no_grad():
-            return model.encode(torch.tensor(world.render(za, zb, rin), dtype=torch.float32)).numpy()
+            return mdl.encode(torch.tensor(world.render(za, zb, rin), dtype=torch.float32)).numpy()
 
     def dec(h, rout):
         with torch.no_grad():
             return model.decode(torch.tensor(h, dtype=torch.float32), torch.full((len(h),), rout, dtype=torch.long)).numpy()
 
-    fr_pairs = np.stack([np.arange(0, 64, 2), np.arange(1, 64, 2)], 1)
-    sets = {"train": (vocab, train[:512]), "heldout": (vocab, heldout), "strong": (vocab, strong), "fresh": (fresh, fr_pairs)}
     res = dict(arch=arch, m=m, V=V, seed=seed, steps=steps, coverage=coverage, q=q, n_train=int(len(train)),
-               final_loss=float(loss), train_secs=train_secs)
-    feats = {}
-    for name, (P, pr) in sets.items():
+               npairs=npairs, aux=aux, final_loss=float(loss), train_secs=train_secs, eval_version=2,
+               ey_ceiling=ey_ceiling(world, m, prng))
+    beh_sets = {"train": (vocab, train[:512]), "heldout": (vocab, heldout), "strong": (vocab, strong), "fresh": (fresh_b, fpairs)}
+    for name, (P, pr) in beh_sets.items():
         za, zb = P[pr[:, 0]], P[pr[:, 1]]
         for rin in (0, 1):
             h = enc(za, zb, rin)
-            feats[(name, rin)] = (h, za, zb)
             for rout in (0, 1):
-                y = world.render(za, zb, rout)
-                yrev = world.render(zb, za, rout)
+                y, yrev = world.render(za, zb, rout), world.render(zb, za, rout)
                 out = dec(h, rout)
                 res[f"beh_{name}_r{rin}{rout}"] = r2(out, y)
                 e_ok = ((out - y) ** 2).reshape(len(y), -1).sum(1)
                 e_rev = ((out - yrev) ** 2).reshape(len(y), -1).sum(1)
                 res[f"roleerr_{name}_r{rin}{rout}"] = float((e_rev < e_ok).mean())
+                if name == "fresh":  # per-composite errors, for within-condition analyses
+                    res[f"beh_fresh_items_r{rin}{rout}"] = (1 - e_ok / ((y - y.mean(0)) ** 2).reshape(len(y), -1).sum(1).mean()).round(4).tolist()
             # edit leakage: change role-1 part only, measure change in role-2 region of BESIDE output
-            za2 = P[np.roll(pr[:, 0], 1)]
-            h2 = enc(za2, zb, rin)
+            h2 = enc(P[np.roll(pr[:, 0], 1)], zb, rin)
             o1, o2 = dec(h, 0), dec(h2, 0)
-            dl = np.abs(o2[:, :, :8] - o1[:, :, :8]).mean()
-            dr = np.abs(o2[:, :, 8:] - o1[:, :, 8:]).mean()
-            res[f"leak_{name}_r{rin}"] = float(dr / (dl + 1e-9))
-    # readouts of each role's latent from h, fit on train composites (per input relation)
+            res[f"leak_{name}_r{rin}"] = float(np.abs(o2[:, :, 8:] - o1[:, :, 8:]).mean() / (np.abs(o2[:, :, :8] - o1[:, :, :8]).mean() + 1e-9))
+    probe_eval = {"heldout": (vocab, heldout), "strong": (vocab, strong), "fresh": (fresh_p, fpairs)}
     for rin in (0, 1):
-        htr, zatr, zbtr = feats[("train", rin)]
-        # use the full train set for fitting
-        za_full, zb_full = vocab[train[:, 0]], vocab[train[:, 1]]
-        h_full = enc(za_full, zb_full, rin)
-        mu, sd = h_full.mean(0), h_full.std(0) + 1e-6
-        for role, ztr in (("1", za_full), ("2", zb_full)):
-            lin = RidgeCV(alphas=np.logspace(-4, 3, 15)).fit((h_full - mu) / sd, ztr)
-            mlp = MLPRegressor(hidden_layer_sizes=(128, 128), max_iter=300, early_stopping=len(ztr) > 50,
-                               random_state=seed).fit((h_full - mu) / sd, ztr)
-            for name in ("heldout", "strong", "fresh"):
-                h, za, zb = feats[(name, rin)]
-                zt = za if role == "1" else zb
-                res[f"probe_lin_{name}_r{rin}_role{role}"] = r2(lin.predict((h - mu) / sd), zt)
-                res[f"probe_mlp_{name}_r{rin}_role{role}"] = r2(mlp.predict((h - mu) / sd), zt)
-            # the same readout targeting the part's glyph pixels
-            gtr = world.glyph(ztr).reshape(len(ztr), -1)
-            linp = RidgeCV(alphas=np.logspace(-4, 3, 15)).fit((h_full - mu) / sd, gtr)
-            for name in ("heldout", "strong", "fresh"):
-                h, za, zb = feats[(name, rin)]
-                gt = world.glyph(za if role == "1" else zb).reshape(len(za), -1)
-                res[f"probe_pix_{name}_r{rin}_role{role}"] = r2(linp.predict((h - mu) / sd), gt)
-        # additivity over a grid of parts
-        n = min(10, V - max(1, V // 4))
-        for gname, P in (("fam", vocab[:n]), ("fresh", fresh[:10])):
-            k = len(P)
-            ii, jj = np.meshgrid(np.arange(k), np.arange(k), indexing="ij")
-            hg = enc(P[ii.ravel()], P[jj.ravel()], rin).reshape(k, k, -1)
-            res[f"inter_{gname}_r{rin}"] = anova_interaction(hg)
-            # role factorization: is a part's role-2 effect a fixed linear map of its
-            # role-1 effect (phi_2 = B o phi_1)?  Fit B on half the parts, test on the rest.
-            mu_g = hg.mean((0, 1))
-            alpha, beta = hg.mean(1) - mu_g, hg.mean(0) - mu_g
-            half = k // 2
-            Bfit = RidgeCV(alphas=np.logspace(-4, 3, 15)).fit(alpha[:half], beta[:half])
-            res[f"rolefac_{gname}_r{rin}"] = r2(Bfit.predict(alpha[half:]), beta[half:])
-            xg = world.render(P[ii.ravel()], P[jj.ravel()], rin).reshape(k, k, -1)
-            res[f"inter_input_{gname}_r{rin}"] = anova_interaction(xg)
+        fits = {}
+        # population readouts: fit on composites of pool parts (never trained on)
+        for tag, mdl in (("pool", model), ("init", ctx["init_model"])):
+            za, zb = pool[pool_pairs[:, 0]], pool[pool_pairs[:, 1]]
+            fits[tag] = (mdl, enc(za, zb, rin, mdl), world.glyph(za).reshape(len(za), -1), world.glyph(zb).reshape(len(zb), -1))
+        # vocabulary readouts: fit on the system's own training composites (the biased protocol)
+        za, zb = vocab[train[:, 0]], vocab[train[:, 1]]
+        fits["vocab"] = (model, enc(za, zb, rin), world.glyph(za).reshape(len(za), -1), world.glyph(zb).reshape(len(zb), -1))
+        for tag, (mdl, Hfit, g1, g2) in fits.items():
+            mu, sd = Hfit.mean(0), Hfit.std(0) + 1e-6
+            for role, gt in (("1", g1), ("2", g2)):
+                lin = RidgeCV(alphas=np.logspace(-4, 3, 15)).fit((Hfit - mu) / sd, gt)
+                for name, (P, pr) in probe_eval.items():
+                    za, zb = P[pr[:, 0]], P[pr[:, 1]]
+                    h = enc(za, zb, rin, mdl)
+                    tgt = world.glyph(za if role == "1" else zb).reshape(len(za), -1)
+                    res[f"probe_{tag}_{name}_r{rin}_role{role}"] = r2(lin.predict((h - mu) / sd), tgt)
+        # additivity over a grid of fresh parts
+        P = fresh_p[:10]
+        ii, jj = np.meshgrid(np.arange(10), np.arange(10), indexing="ij")
+        res[f"inter_fresh_r{rin}"] = anova_interaction(enc(P[ii.ravel()], P[jj.ravel()], rin).reshape(10, 10, -1))
+        res[f"inter_input_fresh_r{rin}"] = anova_interaction(world.render(P[ii.ravel()], P[jj.ravel()], rin).reshape(10, 10, -1))
     return res
 
 
@@ -312,6 +331,9 @@ if __name__ == "__main__":
     ap.add_argument("--coverages", default="1.0")
     ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--second", default="over")
+    ap.add_argument("--q", type=int, default=Q)
+    ap.add_argument("--npairs", type=int, default=None)
+    ap.add_argument("--auxs", default="0")
     ap.add_argument("--outdir", required=True)
     a = ap.parse_args()
     torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "2")))
@@ -323,13 +345,15 @@ if __name__ == "__main__":
             for cov in map(float, sep(a.coverages)):
                 for arch in sep(a.archs):
                     for m in map(int, sep(a.ms)):
-                        fn = os.path.join(a.outdir, f"{arch}_m{m}_V{V}_c{cov:g}_s{seed}.json")
+                      for aux in map(float, sep(a.auxs)):
+                        tag = (f"_q{a.q}" if a.q != Q else "") + (f"_n{a.npairs}" if a.npairs else "") + (f"_aux{aux:g}" if aux else "")
+                        fn = os.path.join(a.outdir, f"{arch}_m{m}_V{V}_c{cov:g}{tag}_s{seed}.json")
                         if os.path.exists(fn):
                             continue
-                        r = run(arch, m, V, seed, a.steps, cov)
+                        r = run(arch, m, V, seed, a.steps, cov, q=a.q, npairs=a.npairs, aux=aux)
                         r["second"] = a.second
                         with open(fn, "w", encoding="utf-8") as f:
                             json.dump(r, f, indent=1)
                         print(fn, f"loss={r['final_loss']:.4f} t={r['train_secs']:.0f}s "
                               f"beh_ho={r['beh_heldout_r11']:.3f} beh_fr={r['beh_fresh_r11']:.3f} "
-                              f"plin_fr={r['probe_lin_fresh_r1_role1']:.3f}", flush=True)
+                              f"pool_fr={r['probe_pool_fresh_r1_role1']:.3f} vocab_fr={r['probe_vocab_fresh_r1_role1']:.3f} init_fr={r['probe_init_fresh_r1_role1']:.3f}", flush=True)

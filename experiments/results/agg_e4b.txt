@@ -1,0 +1,151 @@
+selected (layer, code) on validation nouns:
+                      layer     code   rec_val
+model                                        
+bert-base-uncased       L9  carrier  0.459323
+bert-large-uncased     L18   static  0.431561
+clip-b32            pooled  carrier -0.308242
+clip-h14               L24  carrier  0.246114
+gpt2                    L6   phrase  0.769255
+gpt2-large             L18   phrase  0.820663
+gpt2-medium            L12   phrase  0.822590
+sd15-clip-l         pooled  carrier  0.055843
+t5-base                 L9  carrier  0.768808
+t5-large            pooled   static  0.477380
+t5-small            pooled   phrase  0.356723
+
+rec_fresh by system:
+ system                     model  ref_concat  ref_sum
+model              rel                               
+bert-base-uncased  and     0.367       0.998    0.478
+                   behind  0.403       0.997    0.473
+                   inside  0.403       0.998    0.471
+                   left    0.468       0.998    0.476
+                   on      0.474       0.998    0.473
+                   under   0.432       0.998    0.476
+bert-large-uncased and     0.388       0.889    0.414
+                   behind  0.377       0.887    0.409
+                   inside  0.406       0.887    0.409
+                   left    0.360       0.888    0.412
+                   on      0.428       0.887    0.407
+                   under   0.415       0.886    0.410
+clip-b32           and    -0.593       0.989    0.464
+                   behind -0.381       0.989    0.462
+                   inside -0.280       0.989    0.458
+                   left   -0.448       0.989    0.460
+                   on     -0.307       0.989    0.458
+                   under  -0.330       0.989    0.460
+clip-h14           and     0.326       0.963    0.449
+                   behind  0.315       0.963    0.451
+                   inside  0.301       0.964    0.447
+                   left    0.238       0.964    0.453
+                   on      0.268       0.963    0.440
+                   under   0.301       0.963    0.449
+gpt2               and     0.760       1.000    0.485
+                   behind  0.788       1.000    0.502
+                   inside  0.778       1.000    0.495
+                   left    0.770       1.000    0.493
+                   on      0.752       1.000    0.498
+                   under   0.806       1.000    0.503
+gpt2-large         and     0.872       1.000    0.484
+                   behind  0.852       1.000    0.501
+                   inside  0.847       1.000    0.493
+                   left    0.839       1.000    0.491
+                   on      0.802       1.000    0.497
+                   under   0.858       1.000    0.502
+gpt2-medium        and     0.853       1.000    0.484
+                   behind  0.852       1.000    0.500
+                   inside  0.846       1.000    0.492
+                   left    0.829       1.000    0.492
+                   on      0.803       1.000    0.496
+                   under   0.841       1.000    0.502
+sd15-clip-l        and    -0.115       0.985    0.470
+                   behind -0.080       0.984    0.468
+                   inside  0.089       0.985    0.466
+                   left    0.016       0.984    0.464
+                   on      0.045       0.984    0.462
+                   under  -0.001       0.984    0.464
+t5-base            and     0.712       0.999    0.472
+                   behind  0.719       0.999    0.465
+                   inside  0.694       0.999    0.458
+                   left    0.686       0.999    0.461
+                   on      0.715       0.999    0.470
+                   under   0.729       0.999    0.471
+t5-large           and     0.497       0.913    0.438
+                   behind  0.519       0.911    0.437
+                   inside  0.530       0.913    0.433
+                   left    0.498       0.912    0.439
+                   on      0.518       0.911    0.434
+                   under   0.521       0.912    0.438
+t5-small           and     0.339       0.999    0.484
+                   behind  0.335       0.999    0.482
+                   inside  0.363       0.999    0.481
+                   left    0.301       0.999    0.482
+                   on      0.387       0.999    0.481
+                   under   0.353       0.999    0.479
+
+mean over asymmetric relations:
+                                rec_pairs  rec_fresh  rec_fresh_role1  rec_fresh_role2  id_fresh  role_fresh  rev_sim  inter
+model              system                                                                                                  
+bert-base-uncased  model           0.921      0.436            0.475            0.397     0.564       0.963    0.683  0.187
+                   ref_concat      1.000      0.998            0.998            0.998     1.000       1.000   -0.011  0.000
+                   ref_sum         0.486      0.474            0.472            0.476     0.368       0.500    1.000  0.000
+bert-large-uncased model           0.894      0.397            0.414            0.380     0.652       0.949    0.620  0.260
+                   ref_concat      1.000      0.887            0.886            0.888     1.000       1.000   -0.013  0.000
+                   ref_sum         0.472      0.409            0.409            0.410     0.410       0.500    1.000  0.000
+clip-b32           model           0.817     -0.349           -0.302           -0.396     0.290       0.857    0.883  0.088
+                   ref_concat      1.000      0.989            0.989            0.989     1.000       1.000   -0.013  0.000
+                   ref_sum         0.480      0.459            0.459            0.460     0.409       0.501    1.000  0.000
+clip-h14           model           0.982      0.285            0.630           -0.060     0.597       0.970    0.641  0.032
+                   ref_concat      1.000      0.963            0.963            0.964     1.000       1.000   -0.016  0.000
+                   ref_sum         0.475      0.448            0.447            0.448     0.396       0.502    1.000  0.000
+gpt2               model           0.996      0.779            0.771            0.786     0.599       0.886    0.805  0.007
+                   ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.980  0.000
+                   ref_sum         0.493      0.498            0.493            0.503     0.115       0.499    0.999  0.000
+gpt2-large         model           0.997      0.840            0.844            0.836     0.748       0.946    0.686  0.012
+                   ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.931  0.000
+                   ref_sum         0.491      0.497            0.492            0.502     0.178       0.498    1.000  0.000
+gpt2-medium        model           0.996      0.834            0.851            0.818     0.706       0.917    0.734  0.011
+                   ref_concat      1.000      1.000            1.000            1.000     1.000       1.000   -0.952  0.000
+                   ref_sum         0.489      0.497            0.492            0.501     0.236       0.502    1.000  0.000
+sd15-clip-l        model           0.854      0.014            0.011            0.017     0.340       0.889    0.853  0.108
+                   ref_concat      1.000      0.984            0.984            0.984     1.000       1.000   -0.009  0.000
+                   ref_sum         0.480      0.465            0.464            0.465     0.390       0.501    1.000  0.000
+t5-base            model           0.967      0.709            0.736            0.681     0.390       0.941    0.775  0.090
+                   ref_concat      1.000      0.999            0.999            0.999     1.000       1.000   -0.478  0.000
+                   ref_sum         0.469      0.465            0.461            0.470     0.312       0.497    1.000  0.000
+t5-large           model           0.873      0.517            0.485            0.549     0.746       0.981    0.018  0.202
+                   ref_concat      1.000      0.912            0.911            0.912     1.000       1.000   -0.015  0.000
+                   ref_sum         0.467      0.436            0.435            0.438     0.396       0.502    1.000  0.000
+t5-small           model           0.902      0.348            0.340            0.356     0.634       0.967    0.182  0.206
+                   ref_concat      1.000      0.999            0.999            0.999     1.000       1.000   -0.020  0.000
+                   ref_sum         0.483      0.481            0.482            0.479     0.411       0.504    1.000  0.000
+
+'and' vs asymmetric (model):
+                    rec_fresh        role_fresh        rev_sim       
+sym                    False  True       False  True    False  True 
+model                                                               
+bert-base-uncased      0.436  0.367      0.963  0.954   0.683  0.791
+bert-large-uncased     0.397  0.388      0.949  0.944   0.620  0.792
+clip-b32              -0.349 -0.593      0.857  0.799   0.883  0.946
+clip-h14               0.285  0.326      0.970  0.970   0.641  0.691
+gpt2                   0.779  0.760      0.886  0.884   0.805  0.832
+gpt2-large             0.840  0.872      0.946  0.957   0.686  0.742
+gpt2-medium            0.834  0.853      0.917  0.927   0.734  0.785
+sd15-clip-l            0.014 -0.115      0.889  0.848   0.853  0.925
+t5-base                0.709  0.712      0.941  0.935   0.775  0.814
+t5-large               0.517  0.497      0.981  0.973   0.018  0.009
+t5-small               0.348  0.339      0.967  0.972   0.182  0.287
+
+oracle-best rec_fresh (upper bound on selection):
+ model
+bert-base-uncased     0.436
+bert-large-uncased    0.397
+clip-b32             -0.349
+clip-h14              0.285
+gpt2                  0.779
+gpt2-large            0.840
+gpt2-medium           0.834
+sd15-clip-l           0.014
+t5-base               0.709
+t5-large              0.517
+t5-small              0.358
