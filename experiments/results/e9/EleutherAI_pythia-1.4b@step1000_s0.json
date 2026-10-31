@@ -1,0 +1,222 @@
+[
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.485,
+  "ident": 0.005,
+  "margin": -0.3477685499191284
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.515,
+  "ident": 0.035,
+  "margin": 0.35675087809562683
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.445,
+  "ident": 0.005,
+  "margin": -0.7294633209705352
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.55,
+  "ident": 0.035,
+  "margin": 0.7225653731822967
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.52,
+  "ident": 0.01,
+  "margin": 0.14052267551422118
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.48,
+  "ident": 0.01,
+  "margin": -0.13630764245986937
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.465,
+  "ident": 0.01,
+  "margin": -0.3178117322921753
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.535,
+  "ident": 0.01,
+  "margin": 0.3133509612083435
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.555,
+  "ident": 0.019166666666666665,
+  "margin": 0.22193391799926757
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.45,
+  "ident": 0.03,
+  "margin": -0.18099653601646423
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.475,
+  "ident": 0.015,
+  "margin": -0.278785924911499
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.515,
+  "ident": 0.0475,
+  "margin": 0.2467004418373108
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.505,
+  "ident": 0.0475,
+  "margin": 0.2275303626060486
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.49,
+  "ident": 0.04,
+  "margin": -0.22329033374786378
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.475,
+  "ident": 0.0475,
+  "margin": -0.14010826826095582
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.515,
+  "ident": 0.04,
+  "margin": 0.14645520448684693
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.58,
+  "ident": 0.0225,
+  "margin": 0.3934734177589416
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.43,
+  "ident": 0.0625,
+  "margin": -0.3532358551025391
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.51,
+  "ident": 0.02,
+  "margin": -0.13863933324813843
+ },
+ {
+  "model": "EleutherAI/pythia-1.4b@step1000",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.495,
+  "ident": 0.0625,
+  "margin": 0.19856491327285766
+ }
+]

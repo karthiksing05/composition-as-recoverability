@@ -1,0 +1,222 @@
+[
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.93,
+  "ident": 0.94,
+  "margin": 8.475450928845
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 13.616879226912616
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.995,
+  "margin": 13.872251385301624
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 7.6164650754279615
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 16.494160368534832
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 20.210314466661604
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 17.49422244359364
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 10.759688579516714
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 9.076890607298356
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 10.881875511633202
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 5.777231563756145
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.639999927727832
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.93,
+  "ident": 0.9325,
+  "margin": 6.021875519778697
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 19.046202770782884
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 17.72312892053914
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.467173573943192
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 13.340941331148723
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 22.510736172068977
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 14.22062587086753
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 17.28719128754194
+ }
+]

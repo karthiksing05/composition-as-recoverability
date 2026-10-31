@@ -1,0 +1,222 @@
+[
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.99,
+  "ident": 0.99,
+  "margin": 2.329545903667458
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.995,
+  "margin": 3.8677049516368425
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.975,
+  "ident": 0.975,
+  "margin": 3.4780643299550866
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.97,
+  "ident": 0.97,
+  "margin": 4.144074723449885
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 4.781026251244184
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.95,
+  "ident": 0.95,
+  "margin": 4.945833793131751
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.83,
+  "ident": 0.83,
+  "margin": 2.1430672124109695
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 3.8042419248969237
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.99,
+  "ident": 0.99,
+  "margin": 3.3232022425963077
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.97,
+  "ident": 0.97,
+  "margin": 3.4285672103412796
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.975,
+  "ident": 0.975,
+  "margin": 2.835812214034959
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.975,
+  "ident": 0.975,
+  "margin": 3.5501951791910686
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.955,
+  "ident": 0.955,
+  "margin": 2.819067298900336
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.595,
+  "ident": 0.595,
+  "margin": 0.820143198875594
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.615,
+  "ident": 0.615,
+  "margin": 0.6393059786222876
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 3.4031125170743324
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 6.643476850251609
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.955,
+  "ident": 0.955,
+  "margin": 3.5924747315871355
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 4.457362806645978
+ },
+ {
+  "model": "allenai/OLMo-2-1124-13B",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.965,
+  "ident": 0.965,
+  "margin": 3.004393408197793
+ }
+]

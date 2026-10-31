@@ -1,0 +1,222 @@
+[
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.045,
+  "ident": 0.0575,
+  "margin": -2.653433507264126
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.745,
+  "ident": 0.75,
+  "margin": 1.1437042102543638
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.93,
+  "ident": 0.9375,
+  "margin": 2.69261878113728
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.145,
+  "ident": 0.16,
+  "margin": -1.8694836298562587
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.02,
+  "ident": 0.0325,
+  "margin": -2.795474116767291
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.955,
+  "ident": 0.965,
+  "margin": 2.6872070175944827
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.91,
+  "ident": 0.92,
+  "margin": 2.442604723197874
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.095,
+  "ident": 0.1025,
+  "margin": -2.324323388321791
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.21,
+  "ident": 0.22,
+  "margin": -0.9763657932542265
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.565,
+  "ident": 0.5875,
+  "margin": 0.31958406239748
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.905,
+  "ident": 0.905,
+  "margin": 2.215373260951601
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.245,
+  "ident": 0.255,
+  "margin": -1.144337812140584
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.18,
+  "ident": 0.1925,
+  "margin": -1.4969085867423564
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.82,
+  "ident": 0.8575,
+  "margin": 1.8031244396790862
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.91,
+  "ident": 0.9175,
+  "margin": 2.4194503331091255
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.065,
+  "ident": 0.0725,
+  "margin": -2.7429624177189544
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.15,
+  "ident": 0.165,
+  "margin": -2.1265655142767357
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.915,
+  "ident": 0.9225,
+  "margin": 3.007923742235871
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.81,
+  "ident": 0.835,
+  "margin": 2.2438175869639965
+ },
+ {
+  "model": "gpt2-medium",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.115,
+  "ident": 0.1325,
+  "margin": -2.4100386299355887
+ }
+]

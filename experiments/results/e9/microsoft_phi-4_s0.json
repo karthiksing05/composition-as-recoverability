@@ -1,0 +1,222 @@
+[
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.955801692839378
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 12.849076301845052
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.995,
+  "margin": 9.002644295253413
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.985,
+  "ident": 0.985,
+  "margin": 9.264202082096745
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 10.535897571597598
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 10.485326236744731
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 12.165406786953827
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.10121979885269
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.98,
+  "ident": 0.98,
+  "margin": 8.590185072365857
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.86,
+  "ident": 0.86,
+  "margin": 4.8216550800298865
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.96,
+  "ident": 0.96,
+  "margin": 6.06529590574617
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 9.815572842918991
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 4.693350256694248
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.995,
+  "margin": 3.4322541148762684
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 3.279081906860229
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 8.135515519595938
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 12.999358214603198
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.32154132805772
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 8.855990720849222
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 1.0,
+  "ident": 1.0,
+  "margin": 11.301416276814379
+ }
+]

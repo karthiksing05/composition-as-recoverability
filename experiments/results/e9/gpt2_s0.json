@@ -1,0 +1,222 @@
+[
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.12,
+  "ident": 0.1275,
+  "margin": -2.467271385663189
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.855,
+  "ident": 0.8575,
+  "margin": 2.637149975546636
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.87,
+  "ident": 0.875,
+  "margin": 2.640003901603632
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.1,
+  "ident": 0.1075,
+  "margin": -2.8529237300157546
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.11,
+  "ident": 0.12,
+  "margin": -3.078475345687475
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.865,
+  "ident": 0.87,
+  "margin": 3.097489901155932
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.905,
+  "ident": 0.9075,
+  "margin": 3.3510824695485644
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.08,
+  "ident": 0.0875,
+  "margin": -3.3686654998012817
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.19,
+  "ident": 0.1975,
+  "margin": -1.8517314358940349
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.775,
+  "ident": 0.8,
+  "margin": 1.913929100665264
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.625,
+  "ident": 0.65,
+  "margin": 0.8459436338348314
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.245,
+  "ident": 0.255,
+  "margin": -1.362304815193638
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.725,
+  "ident": 0.7325,
+  "margin": 1.3986770445620642
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.32,
+  "ident": 0.315,
+  "margin": -0.9299606564221904
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.51,
+  "ident": 0.5225,
+  "margin": 0.03800192080438137
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.405,
+  "ident": 0.4175,
+  "margin": -0.2790480041503906
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.26,
+  "ident": 0.275,
+  "margin": -1.5404366742493585
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.67,
+  "ident": 0.69,
+  "margin": 1.1197926136897878
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.82,
+  "ident": 0.84,
+  "margin": 2.220421521170065
+ },
+ {
+  "model": "gpt2",
+  "seed": 0,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.215,
+  "ident": 0.24,
+  "margin": -1.6608847125689499
+ }
+]

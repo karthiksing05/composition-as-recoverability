@@ -30,6 +30,10 @@ def msem(k, m, col="kappa"):
 
 
 e6 = kappa_seeds(short(load("e6")), ASYM)
+e10 = kappa_seeds(short(load("e10")), ASYM)  # dense Pythia-1.4b checkpoints, Pythia-410m with PolyPythia seeds
+e6 = pd.concat([e6, e10[e10.model.str.startswith("pythia-1.4b")]])
+e9 = pd.read_csv("results/agg_r8_e9.csv", index_col=0)  # the model's own answers (agg_r8.py)
+gr = pd.read_csv("results/agg_r8_e8grid.csv", index_col=[0, 1])  # quadrant-pooled image states
 e8 = kappa_seeds(load("e8"), ["beside", "above", "overlap"])
 
 fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.35), gridspec_kw=dict(wspace=0.5, width_ratios=[1.1, 0.9, 1.3, 1.2]))
@@ -60,17 +64,23 @@ panel(ax, "a", "Scale stalls")
 
 # b: training trajectory of Pythia-1.4b; step 0 is the random-initialization control
 ax = axs[1]; ygrid(ax)
-ST = [("pythia-1.4b@step0", 0), ("pythia-1.4b@step512", 512), ("pythia-1.4b@step2000", 2000), ("pythia-1.4b@step8000", 8000),
-      ("pythia-1.4b@step32000", 32000), ("pythia-1.4b", 143000)]
+ST = [(f"pythia-1.4b@step{s}", s) for s in (0, 512, 1000, 2000, 4000, 8000, 16000, 32000, 64000)] + [("pythia-1.4b", 143000)]
 ST = [(m, s) for m, s in ST if m in set(e6.model)]
 mu, se = zip(*[msem(e6, m) for m, _ in ST])
 x = np.array([max(s, 100) for _, s in ST])
 band(ax, x, np.array(mu), np.array(se), BLUE, marker="o", ms=2.8, label="both nouns")
 mu2, se2 = zip(*[msem(e6, m, "kappa2") for m, _ in ST])
 band(ax, x, np.array(mu2), np.array(se2), BLUE, ls="--", marker="o", ms=2.8, mfc="white", label="second noun")
-ax.legend(fontsize=5.4, loc="lower right", handlelength=1.6, borderaxespad=0.1, labelspacing=0.2)
+# Pythia-410m from six training seeds (the original and five PolyPythia runs), kappa over both nouns
+S410 = (0, 512, 1000, 2000, 4000, 8000, 16000, 32000, 143000)
+k410 = np.array([[e10[e10.model == f"{r}@step{s}"].kappa.mean() for s in S410]
+                 for r in ["pythia-410m"] + [f"pythia-410m-seed{i}" for i in range(1, 6)]])
+xs = np.array([max(s, 100) for s in S410])
+ax.fill_between(xs, k410.min(0), k410.max(0), color=GREEN, alpha=0.25, lw=0)
+ax.plot(xs, k410.mean(0), color=GREEN, lw=0.9, label="410m, 6 seeds")
+ax.legend(fontsize=5.0, loc="lower right", handlelength=1.6, borderaxespad=0.1, labelspacing=0.2)
 ax.set_xscale("log"); ax.set_xticks([100, 1e3, 1e4, 1e5]); ax.set_xticklabels(["0", "$10^3$", "$10^4$", "$10^5$"]); ax.minorticks_off()
-ax.set_xlabel("training step (Pythia-1.4b)"); ax.set_ylim(-0.45, 1.05); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels([])
+ax.set_xlabel("training step"); ax.set_ylim(-0.45, 1.05); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels([])
 ax.axhline(0, color=DGREY, lw=0.5); ax.axhline(1, color=INK, lw=0.8, ls=":")
 panel(ax, "b", "Training peaks early")
 
@@ -96,12 +106,15 @@ for i, (m, _) in enumerate(SEL):
     ax.plot([min(v), max(v)], [yy[i]] * 2, color=LGREY, lw=1.0, zorder=1)
 for k, c, mk, lab in KEYS:
     ax.plot([R[R.model == m][k].mean() for m, _ in SEL], yy, mk, color=c, ms=3.4, ls="", label=lab, zorder=3)
+# behavior: the model's own answer to a question about the figure or ground of a converse sentence
+bx = [(e9.loc[m, "conv"], y) for (m, _), y in zip(SEL, yy) if m in e9.index]
+ax.plot([v for v, _ in bx], [y for _, y in bx], "*", color=INK, ms=4.6, ls="", label="model's own answer, converse", zorder=4)
 ax.set_yticks(yy); ax.set_yticklabels([l for _, l in SEL], fontsize=5.8)
-ax.set_xlim(-0.03, 1.03); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(yy[-1] - 0.7, 3.5)
+ax.set_xlim(-0.03, 1.03); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(yy[-1] - 0.7, 4.4)
 ax.set_xlabel("role accuracy, fresh nouns")
 ax.legend(fontsize=5.4, loc="upper left", handlelength=0.8, handletextpad=0.3, borderaxespad=0.1, labelspacing=0.2)
 ax.spines["left"].set_visible(False); ax.tick_params(axis="y", length=0)
-panel(ax, "c", "Roles follow word order")
+panel(ax, "c", "States follow word order")
 
 # d: image encoders, trained vs random initialization (E8)
 ax = axs[3]; ygrid(ax)
@@ -110,11 +123,13 @@ ENC = [("dinov2-s", "DINOv2 S"), ("dinov2-l", "DINOv2 L"), ("dinov2-g", "DINOv2 
 for j, (pre, c, lab) in enumerate([("", BLUE, "trained"), ("rand-", LGREY, "random weights")]):
     mu, se = zip(*[msem(e8, pre + m) for m, _ in ENC])
     ax.bar(np.arange(len(ENC)) + (j - 0.5) * 0.4, mu, 0.38, yerr=se, color=c, label=lab, error_kw=dict(lw=0.5))
+    ax.plot(np.arange(len(ENC)) + (j - 0.5) * 0.4, [gr.loc[(pre + m, "grid"), "kappa"] for m, _ in ENC], "D",
+            color=DGREY if pre else BLUE, mfc="white", ms=2.8, mew=0.8, ls="", label="quadrant pooling" if not pre else None, zorder=4)
 ax.axhline(0, color=DGREY, lw=0.5)
 ax.set_xticks(range(len(ENC))); ax.set_xticklabels([l for _, l in ENC], rotation=60, ha="right", fontsize=5.8)
-ax.set_ylabel(r"$\kappa$, fresh photographs"); ax.set_ylim(-0.4, 0.85); ax.set_yticks([-0.25, 0, 0.25, 0.5, 0.75])
-ax.legend(fontsize=5.6, loc="upper left", handlelength=0.9, borderaxespad=0.1)
-panel(ax, "d", "Photographs agree")
+ax.set_ylabel(r"$\kappa$, fresh photographs"); ax.set_ylim(-0.4, 1.3); ax.set_yticks([0, 0.5, 1]); ax.axhline(1, color=INK, lw=0.8, ls=":")
+ax.legend(fontsize=5.0, loc="upper left", handlelength=0.9, borderaxespad=0.1, ncol=3, columnspacing=0.6, handletextpad=0.3)
+panel(ax, "d", "Pooling blends photographs")
 
 fig.savefig(f"{FIGDIR}/fig_real.pdf")
 fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_real.png", dpi=200)

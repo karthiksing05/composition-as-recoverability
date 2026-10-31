@@ -15,7 +15,8 @@ def get(r, **kw):
             print(r, kw, "FAILED", type(e).__name__, type(e2).__name__, flush=True)
 
 
-for r in repos:
+if __name__ == "__main__":
+  for r in repos:
     get(r)
-for step in (0, 512, 2000, 8000, 32000):
+  for step in (0, 512, 2000, 8000, 32000):
     get("EleutherAI/pythia-1.4b", revision=f"step{step}")

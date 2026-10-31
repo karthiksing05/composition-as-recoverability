@@ -1,0 +1,222 @@
+[
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.04,
+  "ident": 0.04,
+  "margin": -2.8918202647008
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.98,
+  "margin": 3.2009292084071785
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 1.0,
+  "ident": 0.9975,
+  "margin": 3.57469577586744
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "on",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.0,
+  "ident": 0.0,
+  "margin": -3.2509905259730294
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.055,
+  "ident": 0.0575,
+  "margin": -2.727254366159905
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.99,
+  "margin": 3.4851633758214304
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.99,
+  "ident": 0.9825,
+  "margin": 3.520481476453133
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "left",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.015,
+  "ident": 0.015,
+  "margin": -3.5557992781349457
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.495,
+  "ident": 0.4725,
+  "margin": -0.08315670908428728
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.32,
+  "ident": 0.325,
+  "margin": -0.6359015742503107
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.895,
+  "ident": 0.8775,
+  "margin": 1.734177264496684
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "inside",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.615,
+  "ident": 0.6375,
+  "margin": 0.43309196999296545
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.005,
+  "ident": 0.005,
+  "margin": -3.471041358474176
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.975,
+  "ident": 0.9675,
+  "margin": 2.606273325998336
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.995,
+  "ident": 0.9875,
+  "margin": 3.769920661211945
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "behind",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.045,
+  "ident": 0.0475,
+  "margin": -2.3613111441931687
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "figure",
+  "answer_first": true,
+  "choice": 0.085,
+  "ident": 0.0875,
+  "margin": -1.807593908268027
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "canonical",
+  "question": "ground",
+  "answer_first": false,
+  "choice": 0.955,
+  "ident": 0.95,
+  "margin": 2.2932285439083353
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "figure",
+  "answer_first": false,
+  "choice": 0.96,
+  "ident": 0.96,
+  "margin": 2.81444680450717
+ },
+ {
+  "model": "EleutherAI/pythia-2.8b",
+  "seed": 1,
+  "rel": "hit",
+  "phrasing": "converse",
+  "question": "ground",
+  "answer_first": true,
+  "choice": 0.045,
+  "ident": 0.0425,
+  "margin": -2.70797342245467
+ }
+]

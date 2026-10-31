@@ -1,0 +1,4 @@
+e9_behavior.py --models EleutherAI/pythia-1.4b@step1000 --seeds 0+1+2 --outdir results/e9
+e9_behavior.py --models EleutherAI/pythia-1.4b@step4000 --seeds 0+1+2 --outdir results/e9
+e9_behavior.py --models EleutherAI/pythia-1.4b@step16000 --seeds 0+1+2 --outdir results/e9
+e9_behavior.py --models EleutherAI/pythia-1.4b@step64000 --seeds 0+1+2 --outdir results/e9

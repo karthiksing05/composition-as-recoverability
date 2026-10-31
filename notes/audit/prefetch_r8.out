@@ -1,0 +1,117 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files:  11%|█         | 1/9 [00:00<00:00,  9.65it/s]Fetching 9 files:  33%|███▎      | 3/9 [00:20<00:46,  7.74s/it]Fetching 9 files:  67%|██████▋   | 6/9 [00:21<00:09,  3.09s/it]Fetching 9 files: 100%|██████████| 9/9 [00:21<00:00,  2.38s/it]
+EleutherAI/pythia-1.4b step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-1.4b/snapshots/4ccfb66b5ff79d332c69d5182d88d8de8b3441d3
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files:  33%|███▎      | 3/9 [00:22<00:45,  7.59s/it]Fetching 9 files: 100%|██████████| 9/9 [00:22<00:00,  2.53s/it]
+EleutherAI/pythia-1.4b step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-1.4b/snapshots/e27c7a8944677b79afa3da836d8be00346511c9f
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files:  33%|███▎      | 3/9 [00:20<00:40,  6.73s/it]Fetching 9 files: 100%|██████████| 9/9 [00:20<00:00,  2.24s/it]
+EleutherAI/pythia-1.4b step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-1.4b/snapshots/7227add89b788c09c721b976969beb64fa71d10c
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files:  22%|██▏       | 2/9 [00:00<00:00, 13.35it/s]Fetching 9 files:  22%|██▏       | 2/9 [00:15<00:00, 13.35it/s]Fetching 9 files:  33%|███▎      | 3/9 [00:19<00:49,  8.19s/it]Fetching 9 files: 100%|██████████| 9/9 [00:19<00:00,  2.19s/it]
+EleutherAI/pythia-1.4b step64000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-1.4b/snapshots/7277ad8a8582c08c985da32613a987189c6e7c3c
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:09<00:12,  3.10s/it]Fetching 7 files: 100%|██████████| 7/7 [00:09<00:00,  1.33s/it]
+EleutherAI/pythia-410m step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/8bba10b3d3588a20deaaeacca9efc46a680ca91d
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:09,  2.34s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.00s/it]
+EleutherAI/pythia-410m step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/c34decdeaf02e4b2afd98c6bfd9ab2b094964c27
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:09,  2.37s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.03s/it]
+EleutherAI/pythia-410m step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/1091939841611a37efe2bdfdf2bfd4f7778b0b0c
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:09,  2.38s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.02s/it]
+EleutherAI/pythia-410m step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/e7a3d8e06fe8cc3b169828c61bb8bc2bea4d705c
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:09,  2.42s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.04s/it]
+EleutherAI/pythia-410m step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/bbae7110cd5c6718b1e655c87a455527760a4f6b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:10,  2.50s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.07s/it]
+EleutherAI/pythia-410m step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/8e89b393da981e212cfdf890de1fe7dbc2d8b6b9
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:06<00:08,  2.07s/it]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:04,  1.53s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.06it/s]
+EleutherAI/pythia-410m step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/8446851c14ad5b18ec87ab6ecf9c1a068346293b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:07<00:10,  2.50s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.07s/it]
+EleutherAI/pythia-410m step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/e96fca70a425a39753c9f54a2cf74421606a33ac
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:10<00:13,  3.39s/it]Fetching 7 files: 100%|██████████| 7/7 [00:10<00:00,  1.45s/it]
+EleutherAI/pythia-410m step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m/snapshots/bba6a464f54bbf08fc174cfb351d9794d58af21d
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  8.22it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.92s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.02s/it]
+EleutherAI/pythia-410m-seed1 step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/4aa96ad7344b88d2a3e190d48499e37770c43556
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.05it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.84it/s]
+EleutherAI/pythia-410m-seed1 step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/030a513e0b684c639253df21eb9c49437d8ba7ff
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:03,  1.31s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.34it/s]
+EleutherAI/pythia-410m-seed1 step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/7e02c7e50950e28b99125696eaa1fe08078251c5
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.08it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.89it/s]
+EleutherAI/pythia-410m-seed1 step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/14f1ef87c6f687c958637d7cf31264c21a9759e5
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:03,  1.33s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.32it/s]
+EleutherAI/pythia-410m-seed1 step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/00f93ef4cdeedb4cf5ab6b69068ee6e4c5145431
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  9.51it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:04,  1.40s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.34it/s]
+EleutherAI/pythia-410m-seed1 step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/da30a2a978d2613ee4939be48e6136efd29aa313
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.16s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.51it/s]
+EleutherAI/pythia-410m-seed1 step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/a9d47da4e99ef539ceb04440650f695f8dff5902
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:04,  1.34s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.30it/s]
+EleutherAI/pythia-410m-seed1 step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/9c37345300fb1248c8494a8d3f0e267b3c6a8b21
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:04,  1.59s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.10it/s]
+EleutherAI/pythia-410m-seed1 step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed1/snapshots/a77e7d87906f1c77138c009121f9d6439144663c
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:01,  3.12it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.88s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.01s/it]
+EleutherAI/pythia-410m-seed2 step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/623c37c02909555e121370a154a784e51256f707
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:01,  5.28it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:03,  1.02s/it]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.82it/s]
+EleutherAI/pythia-410m-seed2 step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/a2431527ccbb8ab41a53d37b45419450ad86ccad
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:05,  1.71s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.02it/s]
+EleutherAI/pythia-410m-seed2 step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/ca37d8c7981bf7314bddc13658b87212db1d86a9
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  8.67it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.17s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.60it/s]
+EleutherAI/pythia-410m-seed2 step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/12f856da5563bbf5ad99cd8e85d76554ad50b10f
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:05,  1.73s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.01it/s]
+EleutherAI/pythia-410m-seed2 step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/f71d5023ae402bf8810e93715417347e71e83f2a
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:08<00:06,  2.12s/it]Fetching 7 files: 100%|██████████| 7/7 [00:08<00:00,  1.21s/it]
+EleutherAI/pythia-410m-seed2 step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/cff29975bbffebc15e4446b9e827e9b20d59105a
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.80s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.03s/it]
+EleutherAI/pythia-410m-seed2 step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/f036b96ed3f44c749f363e575065923f791d550b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:00<00:00, 16.39it/s]Fetching 7 files:  71%|███████▏  | 5/7 [00:07<00:03,  1.86s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.10s/it]
+EleutherAI/pythia-410m-seed2 step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/0b61a50f21674fcf879a8b73d8c5f0300eac3d52
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.80s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.03s/it]
+EleutherAI/pythia-410m-seed2 step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed2/snapshots/8f8a4fabfcd5f2504ee550cb33771760d6cec419
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  8.38it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.28s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.46it/s]
+EleutherAI/pythia-410m-seed3 step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/e52f3a11137d627442a81b38faecc0eeb24a833b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.78s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.02s/it]
+EleutherAI/pythia-410m-seed3 step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/93283006a7e22c3c63f9d9e97d45b9e3555470d6
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  9.53it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:04,  1.34s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.41it/s]
+EleutherAI/pythia-410m-seed3 step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/89b05ff83d573565ae181781048d53134c469079
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:04,  1.53s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.15it/s]
+EleutherAI/pythia-410m-seed3 step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/c17a3fe3fc7fd9a1f174ccf24ce62d1846af247b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  9.68it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:08<00:06,  2.31s/it]Fetching 7 files: 100%|██████████| 7/7 [00:08<00:00,  1.23s/it]
+EleutherAI/pythia-410m-seed3 step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/5b4edcff88d2e41aa5e4cf8993ad18ba11c5c048
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.93s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.10s/it]
+EleutherAI/pythia-410m-seed3 step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/2ca7fac03b98f6c44ec6b14882288653f612c381
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.82s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.04s/it]
+EleutherAI/pythia-410m-seed3 step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/7dc999bacec78ee2b892a64a410af3a87957da29
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:03,  1.26s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.38it/s]
+EleutherAI/pythia-410m-seed3 step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/c07e888ec754afba266664634f5dbafb4b60eecc
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.05it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.84it/s]
+EleutherAI/pythia-410m-seed3 step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed3/snapshots/83438f87adb388fb205a83ad516e3b349b5cfcba
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  6.92it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:05,  1.73s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.09it/s]
+EleutherAI/pythia-410m-seed4 step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/03082e6df364e56acc417a94da7d1435ffee0a0c
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:07<00:05,  1.75s/it]Fetching 7 files: 100%|██████████| 7/7 [00:07<00:00,  1.00s/it]
+EleutherAI/pythia-410m-seed4 step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/da2768c3e8df751a9820484e3b54c6b18e5010a6
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  43%|████▎     | 3/7 [00:00<00:00, 28.49it/s]Fetching 7 files:  86%|████████▌ | 6/7 [00:04<00:00,  1.24it/s]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.68it/s]
+EleutherAI/pythia-410m-seed4 step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/6e5aafa8d734d99e84806939ba9b4436a927011a
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  29%|██▊       | 2/7 [00:00<00:00,  9.57it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:05,  1.80s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.13it/s]
+EleutherAI/pythia-410m-seed4 step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/3dd4da65750f597edf5461b82fd4a4ce9143f7eb
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:04,  1.35s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.29it/s]
+EleutherAI/pythia-410m-seed4 step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/7745f6a1aae575a7feb1bc6ac3298dd6e96fe46e
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:05<00:04,  1.45s/it]Fetching 7 files: 100%|██████████| 7/7 [00:05<00:00,  1.21it/s]
+EleutherAI/pythia-410m-seed4 step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/5f99516a06d6195c60c312ea535e3da51e9fb6b4
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:06<00:04,  1.65s/it]Fetching 7 files: 100%|██████████| 7/7 [00:06<00:00,  1.06it/s]
+EleutherAI/pythia-410m-seed4 step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/e0fc442867ddac224e6b892395c06900550c96e2
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.00it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.75it/s]
+EleutherAI/pythia-410m-seed4 step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/ea13ad8df732631b2d2447380d62cd880ca3bbb2
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.14s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.54it/s]
+EleutherAI/pythia-410m-seed4 step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed4/snapshots/b122bdb9065e19909d34653da26e06e49fd4ded2
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  8.04it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.32s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.42it/s]
+EleutherAI/pythia-410m-seed5 step0 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/aa65781ff954d0749446eac0ae1b81cc9eb010b0
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.18s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.49it/s]
+EleutherAI/pythia-410m-seed5 step512 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/ff323f4b27108fdb154b627b2a850e24978f79c0
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.01s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.74it/s]
+EleutherAI/pythia-410m-seed5 step1000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/a3f51a9f056272815aa184ce2d595e7ffbd9d19b
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  8.44it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.31s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.44it/s]
+EleutherAI/pythia-410m-seed5 step2000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/9e7730381c97a1e354553a0fd5b0875901c82577
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  29%|██▊       | 2/7 [00:00<00:00, 12.99it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:03,  1.14s/it]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.79it/s]
+EleutherAI/pythia-410m-seed5 step4000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/bbaeb672c77efbe6bfeb44f0e1562dc3b01ca557
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.19s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.47it/s]
+EleutherAI/pythia-410m-seed5 step8000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/49ada9b2f642edd14440639f96328788d159c7db
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:04<00:03,  1.09s/it]Fetching 7 files: 100%|██████████| 7/7 [00:04<00:00,  1.61it/s]
+EleutherAI/pythia-410m-seed5 step16000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/7fd68ab61d660de7bf11b554b51b78d81a254c4f
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.00it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.76it/s]
+EleutherAI/pythia-410m-seed5 step32000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/8cef39e3f46536659b9b287e3bcb8469224bb729
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files:  14%|█▍        | 1/7 [00:00<00:00,  9.80it/s]Fetching 7 files:  57%|█████▋    | 4/7 [00:03<00:02,  1.01it/s]Fetching 7 files: 100%|██████████| 7/7 [00:03<00:00,  1.89it/s]
+EleutherAI/pythia-410m-seed5 step143000 /nethome/ksingara3/.cache/huggingface/hub/models--EleutherAI--pythia-410m-seed5/snapshots/b9156c2847b0e50f298706af140656bbf0b7cf06
+usage(total=25848695488512, used=21302698049536, free=4545997438976)

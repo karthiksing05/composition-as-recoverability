@@ -1,0 +1,21 @@
+EleutherAI/pythia-410m-seed1
+EleutherAI/pythia-410m-seed2
+EleutherAI/pythia-410m-seed3
+EleutherAI/pythia-410m-seed4
+EleutherAI/pythia-410m-seed6
+EleutherAI/pythia-410m-seed5
+EleutherAI/pythia-410m-seed7
+EleutherAI/pythia-410m-seed8
+EleutherAI/pythia-410m-seed9
+EleutherAI/neox-ckpt-pythia-410m-seed1
+EleutherAI/neox-ckpt-pythia-410m-seed2
+EleutherAI/neox-ckpt-pythia-410m-seed3
+EleutherAI/neox-ckpt-pythia-410m-seed4
+EleutherAI/neox-ckpt-pythia-410m-seed5
+EleutherAI/neox-ckpt-pythia-410m-seed6
+EleutherAI/neox-ckpt-pythia-410m-seed7
+EleutherAI/neox-ckpt-pythia-410m-seed8
+EleutherAI/neox-ckpt-pythia-410m-seed9
+EleutherAI/neox-ckpt-pythia-410m-seed0
+EleutherAI/pythia-410m-seed1 155 ['main', 'step0', 'step1', 'step1000', 'step10000', 'step100000', 'step101000', 'step102000', 'step103000', 'step104000', 'step105000', 'step106000'] ['step95000', 'step96000', 'step97000', 'step98000', 'step99000']
+EleutherAI/pythia-160m-seed1 155 ['main', 'step0', 'step1', 'step1000', 'step10000', 'step100000', 'step101000', 'step102000', 'step103000', 'step104000', 'step105000', 'step106000'] ['step95000', 'step96000', 'step97000', 'step98000', 'step99000']
