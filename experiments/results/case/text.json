@@ -1,0 +1,83 @@
+{
+ "model": "Qwen/Qwen3-8B",
+ "layer": "L9",
+ "acc": {
+  "canon_fit_on_canon": 1.0,
+  "canon_fit_on_conv": 0.008,
+  "both_fit_on_conv": 0.608
+ },
+ "examples": [
+  {
+   "figure": "nest",
+   "ground": "sofa",
+   "canon": "a nest on a sofa",
+   "conv": "a sofa under a nest",
+   "pred_canon": "nest",
+   "pred_conv": "rug",
+   "pred_both_conv": "rug"
+  },
+  {
+   "figure": "yacht",
+   "ground": "saw",
+   "canon": "a yacht on a saw",
+   "conv": "a saw under a yacht",
+   "pred_canon": "yacht",
+   "pred_conv": "saw",
+   "pred_both_conv": "saw"
+  },
+  {
+   "figure": "basket",
+   "ground": "carrot",
+   "canon": "a basket on a carrot",
+   "conv": "a carrot under a basket",
+   "pred_canon": "basket",
+   "pred_conv": "carrot",
+   "pred_both_conv": "pie"
+  },
+  {
+   "figure": "sandwich",
+   "ground": "turkey",
+   "canon": "a sandwich on a turkey",
+   "conv": "a turkey under a sandwich",
+   "pred_canon": "sandwich",
+   "pred_conv": "fern",
+   "pred_both_conv": "fern"
+  },
+  {
+   "figure": "ostrich",
+   "ground": "key",
+   "canon": "a ostrich on a key",
+   "conv": "a key under a ostrich",
+   "pred_canon": "ostrich",
+   "pred_conv": "key",
+   "pred_both_conv": "ostrich"
+  },
+  {
+   "figure": "basket",
+   "ground": "puppet",
+   "canon": "a basket on a puppet",
+   "conv": "a puppet under a basket",
+   "pred_canon": "basket",
+   "pred_conv": "puppet",
+   "pred_both_conv": "puppet"
+  },
+  {
+   "figure": "hat",
+   "ground": "candle",
+   "canon": "a hat on a candle",
+   "conv": "a candle under a hat",
+   "pred_canon": "hat",
+   "pred_conv": "candle",
+   "pred_both_conv": "puppet"
+  },
+  {
+   "figure": "shovel",
+   "ground": "cheese",
+   "canon": "a shovel on a cheese",
+   "conv": "a cheese under a shovel",
+   "pred_canon": "shovel",
+   "pred_conv": "cheese",
+   "pred_both_conv": "saw"
+  }
+ ]
+}

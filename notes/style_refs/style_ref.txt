@@ -1,0 +1,2032 @@
+DEFINING AND GENERATING COMPOSITIONAL STRUCTURE
+Eric Elmoznino∗,1,2, Tejas Kasetty1,2, Blaise Agüera y Arcas3, Yoshua Bengio1,2,4, Guillaume Lajoie1,2,3
+1Mila – Quebec AI Institute, 2Université de Montréal, 3Google Paradigms of Intelligence Team, 4LawZero
+October 16, 2026
+ABSTRACT
+Compositional structure is pervasive in nature and across scales: atoms combine into molecules,
+molecules into cells, and cells into organisms, while further compositional hierarchies appear within
+each level. More broadly, compositionality — the reuse and recombination of parts into novel
+structures — is a fundamental source of interesting complexity in both natural and artificial systems.
+Yet despite its importance, and despite our apparent ease in recognizing it, mathematical accounts
+capturing what we intuitively mean by compositional structure remain limited. Here, we fill this gap
+by formalizing a simple idea: compositional structure emerges when parts, considered together, reveal
+shared structure that is not captured when those parts are modeled separately. We express this idea
+using algorithmic information theory — the mathematics of information and compression — which
+provides a natural way to identify structure in arbitrary data without specifying in advance what that
+structure must look like. Applied across scales, our definition informs where and how compositional
+structure emerges within an object. Using tractable approximations, we then invert the framework to
+generate compositional objects: we specify the desired form of their compositional structure without
+prescribing their particular content, and optimize directly over strings and images. The resulting
+objects exhibit readily recognizable hierarchical reuse and part–whole organization, suggesting that
+the definition captures compositional structure rather than merely complexity, regularity, or shared
+information. Finally, we discuss implications for machine learning, including a new perspective on
+depth in neural architectures and principles for constructing compositional data curricula capable of
+supporting open-ended learning.
+Keywords compositionality, complexity, structure, compression, machine learning
+1
+Introduction
+“Each portion of matter can be conceived as a garden full of plants, and as a pond full of fish. But each branch of the
+plant, each member of the animal, each drop of its humors, is also such a garden or such a pond.”
+— Gottfried Wilhelm Leibniz, (Leibniz, 1898)
+Compositional structure is everywhere, and at every scale. Atoms combine into molecules, molecules into cells, cells
+into organs, and organs into organisms. Each of these levels in turn contains further rich hierarchies; cells and organs, too,
+are intricately organized assemblies of interacting parts. Compositionality applies to more abstract spaces as well: music
+develops motifs into phrases and movements; programs build modules from modules and functions from functions;
+concepts are built from other concepts; technologies are built from more granular technologies (Arthur, 2009); scientific
+theories inherit and reorganize earlier ideas; and a well-designed curriculum continually recombines prior knowledge
+into more sophisticated skills. Across all these examples, complexity does not arise from an undifferentiated collection
+of elements, but from parts being reused and recombined into new structures. In this broad sense, compositionality
+is a signature of both life and intelligence, and arguably one of the principal sources of interesting complexity in the
+universe (Agüera y Arcas, 2025).
+∗Correspondence to: eric.elmoznino@gmail.com
+Code is provided at https://github.com/EricElmoznino/defining_and_generating_compositional_structure
+arXiv:2610.20922v1  [cs.AI]  14 Oct 2026
+
+Defining and Generating Compositional Structure
+PREPRINT
+Despite how readily we recognize such examples, it remains difficult to say precisely what makes them compositional.
+Familiar descriptions — that the whole is more than the sum of its parts, or that the meaning of a complex expression
+depends on its structure and the meanings of its constituents — are suggestive but do not by themselves provide a
+general quantitative measure (Pagin and Westerståhl, 2010). More formal approaches in machine learning typically
+begin with a prescribed set of semantic constituents and a rule for reconstructing the whole from them. Some define
+these constituents using known generative factors or object slots (Wiedemer et al., 2024, 2023), while others restrict
+their combination to a particular operation, such as a linear map or a prescribed hierarchy (Andreas, 2019; Trager et al.,
+2023). These approaches are useful when the parts and their modes of combination are already known, but they make
+compositionality relative to externally supplied semantics or a restricted form of composition (Elmoznino et al., 2024).
+They therefore do not fully answer the broader question: for an arbitrary object, what intrinsic compositional structure
+emerges across its parts, how much of it is present, and how is it organized across scales?
+Our starting point is that compositional structure emerges when parts, considered together, reveal shared structure
+that is not captured when those parts are modeled separately. Here, a model represents the structure in an object: the
+regularities and patterns that provide a shorter explanation of the data. If the model of the whole contains something
+genuinely new beyond the models of the parts, then those parts share some pattern or organization that becomes apparent
+only through their combination. This is what we call novel compositional structure. A cell viewed in isolation reveals
+its internal organization; a collection of cells viewed together may additionally reveal a tissue, with spatial arrangements
+and collective mechanisms absent from any one cell. The same principle can be applied recursively: tissues form organs,
+motifs form phrases, and functions form higher-level functions. Repeating the comparison at different locations and
+scales produces a profile of where an object’s compositional structure emerges. Section 2 develops this idea and tests it
+against several intuitive cases.
+To make this precise, we use algorithmic information theory: a mathematics of information expressed through
+description length and compression. The shortest two-part description of an object separates a model, which captures its
+compressible structure, from the residual information needed to specify the object given that model. We compare these
+structure-bearing models across parts and wholes, measuring how much additional information is needed to describe
+the model of the whole from the models of its parts. This lets us speak rigorously about parts, structure, and novelty
+without specifying in advance what the structure must be. The distinction is between form and content: our quantities
+describe where and how structure is composed while remaining agnostic to the particular structures or patterns involved.
+Section 3 formalizes the definition, extends it to multiscale compositional structure profiles, and develops tractable
+approximations.
+A quantitative definition also lets us look at the problem in reverse: instead of measuring the compositional structure of
+a given object, we can specify a desired profile and search for objects that exhibit it. We demonstrate this in Section 4
+by optimizing directly over strings and images. Without prescribing their particular content, the objective produces
+strings with nested patterns and images with coherent, hierarchical visual organization reminiscent of abstract art. These
+experiments serve both as a method for generating structured data and as a concrete test of the definition. The generated
+objects display recognizable reuse, hierarchy, and part–whole organization rather than mere randomness or repetition.
+Finally, we consider what this perspective suggests for machine learning. Natural data often builds structure on top
+of structure across many scales, matching the inductive bias of deep architectures whose successive layers build
+increasingly abstract features from earlier ones. Compositional structure can also grow through time: new data may
+reuse, extend, or reorganize what came before. This suggests principles not only for choosing architectures, but for
+ordering experience into curricula in which each stage builds maximally on prior structure, and for gathering new
+data that continually expands what a learner can represent. We close by developing these connections between depth,
+curricula, and open-ended learning to our definition of compositional structure in Section 5.
+2
+Intuition for compositional structure
+Before introducing the formal machinery, we build intuition through a running concrete example based on computer
+programs. We use computer programs because they are familiar and paradigmatic compositional objects: programmers
+explicitly define reusable parts and combine them to construct more complex ones, making the relevant structure
+unusually easy to see. A self-contained program can be separated conceptually into a library of reusable functions,
+classes, and data structures, and the remaining code written using that library. When the library is designed to make the
+complete program as short as possible, it captures the program’s reusable structure. A richly compositional program
+should then have a modular library containing a varied repertoire of components that are reused throughout the program
+and recombined to define higher-level components. A library with very few distinct components provides little material
+to compose. Conversely, a large collection of functions used only within separate portions of the code is better
+understood as several unrelated programs placed beside one another; size alone does not make a library compositional.
+2
+
+Defining and Generating Compositional Structure
+PREPRINT
+The same program can be organized around many different libraries, so inspecting an arbitrary implementation would
+make this intuition depend on choices made by its programmer. Compression provides a less arbitrary reference
+point: consider the library that yields the shortest overall description after accounting for both the library and the code
+expressed through it. Our strategy is to track how this optimal library changes as increasingly large parts of the program
+are considered together. If two snippets contain related logic, their joint description may justify a reusable abstraction
+that was not economical for either snippet alone. Compositionality then depends on whether the library of the whole
+contains something genuinely new: not new raw code, since the relevant code already occurred in the parts, but a new
+structural description of what those parts share.
+More concretely, let xa and xb denote two program fragments and let x = [xa, xb] denote their combination, with
+each expressed directly as code without factoring reusable pieces into a library. Write mxa, mxb, and mx for the
+optimal libraries that compress the corresponding fragments or whole. Suppose the same block of code occurs
+once in each fragment and is long enough that extracting it into a function becomes worthwhile only after the
+fragments are joined. The function need not appear in mxa or mxb, since defining it for a single use would not
+shorten either fragment individually. For the whole, however, extracting the shared block into a function can shorten
+the total program. The library mx has grown because a common part becomes reusable structure only at the level
+of the whole. The same phenomenon can involve refactoring rather than simply adding a function. For example,
+one fragment may justify a matrix-multiplication routine while another justifies a vector-norm routine; considered
+together, the shortest library may redefine the norm in terms of the existing multiplication routine. In both cases,
+combining the fragments changes how their structure is optimally represented and reveals a novel interaction between
+them.
+Two contrasting cases clarify why this is more specific than either reuse or structural complexity alone. First, xb
+might simply provide more uses of a library that was already optimal for xa. The whole is then compressed us-
+ing the same library as the parts: there is shared structure and a compression benefit, but no new abstraction
+or refactoring is required.
+Second, xa and xb might be entirely unrelated programs.
+The optimal library of
+the whole may be larger than either part-library, but only because it places their independent contents side by
+side. Given mxa and mxb, constructing mx requires essentially nothing novel. Both of these cases differ from
+the compositional one: in the first, all the structure needed to compress both parts is already encoded in one
+of their libraries; in the second, there is no shared structure to exploit.
+Compositional structure lies in a dif-
+ferent space, where the best joint library cannot be obtained merely by selecting or merging the libraries of the
+parts.
+This comparison can be applied recursively. A program may reveal one abstraction when short fragments are
+joined, another when larger segments of code are combined, and still others when those segments form the com-
+plete program. Recording where the optimal library grows or is reorganized therefore describes not just whether
+the program is compositional, but where its compositional structure emerges across locations and scales. The
+comparison at each join is local: it asks what additional library structure emerges when those particular parts
+are combined. Structure already captured within a smaller segment is therefore attributed to the earlier joins in-
+side that segment, while later joins capture only the further structure introduced by combining it with other seg-
+ments.
+Programs and libraries provide a concrete example of a more general idea. For an arbitrary object, a model plays the
+role of the library: it captures regularities that allow the object to be described more concisely, while the remaining
+description specifies details not captured by the model. The object may represent music, an image, an iid dataset,
+or a nonstationary data stream. In every case, we ask the same question of a chosen division into parts: does
+the best model of the whole contain structural information that cannot be recovered from the best models of the
+parts? The next section makes “best model” and “cannot be recovered” precise using algorithmic information theory.
+Importantly, the claim is not that the raw whole contains information absent from its parts: by construction, it is
+simply their concatenation. Rather, combining the parts can change the best account of their structure. It is in
+this precise sense that the description of a compositional whole is more than the sum of the descriptions of its
+parts.
+3
+Defining compositional structure
+The preceding intuition suggests that compositional structure can be identified by comparing the structure-bearing
+descriptions of parts and wholes. We now make this idea precise using algorithmic information theory. We first use
+optimal two-part codes (Grünwald, 2007) to define the model that captures an object’s compressible structure; we then
+measure the novel structure that emerges at a composition step, apply this comparison recursively to obtain multiscale
+compositional structure profiles, and describe how the resulting quantities can be approximated in practice.
+3
+
+Defining and Generating Compositional Structure
+PREPRINT
+3.1
+Preliminaries: algorithmic information theory
+Kolmogorov complexity.
+Kolmogorov complexity (Fortnow, 2000; Kolmogorov, 1965; Li et al., 2008) is a notion of
+information quantity that serves as the foundations for algorithmic information theory. Intuitively, the Kolmogorov
+complexity of an object x, denoted K(x), is the length of the shortest program (in some programming language) that
+outputs x. A related notion is the conditional Kolmogorov complexity of x given another object y, denoted K(x | y),
+which is the length of the shortest program that takes y as input and outputs x. Kolmogorov complexity has many
+intuitive properties as a measure of information quantity that generalize equivalent properties from Shannon information
+theory (Grünwald and Vitányi, 2003), and is deeply rooted in the idea of compression.
+Formally, throughout this paper K denotes prefix Kolmogorov complexity relative to a fixed universal prefix Turing
+machine U. A prefix Turing machine is one in which valid programs are self-delimiting; they are commonly-used in
+algorithmic information theory for technical convenience. For a finite string x, K(x) is the length l(r) (in bits) of the
+shortest binary program r that prints x and halts:
+K(x) = min
+r {l(r) : U(r) = x, r ∈{0, 1}∗},
+(1)
+and given a separate string y, the conditional Kolmogorov complexity K(x | y) is defined analogously as:
+K(x | y) = min
+r {l(r) : U(r, y) = x, r ∈{0, 1}∗}.
+(2)
+For tuples, let ⟨x, y⟩denote a fixed computable self-delimiting encoding of x and y, and use K(x, y) as shorthand for
+K(⟨x, y⟩); conditioning on several objects is interpreted similarly. The particular choices of universal machine and
+tuple encoding affect these quantities by at most an additive constant independent of the objects. In general, K(·) is
+incomputable. However, the quantity can still be useful and approximated.
+Note 1. Suppression of lower-order terms
+Kolmogorov-complexity relationships generally hold only up to small additive terms. Changing the universal
+machine or a fixed encoding contributes an O(1) constant, while recording lengths, boundaries, or other auxiliary
+information can contribute O(log n) bits for objects of length n. Throughout the paper, we suppress these terms
+and write the corresponding equalities and inequalities directly. This convention keeps the description-length
+arguments transparent without changing their qualitative content. Accordingly, statements involving zeros,
+strict inequalities, or exact ties should be understood up to these suppressed terms: the relevant differences are
+assumed to be large enough that coding overheads cannot change the comparison.
+Structure and Occam’s razor.
+Although Kolmogorov complexity provides a canonical notion of information quantity,
+it does not separate structural complexity from randomness. A regular string has low complexity because it can be
+generated by a short program, whereas a random string has high complexity because no substantially shorter description
+exists than the string itself. However, the latter form of complexity does not reflect elaborate internal organization; it
+reflects the absence of compressible structure. In this sense, K(x) entangles two distinct contributions to description
+length: one arising from meaningful structure, and one arising from irreducible randomness. This motivates finer
+notions that aim to measure structure rather than mere incompressibility.
+This distinction between structural and random information was important to Kolmogorov himself, who quantified
+it through a new metric (Kolmogorov, 1973) that was later generalized under various formulations and termed
+sophistication or meaningful information (Gács et al., 2001; Grünwald et al., 2008; Koppel and Atlan, 1989; Vitányi,
+2006). Intuitively, measuring structural information involves compressing an object using two-part coding schemes that
+follow the minimum description length (MDL) principle (Grünwald, 2007) and Occam’s razor.
+Let M be a model class, and denote the two-part code length of x under a model m ∈M as:
+Lm(x) = K(m) + lm(x),
+(3)
+where lm(x) is the model-to-data code length (i.e., the cost of describing the data given the model). The form of lm(x)
+depends on the model class under consideration. For instance, in the case of computable probability distributions,
+lm(x) = −log2 m(x), where m(x) is the probability mass that m assigns to x.
+We define the set of minimum description length models by:
+M∗(x) := arg min
+m∈M
+Lm(x).
+(4)
+4
+
+Defining and Generating Compositional Structure
+PREPRINT
+Assuming there is a unique model in M∗(x) with minimal Kolmogorov complexity, we define the Occam’s razor
+model of x, denoted mx, by:
+mx := arg min
+m∈M∗(x)
+K(m).
+(5)
+The model mx relates to what has been called the minimal algorithmic sufficient statistic of x in prior literature (Gács
+et al., 2001; Grünwald et al., 2008; Vereshchagin and Shen, 2016). K(mx) captures the structural information in x that
+can be exploited for compression within the model class M, while the residual term lmx(x) represents the remaining
+incompressible, unstructured, and random information in x relative to that model class. For sufficiently expressive
+model classes, one has Lmx(x) = K(mx) + lmx(x) = K(x), so that mx decomposes Kolmogorov complexity into
+structured and unstructured components.
+3.2
+Formal definition
+Novel compositional structure.
+Using the notion of an Occam’s razor model defined in Equation (5), we provide our
+formal definition for novel compositional structure.
+Definition 1. Novel compositional structure
+Let x = [xa, xb] denote a decomposition of a string x into two substrings xa and xb, where [xa, xb] denotes
+concatenation. Let m· denote an Occam’s razor model as defined in Equation (5), and assume that it is uniquely
+defined for each of x, xa, and xb. We define the amount of novel compositional structure in x relative to this
+decomposition as:
+C(xa, xb →x) := K(mx | mxa, mxb).
+(6)
+This quantity measures the additional information required to describe the model of the whole string, mx, given the
+models of the parts, mxa and mxb. In particular, C(xa, xb →x) ≈0 in cases where the structure of the whole is
+already recoverable from the structures of the parts. For example, this holds when mx is identical to one of mxa or
+mxb, or when mx is a trivial combination of the pair (mxa, mxb) with only minor overhead (e.g., mx compresses x by
+using mxa to compress xa and using mxb to compress xb).
+Thus, C(xa, xb →x) is intended to quantify structure present in the whole that is not recoverable from the models of
+the parts alone. Intuitively, C(xa, xb →x) is large when jointly considering xa and xb reveals a novel compression
+strategy that does not arise when they are modeled separately, such as when a pattern repeats across the boundary
+between xa and xb but not within either substring individually. More broadly, it measures the extent to which the
+structure of the whole is different from the structures of the parts.
+Note that Definition 1 measures only novel compositional structure from the decomposition of x into xa and xb; it does
+not quantify the compositional structure that is already present in the parts themselves.
+Compositional structure profiles.
+The quantity C(xa, xb →x) measures novel compositional structure relative to a
+single decomposition of a string. More generally, if x = [x1, . . . , xk], we define:
+C(x1, . . . , xk →x) := K(mx | mx1, . . . , mxk).
+(7)
+This definition can be applied recursively with respect to any chosen decomposition strategy, which allows us to
+characterize a string’s compositional structure profile.
+Definition 2. Compositional structure profile
+Let T be a rooted decomposition tree for a string x, where each node v is associated with a substring xv and
+children v1, . . . , vkv satisfying xv = [xv1, . . . , xvkv ]. For each such node and children, we define its local
+compositionality by:
+CT,x(v) := C(xv1, . . . , xvkv →xv) = K(mxv | mxv1, . . . , mxvk ).
+(8)
+We define a string x’s compositional structure profile with respect to a rooted decomposition tree T as:
+PT (x) := (CT,x(v))v∈Int(T ) ∈RInt(T )
+≥0
+,
+(9)
+where Int(T) denotes the set of internal nodes of T.
+5
+
+Defining and Generating Compositional Structure
+PREPRINT
+Intuitively, Definition 2 says that we can consider a hierarchical decomposition of a string into a tree and record how
+much novel compositional structure appears at each composition step in that tree’s hierarchy. For example, one may
+choose T to be a balanced binary tree obtained by recursively splitting x into two halves until a prescribed minimum
+substring length is reached. In that case, CT,x(v) is measured at every join operation in the recursive decomposition,
+and PT (x) captures the emergence of novel compositional structure in x at multiple scales and locations.
+Uncompositional
+e.g., random noise, repeated pattern, unrelated substrings
+Hierarchical structure
+e.g., non-i.i.d. data, music, art
+Open-ended structure
+e.g., lifetime data, curricula, evolution
+Flat structure
+e.g., structured i.i.d. data
+K(mx|mxa, mxb)
+x
+xa
+xb
+Figure 1: Visual illustration of compositional structure profiles. A profile records where novel structure emerges along a
+hierarchical decomposition of an object. At each merge, the vertical increment represents the additional information required
+to describe the model of the whole from the models of its parts, C(xa, xb →x) := K(mx | mxa, mxb) (top left). Different
+distributions of these increments produce characteristic signatures: negligible novel structure for uncompositional objects, structure
+confined to bounded scales for structured iid data, structure distributed across nested scales for hierarchical objects, and continually
+accumulating structure for open-ended processes.
+Figure 1 visually illustrates how compositional structure profiles provide signatures not only of how much structure
+an object contains, but of how that structure is organized. Random or trivially regular objects exhibit little novel
+structure throughout the decomposition. For structured iid data, novel structure appears only up to a characteristic
+scale: once enough observations determine the shared data-generating process, additional samples introduce no new
+model structure since the arrangement of the samples is arbitrary and random. Hierarchical objects such as music and
+art instead exhibit novel structure across many nested scales, as smaller patterns compose into progressively larger
+ones. Under a left-to-right decomposition, open-ended processes such as curricula, lifetime experience, or evolution
+produce a different signature, with each new segment extending or refactoring the structure accumulated so far. These
+qualitatively distinct profiles make the organization and growth of an object’s structure apparent.
+An image dataset makes the connection between hierarchical compositional structure and scale concrete. A single
+image of a cat contains many edge segments, textures, and simple shapes, so these recurring structures may already
+justify their place in its optimal model; with only one cat, however, introducing a reusable concept of a cat may not yet
+repay its description length cost. Across many images, cats recur often enough for the joint model to represent them as
+compositions of lower-level structures; with still more data, rarer regularities can justify further distinctions such as
+breeds or recurring relations between cats and indoor or outdoor scenes. Larger datasets therefore expose progressively
+higher levels of the hierarchy, since rarer combinations involving more parts require more observations before they
+improve compression. The compositional structure profile records the scales at which these new abstractions become
+worthwhile, and for non-stationary data additionally records the locations.
+The choice of decomposition.
+Up to this point, Definition 2 has defined a compositional structure profile in a way
+that depends on the choice of decomposition tree T. However, intuitions about compositionality strongly suggest that
+a given object has an intrinsic, or “true” decomposition. We think of a compositional object has having parts that
+combine to form wholes in a particular way, and capturing those intrinsic hierarchies is an important part of defining
+compositional structure. We leave this as an open problem for future work, which bears on several important questions.
+For instance, if one were to use a different decomposition from this intrinsic one, would the resulting compositionality
+structure profile still be meaningful? Do there exist objects which are intuitively non-compositional, but erroneously
+appear as if they were under the wrong decomposition? For an object that was originally constructed through a series of
+compositions, as is the case in the evolution of life (Agüera y Arcas, 2025) and technology (Arthur, 2009), would the
+intrinsic decomposition recover this true history?
+6
+
+Defining and Generating Compositional Structure
+PREPRINT
+Although we leave these questions unanswered in the present work, we conjecture that an object’s intrinsic decomposi-
+tion is the one that maximizes the sum of scores C(xv1, . . . , xvkv →xv) across the tree (i.e., the sum of Equation (9)).
+We justify this more extensively in Appendix B, but the intuition is that this would result in joins that maximally
+privilege the emergence of shared parts throughout the decomposition, capturing the object’s natural hierarchy.
+3.3
+Approximating compositional structure
+The preceding definitions cannot be computed exactly. In addition to the uncomputability of the Kolmogorov complexi-
+ties used to describe models and measure conditional novelty, identifying an Occam’s razor model requires searching a
+potentially infinite class of computable models. Even if progressively better descriptions are found, there is generally
+no way to certify that no unexamined model would yield a shorter two-part code.
+In practice, we replace these quantities with empirical coding and search procedures. Let f denote an empirical two-part
+coding scheme, together with an associated model class and fitting procedure, that assigns the code length:
+Lf
+m(x) := Lf
+model(m) + Lf
+data(x | m)
+(10)
+and returns an empirical MDL model mf
+x. Let g denote an empirical conditional coding scheme for describing one
+fitted model given others. We then define the empirical compositionality of x = [x1, . . . , xk] by:
+Cf,g(x1, . . . , xk →x) := Lg
+cond
+ mf
+x | mf
+x1, . . . , mf
+xk
+
+.
+(11)
+Thus, f approximates both the description lengths and the search involved in constructing the models, while g measures
+the additional cost of describing the fitted model of the whole from those of its parts. The resulting quantity is an
+operational, coding-strategy-dependent notion of compositionality, rather than a formal bound on the corresponding
+algorithmic-information quantity. Further details are provided in Appendix A.
+3.4
+Relationship to other measures of compositionality
+The literature on compositionality has a long history spanning many fields, so we do not aim to exhaustively survey it
+here. Instead, we focus on formal definitions of compositionality that have been proposed (at times under different
+names), with a particular emphasis on approaches leveraging algorithmic or Shannon information theory.
+Algorithmic mutual information.
+For an object x = [xa, xb], algorithmic mutual information (AMI) quantifies the
+degree to which the whole is more compressible than the parts:
+I(xa : xb) = K(xa) + K(xb) −K(xa, xb).
+AMI has been proposed as a measure for what we here call novel compositional structure (Agüera y Arcas, 2025;
+Schmidhuber, 1997), and indeed it bears many similarities to the definition we have proposed. In particular, under very
+mild assumptions it can be shown that:
+C(xa, xb →x) > 0 =⇒I(xa : xb) > 0,
+but that the reverse does not hold (proof in Appendix C.1). Intuitively, two objects can share AMI for one of two
+reasons: (i) they share existing structure in mxa and mxb that need not be redundantly encoded in mx, or (ii) they
+share novel structure in mx that only appears when they are considered jointly and does not exist in either mxa or mxb
+alone. C(xa, xb →x) measures only the latter case, disentangling the emergence of novel compositional structure
+from simply the accumulation of more data with the same structure.
+Partial information decomposition.
+Partial information decomposition (PID) separates the information that two
+sources Xa and Xb provide about a target Y into redundant, unique, and synergistic components (Williams and Beer,
+2010):
+I(Xa, Xb; Y ) = Red(Xa, Xb; Y ) + Unqa(Xa, Xb; Y )
++ Unqb(Xa, Xb; Y ) + Syn(Xa, Xb; Y ).
+The synergistic term measures information about Y that is available from (Xa, Xb) jointly but from neither source
+individually. It is therefore the closest Shannon-theoretic analogue of C(xa, xb →x): both notions aim to isolate
+information that becomes available only when the parts are considered jointly.
+The two quantities nevertheless address different settings. PID is a property of a joint distribution over sources and
+a target, whereas C(xa, xb →x) is an algorithmic property of the internal structure of an individual object. This
+7
+
+Defining and Generating Compositional Structure
+PREPRINT
+distinction is particularly important in the intrinsic part–whole setting. If the PID target is chosen to be the whole,
+Y = (Xa, Xb), then we trivially have that:
+Red(Xa, Xb; (Xa, Xb)) = I(Xa; Xb),
+Syn(Xa, Xb; (Xa, Xb)) = 0.
+Consequently, such a PID cannot detect structure that emerges when the sources are combined into the target. PID-based
+measures of linguistic compositionality instead introduce an external target, such as a word form generated from
+multiple semantic features (Socolof et al., 2022). These measures characterize the compositionality of a mapping
+between variables, rather than the compositional structure intrinsic to an object.
+Finally, although PID requires its components to sum to the corresponding mutual information quantities, it does
+not uniquely determine how information should be allocated among the redundant, unique, and synergistic terms.
+Consequently, there is no generally accepted decomposition, and existing proposals satisfy different, sometimes
+incompatible, auxiliary axioms (Harder et al., 2013; Matthias et al., 2025). Our definition does not attempt a complete
+information decomposition and therefore avoids selecting among these alternatives: it directly measures the conditional
+description length K(mx | mxa, mxb) of the whole’s structural model, thereby quantifying structural information that
+emerges only when the parts are considered jointly — an algorithmic analogue of synergistic information.
+Emergence and Kolmogorov’s structure function.
+Emergence is commonly understood as the appearance of
+system-level properties that are novel relative to those of the system’s constituents, making it conceptually close to
+compositionality. Bédard and Bergeron (2022) propose an algorithmic formalization based on Kolmogorov’s structure
+function (Kolmogorov, 1973; Vereshchagin and Vitányi, 2004). Intuitively, the structure function considers increasingly
+large complexity budgets for describing a model of an object and, at each budget, identifies the model m that minimizes
+the remaining model-to-data codelength lm(x). A substantial drop indicates that permitting a more complex model
+reveals a new explanatory strategy that shortens the overall two-part description. Their definition associates emergence
+with the presence of several such drops, corresponding to multiple useful models of increasing complexity. For example,
+a physical system may admit a relatively simple thermodynamic description in terms of macroscopic variables, while
+larger model budgets permit more detailed descriptions involving microscopic dynamics and initial conditions.
+However, the complexity of a model is not itself a scale in a decomposition of the observed object. Consequently,
+successive drops need not correspond to structure within progressively larger collections of parts: they may instead
+reflect different explanatory strategies for the same data. The framework therefore characterizes emergence across a
+hierarchy of model complexities, but does not specifically isolate structure that emerges when constituent objects are
+combined as C(xa, xb →x) does. The two approaches are thus complementary: the structure function captures the
+plurality of emergent explanations available at different levels of model complexity, whereas our definition quantifies
+emergent structure arising at particular composition steps.
+Formal grammars and compositional semantics.
+In formal semantics and programming-language theory, com-
+positionality is conventionally defined relative to a specified syntax and interpretation: the meaning of a compound
+expression is determined by the meanings of its constituents and the rules by which they are combined (Pagin and
+Westerståhl, 2010). If f is a syntactic composition rule and M is an interpretation, this principle can be expressed as:
+M(f(a, b)) = Ff(M(a), M(b)),
+where Ff is the corresponding operation in the semantic domain. Category-theoretic formulations express the same
+principle through structure-preserving maps, such as functors, between syntactic and semantic structures. These
+frameworks characterize compositionality only once the constituents, composition rules, and semantic domain have
+been specified; they do not by themselves quantify how much compositional structure an object intrinsically contains,
+nor do they identify that structure from arbitrary data.
+Our definition addresses these complementary questions. A grammar or functional program may itself constitute the
+model mx, in which case C(xa, xb →x) measures the additional information required to describe the grammar or
+library of the whole from those of its parts. In functional-programming terms, this resembles the cost of refactoring:
+combining xa and xb may reveal a reusable abstraction that was not justified by either part separately. In this way,
+C(xa, xb →x) is complementary to these more traditional views of compositionality: it can describe the emergence of
+compositional structure in a formal grammar.
+Assembly theory.
+Assembly theory grew out of origins-of-life research as an attempt to differentiate living from
+non-living objects (Sharma et al., 2023). It treats a living object as something that exists in large numbers of copies
+and is built from simpler pieces through a sequence of allowed physical events. Once a piece has been built, it can
+be reused, so the object’s assembly index is the length of its shortest construction path. Assembly theory is therefore
+8
+
+Defining and Generating Compositional Structure
+PREPRINT
+an MDL-based framework for characterizing living systems in which composition and hierarchy are central. In more
+technical ways, however, it differs substantially from our definition of compositionality. Among other things, our
+definition measures novel structure in the model of an individual object relative to the models of its parts, without
+requiring a physical construction space or observed copies. It also extends to more abstract forms of composition and
+distinguishes structure from random detail within an individual object.
+Symbiogenesis.
+Symbiogenesis is the evolutionary idea that new kinds of organisms can arise when previously
+separate living systems join and become interdependent (Sagan, 1967). The familiar example is the bacterial ancestor of
+mitochondria becoming part of a host cell, giving rise to eukaryotic cells. Agüera y Arcas (2025) casts this as a general
+route to hierarchical complexity in which smaller replicators combine into a larger replicator, which can then combine
+with others; the total structure involves describing both the parts as well as how they fit together into the larger whole.
+Interestingly, in this computational account, the parts and whole carry instructions for their own reproduction — i.e.,
+they are self-encoding. Our definition places no such requirement on an object’s parts or whole; it measures the novel
+structure that appears when the parts are considered together, however it arose. Thus, symbiogenesis offers a plausible
+mechanism for the emergence of the structure that C(xa, xb →x) measures, and for its prevalence in the natural world.
+4
+Generating compositional structure
+The previous section described a rigorous framework for quantifying compositionality and characterizing an object’s
+compositional structure profile. We now turn to the inverse problem: given a pre-specified compositional structure
+profile, can we generate objects that satisfy it?
+For the remainder of this section, we consider restricted and tractable coding schemes f and g as described in Section 3.3,
+which define an empirical compositionality score Cf,g(x1, . . . , xk →x) := Lg
+cond
+ mf
+x | mf
+x1, . . . , mf
+xk
+
+that we can
+compute. For an object x, a particular decomposition tree T gives us the empirical compositional structure profile:
+Pf,g
+T (x) :=
+
+Cf,g
+T,x(v)
+
+v∈Int(T ) ∈RInt(T )
+≥0
+.
+(12)
+This profile is an indexed family of local compositionality values, one for each composition step in the tree. From this
+profile, we may define any scalar functional s : R Int(T )
+≥0
+→R, where the quantity s
+
+Pf,g
+T (x)
+
+then defines a scalar
+summary of the compositional structure of x under T. This summary quantity, if well behaved, can define a goal to be
+maximized by learning algorithms operating over the space of x’s.
+This allows us to generate objects with desired compositional structure profiles by defining the reward:
+R(x ; T, f, g, s) = s
+
+Pf,g
+T (x)
+
+.
+(13)
+and then using any optimization or sampling procedure to search for objects with high reward. In sum, each of our
+below experiments is fully characterized by:
+• A domain X over which we can search for objects with high reward. Here, we consider two domains: symbolic
+strings and images.
+• A pre-specified decomposition tree T, coding schemes f and g, and scalar functional s which jointly define
+the reward R(x ; T, f, g, s).
+• An optimization or search algorithm capable of discovering objects x ∈X with high reward.
+4.1
+Compositional strings
+We first consider a deliberately minimal domain: fixed-length symbolic strings with no externally specified semantics.
+Concretely, the domain is X = {0, . . . , 7}128; strings of length 128 with a vocabulary of 8 symbols. Methods are
+briefly described below and illustrated in Figure 2a; Appendix D.1 contains further details.
+MDL algorithm.
+For the two-part code f, we represent a string using a deterministic context-free grammar together
+with a residual sequence expressed through that grammar. Here, a grammar is simply a collection of named replacement
+rules: a rule assigns a name to a sequence symbols, which can also contain the names of previously defined rules. For
+example, the rules A →01 and B →AA allow B to stand for 0101. In standard terminology, the original symbols
+are terminals and the rule names are non-terminals. Because rules may invoke other rules, the grammar resembles a
+dictionary whose entries can themselves be defined from earlier entries, allowing repeated patterns to be represented
+9
+
+Defining and Generating Compositional Structure
+PREPRINT
+a.
+c.
+Generated string grammar statistics
+d.
+Generated string dot plots
+b.
+Reward over time
+Random string
+…
+…
+…
+…
+1 7 6 2 7 4 6 2 7 4 1 7 4 6 7 7
+string population
+1 7 6 2 7 4 6 2 7 4 1 7 4 6 7 7
+1 7 6 2 7 4 6 2
+1 7 6 2
+7 4 6 2
+7 4 1 7 4 6 7 7
+7 4 1 7
+4 6 7 7
+grammar 
+mx
+part grammars 
+  &  
+mxa
+mxb
+Compositionality 
+ 
+at all scales
+C (xa, xb →x )
+Structure 
+K (mx )
+update with 
+a reward
+or
+Structured string
+Compositional string
+Structure 
+Compositionality
+Figure 2: Generating compositional strings. a. We evolve a population of strings using either (i) a reward that maximizes
+multi-scale compositional structure using our definition (blue; Equation (14)) or (ii) an alternative reward that just maximizes
+structure without any pressure for compositionality (orange; K(mx)). b. Growth of the average population reward over time. Both
+the compositionality and structure rewards are successfully optimized. We plot in arbitrary units (a.u.) on the y-axis normalized
+based on the top score for each reward. c. Statistics of grammars fit to strings over time, when optimizing each reward. Grammars fit
+to strings generated by the compositionality reward are significantly deeper, with more nested levels of hierarchy, despite being
+shorter than those of strings generated from the structure reward in terms of rule length, number of rules, and number of symbols. d.
+Dot plots of the highest-reward string optimized using the compositionality and structure rewards, and for a random string. Strings
+generated from the compositionality reward have substantial repeated patterns, corresponding to contiguous diagonal lines off of the
+main diagonal. These patterns themselves contain repeated substrings, corresponding to shorter diagonal lines appearing within the
+same block of rows/columns. In contrast, strings generated from the structure reward exhibit more random segments, and when
+repeats do occur they tend to be longer and less hierarchical. Seeds. Shaded regions in panels (b, c) reflect the standard error of the
+mean across 10 seeds. Panel (d) shows results for one representative seed only; dot plots for all seeds are provided in Appendix D.1.
+hierarchically. The grammar serves as the model, while the residual specifies how its reusable components and any
+remaining terminal symbols are assembled into the complete string. We measure the two code components using an
+entropy code over all terminal symbols and rule names appearing in the grammar and residual. To fit a short grammar
+without introducing unjustified structure, we use an MDL-guided extension of RePair and MR-RePair (Furuya et al.,
+2018; Larsson and Moffat, 2000): it greedily replaces repeated maximal substrings with new rule names, but introduces
+a rule only when its estimated compression gain exceeds the cost of describing the rule itself.
+Conditional model compression.
+At each join in a decomposition tree, two adjacent substrings are combined into a
+larger substring. We fit grammars separately to the two parts and to their combination, and use the conditional code g to
+measure how much of the combined grammar cannot be recovered from the grammars fitted to the parts. Since rule
+names are arbitrary, we first relabel the rules in each part grammar to find a low-cost alignment with the combined
+grammar, using the nested structure of the rules to determine which ones correspond. Each rule in the combined
+grammar is then either encoded directly or by describing its differences from the best-matching aligned rule in either
+part grammar, whichever is shorter. Thus, carrying an existing rule from a part into the combined model costs little,
+whereas a new rule that becomes economical only after the parts are combined incurs a large cost.
+Reward.
+Our reward is designed to favour strings that reveal novel grammar structure throughout the hierarchy, rather
+than concentrating it at a single scale. We therefore choose the decomposition tree T to be a balanced binary tree: the
+complete string is recursively bisected into contiguous halves until reaching substrings of length four. Its internal nodes
+form five join scales, ranging from combinations of length-four substrings to the combination of the two length-64
+halves of the complete string. At every join, we compute the conditional grammar cost described above and normalize
+it by the length of the combined substring. We then average these scores within each scale, so that scales containing
+many small joins do not dominate those containing a few large joins. Finally, we combine these scale averages using a
+10
+
+Defining and Generating Compositional Structure
+PREPRINT
+power mean with p = 0.75. Choosing p < 1 places greater pressure on the weakest scales than an arithmetic mean
+would, encouraging compositional structure to emerge more evenly across the hierarchy.
+Formally, let Vℓbe the joins at scale ℓ, let rℓ(x) denote their mean size-normalized compositionality, and let L denote
+the total number of scales. Then:
+rℓ(x) =
+1
+|Vℓ|
+X
+v∈Vℓ
+Cf,g
+T,x(v)
+|xv|
+,
+(14)
+R(x) =
+ 
+1
+L
+L
+X
+ℓ=1
+rℓ(x)p
+!1/p
+,
+p = 0.75.
+(15)
+Optimization.
+We maximize this reward with a single-objective use of NSGA-II (Deb et al., 2002). Starting from
+10,000 uniformly random strings, each generation produces 5,000 offspring through tournament selection and two-point
+crossover, followed by independently resetting each symbol with probability 2/128. Duplicate strings are removed, and
+elitist selection retains the best population from parents and offspring.
+Results.
+We ran the evolutionary optimization for 2,000 generations across 10 seeds. In addition to our composi-
+tionality reward in Equation (14), we also compared to a structure-based reward that optimizes for Lf
+model(mf
+x): the
+empirical estimate of string x’s final structural complexity K(mx). This comparison serves as an empirical test of our
+claim that compositionality captures a specific kind of structure based on the interactions between parts at multiple
+scales, rather than simply the total amount of structure. We used identical hyperparameters to optimize both rewards.
+Figure 2b shows the time-course of the rewards, both of which steadily grow before reaching a plateau, indicating they
+were successfully optimized.
+To demonstrate the properties of our compositionality reward, we analyze the nested repeated structure present within
+the strings by computing summary statistics of their grammars, shown in Figure 2c. Here, we fit these grammars using
+the MR-RePair algorithm (Furuya et al., 2018), which recursively creates a rule whenever a pattern repeats at least
+once. Compared to structure-optimized strings, we find that compositionality-optimized strings result in substantially
+deeper grammars, where the depth of a grammar rule denotes the number of recursive non-terminal symbol expansions
+needed before the flattened rule contains only terminal symbols. For example, a grammar describing a string with purely
+“flat” structure would consist entirely of depth-0 rules that each expand to a sequence of terminal symbols. Despite
+this, structure-optimized strings still result in highly complex grammars; in fact, these grammars tend to have more
+rules and longer rule expansions than those of the compositionality-optimized strings. This illustrates the core property
+of our compositionality definition. In general, an object can be structured in multiple ways that do not require a rich
+and interconnected hierarchy of patterns — this structure can be flat (as in long but low-depth grammar rules) and
+independent across the object (as in grammar rules that are only used in distinct regions of the object).
+We provide a more visual demonstration of these distinct forms of structure in Figure 2d, which shows “dot plots” for
+the highest-reward string using each reward function, as well as for a random string. Dot plots are commonly used in
+DNA analysis to identify repeated structures within a string (Gibbs and Mcintyre, 1970), and build a symmetric binary
+|x| × |x| matrix where a given cell at index (i, j) is 1 if x[i] = x[j] and 0 otherwise. A repeated pattern appears in the
+plot as diagonal lines off of the main diagonal, making it easy to visually inspect the number, length, and locations of
+these patterns. Furthermore, if a pattern contains a smaller sub-pattern that appears elsewhere in the string, it will show
+up as a smaller diagonal line in the same block of rows spanned by the larger pattern (or, equivalently, block of columns
+due to the matrix’s symmetry). For compositionality-optimized strings, we find that the dot plots contain a more dense
+distribution of patterns and sub-patterns than those of structure-optimized or random strings. Structure-optimized
+strings do still exhibit repeated patterns, but they tend to be longer, more sparse, and less hierarchical. Overall, the
+dot plots of structure-optimized strings look more similar to those of random strings, but the addition of a few long
+diagonals.
+4.2
+Compositional images
+We next consider a more complex domain in which humans can readily recognize compositional structure: images.
+We generate 3-channel images of size 64 × 64, with values discretized to 4 possible intensities, resulting in a domain
+X = {0, . . . , 3}64×64×3. Since nothing in our reward prescribes these images to be “natural”, we expect them only to
+contain abstract compositional structure. Methods are briefly described below; Appendix D.2 contains further details.
+MDL algorithm.
+Fixed-pattern grammars are too restrictive to capture the shapes, textures, and spatial relationships
+that make images interesting. We therefore use a coordinate-based neural representation, following the general approach
+11
+
+Defining and Generating Compositional Structure
+PREPRINT
+c.
+CPPN statistics
+d.
+b.
+Reward over time
+a.
+CPPN “genotype”
+coord. 
+(i , j )
+pixel 
+value
+query 
+all points
+image
+Compositionality
+Structure
+Structure 
+Compositionality
+Compositional images
+Structured images
+Figure 3: Generating compositional images. a. We evolve a population of images using either (i) a reward that maximizes
+multi-scale compositional structure using our definition (blue; Equation (14)) or (ii) an alternative reward that just maximizes
+structure without any pressure for compositionality (orange; K(mx)). Evolved genomes are Compositional Pattern-Producing
+Networks (CPPNs) that generate image phenotypes. b. Growth of the average population reward over time. Both the compositionality
+and structure rewards are successfully optimized. We plot in arbitrary units (a.u.) on the y-axis normalized based on the top score for
+each reward. c. Statistics of image-generating CPPNs over time, when optimizing each reward. Both rewards produce CPPNs of
+similar size (nodes and connections), but compositionality-optimized CPPNs exhibit greater feature recombination. See main text
+and Appendix D.2 for descriptions of each statistic. d. Example images generated as a result of optimizing each reward. Optimizing
+for compositionality results in images with unified features, whereas optimizing for structure results in more disjoint images. More
+examples are provided in Appendix D.2. Seeds. Shaded regions in panels (b, c) reflect the standard error of the mean across 3 seeds.
+used by neural radiance fields and compositional pattern-producing networks (CPPNs) (Mildenhall et al., 2020; Stanley,
+2007). For every image patch xv, we fit a fixed-architecture network that maps a normalized two-dimensional coordinate
+to a categorical distribution over the four possible intensities in each channel. Because one set of weights must account
+for every coordinate, spatial regularities can be represented by the network while idiosyncratic pixels remain in the
+model-to-data code.
+Merely training a flexible network to reproduce a single patch can lead it to memorize idiosyncratic pixels rather than
+capture structure that genuinely compresses the image. We therefore regularize the fitting procedure, most importantly
+by training with maximum likelihood on a random half of the patch’s pixels and using the remaining half as held-out
+data for early stopping. The selected network is the checkpoint with the lowest held-out cross-entropy, and we retain
+it only if it improves upon a constant model that predicts the marginal intensity distribution of each channel. This
+fallback prevents the network from attributing spurious spatial structure to a patch that is better described without
+spatial dependence.
+To complete the two-part code, we must estimate both the information stored in the fitted network and the information
+left unexplained by it. Following learning-curve estimates of neural-network description length (Blier and Ollivier,
+2018), we estimate the first quantity from the cumulative training loss incurred while learning the network. At each
+point in training, we subtract the loss of the final selected model: the remainder measures predictive errors caused by
+not yet having learned the model, rather than errors that remain even after it has been learned. Accumulating this excess
+over training therefore provides a proxy for the number of bits absorbed into the network’s weights. The model-to-data
+term is the selected model’s negative log-likelihood over the complete patch. Together, these terms form our empirical
+two-part coding scheme f.
+Conditional model compression.
+Directly describing one neural network given several others is complicated by the
+many parameter settings that implement the same function. Instead, we use the intuition that the conditional complexity
+of a target model is reflected by how much must be learned to fine-tune the given models into it. We implement this
+comparison at the level of predictions rather than parameters. At a join, the model mf
+xv fitted to the parent patch acts as
+12
+
+Defining and Generating Compositional Structure
+PREPRINT
+a teacher. The four child models are combined into a routed student: each coordinate is sent to the model fitted to its
+quadrant, using that child’s local coordinates. This unmodified student represents the hypothesis that the parent model
+is merely the juxtaposition of the four child models.
+We then fine-tune copies of the child models to match the teacher’s predictive distributions across the parent patch,
+again using held-out coordinates for early stopping. We retain the adapted student only when it improves upon the
+unmodified routed student on these coordinates. Our conditional code g has two terms: a learning-curve estimate of the
+information required for this adaptation, computed by accumulating the distillation loss attributable to the student not
+yet having reached its selected state, and the remaining divergence between the selected student and teacher across the
+complete patch. If the structure of the whole consists only of the independent structures of its quadrants, with no novel
+structure revealed by considering them jointly, routing among the child models already reproduces the parent and both
+costs are near zero. Conversely, structure that becomes useful only when the quadrants are modeled together changes
+the parent’s predictions in a way that requires substantial adaptation, producing a large conditional code. This gives a
+function-level surrogate for Lg
+cond(mf
+xv | mf
+xv1, . . . , mf
+xv4) without requiring the independently fitted networks to have
+aligned parameters.
+Reward.
+Whereas a string has one spatial axis and can naturally be bisected, an image has two, so we recursively
+divide both axes to obtain a quadtree decomposition. Each patch is split into four quadrants until reaching 8 × 8 patches.
+The resulting joins combine 8 × 8 patches into 16 × 16 patches, then 16 × 16 patches into 32 × 32 patches, and finally
+the four 32 × 32 patches into the complete image. As in the string experiment, we normalize each conditional code by
+the number of spatial locations in its parent patch, average within each join scale, and combine the three scale averages
+with a power mean using p = 0.75. This gives equal overall weight to each spatial scale while placing greater pressure
+on the weakest ones.
+Optimization.
+The image space is far too large to search directly, so we search over compact procedures that generate
+images. Specifically, we use compositional pattern-producing networks (CPPNs): coordinate-based neural networks
+that specify a single image by mapping each normalized spatial coordinate to its channel values (Stanley, 2007). We
+can thus treat a CPPN’s topology and parameters as a genotype and the image obtained by evaluating it across the
+coordinate grid as its phenotype. Its three continuous outputs are quantized to the four intensity levels in each channel.
+We optimize a population of 200 such genomes for 600 generations using the NeuroEvolution of Augmenting Topologies
+(NEAT) (Stanley and Miikkulainen, 2002, 2004) algorithm. NEAT applies crossover and mutations to network weights,
+activation functions, nodes, and connections while maintaining species of related networks, allowing the complexity of
+the image-generating process to grow during search. This resembles the Picbreeder study (Secretan et al., 2008, 2011)
+(and we use very similar hyperparameters for the evolutionary algorithm), except that our compositionality reward
+replaces human selection. Both the generator and the empirical coding scheme use coordinate networks; the experiment
+therefore searches for spatial structure that the chosen coding scheme is capable of recognizing, rather than claiming to
+cover every possible form of image structure.
+Results.
+We ran the evolutionary optimization for 600 generations and only 3 seeds, given the higher computational
+cost of this experiment. As in our string generation experiments, we compared compositionality-optimized images to
+structure-optimized ones. Figure 3b shows that both rewards increase over the course of generations before stabilizing.
+We quantitatively analyze the structure of the resulting images by computing simple network summary statistics of the
+CPPN genomes that produce them in Figure 3c. We find that the average number of nodes in the evolved networks, as
+well as the connections between them, is comparable for the two rewards throughout the evolutionary process. The
+average network depth — which measures the longest path (in connections) from an input to an output node — also
+evolves similarly. The CPPNs instead seem to differ along more fine-grained metrics that suggest the compositionality
+reward produces more interconnected networks. For instance, the number of distinct input-to-output paths is greater
+when optimizing the compositionality reward. Features represented by hidden nodes are also reused by more than one
+downstream node more often, and fan-out to a greater number of nodes. The same is true for the inputs to these hidden
+units: multiple inputs are in general combined to form downstream features more often, and in greater number. Taken
+together, these results suggest that our compositionality reward results in unified structures and feature recombinations
+rather than independent structures, in line with our expectations.
+Our generated images themselves produce further evidence along these lines; Figure 3d shows some representative
+examples, and more are provided in Appendix D.2. Compositionality-optimized images reliably look more unified:
+they have distinct central themes involving repeated motifs, shapes, and colour palettes (although it is difficult to
+visually establish the presence of feature hierarchies in an objective way). In contrast, structure-optimized images
+appear significantly more disjoint: a common trend is that they simply pack many bands of distinct horizontal and
+13
+
+Defining and Generating Compositional Structure
+PREPRINT
+vertical colours into the image. While these bands provide learnable information, they are structurally independent
+from one another. These differences are precisely what our definition of compositional structure is intended to capture.
+5
+Discussion
+We defined compositionality as the novel shared structure revealed when parts are modeled together. Formally, it is
+the information in the best model of a whole that cannot be recovered from the best models of its parts. Applying this
+comparison at successive nodes of a decomposition tree yields a profile that reflects the locations and scales at which
+novel compositional structure emerges. We tested this definition by using it as a generative objective. Optimizing strings
+and images for prescribed profiles produced objects with recognizable nested reuse and coherent organization across
+scales. Because the objective constrains the form of this organization while remaining agnostic to its particular content,
+these results suggest that the definition isolates the intended part–whole organization rather than merely rewarding
+complexity, regularity, or shared information.
+The success of deep learning.
+This view provides one explanation for why depth is a useful inductive bias. If natural
+data reveals novel structure whenever smaller regions are combined into larger ones, then an effective model should
+likewise build representations of larger-scale structure from those available at smaller scales. Successive layers of a
+deep network provide exactly this form of capacity: later features can represent combinations and reorganizations of
+earlier ones, without requiring the same composition rule at every scale. Standard architectures nevertheless impose
+a fixed maximum depth and are usually trained on iid datapoints of a fixed extent. For nonstationary streams whose
+structure continues to grow across temporal scales, the framework instead motivates more flexible architectures whose
+effective depth or hierarchy can expand whenever larger contexts reveal additional compositional structure. Reasoning
+methods (Wei et al., 2022) and looped layers (Dehghani et al., 2019) provide potential building blocks towards this goal.
+Curricula and open-ended learning.
+The same idea shifts emphasis from specifying a compositional model directly
+to constructing data whose compression requires compositional structure. Let xa be a learner’s history and xb a new
+segment of experience. A large C(xa, xb →x) means that xb does more than repeat known structure, but also does
+more than contribute an unrelated fact: considered with the history, it induces a new joint account that reuses or
+reorganizes earlier structure. A curriculum can therefore be scored by the local compositionality introduced at each step,
+or by a functional of the resulting left-to-right compositional structure profile. Searching over orderings could then test
+whether curricula with high scores produce representations that are more reusable and factorized. This interpretation is
+consistent with the finding of Kumar et al. (2025) that networks evolved through human-guided, open-ended search
+develop more unified and factorized representations than networks trained only to reproduce their endpoints. Our
+framework gives a precise hypothesis for this difference: the evolutionary history contributes substantial compositional
+structure that is absent from the endpoint alone.
+This objective can also guide an agent that chooses its own experience. A policy could be rewarded for selecting xb that
+maximizes an empirical approximation to C(xa, xb →x), thereby constructing a curriculum through interaction. This
+is closely related to intrinsic curiosity based on compression progress (Schmidhuber, 2009, 2010) and to objectives
+that seek learnable structure such as Epiplexity (Finzi et al., 2026). The difference is the constraint placed on how
+the learner’s model changes: the reward favours novel structure that becomes useful through its relationship to prior
+experience, rather than novelty or learnability alone. Repeated over time, this provides an operational criterion for
+open-ended learning in which knowledge continues to grow by building on itself.
+Future work and limitations.
+The ideal quantities in our definition are uncomputable, and the empirical version
+depends on restricted model classes, imperfect MDL search, and conditional codes that provide only operational
+surrogates for algorithmic complexity. Our experiments show that useful approximations are possible, but not how
+stable the resulting scores are across compressors or optimization procedures. Establishing this robustness, and
+identifying which approximation errors preserve comparisons between objects, are important next steps.
+A second, crucial open question that we highlighted in Section 3 is: which decompositions should be considered for
+a particular object? The compositional structure profiles we defined here are relative to a decomposition tree, and
+different trees can expose different structures in the same object. However, is there any sense in which an object
+admits an “intrinsic” decomposition, and if so how can it be defined? A systematic account should determine which
+decompositions expose useful, robust structure and which merely introduce artifacts. We conjectured that the tree which
+maximizes the sum of compositionality scores is a particularly good candidate for a canonical decomposition, but
+this must be further investigated. Ultimately, these questions reflect a broader feature of compositionality: any claim
+about how a whole is composed must identify its constituent parts. Traditional accounts often fix these constituents
+14
+
+Defining and Generating Compositional Structure
+PREPRINT
+in advance through a syntax, a set of semantic factors, or an object decomposition; our framework makes the choice
+explicit, allowing the decomposition itself to become an object of study.
+References
+Agüera y Arcas, B. (2025). What is Intelligence?: Lessons from AI about Evolution, Computing, and Minds. MIT Press.
+Andreas, J. (2019). Measuring compositionality in representation learning. In International Conference on Learning
+Representations.
+Arthur, W. B. (2009). The nature of technology: What it is and how it evolves. Simon and Schuster.
+Bédard, C. A. and Bergeron, G. (2022). An algorithmic approach to emergence. Entropy, 24(7):985.
+Blank, J. and Deb, K. (2020). pymoo: Multi-objective optimization in python. IEEE Access, 8:89497–89509.
+Blier, L. and Ollivier, Y. (2018). The description length of deep learning models. Advances in Neural Information
+Processing Systems, 31.
+Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T. (2002). A fast and elitist multiobjective genetic algorithm: Nsga-ii.
+IEEE transactions on evolutionary computation, 6(2):182–197.
+Dehghani, M., Gouws, S., Vinyals, O., Uszkoreit, J., and Kaiser, L. (2019). Universal transformers. In International
+Conference on Learning Representations.
+Elmoznino, E., Jiralerspong, T., Bengio, Y., and Lajoie, G. (2024). A complexity-based theory of compositionality.
+arXiv preprint arXiv:2410.14817.
+Finzi, M., Qiu, S., Jiang, Y., Izmailov, P., Kolter, J. Z., and Wilson, A. G. (2026). From entropy to epiplexity: Rethinking
+information for computationally bounded intelligence.
+Fortnow, L. (2000). Kolmogorov complexity. In Aspects of Complexity, Minicourses in Algorithmics, Complexity, and
+Computational Algebra, NZMRI Mathematics Summer Meeting, Kaikoura, New Zealand, pages 73–86.
+Furuya, I., Takagi, T., Nakashima, Y., Inenaga, S., Bannai, H., and Kida, T. (2018). Mr-repair: Grammar compression
+based on maximal repeats. arXiv preprint arXiv:1811.04596.
+Gács, P., Tromp, J. T., and Vitányi, P. M. (2001). Algorithmic statistics. IEEE Transactions on Information Theory,
+47(6):2443–2463.
+Gibbs, A. J. and Mcintyre, G. A. (1970). The diagram, a method for comparing sequences. European Journal of
+Biochemistry, 16(1):1–11.
+Grünwald, P. D. (2007). The minimum description length principle. MIT press.
+Grünwald, P. D. and Vitányi, P. M. (2003). Kolmogorov complexity and information theory. with an interpretation in
+terms of questions and answers. Journal of Logic, Language and Information, 12:497–529.
+Grünwald, P. D., Vitányi, P. M., et al. (2008). Algorithmic information theory. Handbook of the Philosophy of
+Information, pages 281–320.
+Harder, M., Salge, C., and Polani, D. (2013). Bivariate measure of redundant information. Physical Review E—Statistical,
+Nonlinear, and Soft Matter Physics, 87(1):012130.
+Kolmogorov, A. N. (1965). Three approaches to the quantitative definition of information’. Problems of information
+transmission, 1(1):1–7.
+Kolmogorov, A. N. (1973). Talk at the information theory symposium. Presented at the Information Theory Symposium,
+Tallinn, Estonia.
+Koppel, M. and Atlan, H. (1989). Program-length complexity, sophistication and induction. Inform. Sci.
+Kumar, A., Clune, J., Lehman, J., and Stanley, K. O. (2025). Questioning representational optimism in deep learning:
+The fractured entangled representation hypothesis.
+Larsson, N. J. and Moffat, A. (2000). Off-line dictionary-based compression. Proceedings of the IEEE, 88(11):1722–
+1732.
+Leibniz, G. W. (1898). The Monadology and Other Philosophical Writings. Clarendon Press, Oxford.
+Leman, A. and Weisfeiler, B. (1968). A reduction of a graph to a canonical form and an algebra arising during this
+reduction. Nauchno-Technicheskaya Informatsiya, 2(9):12–16.
+Li, M., Vitányi, P., et al. (2008). An introduction to Kolmogorov complexity and its applications, volume 3. Springer.
+15
+
+Defining and Generating Compositional Structure
+PREPRINT
+Matthias, P. H., Makkeh, A., Wibral, M., and Gutknecht, A. J. (2025). Novel inconsistency results for partial information
+decomposition. arXiv preprint arXiv:2512.16662.
+McIntyre, A., Kallada, M., Miguel, C. G., Feher de Silva, C., and Netto, M. L. (2026). neat-python.
+Mildenhall, B., Srinivasan, P. P., Tancik, M., Barron, J. T., Ramamoorthi, R., and Ng, R. (2020). Nerf: Representing
+scenes as neural radiance fields for view synthesis. In ECCV.
+Pagin, P. and Westerståhl, D. (2010). Compositionality i: Definitions and variants. Philosophy Compass, 5(3):250–264.
+Sagan, L. (1967). On the origin of mitosing cells. Journal of theoretical biology, 14(3):225–IN6.
+Schmidhuber, J. (1997). Low-complexity art. Leonardo, 30(2):97–103.
+Schmidhuber, J. (2009). Driven by compression progress: A simple principle explains essential aspects of subjective
+beauty, novelty, surprise, interestingness, attention, curiosity, creativity, art, science, music, jokes. In Pezzulo, G.,
+Butz, M. V., Sigaud, O., and Baldassarre, G., editors, Anticipatory Behavior in Adaptive Learning Systems, pages
+48–76, Berlin, Heidelberg. Springer Berlin Heidelberg.
+Schmidhuber, J. (2010). Formal theory of creativity, fun, and intrinsic motivation (1990–2010). IEEE Transactions on
+Autonomous Mental Development, 2(3):230–247.
+Secretan, J., Beato, N., D Ambrosio, D. B., Rodriguez, A., Campbell, A., and Stanley, K. O. (2008). Picbreeder:
+evolving pictures collaboratively online. In SIGCHI conference on human factors in computing systems, pages
+1759–1768.
+Secretan, J., Beato, N., D’Ambrosio, D. B., Rodriguez, A., Campbell, A., Folsom-Kovarik, J. T., and Stanley, K. O.
+(2011). Picbreeder: A case study in collaborative evolutionary exploration of design space. Evolutionary computation,
+19(3):373–403.
+Sharma, A., Czégel, D., Lachmann, M., Kempes, C. P., Walker, S. I., and Cronin, L. (2023). Assembly theory explains
+and quantifies selection and evolution. Nature, 622(7982):321–328.
+Socolof, M., Vigly, J. H., Futrell, R., Sordoni, A., and O’Donnell, T. (2022). Measuring morphological fusion using
+partial information decomposition. In 29th International Conference on Computational Linguistics, pages 44–54.
+Stanley, K. O. (2007). Compositional pattern producing networks: A novel abstraction of development. Genetic
+programming and evolvable machines, 8(2):131–162.
+Stanley, K. O. and Miikkulainen, R. (2002). Evolving neural networks through augmenting topologies. Evolutionary
+computation, 10(2):99–127.
+Stanley, K. O. and Miikkulainen, R. (2004). Competitive coevolution through evolutionary complexification. Journal
+of artificial intelligence research, 21:63–100.
+Trager, M., Perera, P., Zancato, L., Achille, A., Bhatia, P., and Soatto, S. (2023). Linear spaces of meanings:
+Compositional structures in vision-language models. In IEEE/CVF International Conference on Computer Vision,
+pages 15395–15404.
+Vereshchagin, N. and Shen, A. (2016). Algorithmic statistics: forty years later. In Computability and Complexity:
+Essays Dedicated to Rodney G. Downey on the Occasion of His 60th Birthday, pages 669–737. Springer.
+Vereshchagin, N. K. and Vitányi, P. M. (2004). Kolmogorov’s structure functions and model selection. IEEE
+Transactions on Information Theory, 50(12):3265–3290.
+Vitányi, P. M. (2006). Meaningful information. IEEE Transactions on Information Theory, 52(10):4617–4626.
+Wei, J., Wang, X., Schuurmans, D., Bosma, M., Xia, F., Chi, E., Le, Q. V., Zhou, D., et al. (2022). Chain-of-
+thought prompting elicits reasoning in large language models. Advances in neural information processing systems,
+35:24824–24837.
+Wiedemer, T., Brady, J., Panfilov, A., Juhos, A., Bethge, M., and Brendel, W. (2024). Provable compositional
+generalization for object-centric learning. In International Conference on Learning Representations.
+Wiedemer, T., Mayilvahanan, P., Bethge, M., and Brendel, W. (2023). Compositional generalization from first principles.
+In Advances in Neural Information Processing Systems.
+Williams, P. L. and Beer, R. D. (2010). Nonnegative decomposition of multivariate information. arXiv preprint
+arXiv:1004.2515.
+16
+
+Defining and Generating Compositional Structure
+PREPRINT
+Appendix A
+Practical approximation of compositional structure
+The definitions in the main text are uncomputable, since they are rooted in algorithmic information theory. In practice,
+however, they can be approximated using empirical compressors, model classes, learning algorithms, and minimum
+description length procedures.
+Estimating compositionality empirically involves three distinct difficulties:
+1. K(m) is uncomputable, yet is required to define the Occam’s razor model mx in Equation (5).
+2. K(mx | mx1, . . . , mxk), which defines the amount of novel compositional structure in Definition 1, is likewise
+uncomputable.
+3. Identifying mx requires searching over the potentially infinite model class M and determining that no
+unexamined model yields a shorter two-part description.
+The third difficulty is distinct from evaluating the complexity of any particular candidate model. Kolmogorov complexity
+is upper semicomputable: by running candidate programs in parallel and retaining the shortest description found so far,
+one obtains successively tighter upper bounds that eventually reach the optimal value, although there is no general way
+to recognize when this has occurred. Bédard and Bergeron (2022) make the analogous observation for Kolmogorov’s
+structure function. This gives the theoretical search an anytime interpretation: continued search can reveal better models
+and shorter descriptions, but it does not provide a computable certificate that the current model is optimal. A practical
+MDL procedure replaces this open-ended search with a specified model class, optimization method, and finite search
+budget.
+We replace the uncomputable quantities with empirical code lengths induced by practical coding schemes. Let f denote
+an empirical two-part coding scheme used to fit models by minimum description length, together with its associated
+model representation and search procedure. Let g denote an empirical conditional coding scheme used to measure
+the additional cost of describing the model of the whole given the models of the parts. These coding schemes may be
+specialized to the particular data modality, model class, and training procedure under consideration.
+Using the two-part coding scheme f, the Occam’s razor model mx is replaced by an empirical MDL model. Let:
+Lf
+m(x) := Lf
+model(m) + Lf
+data(x | m),
+(16)
+where Lf
+model(m) is the code length of the model m, and Lf
+data(x | m) is the code length of the data x given that model.
+The ideal empirical minimum-description-length models are:
+Mf,∗(x) := arg min
+m∈M
+Lf
+m(x).
+(17)
+Assuming there is a unique model in Mf,∗(x) with minimal model-code length, define the ideal empirical Occam’s
+razor model by:
+mf,∗
+x
+:= arg min
+m∈Mf,∗(x)
+Lf
+model(m).
+(18)
+Thus, mf,∗
+x
+first minimizes the total two-part code length under f and then, among ties, minimizes the model-description
+part of the code. This is the empirical analogue of the theoretical construction in Equation (5). In practice, a finite run of
+the search procedure generally returns a best-so-far model mf
+x, without guaranteeing that mf
+x = mf,∗
+x . If the procedure
+retains its incumbent, increasing the search budget cannot worsen the best observed two-part code length, although it
+may change both the selected model and the allocation of bits between its model and residual descriptions.
+The tie-breaking distinction remains conceptually important even when exact ties in total code length are rare. Depending
+on the coding scheme, information may be shifted between the model-description term and the data-given-model term,
+so different models can represent different allocations of complexity even when their total description lengths are similar
+or identical. Rather than explicitly solving the two-stage optimization above, a practical implementation may use a
+single two-part MDL algorithm that simultaneously accounts for model-description length, residual code length, and
+the search for a suitable model. The choice of optimizer and search budget is therefore part of the empirical procedure
+f. For brevity, the main text writes mf
+x for the model returned by this procedure.
+Given the resulting empirical models mf
+x, mf
+x1, . . . , mf
+xk, the corresponding empirical estimate of compositionality
+under the conditional coding scheme g is:
+Cf,g(x1, . . . , xk →x) := Lg
+cond
+ mf
+x | mf
+x1, . . . , mf
+xk
+
+,
+(19)
+17
+
+Defining and Generating Compositional Structure
+PREPRINT
+where Lg
+cond(· | ·) denotes the conditional code length induced by g. Thus, Cf,g(x1, . . . , xk →x) should be interpreted
+as a coding-strategy-dependent estimate of compositional structure: it measures how many additional bits are required,
+under g, to describe the empirically fitted model of the whole given the empirically fitted models of the parts.
+This is not an estimate in the sense of providing formal upper or lower bounds on the underlying algorithmic-information
+quantities. Rather, it yields an operational notion of compositionality relative to a chosen pair of empirical procedures:
+a procedure f for fitting two-part MDL models through a finite search, and a procedure g for conditionally compressing
+the whole-model given the part-models.
+Appendix B
+The maximal decomposition
+In Definition 2, we introduced the concept of a compositional structure profile PT (x) := (CT,x(v))v∈Int(T ) , which
+is defined with respect to a rooted decomposition tree T. We then asked whether or not a given object x admits an
+“intrinsic”, “true”, or “canonical” decomposition that reflects its genuine compositional structure. We conjectured that
+the decomposition which maximizes the sum of novel compositional structure quantities throughout the tree was a
+promising candidate. Here, we provide some initial arguments that motivate this conjecture.
+Denote the sum of novel compositional structure quantities under a given decomposition T as:
+ST (x) :=
+X
+v∈Int(T )
+CT,x(v),
+(20)
+and define the maximal decomposition of an object x as:
+T max
+x
+:= arg max
+T
+ST (x).
+(21)
+Intuitively, what the maximal tree accomplishes is that it preferentially joins objects that share novel structure and
+parts, which maps on to how we intuitively think about compositionality. In contrast, if we were considering minimal
+decompositions, we would be joining objects that are either structurally identical or algorithmically independent. At a
+high level, this is the strongest motivation for our conjecture.
+Second, while ST max
+x
+(x) is lower-bounded by K(mx) (it provides a possible strategy for compressing the final
+model, but not necessarily the optimal one; see Appendix C.2 for theorem and proof), there are strings for which
+ST max
+x
+(x) > K(mx). This means that ST max
+x
+(x) does not simply reduce to sophistication but rather quantifies something
+different. It remains to be shown, theoretically and empirically, that ST max
+x
+(x) > K(mx) for objects we intuitively
+consider compositional, and conversely that ST max
+x
+(x) ≈K(mx) for objects we believe to be uncompositional. In
+contrast, it is trivial to show that if we were to instead consider minimal decompositions T min
+x
+, there would always exist
+a trivial solution that merges every individual bit of a string in a single join and results in ST min
+x
+(x) = K(mx), ∀x (see
+Appendix C.2 for theorem and proof) — in other words, the minimal decomposition would be independent of x and
+would thus never capture its intrinsic compositional structure.
+Third, we should hope that if a string is measured to be “compositional” according to some decomposition, it remains
+compositional under that same decomposition when it is embedded as a substring within a larger structure. If this
+were not the case, it would mean that the compositional structure of an object is context-dependent, and we would
+not be able to say that compositionality is an intrinsic and objective property of the object. T max
+x
+happens to have
+this property, so we can say that it is a recursively-consistent metric. In particular, whenever a substring occurs as a
+node of a maximizing tree, the subtree rooted at that node is itself a maximizing decomposition of the substring (see
+Appendix C.3 for theorem and proof)
+Fourth, considering the maximal tree solves a technical problem: why consider binary joining operations as we have
+primarily focused on here? Why not join triplets, or quadruplets of substrings? While this choice may seem arbitrary, it
+is cleanly resolved if we only consider maximal decompositions. The reason is that the novel structure generated from
+joining a triplet is guaranteed to be less than or equal to what is generated from a pair of binary joining operations,
+where we first join two of the substrings, and then join the result with the remaining substring (see Appendix C.4 for
+theorem and proof). Once again, minimal decompositions give the opposite result because they always admit a trivial
+solution that merges every individual bit of the string in a single join.
+18
+
+Defining and Generating Compositional Structure
+PREPRINT
+Appendix C
+Proofs
+C.1
+Proof of the relationship between compositionality and algorithmic mutual information
+Theorem 1 (Compositionality implies algorithmic mutual information). Adopt the notation from Section 3. Suppose
+that a conditionally novel model of the whole does not tie the separate two-part descriptions of the parts; that is:
+C(xa, xb →x) > 0
+=⇒
+K(mx) + lmx(x)̸ = K(mxa) + lmxa (xa) + K(mxb) + lmxb (xb).
+(22)
+Then:
+C(xa, xb →x) > 0 =⇒I(xa : xb) > 0,
+(23)
+but reverse implication does not hold in general.
+Intuitively, the theorem states that novel structure appearing only when the parts are modeled jointly generally makes
+the whole more compressible than the parts considered separately, and therefore implies positive algorithmic mutual
+information. The no-tie assumption excludes the exceptional case in which changing to a novel model of the whole
+reduces the model-description cost but increases the residual code length by exactly the same amount, leaving the total
+two-part description length unchanged. This is a mild assumption: changing the model will ordinarily change the total
+two-part compression cost, whereas an exact cancellation between its model and residual components requires a precise
+tie. The formal proof of the theorem follows.
+Note 2. Technical status of the mutual information result
+The above theorem and proof below use the paper-wide convention of suppressing additive coding terms and are
+therefore an idealized description-length argument, not a literal theorem about prefix Kolmogorov complexity
+without further qualifications. With full bookkeeping, combining independent descriptions, identifying an
+optimal two-part code with K(x), and writing K(mx | mxa, mxb) = 0 each introduce machine-dependent
+overheads; the relevant bounds may also contain logarithmic terms when lengths or boundaries must be encoded.
+Moreover, because x = [xa, xb] denotes raw concatenation, identifying K(x) with the joint complexity
+K(xa, xb) assumes that the decomposition boundary is available as side information. Consequently, the strict
+tests C > 0 and I > 0 can be altered by the suppressed terms. A fully rigorous variant would replace zero
+by significance thresholds exceeding the relevant overheads and strengthen the no-tie assumption to require a
+compression margin exceeding them. The idealized result is retained because it isolates the intended qualitative
+relationship: novel joint structure ordinarily yields a compression advantage, whereas mutual information can
+also arise merely from reusing structure already present in the parts.
+Proof. The two parts can always be compressed independently by concatenating their model descriptions and residual
+codes. Because mx is an optimal model of the whole, we have that:
+K(mx) + lmx(x) ≤K(mxa) + lmxa (xa) + K(mxb) + lmxb (xb).
+(24)
+If C(xa, xb →x) > 0, the no-tie assumption in Equation (22) makes this inequality strict. Therefore:
+K(x) = K(mx) + lmx(x)
+(25)
+< K(mxa) + lmxa (xa) + K(mxb) + lmxb (xb)
+(26)
+= K(xa) + K(xb).
+(27)
+Hence:
+I(xa : xb) = K(xa) + K(xb) −K(x) > 0.
+(28)
+For the reverse direction, consider a case in which the same model m is the Occam’s razor model of xa, xb, and x, and
+write c = K(m) > 0. The whole can reuse this model description:
+K(x) ≤c + lm(xa) + lm(xb)
+(29)
+< 2c + lm(xa) + lm(xb)
+(30)
+= K(xa) + K(xb).
+(31)
+Thus I(xa : xb) > 0. Nevertheless, we have that:
+C(xa, xb →x) = K(m | m, m) = 0.
+(32)
+Therefore, positive algorithmic mutual information does not imply novel compositional structure.
+19
+
+Defining and Generating Compositional Structure
+PREPRINT
+C.2
+Proofs of the relationships between ST (x) and K(mx)
+This section establishes the bounds used in Appendix B. Theorem 2 relates ST (x) to K(mx) for an arbitrary decom-
+position, accounting explicitly for the tree shape and leaf models. Corollaries 2.1 and 2.2 show that a maximizing
+decomposition can be chosen with single-bit leaves and, assuming a common empty model for individual bits, establish
+the corresponding lower bound on maximal compositionality. Finally, Corollary 2.3 describes the trivial single-join
+solution for complete minimal decompositions, while Corollary 2.4 shows that allowing incomplete decompositions
+yields a zero minimum.
+Theorem 2 (Model complexity bounds total compositionality). Let T be a finite rooted, ordered decomposition tree for
+x, and suppose that the Occam’s razor model mxv is well-defined at every node v. Let τT denote the unlabeled ordered
+tree shape, and let Mleaf := (mxℓ)ℓ∈Leaves(T ) list the leaf models in left-to-right order. Then:
+ST (x) ≥K(mx) −K(τT , Mleaf) −O(1),
+(33)
+where the constant is independent of x and T.
+Proof. For each internal node v with ordered children v1, . . . , vkv, choose a shortest prefix program pv that outputs
+mxv given (mxv1, . . . , mxvkv ). By definition,
+|pv| = K(mxv | mxv1, . . . , mxvkv ) = CT,x(v).
+(34)
+Construct a description consisting of a shortest prefix program for (τT , Mleaf), followed by the programs pv in postorder,
+so that children precede their parents.
+A fixed decoder first recovers the tree shape and leaf models. It then processes the internal nodes in postorder, running
+each pv with the already reconstructed child models as its auxiliary input. Since the programs are prefix-free and the
+tree determines their number and order, no additional delimiters are required. At the root, the decoder outputs mx.
+Consequently,
+K(mx) ≤K(τT , Mleaf) +
+X
+v∈Int(T )
+|pv| + O(1)
+(35)
+= K(τT , Mleaf) + ST (x) + O(1).
+(36)
+Rearranging proves the result.
+Corollary 2.1 (Maximal decompositions can be fully refined). Let x ∈{0, 1}n, with n ≥1. Consider all rooted,
+ordered decomposition trees of x whose internal nodes have at least two children and whose nodes represent nonempty
+substrings. There exists a tree maximizing ST (x) whose leaves are individual bits.
+Proof. Let ℓbe a leaf of a decomposition tree T, and let R be a decomposition tree of xℓ. Replacing ℓby R produces a
+refinement T ′ satisfying
+ST ′(x) = ST (x) + SR(xℓ) ≥ST (x).
+(37)
+Indeed, every existing internal node retains the same substring and immediate child substrings, so its score is unchanged,
+while all newly introduced scores are nonnegative.
+There are finitely many admissible decomposition trees, so a maximizer exists. Starting from any maximizer, recursively
+split each leaf of length greater than one. The resulting tree has individual bits as leaves and cannot have a smaller
+score. Since the original tree was maximal, the refined tree is also maximal.
+Corollary 2.2 (Maximal compositionality bounds model complexity). Suppose that the Occam’s razor models of both
+one-bit strings coincide with a fixed empty model:
+m0 = m1 = m∅.
+(38)
+For every nonempty binary string x of length n, any maximizing decomposition T max
+x
+satisfies
+ST max
+x
+(x) ≥K(mx) −K(n) −O(1).
+(39)
+Consequently, suppressing an additive O(log(n + 2)) term gives ST max
+x
+(x) ≥K(mx).
+20
+
+Defining and Generating Compositional Structure
+PREPRINT
+Proof. Let Bn be the binary decomposition obtained by recursively splitting each substring into two parts whose
+lengths differ by at most one, stopping at individual bits. Its ordered tree shape is computable from n, and its leaf-model
+tuple consists of n copies of the fixed model m∅. Hence
+K(τBn, Mleaf) ≤K(n) + O(1).
+(40)
+Applying Theorem 2 gives
+SBn(x) ≥K(mx) −K(n) −O(1).
+(41)
+Finally, maximality implies ST max
+x
+(x) ≥SBn(x), which proves the claim.
+Corollary 2.3 (Minimal complete decompositions). Let x ∈{0, 1}n, with n ≥2, and suppose m0 = m1 = m∅for a
+fixed empty model. Let Tcomplete(x) consist of all rooted, ordered decomposition trees with single-bit leaves and at
+least two children per internal node.
+The single-join tree T⋆, whose root has all n bits as its immediate children, satisfies
+ST⋆(x) = K(mx | n) + O(1).
+(42)
+Moreover,
+K(mx) −O(n) ≤
+min
+T ∈Tcomplete(x) ST (x) ≤K(mx | n) + O(1).
+(43)
+Under the convention of suppressing leaf-description and accumulated coding terms, these bounds give
+min
+T ∈Tcomplete(x) ST (x) = K(mx),
+(44)
+with the single-join tree providing a trivial minimizer in this idealized accounting.
+Proof. The only internal node of T⋆is its root, so
+ST⋆(x) = K
+ mx | m∅, . . . , m∅
+|
+{z
+}
+n copies
+
+= K(mx | n) + O(1).
+(45)
+The final equality holds because the tuple determines n, and conversely n determines the tuple using the fixed model
+m∅. This proves the upper bound.
+For the lower bound, every complete tree has n leaves and at most n −1 internal nodes. Its ordered shape can therefore
+be encoded in O(n) bits. Since all leaf models equal m∅, the shape also determines their tuple, giving
+K(τT , Mleaf) = O(n).
+(46)
+By Theorem 2, uniformly over complete trees,
+ST (x) ≥K(mx) −O(n).
+(47)
+Taking the minimum proves the stated bounds. Suppressing the indicated coding terms yields the idealized equality.
+Corollary 2.4 (Minimal unrestricted decompositions). If decomposition trees may terminate at arbitrary nonempty
+substrings, then for every nonempty string x,
+min
+T
+ST (x) = 0.
+(48)
+A minimizer is the tree consisting only of the root, labelled by x.
+Proof. The root-only tree has no internal nodes, so its score is an empty sum and equals zero. Every decomposition
+score is a sum of nonnegative conditional complexities and is therefore nonnegative.
+21
+
+Defining and Generating Compositional Structure
+PREPRINT
+C.3
+Recursive consistency of maximal decompositions
+Theorem 3 (Recursive consistency of maximal decompositions). Fix the universal machine, the tuple encoding, and a
+uniquely selected Occam’s razor model my for every nonempty substring y of x. Let T (y) be the set of finite rooted,
+ordered decomposition trees of y whose nodes represent nonempty substrings and whose internal nodes have at least
+two children. Define
+Smax(y) := max
+R∈T (y) SR(y).
+(49)
+If T ∈T (x) maximizes ST (x), then, for every node v of T, the subtree Tv rooted at v satisfies
+STv(xv) = Smax(xv).
+(50)
+Moreover, replacing Tv by any maximizing decomposition of xv produces another maximizing decomposition of x.
+Proof. Each set T (y) is finite and nonempty, so its maximum exists. Fix a node v of T and any R ∈T (xv). Replace
+Tv by R, identifying the root of R with v, and denote the resulting tree by T ′. This is an admissible decomposition of x.
+Every internal node outside the replaced subtree retains the same substring and the same ordered list of immediate child
+substrings. In particular, the parent of v, if present, still has xv as the same child substring. Since each model depends
+only on its substring, all local scores outside the replaced subtree remain unchanged. Consequently,
+ST ′(x) = ST (x) −STv(xv) + SR(xv).
+(51)
+Maximality of T implies ST ′(x) ≤ST (x), and hence SR(xv) ≤STv(xv). Since R was arbitrary, Tv is a maximizing
+decomposition of xv. If R is also maximizing, the displayed identity gives ST ′(x) = ST (x), proving the final
+claim.
+C.4
+Binary refinement of maximal decompositions
+Theorem 4 (Binary refinement of maximal decompositions). Fix the universal prefix machine, the tuple encoding, and
+a uniquely selected Occam’s razor model my for every nonempty substring y of a nonempty string x. Let T (x) consist
+of the finite rooted, ordered decomposition trees of x whose nodes represent nonempty substrings and whose internal
+nodes have at least two children. Write
+ST (x) :=
+X
+v∈Int(T )
+K(mxv | mxv1, . . . , mxvkv ),
+(52)
+N>2(T) :=
+{v ∈Int(T) : kv > 2}
+.
+(53)
+There is a constant c ≥0, independent of x and T, such that every T ∈T (x) admits a binary refinement B with the
+same ordered leaves and
+SB(x) ≥ST (x) −cN>2(T).
+(54)
+Consequently, under the convention of suppressing these accumulated additive coding terms, a maximizing decomposi-
+tion can be chosen to consist entirely of binary joins.
+Proof. First consider a single join y = [y1, . . . , yk], where k ≥3, and set zj = [y1, . . . , yj] for 1 ≤j ≤k. Its
+left-associated binary refinement joins zj−1 with yj to form zj, successively for j = 2, . . . , k. We claim that
+K(my | my1, . . . , myk) ≤
+k
+X
+j=2
+K(mzj | mzj−1, myj) + c.
+(55)
+For each j, choose a shortest prefix program pj that outputs mzj given (mzj−1, myj). Given the tuple (my1, . . . , myk),
+a fixed decoder reads the concatenated programs p2 · · · pk. It starts with mz1 = my1 and recursively runs pj with
+the previously recovered model mzj−1 and the supplied model myj. The final output is mzk = my. The input tuple
+determines k, and prefix-freeness permits the programs to be parsed successively without additional delimiters. Thus
+their total length, plus a fixed simulation constant c, bounds the conditional complexity of my, proving equation 55. In
+particular, c does not depend on k. This construction does not require computing an Occam’s razor model from its
+substring: each intermediate model is supplied by its corresponding program.
+Now recursively refine the original tree. At each node with more than two children, replace its join by the left-associated
+binary chain just described, preserving the original child subtrees. The node still represents the same substring, so its
+22
+
+Defining and Generating Compositional Structure
+PREPRINT
+parent’s score is unchanged; scores within the original child subtrees are also unchanged. Equation 55 shows that the
+replacement decreases the total score by at most c. Nodes already having two children need no replacement. After
+replacing all N>2(T) nonbinary joins, the resulting tree B is binary and has the same ordered leaves. Summing the
+local bounds proves equation 54.
+There are finitely many admissible trees, so a maximizer exists. In the idealized accounting that suppresses the indicated
+coding terms, refining a maximizer cannot decrease its score, and maximality prevents an increase beyond the maximum.
+Its binary refinement is therefore also a maximizer in that accounting.
+Appendix D
+Experiment details
+D.1
+Compositional strings
+Grammar representation and codelength.
+For a substring xv, the two-part compressor returns a grammar G =
+(Ai →αi)M
+i=1 and a residual sequence z. Each right-hand side αi is a sequence of original symbols and rule names Aj
+with j < i, so the rules form an acyclic hierarchy. Recursively expanding every rule name in z recovers xv exactly. The
+empirical model mf
+xv is the grammar G alone; z is the data-given-model component and is consequently not passed to
+the conditional model compressor.
+We use a shared zero-order entropy code for the grammar and residual. Let S(G, z) be the pooled stream containing
+every symbol on the right-hand side of every rule, one occurrence of each rule name on its left-hand side, and every
+symbol in z. If ns is the number of occurrences of symbol s in this stream and N = P
+s ns, its codelength is
+λ(s) = −log2(ns/N). We separate the resulting description into:
+Lf
+model(G) =
+M
+X
+i=1
+"
+λ(Ai) +
+X
+s∈αi
+λ(s)
+#
+,
+(56)
+Lf
+data(xv | G) =
+X
+s∈z
+λ(s),
+(57)
+Lf
+G(xv) = Lf
+model(G) + Lf
+data(xv | G).
+(58)
+Including one left-hand-side occurrence charges for introducing each rule, while occurrences of its name in other rules
+or in z capture the savings from reuse. Because the empirical symbol probabilities are estimated from the pooled stream,
+adding a rule changes both the sequence length and all symbol codelengths; rule induction must therefore evaluate
+the change in the complete two-part code rather than count replaced symbols alone. We treat rule boundaries and the
+empirical distribution as part of the agreed coding convention and do not encode their additional overhead. Thus, as in
+our broader empirical framework, these quantities should be interpreted as consistently applied surrogate codelengths
+rather than calibrated lengths of a particular binary file format.
+MDL grammar induction.
+Standard RePair maintains the current residual sequence z, finds its most frequent
+adjacent pair of symbols, introduces a new rule for that pair, and replaces the pair’s non-overlapping occurrences by the
+new rule name (Larsson and Moffat, 2000). It repeats this process until no pair occurs twice. For example, replacing
+01 by A changes 01010 to AA0 and adds the rule A →01. Since the symbols of z can include previously introduced
+rule names, later replacements can build a hierarchy of rules. Two features of standard RePair are undesirable for
+our purpose. First, it discovers a long repeated substring through several pair replacements, even when one rule for
+the entire substring would be shorter and easier to interpret. MR-RePair addresses this problem by starting from a
+repeated pair and extending all of its occurrences to the left and right for as long as their surrounding symbols agree,
+then introducing a rule for the resulting longer repeat (Furuya et al., 2018). Second, RePair and MR-RePair ordinarily
+add a rule whenever a suitable repetition exists. They do not ask whether the saved occurrences outweigh the cost of
+storing the rule, and can therefore assign substantial grammars even to random strings for which the empty grammar
+gives a shorter two-part code.
+Our fitter retains MR-RePair’s long-repeat search but chooses among its candidates by the resulting change in Lf
+G(xv);
+Algorithm 1 gives the complete procedure. At each iteration, it considers every distinct adjacent pair with at least
+two non-overlapping occurrences in z. For one such pair, it collects all of the pair’s occurrences and extends them
+simultaneously: it prepends a symbol only if the same symbol appears immediately before every occurrence, and
+appends a symbol only if the same symbol appears immediately after every occurrence. This continues until neither
+extension is possible. The result is maximal relative to this set of occurrences; it need not be the longest repeat
+anywhere in z. As in MR-RePair, if the result has length greater than two and its first and last symbols are equal, we
+remove its final symbol. This boundary adjustment prevents shifted, self-overlapping copies from inducing inconsistent
+23
+
+Defining and Generating Compositional Structure
+PREPRINT
+replacements. We then greedily retain the leftmost possible non-overlapping occurrences. If at least two remain, the
+resulting pattern q becomes a candidate right-hand side for a new rule A →q. Its exact gain is
+∆(q) = Lf
+G(xv) −Lf
+G∪{A→q}(xv),
+(59)
+where the second term is evaluated after replacing those occurrences by A. The selected candidate is the one with
+greatest gain, and a rule is added only if this gain is positive. Thus, every accepted step strictly shortens the surrogate
+two-part code.
+More concretely, the pooled entropy length can be written as N log2 N −P
+s ns log2 ns. If a candidate q has length m,
+contains symbol s exactly cs(q) times, and is replaced at k non-overlapping occurrences, then introducing its new rule
+name A gives:
+N ′ = N + (m + 1) −k(m −1),
+(60)
+n′
+s = ns −(k −1)cs(q),
+n′
+A = k + 1.
+(61)
+The m right-hand-side symbols and one left-hand-side occurrence account for the m + 1 added model symbols, while
+replacing k copies of an m-symbol pattern by k rule names accounts for the residual reduction. Substituting these
+counts into the entropy expression yields ∆(q) without rebuilding the candidate grammar.
+The pair-extension procedure has an important blind spot. It extends a pair only while all occurrences of that pair have
+the same neighbouring symbols. Suppose, for example, that several copies of a long pattern contain the pair 01, but 01
+also occurs elsewhere in unrelated contexts. Those extra occurrences can stop the simultaneous extension immediately,
+even though the subset inside the long pattern would yield a valuable rule. We therefore supplement the local pair
+search with a global repeat search based on a suffix array. This second search can isolate a subset of starting positions
+that share a long pattern.
+A substring is any contiguous segment of a sequence. A prefix is a substring that begins at the first position, while
+the suffix beginning at position i is the substring zi, zi+1, . . . that runs from i to the end. The suffix array does not
+store these suffixes themselves: it stores their starting positions, ordered so that the corresponding suffixes are in
+lexicographic, or dictionary, order. For example, the suffixes of z = cabdab, shown in sorted order, are
+ab(5),
+abdab(2),
+b(6),
+bdab(3),
+cabdab(1),
+dab(4),
+(62)
+where each subscript is the suffix’s starting position in z. The suffix array is therefore (5, 2, 6, 3, 1, 4). Its first two
+suffixes begin with the same length-two prefix ab, revealing occurrences of ab at positions 2 and 5. More generally,
+suffixes with a long shared prefix become neighbours in this ordering, even if other occurrences of the prefix’s shorter
+symbol pairs appear elsewhere in z.
+We summarize this shared-prefix information with a longest-common-prefix (LCP) array. For each suffix after the
+first in sorted order, its LCP value is the number of initial symbols it shares with the preceding suffix. A block of r
+consecutive suffixes for which the r −1 intervening LCP values are all at least h represents r occurrences of the same
+length-h substring. We enumerate the maximal such blocks at the prefix lengths present in the LCP array; these are the
+LCP intervals in Algorithm 2. An interval is only a quick proposal, since its occurrences may overlap and replacing
+overlapping copies is impossible. We rank an interval containing r suffixes with shared-prefix length h by h(r −1),
+which approximates the number of repeated symbols beyond the first copy. This ranking is used only to decide which
+proposals receive further evaluation, not to accept a grammar rule.
+For each retained interval, we truncate its shared prefix to the maximum permitted rule length and use that prefix as
+the candidate pattern q. We then search the entire residual for every exact occurrence of q, rather than using only
+the starting positions in the interval. Scanning from left to right, we keep an occurrence whenever it begins after the
+preceding retained occurrence ends; because all occurrences have equal length, this produces a maximum-cardinality
+non-overlapping set. Patterns with fewer than two retained occurrences are discarded, and duplicate patterns proposed
+by different intervals are evaluated only once. Every surviving suffix-array pattern is finally scored with the same exact
+MDL gain ∆(q) as every pair-derived pattern.
+The interval pool in Algorithm 2 is deliberately larger than KSA: different high-ranked intervals can collapse to the
+same pattern after truncation, and other patterns fail the non-overlap test. Accordingly, KSA sets the scale of the search
+rather than imposing a hard cap on its output. The routine can return as many as B distinct patterns when all retained
+intervals survive, and every returned pattern is evaluated exactly before a rule is accepted.
+Constructing and sorting the suffix array, computing the LCP values, and matching the retained patterns against all of z
+is more expensive than updating the local pair index. We therefore invoke the global search only on iterations selected
+by τ, or whenever the pair-derived candidates have no positive gain. The scheduled calls allow global candidates to
+24
+
+Defining and Generating Compositional Structure
+PREPRINT
+Algorithm 1: MDL-guided maximal-repeat grammar induction
+Input: String x; suffix-search interval τ; suffix parameters θSA = (ℓmin, ℓmax, KSA, ρ, I0)
+G ←∅, z ←x, and r ←0;
+while true do
+C ←maximal-repeat candidates obtained from every repeated pair;
+if KSA > 0 and either C has no positive-gain candidate or [τ > 0 and (r + 1) mod τ = 0] then
+C ←C ∪SuffixCandidates(z; θSA) using Algorithm 2;
+end
+if C = ∅then
+break;
+end
+q⋆←arg maxq∈C ∆(q);
+if ∆(q⋆) ≤0 then
+break;
+end
+Add A →q⋆to G and replace the non-overlapping occurrences of q⋆in z by A;
+r ←r + 1;
+end
+return G and z;
+Algorithm 2: Suffix-array repeat candidates
+Input: Residual z; length bounds ℓmin, ℓmax; base interval budget KSA; oversampling factor ρ; minimum interval
+pool I0
+Output: A set of repeated-pattern candidates CSA
+SA ←starting positions of all suffixes of z, sorted lexicographically;
+LCP ←longest-common-prefix lengths of adjacent suffixes in SA;
+B ←max{ρKSA, I0};
+Enumerate maximal LCP intervals with common-prefix length h ≥ℓmin and rank each interval containing r
+suffixes by h(r −1);
+I ←the B highest-ranked intervals;
+CSA ←∅;
+foreach I ∈I, in decreasing score order do
+m ←min{hI, ℓmax} and q ←the length-m prefix represented by I;
+if q has not already been examined then
+Find every exact occurrence of q in z and greedily retain a left-to-right non-overlapping subset;
+if at least two non-overlapping occurrences remain then
+Add q and its occurrence spans to CSA;
+end
+end
+end
+return CSA;
+compete before the local search stalls, while the fallback call prevents the pair-extension blind spot from terminating
+induction prematurely.
+For the reported experiment, we set τ = 4, ℓmin = 2, ℓmax = 128, KSA = 24, ρ = 8, and I0 = 16. Ties between
+equal-gain candidates are resolved by the earliest occurrence in the residual.
+Conditional model compression.
+At a binary join xv = [xa, xb], the conditional compressor receives the grammar
+G fitted to the combined substring and the two grammars Ga, Gb fitted independently to its parts. It does not receive
+their residual sequences: the target quantity is the cost of describing the model mxv given the part models, not the cost
+of reconstructing xv. Operationally, the compressor tries to describe each rule of G as either a copy of, a modification
+of, or an addition to the rules already available in Ga and Gb. A copied rule should cost zero, a modified rule should
+cost according to the changed symbols, and a genuinely new rule should be charged in full.
+25
+
+Defining and Generating Compositional Structure
+PREPRINT
+The first problem is determining which rules correspond. Rule names are arbitrary identifiers: for example, the two
+grammars (A →01, B →AA) and (C →01, D →CC) have the same structure even though their names differ.
+Directly comparing their serialized symbol sequences would incorrectly charge for this relabelling. We therefore seek a
+consistent relabelling of each part grammar, meaning that we both reorder its rule definitions and replace every reference
+to an old rule name by the corresponding new name. Only after this alignment do we compare rule contents.
+To handle grammars with different numbers and lengths of rules, we place them in arrays with a common number of
+rows and columns and fill unused rows and positions with a distinguished padding symbol. When this common number
+of rule rows is at most 6, we can try every possible relabelling of a part grammar and retain the one with the smallest
+symbolic difference from G. This exhaustive procedure compares the actual rules and therefore finds the minimum-cost
+relabelling under the difference measure defined below.
+For larger grammars, trying every relabelling is infeasible because the number of permutations grows factorially. We
+instead give each rule a fixed-length numerical descriptor, or embedding, constructed from its terminal symbols, their
+positions, and the rules that it references. These features depend on the rule’s role in the grammar rather than its integer
+name. Rules with similar descriptors can then be treated as candidate counterparts.
+Mechanistically, each rule is represented by a 64-dimensional vector. Every terminal symbol is assigned a fixed
+random vector generated with seed 0 and shared across all three grammars. At initialization, a reference to another
+rule contributes no content beyond its position, so a rule’s descriptor summarizes its terminals and overall layout. We
+then refine all rule descriptors simultaneously for three rounds. In each round, every rule reference is replaced by the
+preceding-round descriptor of the referenced rule before the enclosing rule is summarized again. One round therefore
+incorporates the contents of directly referenced rules, and successive rounds incorporate progressively deeper nested
+structure. This procedure is analogous to Weisfeiler–Lehman refinement (Leman and Weisfeiler, 1968), and a consistent
+relabelling of rule names leaves the resulting descriptors unchanged.
+Because a rule’s right-hand side is an ordered sequence, we add a sinusoidal position vector to the vector at each symbol
+position. Before averaging the position vectors into one descriptor for the rule, we replace the vector uk at position
+k by 0.25uk−1 + 0.5uk + 0.25uk+1, repeating the endpoint vector when a neighbour lies beyond the rule boundary.
+This local smoothing makes the descriptor less sensitive to a one-position displacement caused by a small insertion or
+deletion. We compute the squared Euclidean distance between every rule descriptor in G and every descriptor in a part
+grammar, then use the Hungarian assignment algorithm to find the one-to-one correspondence with minimum total
+descriptor distance. This is only a tractable heuristic for choosing a relabelling: the final conditional score is computed
+from the aligned symbolic rules, not from their embedding distances.
+Let αj be a right-hand side in G and let eαij be the rule aligned to it from part grammar Gi. Once the alignment is fixed,
+we charge the same number of bits for every terminal or rule reference on a right-hand side:
+b = log2 max {1, M + |ΣG|} ,
+(63)
+where M is the number of rules in G and ΣG is the set of distinct terminal symbols appearing in it. Thus, M + |ΣG| is
+the number of symbol types that may need to be named in the target grammar. The name on the left-hand side of a rule
+is implicit in its aligned row, so we charge only for symbols on right-hand sides. To avoid treating a short insertion at the
+beginning or end as a change to every subsequent position, we compare each pair of rules under several relative shifts:
+d(α, β) = b
+min
+δ∈{−S,...,S} dH(padS(α), shiftδ(padS(β))) ,
+S = 10,
+(64)
+where padding adds empty positions at both ends, shiftδ moves the second padded rule by δ positions, and the Hamming
+distance dH simply counts positions containing different symbols. We select the cheapest shift from −10 to 10 and
+multiply its mismatch count by b. Identical aligned rules therefore cost zero. Comparing a rule with an entirely empty
+row costs b|α|, the same as writing every symbol of α directly. After aligning each part grammar separately, each rule
+of the combined grammar independently chooses among three descriptions: write it directly, describe its differences
+from the aligned rule in Ga, or describe its differences from the aligned rule in Gb:
+Lg
+cond(G | Ga, Gb) =
+M
+X
+j=1
+min {b|αj|, d(αj, eαaj), d(αj, eαbj)} .
+(65)
+This design targets three desired behaviours. First, exact alignment assigns zero cost to a grammar conditioned on an
+isomorphic relabelling of itself. Second, if the combined grammar is a union of rules inherited from the two parts, the
+per-rule minimum permits each rule to select the part from which it came and therefore permits a zero total cost. Third,
+small changes to an inherited rule are charged in proportion to their symbolic differences, while a genuinely unmatched
+rule pays its full raw cost. We use the difference-based strategy described above, with exhaustive alignment threshold 6,
+maximum shift 10, embedding dimension 64, and three message-passing rounds.
+26
+
+Defining and Generating Compositional Structure
+PREPRINT
+Algorithm 3: Conditional compression of a combined grammar
+Input: Combined grammar G; part grammars Ga, Gb; exact-alignment threshold Mexact
+Pad all grammars to a common shape and compute b;
+foreach i ∈{a, b} do
+if the padded grammars have at most Mexact rules then
+Find the minimum-difference relabelling of Gi by exhaustive permutation;
+else
+Embed the rules, then find a one-to-one alignment using Hungarian assignment;
+end
+end
+foreach rule αj in G do
+cj ←min{b|αj|, d(αj, eαaj), d(αj, eαbj)};
+end
+return min{b P
+j |αj|, P
+j cj};
+This procedure is intentionally an operational approximation to conditional model complexity, not a complete lossless
+coding protocol. In particular, the inferred alignment is not transmitted separately, the rule boundaries are treated as
+known, and the fixed per-symbol cost is only a relative complexity scale. These choices remove arbitrary rule identities
+and focus the score on structural differences between grammars, which is the property needed by the reward.
+Decomposition and reward.
+The balanced decomposition contains 32, 16, 8, 4, 2, and 1 substrings of lengths 4, 8,
+16, 32, 64, and 128, respectively. Evaluating one candidate therefore fits 63 grammars and computes the conditional
+cost at each of the 31 binary joins. Conditional costs are divided by the length of the combined substring, averaged over
+the 16, 8, 4, 2, and 1 joins at their respective scales, and aggregated with the p = 0.75 power mean given in the main
+text.
+Optimization.
+We implemented the evolutionary search with pymoo (Blank and Deb, 2020), using NSGA-II (Deb
+et al., 2002) with a single objective equal to the negative reward. Although NSGA-II is formulated for multi-objective
+optimization, in this setting its tournament selection and parent–offspring survival reduce to an elitist genetic search
+over a scalar score; we refer readers to the original work for details of ranking and survival.
+The initial population contains 10,000 strings sampled independently and uniformly from the eight-symbol vocabulary.
+Each generation produces 5,000 offspring. Selected parent pairs undergo two-point crossover with probability 0.9.
+Mutation is then applied to every offspring: each of its 128 positions is independently selected with probability 2/128,
+and a selected position is reset to a uniformly sampled vocabulary symbol, possibly the symbol already present. Thus,
+each offspring has two attempted symbol resets in expectation. Duplicate strings are eliminated. Parents and offspring
+are scored, and NSGA-II retains an elite population of 10,000 strings for the next generation.
+Additional results.
+Figure D.1 shows the dot plot of the top-reward string for all 10 seeds after optimizing both the
+compositionality and structure rewards. Methods for dot plot generation and its interpretation are described in the main
+text.
+D.2
+Compositional images
+Coordinate-network model.
+For every patch xv ∈{0, . . . , 3}H×W ×3, the two-part compressor fits a separate
+probabilistic coordinate network. Let uij ∈[−1, 1]2 be the coordinate of pixel (i, j), normalized within the patch so
+that its two axes span [−1, 1]. The network outputs 12 real-valued scores, or logits, arranged as four logits for each of
+the three channels, and thereby defines a categorical distribution qθ,c(· | uij) for channel c. Its likelihood factorizes
+over coordinates and channels:
+qθ(xv) =
+H
+Y
+i=1
+W
+Y
+j=1
+3
+Y
+c=1
+qθ,c(xv,ijc | uij).
+(66)
+This factorization does not make pixels independent in the model’s description: the same parameters determine the
+distribution at every coordinate, so spatially related pixels can share structure through the network.
+The network has three hidden layers. Each layer contains four groups of 32 units, to which we respectively apply the
+functions z, σ(5z), tanh(2.5z), and exp(−5z2). Concatenating the four groups gives a hidden width of 128. The
+27
+
+Defining and Generating Compositional Structure
+PREPRINT
+Figure D.1: Dot plots for all seeds. Compositionality-optimized strings have blue borders, and structure-optimized strings have
+orange borders.
+mixture of monotone, saturating, and localized nonlinearities is standard for CPPNs and gives a small fixed architecture
+several biases for representing smooth regions, boundaries, symmetries, and repeated spatial patterns.
+Alongside this spatial model, we fit a coordinate-independent baseline q0. For each channel c, q0,c is its empirical
+categorical distribution in the training pixels, with an additive pseudocount of 10−3 for each intensity. This baseline can
+encode colour frequencies but no relationship between a value and its position. We assign it zero model complexity,
+making it the empty-model analogue against which learned spatial structure must justify itself.
+Training and model selection.
+We randomly divide the spatial coordinates of each patch equally into training and
+validation sets. The coordinate network is trained only on the training half by minimizing mean categorical cross-entropy
+over coordinates and channels. We use full-batch AdamW with initial learning rate 4 × 10−3, weight decay 10−4,
+gradient-norm clipping at 1, and cosine annealing to 4×10−4. Training runs for at most 250 gradient steps. We evaluate
+after the first step and every five steps thereafter, retain the checkpoint with the lowest validation cross-entropy, and stop
+after at least 10 steps once eight consecutive evaluations fail to improve validation loss by at least 10−4 bits per symbol.
+Held-out selection serves two roles. First, early stopping restricts how much pixel-level detail the network can
+memorize. Second, we compare the selected checkpoint with the constant baseline on validation coordinates. We retain
+the coordinate network only if it reduces validation loss by at least 0.02 bits per symbol and by at least 2% relative to the
+baseline; otherwise, the empirical model mf
+xv is the constant model. These margins prevent random fluctuations from
+turning weak coordinate dependence into apparent structure. Network initialization and the train–validation division are
+resampled when a patch model is fitted.
+28
+
+Defining and Generating Compositional Structure
+PREPRINT
+Algorithm 4: Neural two-part compression of an image patch
+Input: Patch xv and normalized coordinates {uij}
+Randomly split the coordinates equally into training set Itr and validation set Ival;
+Fit the coordinate-independent channel marginals q0 on Itr;
+Randomly initialize the fixed coordinate network qθ;
+for t = 1, . . . , tmax do
+Update θ on the full training set using AdamW;
+At scheduled evaluations, record (st, ℓt) and the validation loss, and save the best checkpoint;
+Stop if the validation patience criterion is met;
+end
+Restore the validation-selected checkpoint qθ⋆;
+if qθ⋆improves on q0 by both validation margins then
+q ←qθ⋆and compute bLf
+model(q) using Equation (67);
+else
+q ←q0 and bLf
+model(q) ←0;
+end
+Compute bLf
+data(xv | q) on every coordinate using Equation (68);
+return mf
+xv = q, bLf
+model(q), and bLf
+data(xv | q);
+Two-part complexity estimates.
+Let ℓr be the training cross-entropy in bits per pixel-channel at evaluation r, and let
+sr be the cumulative number of training coordinates processed by that point. If r⋆is the validation-selected checkpoint,
+write ℓ⋆= ℓr⋆and s⋆= sr⋆. We estimate the model-description term by the trapezoidal approximation to:
+bLf
+model(qθ) = 3
+Z s⋆
+0
+[ℓ(s) −ℓ⋆]+ ds,
+(67)
+where ℓ(s) linearly interpolates the recorded training losses and [a]+ = max{a, 0}. The factor 3 converts coordinates
+seen into channel symbols seen. Intuitively, ℓ(s) −ℓ⋆removes the uncertainty that remains even after the selected
+model has been learned; the remaining excess is the predictive cost paid because its structure has not yet been absorbed
+by the weights. Integrating this excess over learning gives a cheap learning-curve proxy for the information acquired by
+the network. This follows the same principle as online, or prequential, estimates of neural-network description length,
+which accumulate predictive codelength as training examples become available sequentially (Blier and Ollivier, 2018),
+and the computationally inexpensive learning-complexity proxy used by Epiplexity (Finzi et al., 2026).
+The model-to-data term is the selected model’s negative log-likelihood on the complete patch, including both the
+training and held-out coordinates:
+bLf
+data(xv | q) = −
+X
+i,j,c
+log2 qc(xv,ijc | uij).
+(68)
+If the constant baseline is selected, we set bLf
+model(q0) = 0 and use its full-patch negative log-likelihood in Equation (68).
+Otherwise, the two-part length is the sum of Equations (67) and (68).
+Unlike a true prequential/online code, Equation (67) does not directly estimate the actual codelength of the final weights.
+We use it as a cheap and consistently applied surrogate expected to increase with the amount of learnable structure stored
+in the network. The validation split, constant fallback, and residual likelihood are therefore essential complements:
+they prevent a network from receiving structural credit merely for taking a long time to memorize noise. Algorithm 4
+summarizes the complete procedure.
+Conditional model compression.
+At each quadtree join, the target model is the network qv fitted to the parent patch,
+while the four given models q1, . . . , q4 were fitted independently to its quadrants. Direct parameter comparison would
+be arbitrary: hidden units can be permuted, rescaled, or otherwise reparameterized without changing the represented
+function. We instead ask how much function-level adaptation is required to turn the children into the parent.
+We first construct an unadapted routed student. Every coordinate in the parent is assigned to its quadrant a(i, j) ∈
+{1, . . . , 4} and converted to that quadrant’s local normalized coordinates euij. The student’s prediction is:
+q(0)
+S (· | uij) = qa(i,j)(· | euij).
+(69)
+29
+
+Defining and Generating Compositional Structure
+PREPRINT
+Thus, q(0)
+S
+represents the null hypothesis that the model of the parent is only a spatial juxtaposition of the four child
+models. No new routing parameters are learned or charged: the quadrant routing is fixed by the decomposition tree.
+The parent acts as a teacher. We cache its categorical distributions at every parent coordinate, copy the four child
+models, and fine-tune all copied coordinate networks to minimize the forward divergence:
+d(qv, qS; I) =
+1
+3|I|
+X
+(i,j)∈I
+3
+X
+c=1
+DKL(qv,c(· | uij) ∥qS,c(· | uij))
+(70)
+in bits per symbol. A child that fell back to the constant model has no trainable parameters and remains fixed; all other
+child weights are adapted. We again use a random 50% training–validation split, the optimizer and stopping schedule
+above, and validation checkpointing. The adapted student is retained only if its validation divergence is lower than
+that of the unadapted routed student by at least 0.02 bits per symbol and by at least 2%. Otherwise, we revert all four
+components to their original child models.
+The conditional model term uses the same learning-curve construction as Equation (67), with the training cross-entropy
+ℓreplaced by the training distillation loss d and its selected value d⋆:
+bLg
+model,cond = 3
+Z s⋆
+0
+[d(s) −d⋆]+ ds.
+(71)
+If adaptation is rejected, this term is zero. The conditional residual is the remaining teacher–student divergence over
+every coordinate and channel:
+bLg
+resid,cond =
+X
+i,j,c
+DKL(qv,c(· | uij) ∥qS,c(· | uij)) ,
+(72)
+and our estimate of the conditional model complexity is their sum:
+Lg
+cond(mf
+xv | mf
+xv1, . . . , mf
+xv4) = bLg
+model,cond + bLg
+resid,cond.
+(73)
+This construction gives the desired limiting behaviour. If the parent model is reproduced by simply routing among the
+children, no adaptation is needed and the residual divergence is zero. If modeling the quadrants together changes the
+useful spatial structure, reproducing the parent requires either a nontrivial learning trajectory, a remaining functional
+correction, or both. As with the two-part model term, Equation (71) is a surrogate rather than a complete bitstream; the
+purpose of the residual is to ensure that cheap adaptation is not mistaken for exact recovery. The full procedure is given
+in Algorithm 5.
+Decomposition and reward.
+The 64 × 64 image yields 64 patches of size 8 × 8, 16 patches of size 16 × 16, four
+patches of size 32 × 32, and one complete-image patch. We therefore fit 85 two-part models and evaluate 21 four-child
+joins per image. For a join with an H × W parent, we divide Equation (73) by HW, giving conditional complexity
+per spatial location. Let r16, r32, and r64 be the mean normalized conditional complexities among joins whose parent
+widths are 16, 32, and 64, respectively. The scalar fitness is the power mean:
+R(x) =
+rp
+16 + rp
+32 + rp
+64
+3
+1/p
+,
+p = 0.75.
+(74)
+Averaging within a scale prevents the more numerous small patches from dominating, while the power mean gives the
+three scales equal overall status and is more sensitive than the arithmetic mean to weaker scales.
+Evolutionary optimization.
+The coordinate networks above are fitted probabilistic models used only to evaluate the
+reward. The CPPNs used to generate each candidate image are separate networks whose architectures and parameters
+are evolved. Each receives the full-image coordinate (ux, uy) ∈[−1, 1]2 and produces three scalar outputs yc ∈[−1, 1].
+We convert each output to an intensity by:
+xijc = round
+(yc(uij) + 1)(4 −1)
+2
+
+,
+(75)
+so a single deterministic CPPN genome specifies all 64 × 64 × 3 values.
+We evolve these genomes with feed-forward NEAT (Stanley and Miikkulainen, 2002, 2004), implemented using
+neat-python version 2.1.0 (McIntyre et al., 2026). NEAT begins with simple networks, introduces nodes and
+connections through mutation, crosses over related genomes, and groups similar genomes into species so that newly
+complexified structures can compete primarily with close relatives. We defer the precise crossover, speciation, and
+offspring-allocation rules to the original papers. Our settings, summarized in Table D.1, are close to those used for
+CPPN evolution in Picbreeder (Secretan et al., 2008, 2011).
+30
+
+Defining and Generating Compositional Structure
+PREPRINT
+Algorithm 5: Conditional compression of a parent coordinate model
+Input: Parent model qv; quadrant models q1, . . . , q4; parent coordinate grid
+Cache the teacher distributions produced by qv on the parent grid;
+Construct the unadapted routed student q(0)
+S
+using Equation (69);
+Randomly split parent coordinates equally into training set Itr and validation set Ival;
+Copy the child models to obtain qS;
+for t = 1, . . . , tmax do
+Fine-tune the trainable child copies on Itr using Equation (70);
+At scheduled evaluations, record (st, dt) and validation divergence, and save the best checkpoint;
+Stop if the validation patience criterion is met;
+end
+Restore the validation-selected student q⋆
+S;
+if q⋆
+S improves on q(0)
+S
+by both validation margins then
+qS ←q⋆
+S and compute bLg
+model,cond using Equation (71);
+else
+qS ←q(0)
+S
+and bLg
+model,cond ←0;
+end
+Compute bLg
+resid,cond on the complete parent grid using Equation (72);
+return bLg
+model,cond + bLg
+resid,cond;
+Table D.1: NEAT hyperparameters for the image experiment. Mutation probabilities are applied by neat-python during genome
+reproduction.
+Setting
+Value
+Population and initialization
+200 feed-forward genomes; initially no hidden nodes, with both coordinate inputs
+fully connected to all three outputs
+Activations
+Hidden-node default tanh; mutation options identity, sigmoid, tanh, and Gaussian;
+activation mutation probability 0.12; output activations fixed to tanh
+Structural mutation
+Add connection 0.35; delete connection 0.08; add node 0.25; delete node 0.05
+Weights and biases
+Gaussian initialization with mean 0 and standard deviation 1; weight mutation probabil-
+ity 0.8; bias mutation probability 0.7; replacement probability 0.1; additive-mutation
+standard deviation 0.75; values clipped to [−30, 30]
+Speciation
+Compatibility threshold 2.8; coefficient 1.0 for nodes or connections present in only
+one genome; coefficient 0.8 for weight differences
+Stagnation
+Species considered stagnant after 30 generations without improvement; the three
+highest-fitness species protected from stagnation removal
+Reproduction
+Two top genomes copied unchanged per species; top 25% of each species eligible to
+reproduce; minimum species size 2
+Image-generating CPPN network statistics.
+To quantitatively analyze the structure of the evolved images, we
+compute summary statistics of the CPPN networks that generated them, summarized in Table D.2.
+Additional example images.
+Figure D.2 shows additional generated images using compositionality reward, and
+Figure D.3 for the structure reward.
+31
+
+Defining and Generating Compositional Structure
+PREPRINT
+Table D.2: CPPN structural statistics recorded during evolution. Each metric is summarized across the population using its mean
+and maximum.
+Metric
+Description
+Nodes
+Number of hidden nodes.
+Connections
+Number of connections between nodes.
+Depth
+Longest input-to-output path length, measured in connections.
+log10(1 + #Paths)
+Number of distinct input-to-output paths.
+Fan-out (max)
+Maximum number of connections going out of a hidden node.
+Fan-in (max)
+Maximum number of connections going in to a hidden node.
+Reused nodes (%)
+Fraction of hidden nodes with fan-out greater than one.
+Combining nodes (%)
+Fraction of hidden nodes with fan-in greater than one.
+32
+
+Defining and Generating Compositional Structure
+PREPRINT
+Figure D.2: Additional images generated from compositionality-optimized CPPNs.
+33
+
+Defining and Generating Compositional Structure
+PREPRINT
+Figure D.3: Additional images generated from structure-optimized CPPNs.
+34

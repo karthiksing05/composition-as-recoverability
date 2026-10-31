@@ -1,0 +1,4 @@
+results/e2redec/mlp_m64_V8_s6.json {'orig': np.float64(0.335), 'redec_trained': np.float64(0.794), 'redec_init': np.float64(0.822), 'redec_same': np.float64(0.307)}
+results/e2redec/cnn_m64_V8_s6.json {'orig': np.float64(0.381), 'redec_trained': np.float64(0.798), 'redec_init': np.float64(0.757), 'redec_same': np.float64(0.401)}
+results/e2redec/slot_m64_V8_s6.json {'orig': np.float64(0.366), 'redec_trained': np.float64(0.76), 'redec_init': np.float64(0.788), 'redec_same': np.float64(0.349)}
+results/e2redec/tf_m64_V8_s6.json {'orig': np.float64(0.145), 'redec_trained': np.float64(0.616), 'redec_init': np.float64(0.469), 'redec_same': np.float64(0.052)}

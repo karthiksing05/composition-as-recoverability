@@ -1,0 +1,3 @@
+e8_vision.py --models clip-b32-img --seeds 0 --outdir results/smoke_e8
+e7_roles.py --models gpt2 --seeds 0 --outdir results/smoke_e7
+e4_pretrained.py --models EleutherAI/pythia-160m --seeds 0 --wide --whiten --outdir results/smoke_e6

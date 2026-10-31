@@ -38,3 +38,18 @@ Bugs found and fixed during the work: E2 first relations were exactly additive a
 - TRELLIS placeholder removed; TRELLIS now listed as a future test candidate.
 - E4 conclusions are relative to the declared part code (state of "a {x}") and linear readouts; discovered codes (ROLE/TPDN, DAS) are the obvious next M.
 - Not run: experiment 6 of the original plan (new primitive / forgetting), interchange interventions, human data.
+
+## 4. Review rounds 2-6 (2026-10-27 to 2026-10-28)
+
+Reviews are in `review_r{1..5}_*.md`; each round's edits are scripted in `scripts/fix_*.py`, with the pre-edit text in `main_pre_*.tex`.
+
+- **E4 (pretrained encoders) redone.** Part codes are whitened (one direction held up to 99% of the variance), penalties are chosen on validation nouns, and random weights are scored on their own codes and on the trained model's. Results: κ ≤ 0.52 for every encoder (GPT-2 0.44-0.50, CLIP-H 0.36); without whitening, GPT-2 reaches 0.81-0.83. Training raises κ by 0.51-0.61 (GPT-2), 0.26-0.30 (T5, CLIP-H) and ≤ 0.17 elsewhere. A mixed role-filler reference (`e4_refmix.py`) moves κ by at most 0.06.
+- **E2 verdict.** The verdict is stated at V = 64 only (τ ≈ 0.17). The glyph code is informative: R² 0.92 from pixels and 0.89 from 16 PCs (`e2_informative.py`).
+- **Definitions.**
+  - Def 1: role-factorization goes through a richer code e′ with injective B_i, and ε is invariant only to rotations and uniform rescalings.
+  - Def 2: κ against the concatenation and sum references.
+  - Def 3 (round 6): informativeness and productivity, split out of Def 2.
+- **Round 6 (polish).**
+  - Text: the Method paragraph of Sec 4.3 is split into run-ins; the HRR crosstalk formula and the memorization-leak bound are derived in App. A; Sec 4.2 states the pixel scale.
+  - Citations: the Kamp & Partee modifier clause and the content-effect sources (Johnson-Laird et al. 1972; Cheng & Holyoak 1985) are added; the four uncited bib entries are now cited; the stray `app:human` label is removed.
+  - Figures: Fig 5a's axis is tightened, and the Fig 6c/d legends are moved below the axes.

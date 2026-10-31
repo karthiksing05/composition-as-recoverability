@@ -1,0 +1,2506 @@
+Advances in Cognitive Systems X (20XX) 1-6
+Submitted X/20XX; published X/20XX
+Diffusion Models and Concept Formation
+Zekun Wang
+ZEKUN@GATECH.EDU
+Karthik Singaravadivelan
+KSINGARA3@GATECH.EDU
+Christopher J. MacLellan
+CMACLELL@GATECH.EDU
+College of Computing, Georgia Institute of Technology, Atlanta, GA 30332 USA
+Abstract
+Humans organize knowledge into a taxonomy of concepts with nested levels of abstraction and a
+basic level at which people recognize and name objects with the least cognitive effort. Cobweb is
+a classic cognitive account of this ability, an incremental learner that builds a probabilistic concept
+hierarchy by maximizing category utility. We argue that diffusion models, although designed for
+image synthesis, implicitly perform the same computation. The noisy marginals of a diffusion
+model are Gaussian smoothings of the data distribution, and the modes of these marginals form a
+hierarchy that corresponds to a Cobweb tree of probabilistic prototypes in four respects. Both are
+hierarchical density models, both are hierarchical-Bayesian models with Gaussian prototypes, both
+treat categorization as score-following that reduces uncertainty, and in both a basic level emerges.
+We locate this basic level for a diffusion model at an intermediate noise level, where recent analyses
+show that the reverse process commits to the class identity of a sample. The two models differ
+mainly in how they represent and learn the taxonomy. Cobweb learns a discrete tree incrementally,
+whereas a diffusion model encodes a continuous, interpolable hierarchy in a single learned score
+field fit to the data distribution. We test the correspondence on MNIST and Fashion-MNIST by
+recovering the diffusion hierarchy through mode-finding and comparing the basic levels of the two
+models. This reframes diffusion as a cognitive model of concept formation and offers Cobweb a
+continuous, scalable instantiation.
+1. Introduction
+Humans naturally organize their knowledge into nested levels of abstraction. A collie is a kind of
+dog, a dog a kind of mammal, a mammal a kind of animal. Within these hierarchies, one level sup-
+ports recognition with the least cognitive effort. This basic level (e.g., dog, chair) is the level people
+use by default, because it offers the best trade-off between being informative about an instance’s
+features and being distinctive from other categories (Rosch et al., 1976; Rosch & Mervis, 1975).
+Basic categories maximize the joint predictability of cues and category membership (Jones, 1983),
+and a computational account of human categorization should explain why such a level emerges.
+Cobweb (Fisher, 1987) offers a classic computational account. It processes instances one at a
+time and incrementally builds a probabilistic concept hierarchy, choosing at each step the restructur-
+ing operation that most improves category utility, an information-theoretic measure of how much a
+partition increases the predictability of instance features (Corter & Gluck, 1992). The resulting tree
+reproduces basic-level and typicality effects from the psychology of categorization (Fisher, 1988).
+© 20XX Cognitive Systems Foundation. All rights reserved.
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+Recent work has scaled the framework well beyond its original nominal-attribute setting, to visual
+classification without catastrophic forgetting (Barari et al., 2024), to semantic retrieval (Gupta et al.,
+2025), to masked language modeling (Lian et al., 2025), and to deep taxonomic networks, which
+learn a hierarchy of Gaussian prototypes in a latent space (Wang et al., 2025a).
+In parallel, and largely independently, diffusion models (Sohl-Dickstein et al., 2015; Ho et al.,
+2020; Song et al., 2021) have become a leading approach to image generation. A diffusion model
+learns to reverse a gradual noising process by estimating the score (the gradient of the log-density)
+of the data corrupted at many noise levels. These models are typically studied as black-box samplers
+and evaluated on sample quality, not as models of human concept formation. Yet the object they
+learn, a family of progressively smoothed data densities, has the structure of a concept hierarchy, a
+continuum of representations of the data at different levels of abstraction.
+This paper argues that the two lines of work describe members of the same family of models.
+Our contributions are as follows.
+• We show that diffusion models and Cobweb belong to the same family of hierarchical Bayesian
+density models with Gaussian prototypes, by making four formal correspondences precise (Sec-
+tion 3).
+• We argue that diffusion models have a basic level, an intermediate noise level at which concepts
+are recognized with the least cognitive effort.
+• We validate our claim by showing that hierarchies recovered through score-based mode-finding
+are consistent with Cobweb trees, and that their basic levels align with Cobweb’s, with results
+on MNIST and Fashion-MNIST.
+The remainder of the paper reviews Cobweb, diffusion models, and hierarchical generative clus-
+tering (Section 2), develops their correspondences (Section 3), presents the empirical validation
+(Section 4), and discusses implications (Section 5).
+2. Background
+2.1 Concept Formation with Cobweb
+Cobweb (Fisher, 1987) is an incremental and unsupervised model of human concept formation. It
+processes a stream of instances and builds a hierarchy of probabilistic concepts, where each concept
+node maintains a summary of the instances it has adopted. As each instance arrives, Cobweb sorts
+it down the tree from the root, and at every node it considers four operations. It can add the instance
+to the best-fitting child, create a new child for it, merge the two best children into one, or split the
+best child and promote its children. It applies whichever operation most improves category utility.
+In the original model each instance is a set of nominal attribute–value pairs and a node stores a table
+of attribute probabilities. Cobweb/3 extends the framework to continuous attributes by storing, for
+each attribute, the mean and variance of a Gaussian (McKusick & Thompson, 1990). We therefore
+take a node c to carry a prior P(c) and a diagonal Gaussian over features, p(x | c) = N(x; µc, σ2
+cI),
+treating features as conditionally independent given the concept.
+The measure that drives every decision is category utility. In its information-theoretic form
+(Corter & Gluck, 1992), adopted by Cobweb/4V (Barari et al., 2024) and by deep taxonomic net-
+2
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+works (Wang et al., 2025a), it scores a partition {C1, . . . , Cn} of a node’s instances by the expected
+reduction in the uncertainty of feature values that knowing the child provides,
+CU({C1, . . . , Cn}) =
+n
+X
+k=1
+P(Ck)
+
+H(A) −H(A | Ck)
+
+,
+(1)
+where H(A) = −P
+i
+P
+j P(Ai=Vij) log P(Ai=Vij) is the entropy over attribute values. Express-
+ing the measure in terms of entropy is what allows arbitrary distributions, such as Gaussians, to be
+plugged in, since one only needs a closed-form entropy. Writing X for the random variable collect-
+ing the attributes and C for the concept an instance is assigned to, category utility is precisely the
+mutual information between features and concept (Wang et al., 2025a),
+CU = I(X; C) = H(X) −
+n
+X
+k=1
+P(Ck) H(X | Ck).
+(2)
+A partition has high category utility when its clusters have low internal entropy (predictable features)
+yet collectively account for the variation in the parent (distinctiveness).
+Although it was introduced decades ago (Fisher, 1987; Gennari et al., 1989) and has long been
+studied as a model of human categorization (Iba & Langley, 2011), Cobweb has seen renewed de-
+velopment, much of it aimed at scaling the framework past nominal attributes and small symbolic
+datasets. Cobweb/4V learns concept hierarchies over images and resists catastrophic forgetting in
+continual learning, without replay buffers or regularization (Barari et al., 2024), and a follow-up
+traces this robustness to its closed-form, information-theoretic updates rather than to gradient de-
+scent (Barari et al., 2025). Concept-formation variants induce language models and perform masked
+word prediction at scale (MacLellan et al., 2022; Lian et al., 2025), a Cobweb tree over sentence em-
+beddings supports coarse-to-fine semantic retrieval (Gupta et al., 2025), and, as a cognitive model,
+Cobweb accounts for human-like incremental category learning (Lian et al., 2024). Most relevant
+here, recent work connects Cobweb with neural learning. Taxonomic networks treat the concept hi-
+erarchy as a shared representation for pairing symbolic and neural systems (Wang et al., 2025b), and
+deep taxonomic networks recast it as a deep generative model, learning a tree-structured mixture-of-
+Gaussians prior whose training objective coincides with category utility (Wang et al., 2025a). The
+latter connects Cobweb directly to the generative latent-variable models we review in Section 2.3.
+2.2 Diffusion Models
+A diffusion model is defined by a forward process that gradually corrupts data with Gaussian noise
+and a learned reverse process that removes it (Ho et al., 2020; Song et al., 2021). The forward
+process sets xt = √¯αt x0 + √1 −¯αt ε with ε ∼N(0, I) and a decreasing schedule {¯αt}, so that
+the distribution of xt is the data distribution convolved with a Gaussian kernel, a kernel density
+estimate of the data at bandwidth σt := √1 −¯αt,
+pt(xt) =
+Z
+pdata(x0) N
+ xt; √¯αt x0, (1 −¯αt)I
+
+dx0.
+(3)
+3
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+The amount of corruption is summarized by the signal-to-noise ratio, SNR(t) = ¯αt/(1−¯αt), which
+decreases monotonically from high values (almost-clean data, fine detail visible) at small t to near
+zero (almost pure noise) at large t (Kingma et al., 2021).
+Rather than learn pt directly, a diffusion model learns its score, the gradient of the log-density,
+which a standard result identifies with a rescaled denoiser (Hyvärinen, 2005; Vincent, 2011; Song
+et al., 2021),
+sθ(xt, t) ≈∇xt log pt(xt) = −εθ(xt, t)
+√1 −¯αt
+.
+(4)
+The score also gives, through Tweedie’s empirical-Bayes formula (Robbins, 1956; Efron, 2011), the
+posterior mean of the clean datum given its corrupted version,
+ˆx0(xt) = E[x0 | xt] =
+1
+√¯αt
+ xt + (1 −¯αt) ∇xt log pt(xt)
+
+.
+(5)
+A local mode of pt has vanishing score, so by Eq. 5 its rescaled position lies on the clean data
+manifold, ˆx0(x⋆
+t ) = x⋆
+t /√¯αt (Wang et al., 2026). We recover such a mode from any datum x0 by
+noising it to level t and then ascending the score until it converges to a fixed point,
+x(0)
+t
+= √¯αt x0 +
+√
+1 −¯αt ε,
+x(i+1)
+t
+= x(i)
+t
++ η sθ
+ x(i)
+t , t
+
+.
+(6)
+The noise level t at which we do this fixes the level of abstraction of the concept the datum is
+mapped to. A small t returns a near-instance prototype, and a large t returns a broad class prototype.
+A diffusion model thus provides a smoothed density at every noise level, together with a score that
+locates the modes of that density and their local Gaussian shape. These are the ingredients we need
+to connect it to Cobweb.
+Throughout the paper we keep two indices distinct. The noise level is the diffusion index t,
+whose smoothing bandwidth σt = √1 −¯αt grows with t, and the level of abstraction is a position
+in the concept hierarchy that runs from fine to coarse. A higher noise level gives a larger bandwidth,
+and a larger bandwidth gives a coarser level of abstraction. We use noise level for the diffusion
+index and level of abstraction for the hierarchy.
+2.3 Hierarchical Clustering
+A parallel and largely separate literature builds hierarchies with generative latent-variable models.
+The variational autoencoder learns a latent representation of the data by maximizing a variational
+lower bound on the likelihood (Kingma & Welling, 2014). Placing a clustering prior on that latent
+space turns it into a generative clustering model. VaDE uses a Gaussian-mixture prior to recover flat
+clusters (Jiang et al., 2017). Making the prior hierarchical yields a tree of clusters rather than a flat
+partition. TreeVAE grows a latent tree whose leaves are clusters (Manduchi et al., 2023), DeepECT
+embeds a cluster tree inside an autoencoder (Mautz et al., 2020), and, in the Bayesian-nonparametric
+tradition, the nested Chinese restaurant process places a prior over trees of unbounded depth (Blei
+et al., 2010). Most relevant here, the deep taxonomic network learns a binary-tree mixture-of-
+Gaussians prior and shows that maximizing its evidence lower bound is equivalent to maximizing
+Cobweb’s category utility (Wang et al., 2025a), placing Cobweb and deep generative clustering on
+a common footing.
+4
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+Table 1. The correspondence between Cobweb concept hierarchies and the implicit hierarchy of a diffusion
+model. Each row is argued in the indicated subsection of Section 3.
+Cobweb
+Diffusion model
+tree depth (level of abstraction)
+⇐⇒
+noise level σt, equivalently SNR(t) (§3.1)
+node Gaussian N(µc, σ2
+cI)
+⇐⇒
+mode Gaussian N(mc, Σc) (§3.2)
+root-to-leaf categorization
+⇐⇒
+coarse-to-fine denoising (§3.3)
+basic level arg maxc∈π(x) D(c)
+⇐⇒
+maximum-likelihood mode at noise t⋆(§3.4)
+These models inherit a long tradition. Classical hierarchical clustering builds a tree agglomera-
+tively, merging the pair of clusters that least increases within-cluster variance (Ward, 1963), or divi-
+sively, by splitting from the top down. Density-based methods instead treat clusters as the modes of
+a density and assign points to their basins of attraction, as in mean shift (Comaniciu & Meer, 2002)
+and density cluster trees. Cobweb is the cognitive-science member of this family, an incremental,
+divisive conceptual clustering that summarizes each node with a probabilistic prototype and chooses
+operations by category utility (Fisher, 1987). The deep latent-variable models extend this tradition
+by learning the representation and the hierarchy jointly, rather than clustering over fixed features.
+We will argue that a diffusion model belongs to the same family, although it represents the hier-
+archy implicitly rather than storing a tree. Its noisy marginals are smoothed densities whose modes
+are cluster centroids at a continuum of noise levels, recovered by mode-seeking on the learned score,
+which is exactly the density-based view above. Two recent threads support this reading. Work on
+concept discovery uses the modes of a diffusion model’s marginals directly as prototypes and com-
+poses them to generate new concepts (Wang et al., 2026; Du et al., 2020; Liu et al., 2022). And
+analyses of the diffusion process show that the structure it recovers across noise levels is genuinely
+hierarchical, with a phase transition at an intermediate noise level where coarse class identity is
+fixed while fine detail is not (Sclocchi et al., 2025; Biroli et al., 2024; Ambrogioni, 2025). These
+threads have developed separately from Cobweb. Our contribution is to draw the correspondence
+between them explicitly and to locate a basic level in the diffusion hierarchy.
+3. Diffusion Models as Hierarchical Concept Formation
+We fix a common notation before drawing the correspondences. Throughout, x ∈Rd is a data point
+and X the random variable it realizes, pdata(x0) is the data distribution, c is a concept (a Cobweb
+node or a diffusion mode), and C is the concept an instance is assigned to. On the Cobweb side a
+concept is a Gaussian N(µc, σ2
+cI) at a node of a discrete tree. On the diffusion side a concept is a
+local mode x⋆
+t of a smoothed marginal pt, equipped with a local Gaussian N(mc, Σc) read off the
+score, as the next subsections develop. The four correspondences are summarized in Table 1 and
+argued in turn below. A final subsection discusses where the two models differ.
+5
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+3.1 Both Are Hierarchical Density Models
+A Cobweb tree is a hierarchy of densities. Each node summarizes its subtree with a probabilistic
+prototype, leaves capture individual instances, and ancestors describe progressively broader regions
+of feature space (Fisher, 1987). Because Cobweb sorts instances from the top down using its insert,
+create, merge, and split operators, it can be read as a divisive procedure that refines coarse regions
+of feature space into finer ones, keeping every node a good summary of the instances below it.
+A diffusion model produces the same kind of hierarchy, indexed by a continuous noise level
+rather than by tree depth. For a finite dataset {x(i)
+0 }N
+i=1, Eq. 3 is a Gaussian mixture with one
+component per training point,
+pt(xt) = 1
+N
+N
+X
+i=1
+N
+ xt; √¯αt x(i)
+0 , (1 −¯αt)I
+
+,
+(7)
+a kernel density estimate whose bandwidth σt grows with t. The number of modes of this estimate
+falls monotonically as σt increases. Fine, instance-level modes at small t give way to broad, class-
+level modes at large t. These progressively smoothed densities, one at each noise level, form a
+family whose modes merge into a tree. A coarse mode at level t′ is the parent of the finer modes
+at t < t′ that flow into it under score ascent, so depth in the tree corresponds to the bandwidth
+σt. Finding the modes at a fixed noise level is the mode-seeking problem that mean shift solves
+(Comaniciu & Meer, 2002), here driven by the learned score (Eq. 4) rather than a fixed kernel,
+and following modes across noise levels yields a cluster hierarchy in the spirit of agglomerative
+clustering (Ward, 1963) but read off a single learned density. Empirically, modes of pt consolidate
+from instance-level to object-level prototypes as t grows (Wang et al., 2026), and the structure that
+diffusion recovers across noise levels is hierarchical (Sclocchi et al., 2025), closely matching the
+tree Cobweb learns on the same data (see Figure 1).
+3.2 Both Are Hierarchical Bayes with Gaussian Prototypes
+The prototypes in both hierarchies are Gaussian, and in both the broader concepts are mixtures of
+the narrower ones. A Cobweb node stores a diagonal Gaussian N(µc, σ2
+cI) that pools the statistics
+of its children. With P(k | c) the weight of child k under parent c, the parent mean is the convex
+combination of the children’s means,
+µc =
+X
+k
+P(k | c) µk,
+X
+k
+P(k | c) = 1,
+(8)
+and the law of total variance gives σ2
+c = P
+k P(k | c) [ σ2
+k + (µk −µc)2 ], so a parent is a broader
+Gaussian that subsumes its children and the hierarchy is a tree-structured mixture of Gaussians
+(McKusick & Thompson, 1990). Deep taxonomic networks impose a binary tree and learn the
+same pooling as a single mixing weight, µc = λ µleft + (1 −λ) µright with λ ∈[0, 1], the two-child
+special case of Eq. 8 (Wang et al., 2025a). A diffusion model gives the same object analytically. At
+a mode x⋆
+t , Tweedie’s formula (Eq. 5) places the prototype mean at mc = x⋆
+t /√¯αt, and the Jacobian
+of the denoiser sets its covariance,
+Σc = 1 −¯αt
+√¯αt
+∇xt ˆx0(xt)
+
+xt=x⋆
+t ,
+(9)
+6
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+the posterior covariance of the clean datum, which at a mode is the Laplace approximation of pt
+(Wang et al., 2026). Each mode thus carries a local Gaussian N(mc, Σc), and the empirical marginal
+of Eq. 7 is a mixture of such Gaussians whose components broaden and fuse as t grows. The
+node Gaussians of Cobweb and the mode Gaussians of a diffusion model therefore play the same
+role. Both models explain a datum with a Gaussian component whose breadth encodes its level of
+abstraction (McKusick & Thompson, 1990; Wang et al., 2026).
+3.3 Both Maximize Information About the Data
+The third correspondence is that both models pursue the same objective, making a concept as infor-
+mative as possible about the data it explains, even though they pursue it by different mechanisms. In
+Cobweb the objective is category utility, which by Eq. 2 is the mutual information I(X; C) between
+the features and the concept. The feature entropy H(X) is fixed, so maximizing I(X; C) minimizes
+the residual uncertainty H(X | C), and a concept scores well when it leaves little to guess about
+its members. A diffusion model optimizes the matching quantity for a continuous hierarchy. Its
+training objective is a denoising error weighted by the rate of change of the signal-to-noise ratio
+(Kingma et al., 2021),
+L(θ) = 1
+2 Ex0,ε
+Z 1
+0
+w(t)
+x0 −ˆxθ(xt, t)
+2 dt,
+w(t) = −SNR′(t),
+(10)
+with ˆxθ the denoiser of Eq. 5 and w(t) ≥0 because the ratio decreases in t. By the I-MMSE relation
+(Guo et al., 2005), the best achievable value of this integrated error is the mutual information the
+noisy observations carry about the clean datum, and at the optimal denoiser it equals the datum’s
+negative log-likelihood exactly (Kong et al., 2023). Minimizing Eq. 10 therefore drives the model
+to extract as much information about the clean datum as the noise leaves available, at every noise
+level. Category utility and the denoising objective are two forms of the same principle, each making
+the concept retain as much information about the data as it can.
+The two objectives are pursued by different search procedures, and this is where the coarse-to-
+fine order appears. Cobweb sorts an instance from the root down, at each node applying whichever
+of its four operators yields the child partition of highest category utility, so it commits to broad
+category structure first and refines toward the leaf. A diffusion model reaches the same order by
+sampling, following the learned score from low signal-to-noise (coarse, class-level structure) to
+high signal-to-noise (fine, instance-level detail) (Song & Ermon, 2019; Karras et al., 2022). The
+score points in the direction the trained denoiser estimates, so each step refines a coarse guess into
+a more specific one, the continuous analog of Cobweb’s root-to-leaf sort. Both models therefore
+share this objective and this coarse-to-fine order, and differ in how they represent and search the
+hierarchy, a difference we take up in Section 3.5.
+3.4 A Basic Level of Greatest Distinctiveness
+The basic level is the level of abstraction at which a learner obtains the useful category most infor-
+mative about its members, distinctive enough to set them apart from the data as a whole, yet not so
+specific that it collapses onto individual instances (Rosch et al., 1976; Fisher, 1988). On the cog-
+nitive science account the basic level is a frontier of concepts across the hierarchy (Fisher, 1988).
+7
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+Table 2. Distinctiveness D(c), the quantity that locates the basic level, shown with its pointwise ingredient
+pmi(x; c) and its dataset-level aggregate I(X; C). Distinctiveness is the expected pointwise mutual infor-
+mation of a concept’s members. The pointwise term is signed, and D(c) and the mutual information are
+nonnegative.
+Scope
+Quantity
+Reading
+specific x and c
+pmi(x; c) = log p(x | c)
+p(x)
+evidence that x belongs to c
+fixed c, over its
+members x
+D(c) = Ex∼p(x|c)[pmi]
+distinctiveness of a concept, the
+KL specific surprise
+over both c and x
+I(X; C) = P
+c p(c) D(c)
+mutual information, the counter-
+part of category utility
+These concepts need not sit at a uniform depth, and each is the concept of greatest distinctiveness
+along its path, the one most informative about its own members.
+We measure how well a concept meets this standard by its distinctiveness,
+D(c) = Ex∼p(x|c)
+
+pmi(x; c)
+
+= DKL
+ p(x | c) ∥p(x)
+
+≥0,
+(11)
+the expected pointwise mutual information of its members, which is the Kullback–Leibler diver-
+gence of the concept from the data marginal and is what information theory calls the specific sur-
+prise of c (DeWeese & Meister, 1999). Two related quantities place D(c) in context (Table 2). Its
+pointwise ingredient, the pointwise mutual information pmi(x; c) = log
+
+p(x | c)/p(x)
+
+of one
+datum and one concept, is the evidence that x belongs to c. Averaging D(c) in turn over concepts
+recovers the mutual information between data and concepts,
+I(X; C) =
+X
+c
+p(c) D(c) ≥0,
+(12)
+the information-theoretic counterpart of category utility, with the sum running over the concepts of
+one partition of the data. Distinctiveness is the per-concept quantity between these two, and it is
+the one we use to locate the basic level, by the same computation in Cobweb and in the diffusion
+model.
+Distinctiveness is defined at every concept, so a basic level exists in any concept-formation
+system as the frontier where D peaks. Along each root-to-leaf path π(x), the concepts that contain
+x from the root down to its leaf, we take the concept of greatest distinctiveness,
+cbasic(x) = arg max
+c∈π(x) D(c).
+(13)
+This score is exactly zero at the root, where p(x | c) = p(x). It need not be monotone in depth, and
+in our experiments it reaches its maximum at an intermediate level of abstraction rather than at the
+8
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+root or the leaves (Figure 2). In Cobweb the concepts are explicit, and we read this level directly off
+the learned tree (see Figure 3 for the basic-level prototypes of both models).
+In a diffusion model the concepts are implicit. There is no stored tree and no closed form for
+p(x | c), so the same level must be recovered empirically, by passing held-out data through the
+trained model. Each datum x induces a categorization path π(x), the sequence of local modes from
+high noise (coarse) to low noise (fine), each carrying the local Gaussian N(mc, Σc) of Section 3.2.
+For a fixed datum, the marginal log p(x) is constant across the concepts on its path. Thus, choosing
+the concept of greatest pointwise mutual information is the same as choosing the concept of greatest
+likelihood,
+c⋆(x) = arg max
+c∈π(x) pmi(x; c) = arg max
+c∈π(x)
+
+log p(x | c) −log p(x)
+
+= arg max
+c∈π(x) log p(x | c). (14)
+With the local covariance taken to be diagonal, Σc = diag(σ2
+c,1, . . . , σ2
+c,d), the likelihood decom-
+poses into a sum over coordinates of a standardized data-fit term and a log-variance term,
+log p(x | c) = −1
+2
+d
+X
+j=1
+(xj −mc,j)2
+σ2
+c,j
+−1
+2
+d
+X
+j=1
+log
+ 2π σ2
+c,j
+
+.
+(15)
+The first term favors concepts whose centroids are close to x relative to their spread, while the
+second favors compact concepts with small variance. Thus, a broad concept can tolerate larger
+residuals but pays a log-volume cost, whereas a narrow concept receives a log-volume advantage
+but only if x remains sufficiently close to its centroid. Along a hierarchical path, these two pressures
+can make the likelihood peak at an intermediate level of abstraction.
+We estimate D(c) from data by replacing the expectation in Eq. 11 with an empirical mean over
+the members assigned to a concept, the instances in its subtree in Cobweb and the held-out points
+routed through its mode in diffusion,
+D(c) ≈
+1
+Nc
+X
+x ∈members(c)
+pmi(x; c),
+Nc = |members(c)|.
+(16)
+This is the same quantity in both models, computed with the densities each one exposes. In Cobweb
+we evaluate it at each node of the learned tree, approximating the marginal p(x) by a mixture over
+the nodes. In the diffusion model we never form p(x). The marginal cancels for a fixed datum
+in Eq. 14, and once we average over the held-out set it adds only a constant that is the same at
+every level, so the level at which mean distinctiveness peaks is the level at which the mean held-out
+log-likelihood peaks. Held-out data is what keeps this peak interior, since the finest modes fit the
+training instances too tightly to fit new points. This interior peak is a bias–variance tradeoff over
+levels of abstraction: the finest concepts are nearly unbiased for the instances they store but have
+high variance, predicting a held-out point poorly whenever it does not fall near one of them, whereas
+coarser concepts are more biased, pulled toward the mean of their members, yet vary less from one
+datum to the next. The basic level is the abstraction that balances the two. Read as a function of
+the level of abstraction, which is tree depth in Cobweb and noise level in the diffusion model, D is
+zero at the root and reaches its maximum at an intermediate level. The noise level t⋆at which the
+diffusion curve peaks is its basic level (see Figure 2).
+9
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+3.5 Discrete versus Continuous Hierarchies
+The two models are not identical, however, and their differences are instructive. Cobweb learns an
+explicit, discrete tree, incrementally and one instance at a time, using symbolic insert, create, merge,
+and split operators, and it stores one prototype per node. A diffusion model encodes a continuous
+hierarchy implicitly in a single learned score field. There is no stored tree, only a family of smoothed
+densities whose modes and their merging behavior define a hierarchy that must be recovered by
+mode-finding. One consequence is that diffusion prototypes are interpolable. A convex combination
+of two mode means, m(λ) = λ ma + (1 −λ) mb, traces a path of intermediate prototypes, whereas
+Cobweb’s nodes are fixed and discrete. The trade-off is the familiar one between symbolic and
+sub-symbolic representations. Cobweb offers interpretability, resistance to catastrophic forgetting
+through sparse and local updates (Barari et al., 2025), and genuine incremental learning. A diffusion
+model offers continuity, scalability, and sample quality (Karras et al., 2022). Because the two
+describe the same structure by different means, a natural direction is to bridge them, for instance by
+pairing a neural density model with a symbolic taxonomy (Wang et al., 2025b; Gupta et al., 2025).
+4. Validating the Connection
+The correspondence of Section 3 makes empirical predictions. We lay them out as two questions,
+each comparing a diffusion model’s implicit hierarchy, recovered by score-based mode-finding,
+against a Cobweb hierarchy learned on the same data. We use image benchmarks shared by both
+lineages. MNIST and Fashion-MNIST each contain 70,000 grayscale images of size 28 × 28 in
+ten classes, handwritten digits and clothing items respectively, split into 60,000 training and 10,000
+test images. Both models are fit on the training images, with the Cobweb implementation following
+Cobweb/4V (Barari et al., 2024). Cobweb’s concepts are explicit, so we read its hierarchy and basic
+level from the learned tree, whereas the diffusion model’s concepts are implicit and we recover its
+hierarchy and basic level by passing the held-out test images through the trained model. The figures
+below report results on MNIST and Fashion-MNIST.
+4.1 Does Mode-Finding Recover a Cobweb-Like Hierarchy?
+The first prediction is that the hierarchy implicit in a diffusion model is similar to the one Cobweb
+learns. We recover the diffusion hierarchy bottom-up. Starting at a low noise level, we map every
+held-out test point to a fine mode by noising it to that level and ascending the score (Eq. 6), and
+group modes that fall within a variance threshold, taking each group’s centroid to be the average of
+its modes. Raising the noise level in steps, we agglomerate these groups into parents, so that every
+parent encompasses the children beneath it and its centroid is the average of theirs (Section 3.2).
+Stacking the levels gives a taxonomy whose leaves are individual instances and whose root is a
+single coarse mode, which we compare to a Cobweb tree on the same data (Figure 1).
+4.2 Does the Diffusion Basic Level Match Cobweb’s?
+The second prediction follows from Section 3.4. We score every concept by its distinctiveness D,
+estimated as the average pointwise mutual information over the instances assigned to it (Eq. 16),
+10
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+Cobweb
+MNIST
+Diffusion
+MNIST
+n=43
+n=7
+n=14
+n=26
+n=23
+n=17
+n=7
+n=26
+n=15
+n=10
+n=12
+n=6
+n=6
+n=13
+n=10
+n=5
+n=6
+n=2
+n=6
+n=20
+n=11
+n=5
+n=7
+n=17
+n=6
+n=16
+n=18
+n=10
+n=8
+n=29
+n=29
+n=21
+n=9
+n=5
+n=15
+n=13
+n=14
+n=9
+n=10
+n=10
+n=8
+n=6
+n=10
+n=6
+n=13
+n=5
+n=12
+n=16
+n=14
+n=13
+n=19
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=9
+n=13
+n=8
+n=24
+n=14
+n=20
+n=21
+n=23
+n=5
+n=14
+n=10
+n=7
+n=9
+n=6
+n=9
+n=11
+n=20
+n=20
+n=18
+n=8
+n=7
+n=20
+n=16
+n=16
+n=10
+n=17
+n=13
+n=13
+n=11
+n=15
+n=14
+n=15
+n=9
+n=17
+n=6
+n=21
+n=19
+n=15
+n=9
+n=8
+n=12
+n=12
+n=14
+n=11
+n=5
+n=8
+n=8
+n=6
+n=7
+n=16
+n=8
+n=11
+n=4
+n=13
+n=7
+n=10
+n=9
+n=7
+n=8
+n=4
+n=8
+n=14
+n=16
+n=43
+n=7
+n=14
+n=26
+n=23
+n=17
+n=7
+n=26
+n=15
+n=10
+n=12
+n=6
+n=6
+n=13
+n=10
+n=5
+n=6
+n=2
+n=6
+n=20
+n=11
+n=5
+n=7
+n=17
+n=6
+n=16
+n=18
+n=10
+n=8
+n=29
+n=29
+n=21
+n=9
+n=5
+n=15
+n=13
+n=14
+n=9
+n=10
+n=10
+n=8
+n=6
+n=10
+n=6
+n=13
+n=5
+n=12
+n=16
+n=14
+n=13
+n=19
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=9
+n=13
+n=8
+n=24
+n=14
+n=20
+n=21
+n=23
+n=5
+n=14
+n=10
+n=7
+n=9
+n=6
+n=9
+n=11
+n=20
+n=20
+n=18
+n=8
+n=7
+n=20
+n=16
+n=16
+n=10
+n=17
+n=13
+n=13
+n=26
+n=14
+n=15
+n=9
+n=17
+n=6
+n=21
+n=19
+n=15
+n=9
+n=8
+n=12
+n=12
+n=14
+n=11
+n=5
+n=8
+n=8
+n=6
+n=7
+n=16
+n=8
+n=11
+n=4
+n=13
+n=7
+n=10
+n=9
+n=7
+n=8
+n=4
+n=8
+n=14
+n=16
+n=43
+n=7
+n=14
+n=26
+n=23
+n=17
+n=7
+n=26
+n=15
+n=10
+n=12
+n=6
+n=6
+n=13
+n=10
+n=5
+n=6
+n=2
+n=6
+n=20
+n=11
+n=5
+n=7
+n=17
+n=6
+n=16
+n=18
+n=10
+n=8
+n=29
+n=29
+n=21
+n=9
+n=5
+n=15
+n=13
+n=14
+n=9
+n=10
+n=10
+n=8
+n=6
+n=10
+n=6
+n=13
+n=5
+n=12
+n=16
+n=14
+n=13
+n=19
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=9
+n=13
+n=8
+n=24
+n=14
+n=20
+n=21
+n=23
+n=5
+n=14
+n=10
+n=7
+n=15
+n=9
+n=31
+n=20
+n=18
+n=8
+n=7
+n=20
+n=16
+n=16
+n=10
+n=17
+n=13
+n=13
+n=26
+n=14
+n=15
+n=9
+n=17
+n=6
+n=21
+n=19
+n=15
+n=9
+n=8
+n=12
+n=12
+n=14
+n=11
+n=5
+n=8
+n=8
+n=6
+n=7
+n=16
+n=8
+n=11
+n=17
+n=7
+n=10
+n=9
+n=7
+n=8
+n=4
+n=8
+n=14
+n=16
+n=43
+n=7
+n=14
+n=49
+n=17
+n=7
+n=26
+n=15
+n=10
+n=12
+n=12
+n=13
+n=10
+n=5
+n=6
+n=8
+n=20
+n=11
+n=12
+n=17
+n=6
+n=16
+n=18
+n=18
+n=29
+n=29
+n=21
+n=9
+n=5
+n=15
+n=27
+n=9
+n=10
+n=10
+n=8
+n=6
+n=10
+n=6
+n=13
+n=17
+n=16
+n=14
+n=13
+n=19
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=22
+n=8
+n=24
+n=14
+n=20
+n=21
+n=23
+n=19
+n=10
+n=7
+n=15
+n=40
+n=20
+n=18
+n=8
+n=7
+n=36
+n=16
+n=10
+n=17
+n=13
+n=13
+n=26
+n=14
+n=24
+n=17
+n=6
+n=21
+n=19
+n=15
+n=9
+n=8
+n=12
+n=12
+n=14
+n=11
+n=5
+n=8
+n=8
+n=6
+n=7
+n=16
+n=19
+n=17
+n=7
+n=10
+n=9
+n=7
+n=8
+n=4
+n=8
+n=14
+n=16
+n=43
+n=21
+n=49
+n=17
+n=7
+n=26
+n=15
+n=10
+n=12
+n=12
+n=13
+n=10
+n=11
+n=8
+n=20
+n=11
+n=12
+n=17
+n=6
+n=16
+n=18
+n=18
+n=29
+n=29
+n=21
+n=14
+n=15
+n=27
+n=9
+n=10
+n=10
+n=14
+n=10
+n=6
+n=13
+n=17
+n=16
+n=14
+n=32
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=22
+n=8
+n=24
+n=14
+n=20
+n=44
+n=19
+n=17
+n=15
+n=40
+n=20
+n=26
+n=7
+n=36
+n=26
+n=17
+n=13
+n=13
+n=26
+n=14
+n=24
+n=23
+n=21
+n=19
+n=15
+n=9
+n=8
+n=24
+n=14
+n=11
+n=13
+n=14
+n=7
+n=16
+n=19
+n=17
+n=7
+n=10
+n=9
+n=15
+n=12
+n=14
+n=16
+n=43
+n=21
+n=49
+n=24
+n=26
+n=25
+n=12
+n=35
+n=11
+n=8
+n=20
+n=11
+n=12
+n=17
+n=6
+n=34
+n=18
+n=29
+n=29
+n=21
+n=29
+n=27
+n=9
+n=10
+n=10
+n=14
+n=10
+n=6
+n=13
+n=17
+n=16
+n=14
+n=32
+n=21
+n=16
+n=12
+n=9
+n=16
+n=10
+n=22
+n=8
+n=24
+n=34
+n=44
+n=19
+n=32
+n=40
+n=20
+n=26
+n=7
+n=36
+n=26
+n=17
+n=13
+n=13
+n=26
+n=38
+n=23
+n=55
+n=9
+n=32
+n=25
+n=13
+n=21
+n=16
+n=19
+n=17
+n=7
+n=19
+n=15
+n=12
+n=14
+n=16
+n=43
+n=21
+n=49
+n=24
+n=26
+n=37
+n=35
+n=11
+n=8
+n=20
+n=11
+n=12
+n=23
+n=34
+n=18
+n=29
+n=29
+n=21
+n=29
+n=27
+n=29
+n=24
+n=6
+n=30
+n=30
+n=53
+n=16
+n=21
+n=16
+n=10
+n=22
+n=8
+n=58
+n=44
+n=19
+n=32
+n=60
+n=33
+n=36
+n=26
+n=17
+n=13
+n=13
+n=26
+n=38
+n=23
+n=55
+n=9
+n=32
+n=25
+n=13
+n=21
+n=16
+n=43
+n=19
+n=15
+n=12
+n=14
+n=16
+n=64
+n=49
+n=24
+n=98
+n=11
+n=8
+n=31
+n=35
+n=52
+n=58
+n=21
+n=29
+n=27
+n=29
+n=24
+n=6
+n=30
+n=30
+n=53
+n=16
+n=21
+n=26
+n=22
+n=8
+n=102
+n=19
+n=32
+n=60
+n=33
+n=36
+n=26
+n=17
+n=13
+n=13
+n=26
+n=38
+n=23
+n=55
+n=9
+n=32
+n=25
+n=34
+n=16
+n=43
+n=19
+n=15
+n=12
+n=14
+n=16
+n=64
+n=49
+n=24
+n=98
+n=11
+n=8
+n=31
+n=35
+n=52
+n=58
+n=21
+n=29
+n=56
+n=24
+n=36
+n=30
+n=53
+n=16
+n=21
+n=26
+n=30
+n=102
+n=19
+n=32
+n=60
+n=33
+n=62
+n=30
+n=13
+n=26
+n=38
+n=23
+n=55
+n=9
+n=32
+n=25
+n=34
+n=16
+n=43
+n=34
+n=12
+n=14
+n=16
+n=64
+n=49
+n=24
+n=98
+n=11
+n=8
+n=66
+n=52
+n=58
+n=21
+n=29
+n=56
+n=24
+n=36
+n=30
+n=53
+n=16
+n=47
+n=30
+n=102
+n=51
+n=60
+n=33
+n=62
+n=30
+n=13
+n=64
+n=23
+n=64
+n=32
+n=25
+n=34
+n=16
+n=43
+n=34
+n=12
+n=30
+n=64
+n=49
+n=24
+n=109
+n=8
+n=66
+n=52
+n=58
+n=21
+n=29
+n=56
+n=24
+n=36
+n=30
+n=69
+n=47
+n=30
+n=153
+n=60
+n=33
+n=62
+n=30
+n=13
+n=64
+n=23
+n=64
+n=32
+n=25
+n=34
+n=16
+n=43
+n=46
+n=30
+n=64
+n=49
+n=24
+n=117
+n=66
+n=52
+n=79
+n=29
+n=56
+n=60
+n=99
+n=47
+n=30
+n=153
+n=60
+n=33
+n=62
+n=30
+n=13
+n=64
+n=23
+n=64
+n=32
+n=25
+n=34
+n=59
+n=46
+n=30
+n=64
+n=49
+n=24
+n=117
+n=66
+n=52
+n=79
+n=29
+n=56
+n=60
+n=99
+n=47
+n=30
+n=153
+n=60
+n=33
+n=62
+n=43
+n=64
+n=23
+n=96
+n=59
+n=59
+n=46
+n=30
+n=113
+n=141
+n=66
+n=52
+n=79
+n=29
+n=56
+n=60
+n=99
+n=47
+n=30
+n=153
+n=93
+n=62
+n=107
+n=23
+n=96
+n=59
+n=59
+n=46
+n=30
+n=113
+n=141
+n=118
+n=108
+n=116
+n=99
+n=47
+n=30
+n=246
+n=62
+n=107
+n=23
+n=155
+n=59
+n=46
+n=30
+n=372
+n=108
+n=116
+n=99
+n=47
+n=276
+n=62
+n=107
+n=178
+n=59
+n=46
+n=30
+n=372
+n=323
+n=47
+n=276
+n=62
+n=107
+n=178
+n=59
+n=76
+n=742
+n=276
+n=169
+n=178
+n=135
+n=1187
+n=178
+n=135
+n=1365
+n=135
+n=1500
+n=1500
+Cobweb
+Fashion-MNIST
+Diffusion
+Fashion-MNIST
+n=49
+n=17
+n=14
+n=32
+n=23
+n=31
+n=10
+n=25
+n=18
+n=4
+n=26
+n=5
+n=6
+n=4
+n=11
+n=23
+n=10
+n=14
+n=11
+n=17
+n=24
+n=9
+n=12
+n=14
+n=18
+n=22
+n=27
+n=24
+n=14
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=6
+n=13
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=16
+n=12
+n=12
+n=21
+n=24
+n=8
+n=18
+n=10
+n=10
+n=37
+n=23
+n=23
+n=36
+n=23
+n=18
+n=11
+n=10
+n=10
+n=22
+n=21
+n=13
+n=22
+n=3
+n=37
+n=15
+n=39
+n=13
+n=5
+n=5
+n=23
+n=20
+n=6
+n=16
+n=5
+n=7
+n=9
+n=7
+n=3
+n=24
+n=8
+n=7
+n=21
+n=12
+n=49
+n=17
+n=14
+n=32
+n=23
+n=31
+n=10
+n=25
+n=18
+n=4
+n=31
+n=6
+n=4
+n=11
+n=23
+n=10
+n=25
+n=17
+n=24
+n=9
+n=12
+n=14
+n=18
+n=22
+n=27
+n=24
+n=14
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=6
+n=13
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=28
+n=12
+n=21
+n=24
+n=8
+n=18
+n=10
+n=10
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=10
+n=10
+n=22
+n=21
+n=13
+n=22
+n=3
+n=37
+n=15
+n=39
+n=13
+n=5
+n=5
+n=23
+n=20
+n=6
+n=16
+n=5
+n=7
+n=9
+n=7
+n=3
+n=24
+n=8
+n=7
+n=21
+n=12
+n=49
+n=17
+n=14
+n=32
+n=23
+n=31
+n=10
+n=25
+n=18
+n=4
+n=31
+n=6
+n=4
+n=11
+n=23
+n=10
+n=25
+n=17
+n=24
+n=9
+n=12
+n=14
+n=18
+n=22
+n=27
+n=24
+n=14
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=6
+n=13
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=40
+n=21
+n=24
+n=8
+n=18
+n=10
+n=10
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=10
+n=10
+n=22
+n=21
+n=13
+n=25
+n=37
+n=15
+n=39
+n=13
+n=5
+n=5
+n=23
+n=20
+n=6
+n=16
+n=5
+n=7
+n=9
+n=7
+n=3
+n=24
+n=8
+n=7
+n=21
+n=12
+n=49
+n=17
+n=14
+n=32
+n=23
+n=41
+n=25
+n=18
+n=4
+n=31
+n=6
+n=4
+n=11
+n=23
+n=10
+n=25
+n=17
+n=24
+n=9
+n=12
+n=14
+n=18
+n=22
+n=27
+n=24
+n=14
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=19
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=40
+n=21
+n=24
+n=8
+n=28
+n=10
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=10
+n=10
+n=22
+n=21
+n=13
+n=25
+n=37
+n=54
+n=18
+n=5
+n=23
+n=20
+n=6
+n=16
+n=12
+n=9
+n=7
+n=3
+n=24
+n=8
+n=7
+n=21
+n=12
+n=49
+n=17
+n=14
+n=32
+n=89
+n=18
+n=4
+n=31
+n=6
+n=4
+n=11
+n=23
+n=10
+n=25
+n=17
+n=33
+n=12
+n=14
+n=18
+n=22
+n=27
+n=24
+n=14
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=19
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=40
+n=21
+n=24
+n=8
+n=28
+n=10
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=10
+n=10
+n=22
+n=21
+n=13
+n=62
+n=54
+n=23
+n=23
+n=20
+n=6
+n=16
+n=12
+n=9
+n=7
+n=3
+n=24
+n=8
+n=7
+n=21
+n=12
+n=49
+n=31
+n=32
+n=107
+n=4
+n=37
+n=4
+n=11
+n=23
+n=10
+n=25
+n=17
+n=33
+n=12
+n=14
+n=18
+n=22
+n=27
+n=38
+n=33
+n=15
+n=14
+n=14
+n=24
+n=18
+n=28
+n=19
+n=8
+n=13
+n=10
+n=47
+n=19
+n=16
+n=23
+n=40
+n=45
+n=8
+n=38
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=10
+n=10
+n=22
+n=21
+n=13
+n=62
+n=54
+n=23
+n=23
+n=20
+n=6
+n=16
+n=12
+n=9
+n=7
+n=27
+n=8
+n=7
+n=21
+n=12
+n=49
+n=31
+n=32
+n=107
+n=4
+n=37
+n=4
+n=11
+n=33
+n=25
+n=17
+n=33
+n=12
+n=14
+n=18
+n=49
+n=71
+n=15
+n=14
+n=14
+n=42
+n=28
+n=27
+n=23
+n=47
+n=19
+n=16
+n=23
+n=40
+n=45
+n=8
+n=38
+n=37
+n=23
+n=23
+n=36
+n=23
+n=29
+n=20
+n=22
+n=21
+n=13
+n=62
+n=54
+n=23
+n=23
+n=20
+n=6
+n=16
+n=12
+n=9
+n=7
+n=27
+n=8
+n=7
+n=21
+n=12
+n=80
+n=32
+n=107
+n=4
+n=37
+n=15
+n=33
+n=25
+n=17
+n=33
+n=12
+n=32
+n=149
+n=56
+n=55
+n=23
+n=66
+n=16
+n=63
+n=45
+n=8
+n=38
+n=83
+n=36
+n=23
+n=29
+n=20
+n=22
+n=21
+n=13
+n=62
+n=54
+n=23
+n=23
+n=20
+n=6
+n=28
+n=9
+n=7
+n=27
+n=8
+n=7
+n=33
+n=80
+n=32
+n=111
+n=37
+n=15
+n=33
+n=25
+n=50
+n=44
+n=149
+n=56
+n=55
+n=89
+n=16
+n=63
+n=45
+n=8
+n=38
+n=83
+n=36
+n=52
+n=20
+n=22
+n=34
+n=62
+n=54
+n=23
+n=23
+n=20
+n=6
+n=28
+n=16
+n=27
+n=8
+n=7
+n=33
+n=80
+n=32
+n=111
+n=37
+n=73
+n=50
+n=44
+n=149
+n=216
+n=63
+n=45
+n=8
+n=121
+n=88
+n=20
+n=118
+n=54
+n=23
+n=23
+n=20
+n=34
+n=16
+n=27
+n=8
+n=40
+n=80
+n=32
+n=111
+n=37
+n=73
+n=50
+n=44
+n=149
+n=324
+n=8
+n=209
+n=20
+n=118
+n=54
+n=23
+n=23
+n=20
+n=34
+n=43
+n=8
+n=40
+n=80
+n=32
+n=111
+n=37
+n=73
+n=50
+n=44
+n=149
+n=324
+n=237
+n=172
+n=23
+n=23
+n=20
+n=34
+n=43
+n=8
+n=40
+n=223
+n=110
+n=50
+n=44
+n=149
+n=561
+n=218
+n=20
+n=34
+n=43
+n=8
+n=40
+n=383
+n=44
+n=948
+n=34
+n=43
+n=8
+n=40
+n=383
+n=44
+n=948
+n=34
+n=43
+n=8
+n=40
+n=427
+n=982
+n=43
+n=8
+n=40
+n=1460
+n=40
+n=1500
+Figure 1. Concept hierarchies recovered by Cobweb (rows 1 and 3) and by score-based mode-finding in
+a diffusion model (rows 2 and 4), on MNIST and Fashion-MNIST. The Cobweb rows show its concept
+taxonomy, with the root at the top, prototypes at internal nodes, and exemplars at the leaves. The diffusion
+rows show the taxonomy recovered by the merge-path procedure of Section 4. Modes found at each noise
+level are grouped into prototypes that merge into coarser parents as the noise level rises. Panel heights are
+normalized for display, and lower levels are shown only in part, since the branching factor grows toward the
+leaves. The two models recover structurally similar trees.
+11
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+0
+2
+4
+6
+8
+10
+hierarchy depth  d
+0.6
+0.8
+1.0
+1.2
+1.4
+DKL(pc
+proot) =
+x
+pc[log
+pc(x)
+proot(x)]
+the basic level
+MNIST  (peak d=3)
+Fashion-MNIST  (peak d=3)
+0
+100
+200
+300
+400
+500
+600
+diffusion timestep  t
+400
+300
+200
+100
+0
+100
+200
+x[ pmi(x; c) ]
+the basic level
+MNIST  (peak t=150)
+Fashion-MNIST  (peak t=150)
+(a) Cobweb
+(b) Diffusion
+Figure 2. Basic-level curves for the two models, each computed over both datasets. We plot the expected
+pointwise mutual information D (Eq. 11) against the level of abstraction, which is tree depth in (a) and noise
+level in (b). (a) In Cobweb, D against tree depth, peaking at depth three, with the root on the left. (b) In the
+diffusion model, D estimated along the mode paths against diffusion timestep, peaking near timestep 150.
+Each model shows a single interior maximum, the basic level (dashed line), rather than a maximum at the
+root or the leaves, on both MNIST and Fashion-MNIST.
+and read the basic level off the level at which D peaks. In Cobweb the concepts are explicit, so we
+evaluate D at each node of the learned tree, approximating the data marginal by a mixture over the
+nodes. In the diffusion model the concepts are implicit, so we recover them by routing the held-out
+test images through the trained model along each datum’s mode path (Eq. 14) and aggregate, giving
+D as a function of the noise level.
+Figure 2 shows the resulting curves. Each has a single interior maximum rather than a peak
+at the root or the leaves. The Cobweb score peaks at depth three, and the diffusion score near
+timestep 150, for both MNIST and Fashion-MNIST. The diffusion peak falls at an intermediate noise
+level, consistent with the phase transition at which the reverse process commits to a sample’s class
+(Sclocchi et al., 2025). Reading the concepts off these peaks makes the correspondence concrete.
+Figure 3 shows the basic-level prototypes of each model. These are the Cobweb nodes at depth three
+and the diffusion modes of the marginal at the peak timestep, recovered through Tweedie’s formula.
+Both are object-level categories, coarser than individual exemplars yet finer than the dataset as a
+whole, and they align with the categories people treat as basic.
+Together, these results support our central claim that diffusion models and Cobweb belong to the
+same family of models, recovering the same concept hierarchy and the same basic level on MNIST
+and Fashion-MNIST.
+5. Discussion and Conclusion
+We have argued that diffusion models and Cobweb belong to the same family of models. Both are
+hierarchical density models, with tree depth in Cobweb playing the role that noise level plays in
+diffusion. Their concepts are Gaussian prototypes under a hierarchical Bayesian prior, stored at tree
+12
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+(a) Cobweb
+(b) Diffusion
+Figure 3. The basic-level concepts at the peak levels of Figure 2. For each model we show five prototypes
+from its basic level, with MNIST on the top row and Fashion-MNIST on the bottom. (a) The Cobweb
+prototypes at depth three. (b) The diffusion prototypes recovered as the modes of the marginal at the peak
+timestep t⋆≈150 through Tweedie’s formula. Both are object-level categories, coarser than individual
+exemplars but finer than the whole dataset.
+nodes in one case and read off the modes of the smoothed marginals in the other. Each categorizes
+by following a score toward the concept that most reduces uncertainty about the instance. And in
+each, a basic level emerges at which categorization takes the least cognitive effort, which we locate
+for a diffusion model at the intermediate noise level where the reverse process commits to a sample’s
+class. Section 4 tests these claims. We recover the implicit hierarchy by mode-finding, then compare
+its shape and its basic level against Cobweb’s, and the two align on MNIST and Fashion-MNIST.
+The correspondence has two implications for the cognitive science community. First, diffusion
+models offer cognitive science a bridge to deep learning. Cognitive models of categorization have
+mostly been developed on small, hand-coded domains, while modern generative models train on
+natural images at scale but are treated as black boxes. The concept formation reading connects the
+two. Prototypes, graded typicality, and the basic level all acquire precise computational analogs in-
+side a pretrained diffusion model, namely the modes and the noise level of maximal distinctiveness.
+Hypotheses about human categorization can therefore be posed and tested on naturalistic stimuli
+without building a bespoke cognitive architecture, and the results return to the machine learning
+side as cognitive interpretations of what these models have learned.
+Second, this study is a proof of concept for studying symbol acquisition in neural models. With
+diffusion models, mode-finding extracts discrete, stable prototypes from a continuous density, and
+these proto-symbols compose, in that combining their densities yields instances that satisfy several
+concepts at once (Wang et al., 2026; Du et al., 2020; Liu et al., 2022). Text-conditioned diffusion
+models already pair such densities with words (Ho & Salimans, 2022). A natural next study is to ask
+how a word comes to pick out a mode of the density, at which level of the hierarchy words attach
+most readily, and whether that level is the basic level identified here. Broadly, symbolic and neural
+systems can be combined in many ways (Kautz, 2022), and the correspondence we draw shows one
+concrete route, pairing a symbolic taxonomy with a neural density model.
+The limitation of our approach lies in how the hierarchy is indexed. We inherit the noise sched-
+ule of diffusion practice, typically 1000 uniformly spaced timesteps whose spacing was tuned for
+sample quality rather than for cognitive plausibility (Ho et al., 2020; Karras et al., 2022). Equal steps
+13
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+in timestep are not equal steps in abstraction. The mapping from timestep to signal-to-noise ratio
+is nonlinear (Kingma et al., 2021), so the recovered hierarchy resolves some ranges of abstraction
+finely and others coarsely, and the basic level is reported in units that carry no cognitive meaning
+of their own. Future work should explore cognitively inspired schedules that place noise levels at
+human gradations of abstraction, for example calibrating successive levels to subordinate, basic, and
+superordinate structure (Rosch et al., 1976), or spacing them by equal increments of category utility
+rather than of time. Indexing the hierarchy by level of abstraction rather than by timestep would
+make the correspondence with human concept hierarchies exact in form as well as in structure.
+Acknowledgements
+We would like to thank Pat Langley for discussions.
+References
+Ambrogioni, L. (2025).
+The statistical thermodynamics of generative diffusion models: Phase
+transitions, symmetry breaking, and critical instability. Entropy, 27, 291. ArXiv:2310.17467.
+Barari, N., Kim, E., & MacLellan, C. J. (2025). Explaining robustness to catastrophic forgetting
+through incremental concept formation. Proceedings of the Twelfth Annual Conference on Ad-
+vances in Cognitive Systems (pp. 315–332).
+Barari, N., Lian, X., & MacLellan, C. J. (2024). Incremental concept formation over visual images
+without catastrophic forgetting. Proceedings of the Eleventh Annual Conference on Advances in
+Cognitive Systems. ArXiv:2402.16933.
+Biroli, G., Bonnaire, T., de Bortoli, V., & Mézard, M. (2024). Dynamical regimes of diffusion
+models. Nature Communications, 15, 9957. ArXiv:2402.18491.
+Blei, D. M., Griffiths, T. L., & Jordan, M. I. (2010). The nested Chinese restaurant process and
+Bayesian nonparametric inference of topic hierarchies. Journal of the ACM, 57, 7:1–7:30.
+Comaniciu, D., & Meer, P. (2002). Mean shift: A robust approach toward feature space analysis.
+IEEE Transactions on Pattern Analysis and Machine Intelligence, 24, 603–619.
+Corter, J. E., & Gluck, M. A. (1992). Explaining basic categories: Feature predictability and infor-
+mation. Psychological Bulletin, 111, 291–303.
+DeWeese, M. R., & Meister, M. (1999). How to measure the information gained from one symbol.
+Network: Computation in Neural Systems, 10, 325–340.
+Du, Y., Li, S., & Mordatch, I. (2020).
+Compositional visual generation with energy based
+models. Advances in Neural Information Processing Systems 33 (NeurIPS) (pp. 6637–6647).
+ArXiv:2004.06030.
+Efron, B. (2011). Tweedie’s formula and selection bias. Journal of the American Statistical Associ-
+ation, 106, 1602–1614.
+Fisher, D. H. (1987). Knowledge acquisition via incremental conceptual clustering. Machine Learn-
+ing, 2, 139–172.
+14
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+Fisher, D. H. (1988). A computational account of basic level and typicality effects. Proceedings of
+the Seventh National Conference on Artificial Intelligence (AAAI) (pp. 233–238).
+Gennari, J. H., Langley, P., & Fisher, D. (1989). Models of incremental concept formation. Artificial
+Intelligence, 40, 11–61.
+Guo, D., Shamai, S., & Verdú, S. (2005). Mutual information and minimum mean-square error in
+Gaussian channels. IEEE Transactions on Information Theory, 51, 1261–1282.
+Gupta, A., Singaravadivelan, K., & Wang, Z. (2025). Hierarchical semantic retrieval with Cobweb.
+Proceedings of the Twelfth Annual Conference on Advances in Cognitive Systems (pp. 125–144).
+Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. Advances in Neural
+Information Processing Systems 33 (NeurIPS) (pp. 6840–6851). ArXiv:2006.11239.
+Ho, J., & Salimans, T. (2022). Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598.
+NeurIPS 2021 Workshop on Deep Generative Models and Downstream Applications.
+Hyvärinen, A. (2005). Estimation of non-normalized statistical models by score matching. Journal
+of Machine Learning Research, 6, 695–709.
+Iba, W., & Langley, P. (2011). Cobweb models of categorization and probabilistic concept for-
+mation. In E. M. Pothos & A. J. Wills (Eds.), Formal approaches in categorization, 253–273.
+Cambridge University Press.
+Jiang, Z., Zheng, Y., Tan, H., Tang, B., & Zhou, H. (2017). Variational deep embedding: An
+unsupervised and generative approach to clustering. Proceedings of the 26th International Joint
+Conference on Artificial Intelligence (IJCAI) (pp. 1965–1972). ArXiv:1611.05148.
+Jones, G. V. (1983). Identifying basic categories. Psychological Bulletin, 94, 423–428.
+Karras, T., Aittala, M., Aila, T., & Laine, S. (2022). Elucidating the design space of diffusion-
+based generative models. Advances in Neural Information Processing Systems 35 (NeurIPS) (pp.
+26565–26577). ArXiv:2206.00364.
+Kautz, H. A. (2022).
+The third AI summer: AAAI robert s. engelmore memorial lecture.
+AI
+Magazine, 43, 93–104. From https://doi.org/10.1609/aimag.v43i1.19122.
+Kingma, D. P., Salimans, T., Poole, B., & Ho, J. (2021). Variational diffusion models. Advances in
+Neural Information Processing Systems 34 (NeurIPS) (pp. 21696–21707). ArXiv:2107.00630.
+Kingma, D. P., & Welling, M. (2014). Auto-encoding variational bayes. 2nd International Confer-
+ence on Learning Representations (ICLR). ArXiv:1312.6114.
+Kong, X., Brekelmans, R., & Ver Steeg, G. (2023). Information-theoretic diffusion. International
+Conference on Learning Representations (ICLR). ArXiv:2302.03792.
+Lian, X., Varma, S., & MacLellan, C. J. (2024). Cobweb: An incremental and hierarchical model
+of human-like category learning. arXiv preprint arXiv:2403.03835.
+Lian, X., Wang, Z., & MacLellan, C. J. (2025). Efficient and scalable masked word prediction using
+concept formation. Cognitive Systems Research, 92, 101371.
+Liu, N., Li, S., Du, Y., Torralba, A., & Tenenbaum, J. B. (2022). Compositional visual generation
+with composable diffusion models. Computer Vision – ECCV 2022 (pp. 423–439). Springer.
+15
+
+
+=====PAGE=====
+Z. WANG, K. SINGARAVADIVELAN, AND C. J. MACLELLAN
+ArXiv:2206.01714.
+MacLellan, C. J., Matsakis, P., & Langley, P. (2022). Efficient induction of language models via
+probabilistic concept formation. Proceedings of the Tenth Annual Conference on Advances in
+Cognitive Systems.
+Manduchi, L., Vandenhirtz, M., Ryser, A., & Vogt, J. E. (2023). Tree variational autoencoders.
+Advances in Neural Information Processing Systems 36 (NeurIPS). ArXiv:2306.08984.
+Mautz, D., Plant, C., & Böhm, C. (2020). DeepECT: The deep embedded cluster tree. Data Science
+and Engineering, 5, 419–432.
+McKusick, K., & Thompson, K. (1990). COBWEB/3: A portable implementation. Technical Report
+FIA-90-6-18-2, NASA Ames Research Center.
+Robbins, H. (1956). An empirical Bayes approach to statistics. In Proceedings of the third berke-
+ley symposium on mathematical statistics and probability, volume 1, 157–163. Berkeley, CA:
+University of California Press.
+Rosch, E., & Mervis, C. B. (1975).
+Family resemblances: Studies in the internal structure of
+categories. Cognitive Psychology, 7, 573–605.
+Rosch, E., Mervis, C. B., Gray, W. D., Johnson, D. M., & Boyes-Braem, P. (1976). Basic objects in
+natural categories. Cognitive Psychology, 8, 382–439.
+Sclocchi, A., Favero, A., & Wyart, M. (2025). A phase transition in diffusion models reveals the
+hierarchical nature of data. Proceedings of the National Academy of Sciences, 122, e2408799121.
+ArXiv:2402.16991.
+Sohl-Dickstein, J., Weiss, E. A., Maheswaranathan, N., & Ganguli, S. (2015). Deep unsupervised
+learning using nonequilibrium thermodynamics. Proceedings of the 32nd International Confer-
+ence on Machine Learning (ICML) (pp. 2256–2265). ArXiv:1503.03585.
+Song, Y., & Ermon, S. (2019). Generative modeling by estimating gradients of the data distri-
+bution. Advances in Neural Information Processing Systems 32 (NeurIPS) (pp. 11895–11907).
+ArXiv:1907.05600.
+Song, Y., Sohl-Dickstein, J., Kingma, D. P., Kumar, A., Ermon, S., & Poole, B. (2021). Score-
+based generative modeling through stochastic differential equations. International Conference
+on Learning Representations (ICLR). ArXiv:2011.13456.
+Vincent, P. (2011). A connection between score matching and denoising autoencoders. Neural
+Computation, 23, 1661–1674.
+Wang, Z., Gupta, A., Zhu, T., & MacLellan, C. J. (2026). Test-time compositional generalization in
+diffusion models via concept discovery. arXiv preprint arXiv:2605.07078.
+Wang, Z., Haarer, E., Zhu, T., Dai, Z., & MacLellan, C. J. (2025a). Deep taxonomic networks
+for unsupervised hierarchical prototype discovery. Advances in Neural Information Processing
+Systems 38 (NeurIPS).
+Wang, Z., Haarer, E. L., Barari, N., & MacLellan, C. J. (2025b). Taxonomic networks: A representa-
+tion for neuro-symbolic pairing. Proceedings of the International Conference on Neuro-Symbolic
+16
+
+
+=====PAGE=====
+DIFFUSION MODELS AND CONCEPT FORMATION
+Systems (NeSy) (pp. 459–471). PMLR. ArXiv:2505.24601.
+Ward, J. H. (1963). Hierarchical grouping to optimize an objective function. Journal of the Ameri-
+can Statistical Association, 58, 236–244.
+17

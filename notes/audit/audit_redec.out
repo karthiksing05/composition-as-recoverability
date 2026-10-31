@@ -1,0 +1,40 @@
+
+== fresh-glyph output R^2 (all)
+                mean                         sem                     
+arch             cnn    mlp   slot     tf    cnn    mlp   slot     tf
+cond                                                                 
+e2e_V8         0.322  0.212  0.199 -0.075  0.033  0.047  0.053  0.046
+orig           0.315  0.220  0.208 -0.058  0.033  0.044  0.050  0.046
+redec_same     0.350  0.255  0.219 -0.065  0.032  0.046  0.051  0.045
+redec_trained  0.780  0.767  0.730  0.553  0.005  0.007  0.006  0.018
+redec_init     0.715  0.794  0.747  0.416  0.012  0.010  0.009  0.022
+e2e_V64        0.907  0.905  0.863  0.850  0.002  0.002  0.004  0.006
+mlp+cnn+slot:
+                mean    sem
+cond                       
+e2e_V8         0.244  0.041
+orig           0.248  0.039
+redec_same     0.275  0.039
+redec_trained  0.759  0.004
+redec_init     0.752  0.009
+e2e_V64        0.892  0.002
+
+== fresh-glyph output R^2 (over_in)
+                mean                         sem                     
+arch             cnn    mlp   slot     tf    cnn    mlp   slot     tf
+cond                                                                 
+e2e_V8         0.340  0.209  0.198 -0.067  0.030  0.045  0.049  0.049
+orig           0.332  0.219  0.207 -0.052  0.031  0.042  0.046  0.050
+redec_same     0.368  0.255  0.219 -0.059  0.029  0.044  0.047  0.047
+redec_trained  0.778  0.759  0.720  0.556  0.006  0.008  0.007  0.019
+redec_init     0.713  0.786  0.745  0.417  0.010  0.010  0.009  0.022
+e2e_V64        0.905  0.891  0.850  0.847  0.002  0.002  0.005  0.005
+mlp+cnn+slot:
+                mean    sem
+cond                       
+e2e_V8         0.249  0.038
+orig           0.253  0.036
+redec_same     0.281  0.036
+redec_trained  0.752  0.006
+redec_init     0.748  0.009
+e2e_V64        0.882  0.003

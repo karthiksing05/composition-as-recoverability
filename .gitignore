@@ -16,3 +16,10 @@ recoverability-theory/main.log
 recoverability-theory/main.blg
 *.bak
 notes/tectonic.log
+recoverability-theory/*.aux
+recoverability-theory/*.bbl
+recoverability-theory/*.out
+recoverability-theory/*.blg
+recoverability-theory/*.log
+notes/fonts_dl/
+recoverability-theory/temporary/

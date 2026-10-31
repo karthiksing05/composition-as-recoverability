@@ -12,26 +12,27 @@ hrr = pd.DataFrame(json.load(open("results/e3hrr3/hrr_unitary.json")))  # one pa
 hrr = hrr[hrr.split == "pool"]
 # whitened part codes (each of the 16 components counts equally); see agg_r4.py e4w
 e4all = pd.DataFrame([r for f in glob.glob("results/e4w/*.json") for r in json.load(open(f))])
-e4all = e4all[(e4all.n_fit == 165) & (e4all.rel != "and")]  # the symmetric control is reported in the text
+e4all = e4all[e4all.n_fit == 165]
 for k in ("rec_pairs", "rec_val", "rec_fresh", "id_fresh", "role_fresh"):
     e4all[k] = e4all[[f"{k}_role1", f"{k}_role2"]].mean(1)
-e4 = e4all[~e4all.model.str.startswith("rand-")]
+own = e4all[e4all.codes_from == e4all.model]  # every model scored against its own part codes
+asym, ctl = own[own.rel != "and"], own[own.rel == "and"]
 
 
-def rand_select(rnd, k="rec_fresh"):  # layer and code of a random-weight control, chosen on its validation nouns
-    rsel = rnd.groupby(["model", "layer", "code"])["rec_val"].mean().reset_index()
-    rsel = rsel.loc[rsel.groupby("model").rec_val.idxmax()]
-    return {r.model[5:]: rnd[(rnd.model == r.model) & (rnd.layer == r.layer) & (rnd.code == r.code)][k].mean()
-            for r in rsel.itertuples()}
+def kappa(d, model, layer=None, code=None):
+    """kappa at the layer and code chosen on validation nouns (asymmetric relations), per seed."""
+    m = d[d.model == model]
+    if layer is None:
+        sel = m[m.system == "model"].groupby(["layer", "code"])["rec_val"].mean()
+        layer, code = sel.idxmax()
+    m = m[(m.layer == layer) & (m.code == code)]
+    t = m.groupby(["seed", "system"])["rec_fresh"].mean().unstack()
+    k = (t["model"] - t["ref_sum"]) / (t["ref_concat"] - t["ref_sum"])
+    return k.mean(), k.sem(), layer, code
 
 
-rnd = e4all[e4all.model.str.startswith("rand-") & (e4all.system == "model")]
-rand_fresh = rand_select(rnd[rnd.codes_from == rnd.model])  # scored on its own part codes
-rand_trained = rand_select(rnd[rnd.codes_from != rnd.model])  # scored on the trained model's part codes
-rand_role = rand_select(rnd[rnd.codes_from == rnd.model], "role_fresh")
-rand_id = rand_select(rnd[rnd.codes_from == rnd.model], "id_fresh")
-
-fig, axs = plt.subplots(2, 2, figsize=(6.5, 4.9), gridspec_kw=dict(wspace=0.32, hspace=0.62)); axs = axs.ravel()
+fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.6), gridspec_kw=dict(wspace=0.38, width_ratios=[1, 1, 1.25, 1.25]))
+fig.subplots_adjust(bottom=0.27)
 
 # a: fresh-leaf recovery by depth for the learned recursive composer
 ax = axs[0]
@@ -45,10 +46,10 @@ for w, c in ((32, ORANGE), (64, GREY), (256, BLUE)):
     b = s.groupby("depth")["bound"].mean()
     ax.plot(b.index, b.values, color=c, ls=":", lw=0.8)
 ax.set_ylim(-0.5, 1.05); ax.set_xticks([1, 2, 3, 4, 5])
-ax.set_xlabel("depth $n$"); ax.set_ylabel("recovery of fresh leaves ($R^2$)")
+ax.set_xlabel("depth $n$"); ax.set_ylabel("fresh leaves recovered ($R^2$)")
 ax.text(1.5, -0.42, "trained", ha="center", fontsize=6.3, color=DGREY)
 ax.legend(loc="lower left", fontsize=6.0, handlelength=1.2, bbox_to_anchor=(0, 0.08))
-panel(ax, "a", "Learned recursion")
+panel(ax, "a", "Learned composer")
 
 # b: HRR: correlation unbinding (solid) vs a population readout of the same state (dashed)
 ax = axs[1]
@@ -61,66 +62,48 @@ for w, c in ((64, GREY), (256, BLUE), (1024, GREEN)):
     t = s.groupby("depth")["crosstalk_pred"].mean()
     ax.plot(t.index, t.clip(lower=-0.5).values, color=c, ls=":", lw=0.8)
 ax.set_ylim(-0.5, 1.05); ax.set_xticks([1, 2, 3, 4, 5])
-ax.set_xlabel("depth $n$"); ax.set_ylabel("recovery of fresh leaves ($R^2$)")
-ax.legend(loc="lower left", fontsize=6.0, handlelength=1.2, bbox_to_anchor=(0, 0.08))
-panel(ax, "b", "HRR")
+ax.set_xlabel("depth $n$"); ax.set_yticklabels([])
+ax.legend(loc="lower left", fontsize=6.0, handlelength=1.2, bbox_to_anchor=(0, 0.0))
+panel(ax, "b", "HRR unbinding")
+from matplotlib.lines import Line2D
+fig.legend(handles=[Line2D([], [], color=DGREY, ls="-", marker="o", ms=2.6, label="the system's decoder"),
+                    Line2D([], [], color=DGREY, ls="--", label="population readout"),
+                    Line2D([], [], color=DGREY, ls=":", lw=0.8, label="proven bound")],
+           loc="lower left", bbox_to_anchor=(0.06, 0.0), ncol=3, fontsize=6.0, handlelength=2.0, frameon=False, columnspacing=1.2)
 
-# c: pretrained encoders, best layer per model, against references built from their own part codes
-ax = axs[2]
+# c: text encoders, trained against random weights
 NAMES = {"clip-b32": "CLIP-B", "sd15-clip-l": "CLIP-L", "clip-h14": "CLIP-H", "t5-small": "T5-s", "t5-base": "T5-b",
          "t5-large": "T5-l", "bert-base-uncased": "BERT-b", "bert-large-uncased": "BERT-l", "gpt2": "GPT2-s",
          "gpt2-medium": "GPT2-m", "gpt2-large": "GPT2-l"}
-models = [m for m in NAMES if m in set(e4.model)]
-mod = e4[e4.system == "model"]
-# layer and part code chosen on validation nouns, never on the fresh nouns that are reported
-sel = mod.groupby(["model", "layer", "code"])["rec_val"].mean().reset_index()
-sel = sel.loc[sel.groupby("model").rec_val.idxmax()]
-best = {r.model: (r.layer, r.code) for r in sel.itertuples()}
+models = list(NAMES)
 x = np.arange(len(models))
-summ = {}
+ax = axs[2]; ygrid(ax)
+K = {}
 for i, m in enumerate(models):
-    s = e4[(e4.model == m) & (e4.layer == best[m][0]) & (e4.code == best[m][1])]
-    g = s.groupby("system")[["rec_pairs", "rec_fresh", "id_fresh", "role_fresh", "rev_sim", "inter"]].mean()
-    summ[m] = g
-    ax.bar(i - 0.18, g.loc["model", "rec_pairs"], 0.34, color=LGREY)
-    ax.bar(i + 0.18, max(g.loc["model", "rec_fresh"], -1), 0.34, color=ORANGE)
-    ax.scatter([i + 0.18], [g.loc["ref_concat", "rec_fresh"]], marker="_", s=70, color=BLUE, lw=1.6, zorder=3)
-    ax.scatter([i + 0.18], [g.loc["ref_sum", "rec_fresh"]], marker="_", s=70, color=DGREY, lw=1.6, zorder=3)
-    if m in rand_fresh:
-        ax.scatter([i + 0.18], [rand_fresh[m]], marker="x", s=14, color="k", lw=0.9, zorder=4)
-    ax.scatter([i + 0.18], [max(rand_trained[m], 0.0)], marker="o", s=6, color="k", lw=0, zorder=4)
+    K[m] = kappa(asym, m)
+    kr = kappa(asym, "rand-" + m)
+    ax.bar(i - 0.2, K[m][0], 0.38, yerr=K[m][1], color=BLUE, error_kw=dict(lw=0.5), label="trained" if i == 0 else None)
+    ax.bar(i + 0.2, kr[0], 0.38, yerr=kr[1], color=LGREY, error_kw=dict(lw=0.5), label="random weights" if i == 0 else None)
+ax.axhline(0, color=DGREY, lw=0.5)
 ax.set_xticks(x); ax.set_xticklabels([NAMES[m] for m in models], rotation=60, fontsize=5.6)
-ax.set_ylim(0, 1.5); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0]); ax.set_ylabel("recovery of nouns ($R^2$)")
-from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
-ax.legend([Patch(color=LGREY), Patch(color=ORANGE), Line2D([], [], color=BLUE, lw=1.6), Line2D([], [], color=DGREY, lw=1.6),
-           Line2D([], [], color="k", marker="x", lw=0, ms=4), Line2D([], [], color="k", marker="o", lw=0, ms=2.5)],
-          ["new pairs", "fresh nouns", "concat. ref.", "sum ref.", "random, own codes",
-           "random, trained codes"],
-          fontsize=5.4, loc="upper center", ncol=3, handlelength=1, columnspacing=0.6)
-panel(ax, "c", "Text encoders")
+ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns")
+ax.legend(loc="upper left", fontsize=5.6, handlelength=1, borderaxespad=0.1)
+panel(ax, "c", "Training helps partway")
 
-# d: roles survive, identities partly
-ax = axs[3]
+# d: the order-only control reaches the same kappa
+ax = axs[3]; ygrid(ax)
 for i, m in enumerate(models):
-    g = summ[m]
-    ax.bar(i - 0.18, g.loc["model", "role_fresh"], 0.34, color=GREEN)
-    ax.bar(i + 0.18, g.loc["model", "id_fresh"], 0.34, color=ORANGE)
-    ax.scatter([i + 0.18], [g.loc["ref_sum", "id_fresh"]], marker="_", s=70, color=DGREY, lw=1.6, zorder=3)
-    ax.scatter([i - 0.18, i + 0.18], [rand_role[m], rand_id[m]], marker="x", s=14, color="k", lw=0.9, zorder=4)
-ax.axhline(0.5, color=GREEN, lw=0.6, ls=":")
+    _, _, layer, code = K[m]
+    kc = kappa(ctl, m, layer, code)
+    ax.plot([i, i], [K[m][0], kc[0]], color=LGREY, lw=1.2, zorder=1)
+    ax.plot(i, K[m][0], "o", color=BLUE, ms=4, zorder=3, label="on, behind, ... (asymmetric)" if i == 0 else None)
+    ax.plot(i, kc[0], "o", mfc="white", mec=DGREY, mew=1.0, ms=4, zorder=4, label="“a $x$ and a $y$” (order only)" if i == 0 else None)
+ax.axhline(0, color=DGREY, lw=0.5)
 ax.set_xticks(x); ax.set_xticklabels([NAMES[m] for m in models], rotation=60, fontsize=5.6)
-ax.set_ylim(0, 1.35); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0]); ax.set_ylabel("fraction correct, fresh nouns")
-ax.legend([Patch(color=GREEN), Patch(color=ORANGE), Line2D([], [], color=DGREY, lw=1.6), Line2D([], [], color="k", marker="x", lw=0, ms=4)],
-          ["role assigned", "identified (chance 0.01)", "sum ref., identified", "random, own codes"], fontsize=5.6,
-          loc="upper center", ncol=2, handlelength=1, columnspacing=0.6)
-panel(ax, "d", "Fresh nouns")
+ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns")
+ax.legend(loc="upper left", fontsize=5.6, handlelength=1, borderaxespad=0.1)
+panel(ax, "d", "Order alone suffices")
 
 fig.savefig(f"{FIGDIR}/fig_depth_pretrained.pdf")
 fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_depth_pretrained.png", dpi=200)
-pd.set_option("display.width", 250)
-print("best layers", best)
-print("random, own codes", {k: round(v, 3) for k, v in rand_fresh.items()})
-print("random, trained codes", {k: round(v, 3) for k, v in rand_trained.items()})
-for m in models:
-    print(m, summ[m].round(3).to_string(), sep="\n")
+print({m: [round(v, 3) for v in K[m][:2]] + list(K[m][2:]) for m in models})

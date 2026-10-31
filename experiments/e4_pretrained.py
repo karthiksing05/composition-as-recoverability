@@ -73,6 +73,15 @@ def load(name, dev):
     elif name.startswith("t5"):
         tok = AutoTokenizer.from_pretrained(name)
         mod = T5EncoderModel.from_pretrained(name)
+    elif "/" in name:  # large decoder LMs (round 7): bf16 on GPU; "org/model@revision" picks a training checkpoint
+        repo, _, rev = name.partition("@")
+        kw = dict(revision=rev) if rev else {}
+        tok = AutoTokenizer.from_pretrained(repo, **kw)
+        dt = torch.bfloat16 if dev == "cuda" else torch.float32
+        mod = AutoModel.from_pretrained(repo, torch_dtype=dt, **kw)
+        if tok.pad_token is None:
+            tok.pad_token = tok.eos_token
+        tok.padding_side = "right"
     else:
         tok = AutoTokenizer.from_pretrained(name)
         mod = AutoModel.from_pretrained(name)
@@ -90,6 +99,8 @@ def embed(tok, mod, texts, dev, name):
         o = mod(**b, output_hidden_states=True)
         hs = o.hidden_states
         mask = b["attention_mask"].unsqueeze(-1).float()
+        if "/" in name and tok.bos_token_id is not None:  # a prepended BOS is an attention sink of large norm whose
+            mask[:, 0] *= (b["input_ids"][:, 0] != tok.bos_token_id).float().unsqueeze(-1)  # share of the mean varies with length
         L = len(hs) - 1
         for li in sorted({L // 4, L // 2, (3 * L) // 4, L}):
             v = ((hs[li] * mask).sum(1) / mask.sum(1)).float().cpu().numpy()
@@ -132,7 +143,11 @@ class RidgePath:
 
     def __init__(self, X, Y):  # X centred; the intercept is the mean target
         self.ym = Y.mean(0)
-        self.U, self.s, self.Vt = np.linalg.svd(X, full_matrices=False)
+        try:
+            self.U, self.s, self.Vt = np.linalg.svd(X, full_matrices=False)
+        except np.linalg.LinAlgError:  # the divide-and-conquer driver fails on some nodes' LAPACK
+            import scipy.linalg
+            self.U, self.s, self.Vt = scipy.linalg.svd(X, full_matrices=False, lapack_driver="gesvd")
         self.UtY = self.U.T @ (Y - self.ym)
         self.a = None
 

@@ -1,0 +1,6 @@
+e4_pretrained.py --models allenai/OLMo-2-1124-13B --seeds 0 --wide --whiten --outdir results/e6
+e7_roles.py --models allenai/OLMo-2-1124-13B --seeds 0 --outdir results/e7
+e4_pretrained.py --models allenai/OLMo-2-1124-13B --seeds 1 --wide --whiten --outdir results/e6
+e7_roles.py --models allenai/OLMo-2-1124-13B --seeds 1 --outdir results/e7
+e4_pretrained.py --models allenai/OLMo-2-1124-13B --seeds 2 --wide --whiten --outdir results/e6
+e7_roles.py --models allenai/OLMo-2-1124-13B --seeds 2 --outdir results/e7

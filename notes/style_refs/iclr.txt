@@ -1,0 +1,2505 @@
+000
+001
+002
+003
+004
+005
+006
+007
+008
+009
+010
+011
+012
+013
+014
+015
+016
+017
+018
+019
+020
+021
+022
+023
+024
+025
+026
+027
+028
+029
+030
+031
+032
+033
+034
+035
+036
+037
+038
+039
+040
+041
+042
+043
+044
+045
+046
+047
+048
+049
+050
+051
+052
+053
+Under review as a conference paper at ICLR 2027
+TEST-TIME COMPOSITIONAL GENERALIZATION
+IN DIFFUSION MODELS VIA PROTOTYPE DISCOVERY
+Anonymous authors
+Paper under double-blind review
+ABSTRACT
+Compositional generalization asks a model to produce what it has never seen by
+recombining what it knows. Diffusion methods for this problem typically assume
+that what can be reused is specified in advance, through labels, prompts, or a trained
+concept library. We ask whether a pretrained diffusion model can instead discover
+its own reusable prototypes. A prototype is a mode of a noisy marginal pt(xt). We
+perform gradient ascent on the learned score sθ(xt, t) ≈∇xt log pt(xt) from a
+datum to recover a mode and fit a local Gaussian around it, and the noise level t
+sets the level of abstraction. On pretrained CIFAR-10 and CelebA-HQ DDPMs, the
+prototypes recovered from different data are distinct at fine levels and merge as the
+level coarsens, while a datum’s own prototype changes sharply from level to level.
+A single datum therefore induces several distinct, reusable prototypes rather than
+one prototype under increasing blur. With these discovered prototypes, at test time
+we select those that explain a single out-of-distribution query and compose them
+into a product of experts whose closed-form score guides the composable diffusion
+sampler. On held-out compositions of ColorMNIST and CelebA, the samples
+generated from one query generalize to other instances of the unseen class and
+outperform the same sampler conditioned on trained concept tokens. A pretrained
+diffusion model thus already contains prototypes at many levels of abstraction, and
+they can be recovered and composed without supervision.
+1
+INTRODUCTION
+Human intelligence is compositional. After learning familiar parts, relations, or words, people can
+recombine them to understand and produce novel configurations. This ability has long motivated
+work in cognitive science and linguistics. In these fields, systematic generalization is often linked to
+reusable primitives and operators for recombination (Fodor & Pylyshyn, 1988; Lake et al., 2017).
+It is also a central challenge for deep learning, where neural networks may interpolate well within
+a training distribution but fail when familiar primitives appear in unfamiliar combinations (Lake
+& Baroni, 2018; Ruis et al., 2020). The key question is therefore not only whether models learn
+useful representations, but whether they can discover reusable units and compose them at test time.
+Work in deep learning often addresses this problem by designing representations or architectures
+that support composition. Neural module networks, for example, assemble learned components from
+linguistic or program structure (Andreas et al., 2016b;a). Benchmarks such as SCAN test systematic
+recombination (Lake & Baroni, 2018; Ruis et al., 2020). Visual generation methods likewise ask
+whether learned objects, attributes, or concepts can be recombined out of distribution. Despite this
+progress, these approaches often assume that the relevant primitives are supplied by the benchmark,
+labels, prompts, or a predefined concept library.
+A probabilistic view offers a complementary perspective. Concepts can be treated as high-probability
+regions in an energy landscape, while composition requires satisfying multiple constraints at once.
+This idea appears in Hopfield attractors and mixed states (Hopfield, 1982; Amit et al., 1985), product-
+of-experts models (PoE) (Hinton, 2002), and recent energy-based or diffusion composition methods
+(Du et al., 2020; Liu et al., 2022; Du et al., 2023). However, these methods typically assume that
+the component distributions or conditioning signals are given. This leaves a gap between prototype
+discovery and compositional generalization. In visual domains, the relevant primitive may depend on
+the query and emerge at different levels of abstraction, such as digit identity, color, texture, or facial
+1
+
+
+=====PAGE=====
+054
+055
+056
+057
+058
+059
+060
+061
+062
+063
+064
+065
+066
+067
+068
+069
+070
+071
+072
+073
+074
+075
+076
+077
+078
+079
+080
+081
+082
+083
+084
+085
+086
+087
+088
+089
+090
+091
+092
+093
+094
+095
+096
+097
+098
+099
+100
+101
+102
+103
+104
+105
+106
+107
+Under review as a conference paper at ICLR 2027
+attributes. A fuller account should therefore discover reusable prototypes from the model’s learned
+density and compose them without fixed vocabularies or external labels.
+Diffusion models offer a natural setting for this view. A pretrained diffusion model learns time-
+indexed scores sθ(xt, t) ≈∇xt log pt(xt) for the noisy marginals pt(xt). We use those scores for
+discovery rather than reverse sampling. Each noise level smooths the data distribution at a different
+scale. At each level, the local mode reached from a datum defines a prototype whose granularity is
+set by t. A single datum can therefore induce several prototypes across noise levels. Because t orders
+them by scale, they form a hierarchy. Ascending the score from a datum recovers its mode at a given
+level, and a local Gaussian centered at that mode describes the prototype’s extent.
+We recover prototypes for held-out images across all noise levels using pretrained DDPMs for CIFAR-
+10 and CelebA-HQ, and analyze their behavior. The prototypes of different data are far apart at fine
+levels and merge as the level coarsens, while a datum’s own prototype changes sharply from level to
+level. The levels therefore do not merely blur one prototype. A single datum yields several distinct
+prototypes, ordered by scale into a hierarchy. We then ask whether an out-of-distribution datum can
+be written as a combination of prototypes the model already has. Our method selects prototypes for
+one such query and combines them into a product-of-experts distribution that drives the composable
+diffusion sampler (Liu et al., 2022; Ho & Salimans, 2022). On ColorMNIST and CelebA benchmarks
+of held-out compositions, the samples inferred from a single query generalize to other instances of
+the unseen class and outperform the same sampler conditioned on trained concept tokens.
+Contributions.
+• We recover prototypes from a pretrained diffusion model without labels, a concept library, or
+additional training. Each prototype is a mode of a noisy marginal pt(xt), reached by score ascent
+and described by a local Gaussian, and the noise level t sets its level of abstraction.
+• We show on pretrained CIFAR-10 and CelebA-HQ DDPMs that a single datum induces distinct
+and diverse prototypes across noise levels. The prototypes of different data are far apart at fine
+levels and merge as the level coarsens, while a datum’s own prototype changes sharply from level
+to level.
+• We turn discovery into test-time compositional generalization. Prototypes selected for a single OOD
+query form a product of experts whose closed-form score guides the composable diffusion sampler
+toward other instances of the query’s unseen class. On ColorMNIST and CelebA benchmarks of
+held-out attribute compositions, the generated samples match a near copy of the query on attribute
+correctness while exceeding it in diversity, whereas the same sampler conditioned on trained
+concept tokens (Liu et al., 2022) lands on neighboring classes and query editing reproduces only
+the query.
+2
+RELATED WORK
+Prototype discovery
+Prior work on prototype discovery aims to identify reusable abstractions
+between pixels and labels, such as parts, attributes, or object-level factors. It has studied such concepts
+as interpretable directions in representation space (Bau et al., 2017; Kim et al., 2018; Ghorbani et al.,
+2019), as discriminative prototypes (Chen et al., 2019), or as composable generative units (Du
+et al., 2020; Liu et al., 2023). These methods reveal meaningful visual structure, but they are often
+discriminative, rely on external supervision, or do not directly expose a hierarchy over the units they
+discover.
+From a statistical perspective, prototypes can be interpreted as local density modes, with examples
+assigned to their basins of attraction. This connects prototype discovery to mode-seeking and hierar-
+chical clustering methods such as mean-shift (Comaniciu & Meer, 2002), density-derivative-ratio
+mode estimation (Sasaki et al., 2018), cluster trees (Chaudhuri & Dasgupta, 2010), and hierarchical
+prototype models (Wang et al., 2025). We instead recover prototypes by seeking modes of a pretrained
+diffusion model at multiple noise levels. Diffusion models admit a deep latent-variable interpretation
+across noise levels (Sohl-Dickstein et al., 2015; Ho et al., 2020; Kingma et al., 2021; Sønderby et al.,
+2016; Vahdat & Kautz, 2020). Recent work also shows that diffusion timesteps organize information
+from coarse semantic structure to fine detail, with phase-transition behavior at intermediate noise
+levels (Sclocchi et al., 2025; Huang et al., 2024). Motivated by this view, we discover prototypes
+2
+
+
+=====PAGE=====
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+Under review as a conference paper at ICLR 2027
+by seeking modes of the smoothed marginal pt(x) using the pretrained score ∇x log pt(x), with no
+additional training, external supervision, or manually specified taxonomy.
+Compositional generalization
+Compositional generalization is the ability to recombine familiar
+primitives into novel configurations, a central problem in cognitive science, linguistics, and machine
+learning (Fodor & Pylyshyn, 1988; Lake et al., 2017; Lake & Baroni, 2018). In AI, this ability has been
+studied through diagnostic benchmarks such as SCAN and gSCAN (Lake & Baroni, 2018; Ruis et al.,
+2020), modular architectures that compose learned neural components (Andreas et al., 2016b;a), and
+data-augmentation or semantic-parsing methods that encourage systematic recombination (Andreas,
+2020; Yin et al., 2021). These approaches differ in implementation, but typically share the assumption
+that the relevant primitives are already specified by the benchmark, the language, or a predefined
+module set.
+A complementary line of work provides a probabilistic framework for composition. Product-of-
+experts (PoE) models combine constraints by multiplying concept densities (Hinton, 2002). Energy-
+based models use this principle to compose visual concepts (Du et al., 2020). Composable diffusion
+models implement analogous composition by adding concept-specific scores (Liu et al., 2022), with
+later work improving sampling through MCMC corrections (Du et al., 2023). Classifier-free guidance
+provides a related score-combination mechanism for conditional generation (Ho & Salimans, 2022).
+These methods give a mathematical account of how concepts can be composed, but still assume that
+the component distributions or conditioning signals are available beforehand.
+Our work connects prototype discovery with compositional generalization, following the view that
+systematic generalization requires both reusable parts and an operator for recombining them (Fodor
+& Pylyshyn, 1988; Lake et al., 2017). The work closest to our setting, Liu et al. (2023), learns a
+shared library of concept embeddings from unlabeled images, whereas we discover query-specific
+primitives at test time as modes of the unconditional diffusion density and compose their local
+Gaussian approximations without a predefined concept vocabulary.
+Diffusion models
+Diffusion models learn time-indexed score fields for the noisy marginals pt(x)
+and are typically used as generative samplers (Vincent, 2011; Song & Ermon, 2019; Ho et al., 2020;
+Song et al., 2021). We repurpose this learned score geometry for prototype discovery. Instead
+of immediately running the reverse sampler, we use sθ(x, t) ≈∇x log pt(x) to seek modes of
+intermediate marginals. Recent analyses support this view by showing that diffusion timesteps
+encode structure across scales. Class identity disappears sharply while lower-level features persist
+across a phase transition (Sclocchi et al., 2025). Generative trajectories commit to classes at sharp
+symmetry-breaking and speciation times (Raya & Ambrogioni, 2023; Biroli et al., 2024), while
+intermediate marginals are well described by mixtures whose components refine as t decreases (Wang
+& Vastola, 2024; Biroli et al., 2024). We measure the corresponding structure directly on the modes
+of pt and use those modes as prototypes at the granularity determined by t.
+3
+PROTOTYPE DISCOVERY ACROSS DIFFUSION NOISE LEVELS
+In this section, we describe how to discover prototypes from a pretrained diffusion model given
+a query image, with no labels, no concept library, and no additional training. We first show that
+the noisy marginals expose density modes at different scales (Section 3.1), then describe how to
+recover those modes through score ascent (Section 3.2). Each recovered mode is a prototype whose
+granularity is set by the noise level. Section 4 analyzes the modes found from pretrained DDPMs,
+and Section 5 uses them for test-time compositional generalization.
+3.1
+NOISY MARGINALS EXPOSE DENSITY MODES ACROSS SCALES
+We work in the discrete-time diffusion setting (Sohl-Dickstein et al., 2015; Ho et al., 2020). Let
+x0 ∈Rd denote a noise-free datum drawn from pdata, and let
+xt = √¯αt x0 +
+√
+1 −¯αt ε,
+ε ∼N(0, I),
+t ∈{1, . . . , T},
+(1)
+be the forward-diffused state under schedule {¯αt}. The noisy marginal is
+pt(xt) =
+Z
+pdata(x0) N
+ xt; √¯αt x0, (1 −¯αt)I
+
+dx0,
+(2)
+3
+
+
+=====PAGE=====
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+Under review as a conference paper at ICLR 2027
+whose score ∇xt log pt(xt) the network approximates through the noise-prediction head
+εθ(xt, t) (Song & Ermon, 2019; Song et al., 2021),
+sθ(xt, t) = −εθ(xt, t)
+√
+1 −¯αt.
+(3)
+Eq. (2) states that, up to the rescaling by √¯αt, the marginal pt is the data distribution smoothed by
+a Gaussian kernel of bandwidth √1 −¯αt. The noise schedule therefore defines a scale-space over
+pdata (Witkin, 1983). Assume that pdata is locally Gaussian around each datum. Then pdata can be
+represented as a Gaussian mixture, pdata(x0) = P
+k πk N(x0; µk, Σk) for some unknown mixing
+factor πk. This representation leaves pdata as intractable as before but gives the smoothed marginal
+in closed form,
+pt(xt) =
+X
+k
+πk N
+ xt; √¯αt µk, ¯αtΣk + (1 −¯αt)I
+
+.
+(4)
+Every component retains its rescaled center and gains variance (1 −¯αt)I. As t grows, components
+whose centers are closer than the bandwidth merge, and a surviving mode summarizes a progressively
+broader group of components. The number of modes typically decreases with t while each mode
+broadens. The resulting modes are ordered by noise level and can therefore be viewed as a hierarchy
+across scales. Mean-shift recovers this structure at a single bandwidth (Comaniciu & Meer, 2002;
+Sasaki et al., 2018), while the cluster tree organizes it across bandwidths (Chaudhuri & Dasgupta,
+2010). The diffusion forward process fixes the bandwidth ladder. The hierarchical latent-variable
+view of diffusion assigns each level a latent (Kingma et al., 2021; Sønderby et al., 2016; Vahdat &
+Kautz, 2020), while the pretrained score makes every level differentiable through Eq. (3).
+Several lines of work support this view. Sclocchi et al. (2025) identify a phase transition in the
+denoising process at which class identity is lost while low-level features persist, and attribute it
+to the hierarchical structure of natural data. Related analyses find sharp symmetry-breaking and
+speciation times at which generative trajectories commit to a class (Raya & Ambrogioni, 2023;
+Biroli et al., 2024). Intermediate marginals are also well described by Gaussian mixtures whose
+components refine as t decreases (Wang & Vastola, 2024). This view also parallels categorization
+in cognitive science, where concepts form hierarchies whose intermediate levels carry the most
+predictive structure (Rosch et al., 1976). Hierarchical prototype models impose this structure through
+explicit taxonomic architectures (Wang et al., 2025), whereas flat prototype models learn parts
+without any hierarchy (Chen et al., 2019). Unlike these models, diffusion does not impose an
+explicit taxonomy. We recover modes of pt at several noise levels and treat them as prototypes at the
+granularity set by t.
+3.2
+PROTOTYPE DISCOVERY VIA MODE ASCENT
+By a mode of pt we mean a local maximum of the noisy marginal, i.e., a solution of
+x∗
+t ∈arg local max
+xt
+pt(xt).
+(5)
+Solving Equation (5) in closed form is intractable because pt is available only implicitly through its
+score. We therefore locate modes by gradient ascent on the log-density,
+x(i+1)
+t
+= x(i)
+t
++ η sθ
+
+x(i)
+t , t
+
+,
+(6)
+initialized from a noised copy of the query datum,
+x(0)
+t
+= √¯αt xq +
+√
+1 −¯αt ε,
+ε ∼N(0, I).
+Using the unconditional score ensures that ascent explores the full marginal pt rather than the
+conditional manifold of any trained class. In practice we replace the plain gradient step with an Adam
+update (Kingma & Ba, 2015).
+Modes yield clean prototypes.
+A random draw from pt is visibly noisy by Eq. (1), yet a mode of
+pt is noise-free. This follows from Tweedie’s formula (Robbins, 1956; Miyasawa, 1961; Efron, 2011;
+Vincent, 2011), which expresses the posterior mean of the clean datum as
+ˆx0(xt) := E[x0 | xt] =
+1
+√¯αt
+
+xt + (1 −¯αt) ∇xt log pt(xt)
+
+.
+(7)
+4
+
+
+=====PAGE=====
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+Under review as a conference paper at ICLR 2027
+At a mode, the score vanishes, so Eq. (7) reduces to ˆx0(x∗
+t ) = x∗
+t /√¯αt. Conversely, by the
+Gaussian-convolution structure of pt, a local mode m of pdata induces a nearby local mode of
+pt at approximately √¯αt m whenever neighboring modes are well separated relative to the kernel
+bandwidth √1 −¯αt. Together, these observations give
+x∗
+t ≈√¯αt m,
+ˆx0(x∗
+t ) ≈m ∈supp(pdata).
+(8)
+Unlike a random xt ∼pt, which contains a residual √1 −¯αt ε component that simple rescaling
+cannot remove, a mode x∗
+t lies at a local density peak whose noise term vanishes. We therefore treat
+the outputs of Eq. (6) as noise-free prototypes rather than noisy samples.
+Following the mixture form of Eq. (4), we approximate the local neighborhood of pt around a
+recovered mode with a Gaussian qj = N(mj, Σj), where mj is the recovered mode and Σj is a
+diagonal Laplace estimate computed at the mode using four Hutchinson probes (Hutchinson, 1990).
+The pair (mj, Σj) is the discovered prototype at level tj, with mj its location and Σj its extent.
+Modes found at multiple noise levels yields several prototypes from one datum. Section 4 tests
+whether prototypes recovered from data start distinct and merge as the level coarsens, and whether
+different noise levels yield distinct prototypes rather than repeated Gaussian blurs of one mode.
+4
+PRETRAINED DIFFUSION MODELS ENCODE A PROTOTYPE HIERARCHY
+We now validate the claimed hierarchy through two properties. Prototypes of different data should be
+distinct at fine levels and merge as the level coarsens, and a datum’s own prototype should change
+from level to level rather than merely blur. We test both properties on released unconditional DDPMs
+pretrained on CIFAR-10 and CelebA-HQ (Ho et al., 2020), without labels. For a fixed set of held-out
+images we consider the grid t ∈{10, 20, . . . , 990}. At each level, we add noise to the image, ascend
+the score as in Eq. (6), and fit the local Gaussian of Section 3.2 at the recovered mode. Section B
+gives the full configuration.
+Metrics.
+We quantify each property with one measurement, both computed directly from the
+recovered Gaussians.
+• Prototype separation (symmetric KL). To quantify how far apart the prototypes of different data are,
+we compute the symmetric KL divergence between the local Gaussians recovered from two data at
+the same level. Each held-out datum is paired with the prototypes of other data, and the divergence
+is aggregated over pairs, seeds, and data at every level.
+• Normalized displacement. To quantify whether the prototypes of one datum change across levels,
+we measure the distance between its prototype at level t and its prototype at the finest level, with
+both locations normalized to unit norm, d(t)
+i
+=
+ m(t)
+i /∥m(t)
+i ∥−m(10)
+i
+/∥m(10)
+i
+∥
+, where m(t)
+i
+is the mode recovered from datum i at level t. Normalizing removes the amplitude decay √¯αt of
+the forward process, so the displacement changes only when the prototype itself moves. A sudden
+rise marks a phase change, an interval over which the prototype changes far faster than in the
+neighboring levels.
+24
+26
+28
+210
+t
+10
+2
+10
+1
+100
+101
+102
+symmetric KL
+CIFAR-10
+24
+26
+28
+210
+t
+CelebA-HQ
+Figure 1: Symmetric KL between the local Gaus-
+sians of two data at the same level on a log scale.
+Each datum is compared with eight others.
+Prototypes merge as the level coarsens.
+Fig-
+ure 1 shows the separation between prototypes
+recovered from different data. At fine levels
+each prototype is a sharp density around its own
+datum, and the prototypes of other data lie far
+outside it. As t grows the separation falls by
+four orders of magnitude, so prototypes that start
+distinct merge into shared ones as abstraction
+grows. The fall flattens between t ≈700 and
+800, beyond which prototypes recovered from
+different data are no longer distinguishable. This
+floor is expected, as the forward process gradu-
+ally transforms the data distribution into a single
+Gaussian under which all data share one proto-
+type. Prototypes are therefore distinct at fine
+5
+
+
+=====PAGE=====
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+Under review as a conference paper at ICLR 2027
+0.0
+0.5
+1.0
+1.5
+CIFAR-10
+24
+26
+28
+210
+t
+0.0
+0.5
+1.0
+1.5
+CelebA-HQ
+normalized displacement
+Figure 2: The left panel shows the normalized displacement between each datum’s prototype at t
+and its prototype at t=10, with CIFAR-10 above and CelebA-HQ below. The right panel shows four
+examples per dataset, each row giving the original image followed by its prototypes with increasing
+timesteps, with CIFAR-10 in the upper block and CelebA-HQ in the lower. Both the displacement
+and the images show that different noise levels yield distinct prototypes.
+levels and coarsen into shared abstractions as the level grows, aligning with hierarchical cluster-
+ing across bandwidths, where clusters separated under a narrow kernel merge as the bandwidth
+grows (Witkin, 1983; Chaudhuri & Dasgupta, 2010).
+Different levels yield distinct prototypes.
+Figure 2 tracks the normalized displacement between a
+datum’s prototype at level t and its prototype at the finest level, alongside examples of prototypes
+recovered at increasing t. The displacement is nonuniform across noise levels. On both datasets it
+rises quickly at the finest levels, plateaus roughly between t ≈100 and 300, and then rises sharply a
+second time, between t ≈300 and 500 on CIFAR-10 and between t ≈400 and 700 on CelebA-HQ.
+The two regions of rapid change mark phase changes, where the prototype reorganizes far faster
+than in the surrounding levels, consistent with the phase transitions and speciation times reported
+for diffusion models (Sclocchi et al., 2025; Raya & Ambrogioni, 2023; Biroli et al., 2024). The
+prototype images show what is changing. On CelebA-HQ, facial detail and identity persist through
+the plateau, dissolve into a generic face across the second rise, and end as texture, while CIFAR-10
+loses object identity at a finer level, matching its earlier rise. Each noise level therefore abstracts
+the datum in its own way, and one datum yields distinct and diverse prototypes across levels rather
+than the increasingly blurred versions of one mode that the widening Gaussian kernel alone would
+produce.
+Because the noise levels order these distinct prototypes from fine to coarse, a single datum induces
+a hierarchy of them. Given this structure, we next study the prototypes discovered from out-of-
+distribution data and ask whether they support compositional generalization, representing a datum
+the model has never seen as a combination of what it already has.
+5
+TEST-TIME COMPOSITIONAL GENERALIZATION FROM DISCOVERED
+PROTOTYPES
+Section 4 shows that a single datum induces distinct prototypes across noise levels, each abstracting
+the datum in its own way. We now test whether these prototypes support generalization. A single
+out-of-distribution query should be representable as a combination of discovered prototypes, and
+the combination should capture the query’s unseen class rather than the query alone. A held-out
+composition is an unseen combination of familiar attributes, so the prototypes recovered from such a
+query should carry those attributes, and recombining them should yield a distribution over the whole
+class. In effect, we infer an OOD class distribution from one OOD sample. Because the prototypes
+are Gaussian densities, their product has a closed form, and we compare the resulting sampler against
+composable diffusion driven by trained concept tokens.
+6
+
+
+=====PAGE=====
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+Under review as a conference paper at ICLR 2027
+5.1
+FROM DISCOVERED PROTOTYPES TO A COMPOSABLE SCORE
+Given one out-of-distribution query xq, we run mode ascent from xq at several noise levels, as
+described in Section 3.2, and collect a pool of candidate prototypes {qj}. A greedy submodular
+selection keeps the K prototypes that jointly best explain the query per dimension, and the selected
+experts are combined into a weighted product of experts (Hinton, 2002). Each expert is first rescaled to
+the clean variable x0 so that all experts share the random variable required by the product (Section C).
+The product qT remains Gaussian with a closed-form mean and covariance, and the score of its
+forward-diffused marginal is analytic at every t.
+Sampling then reduces to composable diffusion (Liu et al., 2022). Here the backbone is class-
+conditional, with noise prediction εθ(xt, t, c) for trained classes c ∈C and a null token ∅for the
+unconditional branch. The sampler retains the same classifier-free combination of score contribu-
+tions (Ho & Salimans, 2022) and only replaces the trained conditional score with the analytic PoE
+score of the discovered prototypes (Eq. (15)). The only change relative to Liu et al. (2022) is where
+the parts come from. Section C provides full details of the selection objective, the closed-form PoE,
+and the sampler.
+5.2
+COMPOSITIONAL BENCHMARK
+In test-time compositional generalization, a pretrained diffusion model receives a single OOD query
+xq depicting a held-out combination of primitive attributes. The task is to infer from that one query a
+distribution over the full held-out class without access to a prebuilt concept library, so reproducing
+the query is not enough and the samples must cover other instances of the class. We evaluate on two
+benchmarks.
+Color-MNIST.
+A 32×32 RGB rendering of MNIST with three primitive factors, digit identity (10
+values), digit color (4 values), and background color (4 values). The Cartesian product yields 160
+compositional slots, of which 120 are seen by the backbone during training and 40 are held out as
+OOD classes.
+CelebA (compositional).
+A benchmark built from binary CelebA (Liu et al., 2015) face attributes
+such as hair color, smiling, beard, and gender. Each unique realized combination of 14 binary
+attributes defines a compositional class. Of the 74 realized combinations, 51 form the seen split and
+23 are held out. Images are rendered at 128×128.
+Both backbones are class-conditional DDPMs trained with classifier-free guidance dropout on the
+seen split only. Appendix D details the datasets and Appendix E the backbone training.
+5.3
+HYPOTHESIS, BASELINES, AND EVALUATION
+Hypothesis.
+A single OOD query xq contains enough information for the pretrained model to
+expose a multimodal neighborhood across noise levels that approximates the held-out compositional
+class. If the discovered prototypes carry the class rather than the pixels of xq, sampling from their
+aggregate qT should generalize beyond the specific query to other instances of the class.
+Baselines.
+For each OOD class, we evaluate independently on 100 queries for each dataset. Ours
+is the composable-diffusion sampler driven by the analytic PoE score of the discovered prototypes.
+Sampling settings for our method and every baseline are listed in Section F.2. We compare with three
+baselines.
+• Composable diffusion (Comp. 1, Comp. 3). Both instantiate the sampler of Liu et al. (2022) with
+trained concept tokens, so they differ from ours only in where the experts come from. For each
+query, every trained class c ∈C is scored by the average DDPM loss of xq under that conditional,
+ℓ(c) := Et∈Teval, ε
+ε −εθ(√¯αtxq +
+√
+1 −¯αtε, t, c)
+2,
+and the k smallest-loss classes are kept. Comp. 1 conditions the sampler on the single best trained
+token. Comp. 3 composes the three best through the multi-concept combination of the same sampler
+with weights wk = softmaxk(−ℓ(c(k))/τtk).
+7
+
+
+=====PAGE=====
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+Under review as a conference paper at ICLR 2027
+• SDEdit. The baseline of Meng et al. (2022) forward-noises the query to an intermediate level
+and denoises it with the unconditional model. It treats the query as one whole image and has no
+notion of its constituent attributes, so it tests what knowing the query alone achieves, without any
+decomposition.
+Evaluation protocol and metrics.
+Every method turns one query into a batch of 16 samples. Each
+batch is scored against the held-out samples of the query’s class, excluding the query itself, and scores
+are averaged over queries and then over classes. This measures generalization, whether the batch
+inferred from one image covers the class. We use three measurements.
+• KID. The kernel Inception distance (Bi´nkowski et al., 2018) between each batch and the held-out
+members measures generation quality. We refer to Section G for additional discussions.
+• Diversity. A batch can vary widely yet leave the queried class, so plain spread is not the right mea-
+sure here. We use the quality–diversity decomposition of determinantal point processes (Kulesza &
+Taskar, 2012), which counts diversity only where the samples stay relevant to the query. A batch
+{xi}N
+i=1 scores
+1
+N log det(QSQ) =
+2
+N
+X
+i log qi +
+1
+N log det S,
+where qi measures how relevant sample xi is to the query, Q collects the qi on its diagonal, and S
+measures the pairwise similarity within the batch. The first term rewards staying near the query and
+the second rewards mutual dissimilarity, so a batch scores well only by spreading without leaving
+the queried class. We refer to Section G for the exact kernel forms and more details.
+• Attribute correctness. To measure composition, we report the fraction of the class’s defining
+attributes that a sample carries. For each attribute, we average the embeddings of training images
+that carry it and of those that lack it, and a sample is judged to carry the attribute when its embedding
+is closer to the former mean. Averaging the judgments over the class’s defining attributes A gives
+Corr(x) =
+1
+|A|
+X
+a∈A 1
+
+ˆya(x) = ya
+
+,
+where ˆya(x) is the judgment and ya the class’s label for attribute a. We refer to Section G for the
+embeddings and additional details.
+5.4
+RESULTS AND ANALYSIS
+ColorMNIST
+CelebA
+OOD: digit 0, color green, background deep red
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+OOD: Big Lips, Blond Hair, No Beard, Oval Face, Smiling, Wavy Hair
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+Figure 3: Examples of prototypes discovered from OOD queries representing unseen compositions.
+Appendix I provides additional qualitative results.
+Our method matches SDEdit on attribute correctness and improves on it everywhere else (Table 1).
+SDEdit returns near copies of the query, so its attribute correctness is essentially that of a real member,
+92.8% on ColorMNIST and 78.3% on CelebA. Our generated samples reach 89.9% and 72.4%,
+within a few points of the copies, while improving KID (0.10 versus 0.11 on ColorMNIST, 0.17
+versus 0.22 on CelebA) and scoring the highest diversity of all methods on both datasets. The diversity
+gap is expected from the construction of the score, because near copies stay relevant to the query
+yet are nearly identical to each other, and identical samples earn little diversity. Matching a copy on
+attribute correctness while being more diverse and closer in KID to the held-out samples indicates that
+the discovered prototypes carry information about the held-out class distribution rather than the query
+8
+
+
+=====PAGE=====
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+Under review as a conference paper at ICLR 2027
+Table 1: Test-time composition from a single OOD query (mean±SD). Best per column in bold, second
+best underlined.
+ColorMNIST
+CelebA
+Method
+Attr. Corr. ↑
+KID ↓
+Diversity ↑
+Attr. Corr. ↑
+KID ↓
+Diversity ↑
+Comp. 1
+37.4±5.4
+0.17±0.04
+−14.8±14.2
+60.3±4.9
+0.27±0.02
+−5.6±0.8
+Comp. 3
+37.8±4.6
+0.14±0.04
+−13.6±12.9
+59.4±4.8
+0.29±0.02
+−5.5±0.7
+SDEdit
+92.8±5.6
+0.11±0.03
+−4.1±0.4
+78.3±9.9
+0.22±0.03
+−4.5±0.2
+Ours
+89.9±7.2
+0.10±0.03
+−2.5±0.2
+72.4±9.6
+0.17±0.03
+−3.0±0.0
+alone. The composable diffusion baselines (Comp. 1 and Comp. 3) fail on both attribute correctness
+and diversity. Their generated samples vary the most in raw pixel distance, yet their diversity is
+the lowest of all methods, because the variation falls outside the queried class and the relevance
+to the query collapses (Figure 3). We argue that the failure comes from retrieval. Retrieval can
+only return trained classes, and the query’s held-out class is excluded from that set by construction.
+On average over queries, the three classes retrieved by Comp. 3 jointly cover all defining attribute
+values in only 4.0% of ColorMNIST queries and 16.3% of CelebA queries. Sampling from these
+classes therefore caps attribute correctness near chance. Comp. 1 and Comp. 3 score 37.4% and
+37.8% on ColorMNIST, where assigning attribute values at random gives 20%. These baselines share
+our sampler and differ only in where the concepts come from, so the gap is attributable to concept
+discovery. We refer to Section G for additional discussion where the attribute correctness threshold is
+calibrated for attribute imbalance.
+Together, we show that a single OOD sample suffices for the discovered prototypes to induce a
+distribution over its unseen class. The resulting sampler keeps the attribute correctness of a near copy
+while improving on its KID and diversity, which neither the composable diffusion baselines nor the
+edited query achieves.
+6
+CONCLUSION, LIMITATIONS, AND FUTURE WORK
+We studied test-time compositional generalization by recovering prototypes from a pretrained dif-
+fusion model. A prototype is a mode of a noisy marginal pt(xt), reached by ascending the learned
+score from a datum and described locally by a Gaussian, with the noise level setting its level of
+abstraction. On pretrained CIFAR-10 and CelebA-HQ models, the prototypes of different data are
+distinct at fine levels and merge as the level coarsens, while a datum’s own prototype changes sharply
+across levels, so a single datum induces a hierarchy of distinct prototypes. Composing the prototypes
+discovered from one out-of-distribution query into a product of experts lets the composable diffusion
+sampler generate other instances of the query’s held-out class. On ColorMNIST and CelebA, the
+generated samples match a near copy of the query on attribute correctness while exceeding it in
+diversity, whereas the same sampler conditioned on trained concept tokens lands on neighboring
+classes. These findings suggest that diffusion models encode reusable prototypes beyond point
+reconstruction or class-level retrieval. The same reading of the score field may extend to other
+domains where diffusion models are used, including language modeling (Li et al., 2022; Nie et al.,
+2025) and robotic control (Chi et al., 2023).
+Limitations. Our protocol follows the standard compositional generalization setting, where primitive
+factors are known and test cases are unseen recombinations. The setting remains relevant for
+foundation models, which acquire rich primitives during pretraining, so many novel instances are
+closer to unseen compositions than to unseen concepts. Human-level intelligence, however, also
+learns new primitives and reuses them in later compositions (Fodor & Pylyshyn, 1988; Lake et al.,
+2017; 2015). Our framework sometimes discovers novel-looking primitives by interpolating between
+known ones (Appendix J). A full mechanism for detecting, consolidating, and reusing genuinely new
+primitives remains future work.
+9
+
+
+=====PAGE=====
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+Under review as a conference paper at ICLR 2027
+REFERENCES
+Daniel J. Amit, Hanoch Gutfreund, and H. Sompolinsky. Spin-glass models of neural networks.
+Physical Review A, 32(2):1007–1018, 1985. doi: 10.1103/PhysRevA.32.1007.
+Jacob Andreas. Good-enough compositional data augmentation. In Proceedings of the 58th An-
+nual Meeting of the Association for Computational Linguistics, pp. 7556–7566. Association for
+Computational Linguistics, 2020. doi: 10.18653/v1/2020.acl-main.676.
+Jacob Andreas, Marcus Rohrbach, Trevor Darrell, and Dan Klein. Learning to compose neural
+networks for question answering. In Proceedings of the 2016 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language Technologies, pp.
+1545–1554. Association for Computational Linguistics, 2016a. doi: 10.18653/v1/N16-1181.
+Jacob Andreas, Marcus Rohrbach, Trevor Darrell, and Dan Klein. Neural module networks. In
+Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pp. 39–48,
+2016b.
+David Bau, Bolei Zhou, Aditya Khosla, Aude Oliva, and Antonio Torralba. Network dissection:
+Quantifying interpretability of deep visual representations. In Proceedings of the IEEE Conference
+on Computer Vision and Pattern Recognition, pp. 3319–3327, 2017.
+Mikołaj Bi´nkowski, Danica J Sutherland, Michael Arbel, and Arthur Gretton. Demystifying MMD
+GANs. In International Conference on Learning Representations, 2018.
+Giulio Biroli, Tony Bonnaire, Valentin De Bortoli, and Marc Mézard. Dynamical regimes of diffusion
+models. Nature Communications, 15(1):9957, 2024.
+Kamalika Chaudhuri and Sanjoy Dasgupta. Rates of convergence for the cluster tree. Advances in
+Neural Information Processing Systems, 23, 2010.
+Chaofan Chen, Oscar Li, Chaofan Tao, Alina Jade Barnett, Jonathan Su, and Cynthia Rudin. This
+looks like that: Deep learning for interpretable image recognition. In Advances in Neural Informa-
+tion Processing Systems (NeurIPS), 2019.
+Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake,
+and Shuran Song. Diffusion policy: Visuomotor policy learning via action diffusion. In Robotics:
+Science and Systems, 2023.
+Dorin Comaniciu and Peter Meer. Mean shift: A robust approach toward feature space analysis.
+IEEE Transactions on Pattern Analysis and Machine Intelligence, 24(5):603–619, 2002.
+Yilun Du and Igor Mordatch. Implicit generation and modeling with energy-based models. In
+Advances in Neural Information Processing Systems (NeurIPS), 2019.
+Yilun Du, Shuang Li, and Igor Mordatch. Compositional visual generation and inference with energy
+based models. In Advances in Neural Information Processing Systems, volume 33, pp. 6637–6647,
+2020.
+Yilun Du, Conor Durkan, Robin Strudel, Joshua B. Tenenbaum, Sander Dieleman, Rob Fergus, Jascha
+Sohl-Dickstein, Arnaud Doucet, and Will Grathwohl. Reduce, reuse, recycle: Compositional
+generation with energy-based diffusion models and mcmc. In Proceedings of the 40th International
+Conference on Machine Learning, volume 202 of Proceedings of Machine Learning Research, pp.
+8489–8510. PMLR, 2023.
+Bradley Efron. Tweedie’s formula and selection bias. Journal of the American Statistical Association,
+106(496):1602–1614, 2011.
+Jerry A. Fodor and Zenon W. Pylyshyn. Connectionism and cognitive architecture: A critical analysis.
+Cognition, 28(1–2):3–71, 1988. doi: 10.1016/0010-0277(88)90031-5.
+Amirata Ghorbani, James Wexler, James Y. Zou, and Been Kim. Towards automatic concept-based
+explanations. In Advances in Neural Information Processing Systems, volume 32, 2019.
+10
+
+
+=====PAGE=====
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+Under review as a conference paper at ICLR 2027
+Geoffrey E. Hinton. Training products of experts by minimizing contrastive divergence. Neural
+Computation, 14(8):1771–1800, 2002. doi: 10.1162/089976602760128018.
+Jonathan Ho and Tim Salimans. Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598,
+2022.
+Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. In Advances in
+Neural Information Processing Systems, volume 33, pp. 6840–6851, 2020.
+John J. Hopfield. Neural networks and physical systems with emergent collective computational
+abilities. Proceedings of the National Academy of Sciences, 79(8):2554–2558, 1982. doi: 10.1073/
+pnas.79.8.2554.
+Yukun Huang, Jianan Wang, Yukai Shi, Boshi Tang, Xianbiao Qi, and Lei Zhang. Dreamtime: An
+improved optimization strategy for diffusion-guided 3d generation. In International Conference on
+Learning Representations (ICLR), 2024.
+Michael F. Hutchinson. A stochastic estimator of the trace of the influence matrix for Laplacian
+smoothing splines. Communications in Statistics – Simulation and Computation, 19(2):433–450,
+1990.
+Been Kim, Martin Wattenberg, Justin Gilmer, Carrie Cai, James Wexler, Fernanda Viegas, and Rory
+Sayres. Interpretability beyond feature attribution: Quantitative testing with concept activation
+vectors (tcav). In International Conference on Machine Learning, pp. 2668–2677. PMLR, 2018.
+Diederik P. Kingma and Jimmy Ba. Adam: A method for stochastic optimization. In International
+Conference on Learning Representations (ICLR), 2015.
+Diederik P. Kingma, Tim Salimans, Ben Poole, and Jonathan Ho. Variational diffusion models. In
+Advances in Neural Information Processing Systems (NeurIPS), 2021.
+Andreas Krause and Daniel Golovin. Submodular function maximization. In Lucas Bordeaux,
+Youssef Hamadi, and Pushmeet Kohli (eds.), Tractability: Practical Approaches to Hard Problems,
+pp. 71–104. Cambridge University Press, 2014.
+Alex Kulesza and Ben Taskar. Determinantal point processes for machine learning. Foundations and
+Trends in Machine Learning, 5(2–3):123–286, 2012.
+Brenden M. Lake and Marco Baroni. Generalization without systematicity: On the compositional
+skills of sequence-to-sequence recurrent networks. In Proceedings of the 35th International
+Conference on Machine Learning, volume 80 of Proceedings of Machine Learning Research, pp.
+2873–2882. PMLR, 2018.
+Brenden M. Lake, Ruslan Salakhutdinov, and Joshua B. Tenenbaum. Human-level concept learning
+through probabilistic program induction. Science, 350(6266):1332–1338, 2015. doi: 10.1126/
+science.aab3050.
+Brenden M. Lake, Tomer D. Ullman, Joshua B. Tenenbaum, and Samuel J. Gershman. Building
+machines that learn and think like people. Behavioral and Brain Sciences, 40:e253, 2017. doi:
+10.1017/S0140525X16001837.
+Xiang Lisa Li, John Thickstun, Ishaan Gulrajani, Percy Liang, and Tatsunori B. Hashimoto. Diffusion-
+LM improves controllable text generation. In Advances in Neural Information Processing Systems,
+2022.
+Nan Liu, Shuang Li, Yilun Du, Antonio Torralba, and Joshua B. Tenenbaum. Compositional visual
+generation with composable diffusion models. In European Conference on Computer Vision
+(ECCV), pp. 423–439, 2022.
+Nan Liu, Yilun Du, Shuang Li, Joshua B. Tenenbaum, and Antonio Torralba. Unsupervised composi-
+tional concepts discovery with text-to-image generative models. In Proceedings of the IEEE/CVF
+International Conference on Computer Vision, pp. 2085–2095, 2023.
+11
+
+
+=====PAGE=====
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+Under review as a conference paper at ICLR 2027
+Ziwei Liu, Ping Luo, Xiaogang Wang, and Xiaoou Tang. Deep learning face attributes in the wild. In
+Proceedings of the IEEE International Conference on Computer Vision, pp. 3730–3738, 2015.
+Chenlin Meng, Yutong He, Yang Song, Jiaming Song, Jiajun Wu, Jun-Yan Zhu, and Stefano Ermon.
+SDEdit: Guided image synthesis and editing with stochastic differential equations. In International
+Conference on Learning Representations, 2022.
+K. Miyasawa. An empirical Bayes estimator of the mean of a normal population. Bulletin of the
+International Statistical Institute, 38(4):181–188, 1961.
+George L. Nemhauser, Laurence A. Wolsey, and Marshall L. Fisher. An analysis of approximations
+for maximizing submodular set functions—I. Mathematical Programming, 14(1):265–294, 1978.
+Shen Nie, Fengqi Zhu, Zebin You, Xiaolu Zhang, Jingyang Ou, Jun Hu, JUN ZHOU, Yankai Lin,
+Ji-Rong Wen, and Chongxuan Li. Large language diffusion models. In The Thirty-ninth Annual
+Conference on Neural Information Processing Systems, 2025.
+Gabriel Raya and Luca Ambrogioni. Spontaneous symmetry breaking in generative diffusion models.
+In Advances in Neural Information Processing Systems, volume 36, 2023.
+Herbert Robbins. An empirical Bayes approach to statistics. In Proceedings of the Third Berkeley
+Symposium on Mathematical Statistics and Probability, volume 1, pp. 157–163, 1956.
+Eleanor Rosch, Carolyn B Mervis, Wayne D Gray, David M Johnson, and Penny Boyes-Braem. Basic
+objects in natural categories. Cognitive Psychology, 8(3):382–439, 1976.
+Laura Ruis, Jacob Andreas, Marco Baroni, Diane Bouchacourt, and Brenden M. Lake. A bench-
+mark for systematic generalization in grounded language understanding. In Advances in Neural
+Information Processing Systems, volume 33, pp. 19861–19872, 2020.
+Hiroaki Sasaki, Takafumi Kanamori, Aapo Hyvärinen, Gang Niu, and Masashi Sugiyama. Mode-
+seeking clustering and density ridge estimation via direct estimation of density-derivative-ratios.
+Journal of Machine Learning Research, 18(180):1–47, 2018.
+Antonio Sclocchi, Alessandro Favero, and Matthieu Wyart. A phase transition in diffusion models
+reveals the hierarchical nature of data. Proceedings of the National Academy of Sciences, 122(1):
+e2408799121, 2025. doi: 10.1073/pnas.2408799121.
+Jascha Sohl-Dickstein, Eric A. Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsupervised
+learning using nonequilibrium thermodynamics. In International Conference on Machine Learning
+(ICML), 2015.
+Casper Kaae Sønderby, Tapani Raiko, Lars Maaløe, Søren Kaae Sønderby, and Ole Winther. Ladder
+variational autoencoders. In Advances in Neural Information Processing Systems (NeurIPS), 2016.
+Yang Song and Stefano Ermon. Generative modeling by estimating gradients of the data distribution.
+In Advances in Neural Information Processing Systems (NeurIPS), 2019.
+Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, and Ben
+Poole. Score-based generative modeling through stochastic differential equations. In International
+Conference on Learning Representations (ICLR), 2021.
+Arash Vahdat and Jan Kautz. NVAE: A deep hierarchical variational autoencoder. In Advances in
+Neural Information Processing Systems (NeurIPS), 2020.
+Pascal Vincent. A connection between score matching and denoising autoencoders. Neural Computa-
+tion, 23(7):1661–1674, 2011.
+Binxu Wang and John J. Vastola. The unreasonable effectiveness of gaussian score approximation for
+diffusion models and its applications. 12 2024.
+Zekun Wang, Ethan Haarer, Tianyi Zhu, Zhiyi Dai, and Christopher J. MacLellan. Deep taxonomic
+networks for unsupervised hierarchical prototype discovery. In Advances in Neural Information
+Processing Systems, 2025.
+12
+
+
+=====PAGE=====
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+Under review as a conference paper at ICLR 2027
+Andrew P Witkin. Scale-space filtering. In International Joint Conference on Artificial Intelligence,
+1983.
+Han Xiao, Kashif Rasul, and Roland Vollgraf. Fashion-mnist: a novel image dataset for benchmarking
+machine learning algorithms. arXiv preprint arXiv:1708.07747, 2017.
+Pengcheng Yin, Hao Fang, Graham Neubig, Adam Pauls, Emmanouil Antonios Platanios, Yu Su,
+Sam Thomson, and Jacob Andreas. Compositional generalization for neural semantic parsing via
+span-level supervised attention. In Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language Technologies, pp.
+2810–2823. Association for Computational Linguistics, 2021.
+A
+MODES OF DIFFUSION MARGINALS ACROSS NOISE LEVELS
+(a) t = 0
+(b) t = 50
+(c) t = 200
+(d) t = 300
+(e) t = 500
+Figure 4: Modes of the noisy marginals pt(xt) learned by a DDPM on Fashion-MNIST (Xiao
+et al., 2017). The t = 0 panel shows clean reference images, while larger t panels show prototypes
+recovered by mode ascent at progressively noisier marginals. As t increases, fine instance details
+are smoothed away and modes consolidate into coarser object-level prototypes. The noise levels
+therefore order the recovered prototypes by scale.
+To motivate our use of mode finding for prototype discovery, we visualize local modes of the noisy
+marginals p(xt) learned by a DDPM trained on Fashion-MNIST (Xiao et al., 2017). Using the
+mode-ascent procedure in Section 3.2, we recover prototypes at several noising timesteps. As t
+increases, the marginals become progressively smoother. Modes that initially preserve instance-level
+details merge into coarser object groups and eventually retain only high-level class-like structure.
+The recovered modes provide prototypes at different levels of abstraction. Because noise level orders
+their scale, the collection forms a discrete hierarchy.
+B
+PROTOTYPE ANALYSIS DETAILS
+The validation of Section 4 uses the released unconditional DDPM checkpoints for CIFAR-10 and
+CelebA-HQ (Ho et al., 2020) without any fine-tuning. For each dataset we take a fixed set of held-out
+images and the noise-level grid t ∈{10, 20, . . . , 990}. At every (image, level) pair, we forward-noise
+the image using Eq. (1) and run the ascent in Eq. (6) with Adam at a learning rate of 0.01 for 200
+steps. We swept the ascent length from 50 to 300 steps. The iterate stabilizes by roughly step 200,
+and additional steps do not remove further noise from the recovered mode, so all results use 200
+steps. The local covariance is a diagonal Laplace estimate at the converged mode, computed using
+four Hutchinson probes with finite-difference step 5 × 10−3. We repeat the full procedure for five
+ascent seeds. All curves and mode images use the step-200 ascent position, so every divergence pairs
+the mode with the covariance measured at that same point.
+The separation of Figure 1 is computed between the local Gaussians of two data at the same level.
+The five ascent seeds are first pooled into one Gaussian per datum and level by the law of total
+variance. Each datum i is then compared with the eight fixed partners i+1, . . . , i+8, taken cyclically
+over the held-out set, the per-coordinate symmetric KL is reduced to its median over coordinates, and
+the eight values are averaged. The curves show the mean over the held-out data with a ±1 sd band.
+Normalized displacement is the Euclidean distance between the unit-normalized prototype locations.
+Mode images are shown from a single ascent seed. A second ascent learning rate (0.02) reproduces
+every trend on both datasets.
+13
+
+
+=====PAGE=====
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+Under review as a conference paper at ICLR 2027
+C
+PRODUCT-OF-EXPERTS COMPOSITION AND SAMPLING
+This appendix provides full details of the method in Section 5.1. The local Gaussians of Section 3.2,
+discovered from the query xq, are rescaled to the clean variable as qj(x0) = N(x0; mj, Σj) with
+mj = x∗,j
+t /p¯αtj, so that every expert shares the random variable x0. In what follows, greedy
+selection keeps K of them, indexed by SK ⊆{1, . . . , M}.
+Weighted product of experts.
+Each candidate is an expert over the shared variable x0, so selected
+prototypes combine through a weighted product of experts (Hinton, 2002). We use per-dimension
+weights wj ∈[0, 1]d under the diagonal Gaussian approximation, allowing different prototypes
+to dominate different dimensions while ambiguous dimensions remain softly mixed. The product
+remains Gaussian, qT = N(µT, ΣT), with closed-form parameters
+qT(x0) ∝
+Y
+j∈SK
+qj(x0)wj,
+Σ−1
+T =
+X
+j∈SK
+Diag(wj) Σ−1
+j ,
+µT = ΣT
+X
+j∈SK
+Diag(wj) Σ−1
+j mj,
+(9)
+where exponentiation is dimension-wise. Combining experts this way sharpens dimensions on
+which selected prototypes agree while preserving uncertainty where the evidence is mixed. This is
+the desired behavior when a novel composition is assembled from features supported by different
+prototypes (Du & Mordatch, 2019; Du et al., 2020; Liu et al., 2022; Du et al., 2023).
+Greedy submodular selection.
+Write
+ℓj,r(xq) := log N
+ xq,r; mj,r, σ2
+j,r
+
+,
+r ∈{1, . . . , d},
+where Σj = Diag(σ2
+j,1, . . . , σ2
+j,d). Here, ℓj,r(xq) is the contribution of prototype j to the log-
+likelihood of xq at dimension r. Under the diagonal PoE of Eq. (9), the log-likelihood decomposes
+per dimension, so we use the coverage surrogate
+F(S) :=
+d
+X
+r=1
+max
+j∈S ℓj,r(xq),
+(10)
+which is monotone and submodular in S (Nemhauser et al., 1978; Krause & Golovin, 2014). We
+initialize with the best singleton, S1 = {arg maxj F({j})}, and grow the set by the largest marginal
+gain,
+ji+1 =
+arg max
+j ∈{1,...,M}\Si
+∆j(Si),
+∆j(Si) := F(Si ∪{j}) −F(Si),
+Si+1 = Si ∪{ji+1},
+(11)
+for i = 1, . . . , K −1. After selection, the per-dimension weight of each selected prototype is the
+temperature-controlled softmax of its per-dimension log-likelihood over the selected set,
+wj(r) =
+exp
+ ℓj,r(xq)/τ
+
+P
+j′∈SK exp
+ ℓj′,r(xq)/τ
+,
+j ∈SK,
+(12)
+so that the weight concentrates on the dominant prototype in unambiguous dimensions, while
+ambiguous dimensions retain a smoother mixture.
+Analytic score and compositional sampling.
+Because qT is Gaussian in clean data space, so is its
+forward-diffused counterpart q(t)
+T (xt) = N(xt; √¯αtµT, ¯αtΣT + (1 −¯αt)I), whose score is
+∇xt log q(t)
+T (xt) = −
+
+¯αtΣT + (1 −¯αt)I
+−1 xt −√¯αt µT
+
+.
+(13)
+Composable diffusion combines concepts by adding conditional score contributions, each normally a
+learned conditional score (Liu et al., 2022). Our discovered composition is not a trained token. Its
+conditional score is Eq. (13) in closed form. Converting to the noise-prediction parameterization via
+Eq. (3) gives
+εqT(xt, t) =
+√
+1 −¯αt
+
+¯αtΣT + (1 −¯αt)I
+−1 xt −√¯αt µT
+
+,
+(14)
+which serves as the conditional branch in classifier-free guidance (Ho & Salimans, 2022), and the
+combined prediction becomes
+ˆε(xt, t; c∗) = εθ(xt, t, ∅) + w∗(t)
+
+εqT(xt, t) −εθ(xt, t, ∅)
+
+.
+(15)
+Eq. (15) samples the discovered composition by contrasting the analytic PoE prediction against the
+null prediction, without a trained conditional token for c∗.
+14
+
+
+=====PAGE=====
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+Under review as a conference paper at ICLR 2027
+Variance-aware guidance schedule.
+The residual εqT(xt, t) −εθ(xt, t, ∅) inherits the precision
+factor Σ−1
+t
+from Eq. (14), where Σt := ¯αtΣT +(1−¯αt)I. A concentrated PoE can therefore produce
+an outsized pull at small t, whereas a diffuse PoE can produce a faint pull. To make guidance strength
+comparable across queries, we set
+w∗(t) = min
+
+w0 · 1
+d tr(Σt), wmax
+
+,
+(16)
+which approximately cancels the implicit Σ−1
+t
+scaling, while the cap wmax prevents excessive
+guidance at large t where Σt →I.
+D
+ADDITIONAL BENCHMARK DETAILS
+Table 2: Color-MNIST primitive attributes and split.
+Attribute
+Cardinality
+Digit identity
+10
+Digit color
+4
+Background color
+4
+Total compositions
+160
+Seen slots (training)
+120
+Unseen slots (OOD)
+40
+Per-slot images
+1,000
+Image format
+32×32 RGB
+The Color-MNIST primitive values are digit colors in {yellow, green, cyan, pink} and background
+colors in {deep red, navy, dark purple, dark brown}, a muted high-contrast palette chosen so that no
+digit color collapses against a background under low-light rendering. The 40 unseen slots are formed
+by holding out four (digit color, background color) pairs, namely (cyan, deep red), (green, navy),
+(pink, dark purple), and (yellow, dark brown), across all ten digits, giving 4 × 10 = 40 OOD slots.
+The remaining 120 slots train the backbone.
+Table 3: CelebA compositional benchmark (Liu et al., 2015). A compositional class is a unique
+combination of 14 binary CelebA attributes (Black/Blond/Brown/Gray hair, Wavy hair, No_Beard,
+Smiling, Big_Nose, Big_Lips, Oval_Face, Male, Sideburns, Wearing_Necklace, Bald). The 74
+realized combinations used in this experiment are partitioned into a seen tier used for backbone
+training and a holdout tier accessible only at test time.
+Attribute / split
+Value
+Number of binary attributes
+14
+Realized compositional classes
+74
+Seen classes (training)
+51
+train images
+26,775
+in-distribution validation images
+3,825
+Holdout classes (OOD)
+23
+images
+9,914
+Image format
+128×128 RGB
+The 23 unseen CelebA classes are chosen so that their attribute combination differs from at least
+one seen class by a single attribute, providing a controlled OOD setting where each held-out class is
+reachable from a near neighbor in the seen set. Class ids are remapped contiguously to {0, . . . , 119}
+for Color-MNIST and {0, . . . , 50} for CelebA before being passed to the backbone’s class embedding.
+The backbone never sees an image from the held-out tier during training.
+15
+
+
+=====PAGE=====
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+Under review as a conference paper at ICLR 2027
+E
+BACKBONE ARCHITECTURE AND PRETRAINING
+Each backbone is a class-conditional diffusers UNet2DModel (Ho et al., 2020) trained with
+classifier-free guidance dropout (Ho & Salimans, 2022). We use google/ddpm-cifar10-32 for
+the 32×32 Color-MNIST backbone and google/ddpm-celebahq-256 (with sample_size
+overridden to 128) for the 128×128 CelebA backbone. The class-embedding table is sized to |C| + 1
+to reserve one row for the null token used during CFG dropout. Training uses the DDPM scheduler
+with a linear β schedule, T = 1000 training timesteps, ε-prediction, and an EMA on UNet weights.
+Color-MNIST is trained on a single GPU. CelebA is trained on 4 GPUs in bf16 mixed precision,
+and we evaluate the EMA checkpoint at training step 500,000. Table 4 lists the per-dataset training
+hyperparameters. Architectural fields not listed (block out-channels, layers-per-block, attention
+resolutions) follow the base UNet configuration for each dataset.
+Table 4: Backbone training hyperparameters. Architectural fields not shown follow the base UNet con-
+figuration for each dataset (google/ddpm-cifar10-32 or google/ddpm-celebahq-256
+with sample_size=128).
+Parameter
+Color-MNIST
+CelebA
+Image resolution
+32
+128
+Channels
+3
+3
+Base UNet config
+ddpm-cifar10-32
+ddpm-celebahq-256 (sample_size=128)
+Class-embedding rows (incl. null)
+121
+52
+Optimizer
+AdamW
+AdamW
+Learning rate
+2×10−4
+2×10−4
+Weight decay
+10−6
+10−6
+Gradient clip (∥∇∥2)
+1.0
+1.0
+Batch size
+256
+128 (32 per GPU ×4)
+Training length
+100 epochs
+500,000 steps
+Mixed precision
+bf16
+bf16
+EMA on UNet weights
+yes
+yes
+Null-token dropout p
+0.1
+0.1
+Diffusion schedule
+linear β, T=1000
+linear β, T=1000
+Parameterization
+ε-prediction
+ε-prediction
+F
+HYPERPARAMETERS
+F.1
+PROTOTYPE DISCOVERY HYPERPARAMETERS
+We model the per-mode covariance Σ(tk)
+k
+as diagonal and estimate its diagonal entries from Hutchin-
+son probes (Hutchinson, 1990) of the Tweedie Jacobian. See Table 5.
+F.2
+SAMPLING HYPERPARAMETERS
+G
+ADDITIONAL EVALUATION DETAILS
+Reference sets.
+For each OOD class, the reference is a fixed draw of held-out members of the
+same class (50 per CelebA class, 10 per ColorMNIST class), sampled once with the query indices
+excluded, so no batch is ever compared against its own conditioning image. Every metric is computed
+per query batch and aggregated to mean ± standard deviation over the OOD classes.
+Why KID rather than FID.
+At a batch size of 16, FID’s plug-in estimator is biased upward by
+a term that depends on the generator’s own covariance, so small-sample FID can reverse orderings
+between methods of different diversity. KID’s U-statistic estimator is unbiased at every sample
+size (Bi´nkowski et al., 2018), and we report KID throughout. On CelebA, Inception features separate
+face identities far more strongly than face classes, so KID there rewards realistic spread more than
+attribute fidelity and we read it as an image-quality measure only.
+16
+
+
+=====PAGE=====
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+Under review as a conference paper at ICLR 2027
+Table 5: Prototype discovery settings (per dataset). Both datasets use K=3 prototypes and the
+per-coordinate softmax weighting of Eq. (12) with temperature τ. The differences are mostly in the
+discovery sampling budget, which is larger on Color-MNIST because per-step ascent on a 32×32
+tensor is much cheaper than on 128×128.
+Hyperparameter
+Color-MNIST
+CelebA
+Number of prototypes K
+3
+3
+Selection objective
+submodular greedy
+submodular greedy
+Per-coordinate softmax temperature τ
+0.5
+0.5
+Timestep grid ([start, end, step])
+[50, 400, 25]
+[50, 500, 50]
+Ascent starts per timestep nper-t
+128
+8
+Ascent iterations niters
+150
+100
+Ascent base step size
+0.1
+0.09
+Ascent optimizer
+Adam
+Adam
+Ascent initialization
+hybrid (50% query, 50% random)
+query-centered
+Hutchinson probes
+4
+4
+Hutchinson finite-difference step
+5×10−3
+5×10−3
+Unconditional score source
+∅token
+∅token
+Seed
+42
+42
+Table 6: Sampling settings for our method and all baselines.
+Hyperparameter
+Color-MNIST
+CelebA
+DDIM scheduler (all methods)
+η=0, 50 steps
+η=0, 50 steps
+Samples per query per method
+16
+16
+Seed (fixed across methods)
+42
+42
+Ours: variance-aware base scale w0
+1.2
+0.5
+Ours: variance-aware cap wmax
+2.0
+2.0
+Composable: guidance strength w
+1.0
+2.0
+Composable: retrieval grid Teval
+{50, 100, 150}
+{50, 100, 150}
+Composable: retrieval temperature τtk
+1.0
+1.0
+SDEdit: noise level t0
+50
+50
+Diversity details.
+The diversity score of Section 5.3 is the log determinant of a DPP L-
+ensemble in its quality–diversity form (Kulesza & Taskar, 2012). With relevance to the query
+qi = exp(−d(xi, xq)/h) collected in Q = diag(q1, . . . , qN) and pairwise similarity Sij =
+exp(−d(xi, xj)/h), a batch of N samples scores
+1
+N log det(QSQ) =
+2
+N
+X
+i log qi +
+1
+N log det S.
+Under a DPP with kernel L = QSQ, det L is proportional to the probability of drawing the batch as
+a set. It is largest when the samples are mutually dissimilar, vanishes when any two coincide, and
+the quality factors q2
+i discount samples that drift from the query, so dissimilarity counts only where
+relevance survives. Higher is better. The distance d is cosine between raw pixel vectors, so no learned
+encoder enters the judgment, and the bandwidth h is the median nearest-neighbor distance among
+the class’s held-out members, set per class. Eigenvalues of S are floored at 10−12 before the log
+determinant. The score is conditional on the query by design and has no marginal gold standard. A
+random batch of 16 real members scores −4.7 on ColorMNIST and −5.1 on CelebA, fully spread
+but unanchored, since a marginal draw ignores the query.
+Attribute correctness construction.
+On CelebA, each binary attribute a is judged by a linear
+rule obtained purely by averaging real images. With µ+
+a and µ−
+a the mean CLIP ViT-B/32 features
+of 6,000 labeled training-split images with and without the attribute, a sample carries a when its
+feature projects beyond the midpoint of µ+
+a and µ−
+a along da = µ+
+a −µ−
+a . Three of the 14 attributes
+(Sideburns, Wearing_Necklace, Bald) are constant across all 74 realized classes and are excluded,
+leaving 11 informative attributes, so chance is near 50%. On ColorMNIST, every one of the 160
+compositions receives a mean image of 200 of its members (training split for seen classes, and for
+17
+
+
+=====PAGE=====
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+Under review as a conference paper at ICLR 2027
+OOD classes held-out members disjoint from both the queries and the evaluation references), and a
+sample is credited by how many of the three factors of its nearest mean image in pixel space match the
+target, so chance is 20%. The judging space for each dataset is fixed with real data alone, before any
+generated image is scored, by two criteria, the ceiling attained on held-out members and the stability
+of that ceiling under small perturbations of real members. Pixel space passes both on ColorMNIST,
+where CLIP is unstable at 32×32. CLIP passes both on CelebA, where pixel distance is dominated
+by pose and illumination. No judge involves training.
+Threshold variant.
+Table 7 compares the midpoint threshold of the main text with a calibrated
+variant whose per-attribute threshold maximizes accuracy on the labeled real images, accounting for
+attribute imbalance. All methods shift slightly upward and no ordering changes.
+Table 7: CelebA attribute correctness (%, mean±SD) under the two threshold rules.
+Method
+Midpoint
+Calibrated
+Comp. 1
+60.3±4.9
+64.2±6.1
+Comp. 3
+59.4±4.8
+64.4±6.7
+SDEdit
+78.3±9.9
+78.6±4.9
+Ours
+72.4±9.6
+73.3±5.2
+Real (held-out)
+78.3±9.8
+78.8±4.7
+H
+COMPUTE
+Backbone training takes roughly 6 hours on a single NVIDIA A40 GPU for ColorMNIST and roughly
+50 hours on four NVIDIA RTX 6000 GPUs for CelebA. Test-time prototype discovery and PoE
+sampling both run on a single A40. The full pipeline of section 3 (mode ascent, Hutchinson estimation
+of the local Hessian, submodular selection, PoE composition, and analytic CFG sampling) takes
+about 10–17 minutes per query.
+I
+VISUALIZATIONS
+We present additional visualizations for both datasets in Figure 5.
+J
+GENERALIZATION TO UNSEEN PRIMITIVES
+Prototype discovery operates on the score field induced by the trained DDPM, so the prototypes it
+can surface are confined to regions where that score field is informative. Figure 6 illustrates this
+boundary with two queries that share an in-palette pink digit but differ in background. The first places
+the digit on a black background, which lies inside the convex hull of the four trained backgrounds
+(deep red, navy, dark purple, dark brown), all of which are dark and unsaturated. The second places
+the digit on a white background, which falls far outside that hull. The discovered prototypes and the
+PoE samples reproduce the held-out black background as a coherent novel primitive, while the white
+query collapses onto trained dark backgrounds with the pink digit preserved but the brightness of the
+background lost. The discovery procedure therefore inherits the inductive biases of the backbone. It
+can compose new primitives that interpolate between seen ones, but it cannot fabricate primitives that
+extrapolate beyond the training support.
+K
+BROADER IMPACTS
+A potential positive impact is reducing the data and compute needed to generate novel visual
+compositions at test time. A potential negative impact is that the same capability could lower the
+barrier to generating face images with novel attribute combinations, which could be misused for
+misleading imagery. However, the method operates on small-scale class-conditional DDPMs and
+does not approach the fidelity of modern text-to-image systems.
+18
+
+
+=====PAGE=====
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+Under review as a conference paper at ICLR 2027
+ColorMNIST
+CelebA
+OOD: digit 0, color pink, background navy
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+OOD: Black Hair, Male, Smiling
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+ColorMNIST
+CelebA
+OOD: digit 2, color cyan, background dark brown
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+OOD: Big Lips, Blond Hair, No Beard, Oval Face, Smiling, Wavy Hair
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+ColorMNIST
+CelebA
+OOD: digit 7, color pink, background navy
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+OOD: Gray Hair, Male, No Beard, Smiling
+Query
+Protos.
+Ours
+Composable
+(1 class)
+Composable
+(3 classes)
+SDEdit
+Figure 5: Additional qualitative results for ColorMNIST and CelebA.
+L
+LICENSES FOR EXISTING ASSETS
+Table 8: Licenses for existing assets.
+Asset
+License
+Source
+MNIST
+CC BY-SA 3.0
+MNIST website
+CelebA
+Non-commercial research
+CelebA website
+HF diffusers
+Apache 2.0
+GitHub
+19
+
+
+=====PAGE=====
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+Under review as a conference paper at ICLR 2027
+Figure 6: Prototype discovery for novel ColorMNIST background primitives with a fixed pink digit.
+Each panel contains the query (red), three discovered prototypes (green), and four PoE samples. Top:
+interpolation to a held-out black background produces coherent prototypes and samples. Bottom:
+extrapolation to a white background fails: prototypes remain near trained dark backgrounds and PoE
+samples collapse to salt-and-pepper texture.
+20
