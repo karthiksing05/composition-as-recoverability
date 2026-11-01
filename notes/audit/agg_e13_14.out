@@ -1,0 +1,71 @@
+files 41
+
+== fresh_r2 (mean over seeds; n per cell in brackets)
+depth              1     2     3     4     5     6
+w    cond                                         
+64   base       0.99  0.98 -0.10 -0.61 -1.13 -1.84
+     fresh12    1.00  1.00  0.24 -0.18 -0.55 -1.33
+     self       0.99  0.94  0.30 -0.02 -0.10 -0.14
+     selffresh  1.00  1.00  0.64  0.30  0.11 -0.03
+256  base       0.98  0.97  0.25 -0.09 -0.32 -0.55
+     fresh12    1.00  1.00  0.47  0.18  0.02 -0.12
+     self       1.00  1.00  0.50 -0.15 -0.11 -0.44
+     selffresh  0.99  0.99  0.68  0.22  0.06 -0.49
+1024 base       0.79  0.72  0.20 -0.10 -0.25 -0.33
+     fresh12    1.00  1.00  0.39  0.12  0.02 -0.02
+
+== pop_r2 (mean over seeds; n per cell in brackets)
+depth              1     2     3     4     5     6
+w    cond                                         
+64   base       1.00  1.00  0.97  0.49  0.24  0.12
+     fresh12    1.00  1.00  0.99  0.49  0.24  0.12
+     self       1.00  0.99  0.77  0.37  0.18  0.08
+     selffresh  1.00  1.00  0.97  0.48  0.23  0.11
+256  base       1.00  0.99  0.99  0.99  0.90  0.44
+     fresh12    1.00  1.00  1.00  1.00  0.87  0.41
+     self       1.00  1.00  1.00  0.90  0.35  0.08
+     selffresh  1.00  1.00  1.00  0.93  0.47  0.14
+1024 base       0.98  0.96  0.94  0.91  0.78  0.43
+     fresh12    1.00  1.00  1.00  1.00  0.94  0.48
+
+== fam_r2 (mean over seeds; n per cell in brackets)
+depth             1    2     3     4     5     6
+w    cond                                       
+64   base       1.0  1.0  0.39 -0.23 -0.83 -1.68
+     fresh12    1.0  1.0  0.16 -0.27 -0.66 -1.55
+     self       1.0  1.0  0.62  0.25  0.08 -0.01
+     selffresh  1.0  1.0  0.60  0.23  0.04 -0.12
+256  base       1.0  1.0  0.46  0.07 -0.19 -0.47
+     fresh12    1.0  1.0  0.42  0.12 -0.06 -0.22
+     self       1.0  1.0  0.81  0.32  0.08 -0.43
+     selffresh  1.0  1.0  0.64  0.16 -0.02 -0.63
+1024 base       1.0  1.0  0.31 -0.04 -0.20 -0.29
+     fresh12    1.0  1.0  0.34  0.06 -0.05 -0.10
+
+n seeds: cond  base  fresh12  self  selffresh
+w                                   
+64     5.0      5.0   5.0        5.0
+256    5.0      5.0   4.0        5.0
+1024   1.0      1.0   NaN        NaN
+                     pair   top1  beats_r1  beats_r2
+model       emb                                     
+pythia-1.4b last    0.000  0.000     0.051     0.000
+            mean    0.000  0.000     0.001     0.030
+            roleq   0.004  0.004     0.265     0.009
+            roleqf  0.007  0.007     0.146     0.012
+
+by relation (pair):
+rel                 behind  hit  inside  left   on
+model       emb                                   
+pythia-1.4b last       0.0  0.0    0.00   0.0  0.0
+            mean       0.0  0.0    0.00   0.0  0.0
+            roleq      0.0  0.0    0.02   0.0  0.0
+            roleqf     0.0  0.0    0.04   0.0  0.0
+
+chosen layers: model        emb   
+pythia-1.4b  last      L12
+             mean      L12
+             roleq     L24
+             roleqf    L18
+
+seeds: {'pythia-1.4b': 1}

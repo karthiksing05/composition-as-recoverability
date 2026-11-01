@@ -1,0 +1,77 @@
+files 30
+
+== role1
+k                     1     4     16    32
+base      method                          
+e2        finetune  0.67  0.60  0.39  0.26
+          none      0.11  0.64  0.73  0.73
+          replay    0.67  0.87  0.92  0.92
+          write     0.13  0.64  0.72  0.72
+single128 finetune  0.80  0.72  0.44  0.26
+          none      0.46  0.79  0.83  0.83
+          replay    0.80  0.93  0.95  0.95
+          write     0.51  0.79  0.83  0.83
+
+== role2
+k                     1     4     16    32
+base      method                          
+e2        finetune -0.01  0.40  0.22  0.10
+          none      0.13  0.64  0.71  0.72
+          replay    0.24  0.72  0.80  0.82
+          write     0.12  0.64  0.71  0.71
+single128 finetune  0.33  0.62  0.32  0.14
+          none      0.54  0.78  0.81  0.81
+          replay    0.62  0.83  0.87  0.87
+          write     0.55  0.78  0.81  0.81
+
+== newnew
+k                   1     4     16    32
+base      method                        
+e2        finetune NaN  0.34  0.28  0.14
+          none     NaN  0.20  0.54  0.54
+          replay   NaN  0.62  0.75  0.76
+          write    NaN  0.16  0.52  0.55
+single128 finetune NaN  0.55  0.37  0.17
+          none     NaN  0.48  0.70  0.70
+          replay   NaN  0.78  0.84  0.84
+          write    NaN  0.52  0.71  0.72
+
+== heldout
+k                     1     4     16    32
+base      method                          
+e2        finetune  0.81  0.64  0.35  0.18
+          none      0.99  0.99  0.99  0.99
+          replay    0.99  0.99  0.99  1.00
+          write     0.99  0.99  0.99  0.99
+single128 finetune  0.87  0.76  0.41  0.18
+          none      0.99  0.99  0.99  0.99
+          replay    0.99  0.99  0.99  1.00
+          write     0.99  0.99  0.99  0.99
+
+by arch at k=32:
+                         role1  role2  newnew  heldout
+base      arch method                                 
+e2        cnn  finetune   0.45   0.28    0.32     0.39
+               none       0.76   0.74    0.58     0.99
+               replay     0.94   0.83    0.79     1.00
+               write      0.75   0.73    0.61     0.99
+          mlp  finetune   0.25   0.10    0.12     0.16
+               none       0.73   0.72    0.56     0.99
+               replay     0.91   0.81    0.75     0.99
+               write      0.73   0.72    0.56     0.99
+          slot finetune   0.10  -0.08   -0.02     0.00
+               none       0.69   0.70    0.48     1.00
+               replay     0.92   0.82    0.75     1.00
+               write      0.69   0.70    0.48     1.00
+single128 cnn  finetune   0.39   0.27    0.30     0.34
+               none       0.81   0.80    0.67     0.99
+               replay     0.96   0.86    0.83     1.00
+               write      0.80   0.79    0.70     0.99
+          mlp  finetune   0.18   0.07    0.09     0.11
+               none       0.81   0.78    0.68     0.97
+               replay     0.94   0.84    0.80     0.99
+               write      0.81   0.78    0.70     0.97
+          slot finetune   0.23   0.07    0.13     0.09
+               none       0.86   0.85    0.75     1.00
+               replay     0.96   0.91    0.88     1.00
+               write      0.87   0.85    0.76     1.00

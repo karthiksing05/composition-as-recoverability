@@ -1,0 +1,86 @@
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+/coc/flash10/ksingara3/compositionality-theory/experiments/agg_e11.py:25: PerformanceWarning: indexing past lexsort depth may impact performance.
+  gg = g.set_index(["layer", "code"]).loc[lc]
+                           layer     code  seeds  kappa1  kappa2  sem_rec  sem_role_conv  xfer_role_can  xfer_role_conv  xfer_rec_conv
+model                state                                                                                                            
+OLMo-2-1124-13B      last    L20   phrase      3   0.185   0.472    0.401          0.881          0.989           0.046         -0.776
+                     mean    L10   phrase      3   0.788   0.064    0.489          0.640          1.000           0.003         -0.791
+                     nouns   L20   phrase      3   0.929   0.471    0.487          0.700          1.000           0.000         -0.995
+                     query   L30   phrase      3   0.049  -0.010    0.616          0.867          0.993           0.730          0.396
+gpt2-large           last    L27  carrier      3  -0.222   0.675    0.357          0.948          0.936           0.143         -0.616
+                     mean    L27   phrase      3   0.625   0.346    0.514          0.634          0.999           0.057         -0.865
+                     nouns   L27   phrase      3   0.888   0.742    0.486          0.729          1.000           0.000         -0.951
+                     query   L18  carrier      3   0.268   0.125    0.395          0.585          0.987           0.066         -0.474
+phi-4                last    L10  carrier      3   0.025   0.596    0.406          0.880          0.958           0.076         -0.606
+                     mean    L10   phrase      3   0.726   0.054    0.485          0.626          1.000           0.016         -0.885
+                     nouns   L10   phrase      3   0.915   0.409    0.468          0.587          1.000           0.000         -0.959
+                     query   L30   phrase      3  -0.240  -0.275    0.666          0.986          0.993           0.977          0.604
+pythia-1.4b          last    L18  carrier      3  -0.213   0.599    0.355          0.931          0.919           0.160         -0.509
+                     mean    L12   phrase      3   0.631   0.314    0.521          0.651          0.999           0.056         -0.631
+                     nouns   L12   phrase      3   0.856   0.659    0.480          0.725          1.000           0.000         -0.917
+                     query   L12  carrier      3   0.218   0.272    0.394          0.833          0.986           0.079         -0.677
+pythia-1.4b@step0    last    L24   phrase      3  -0.517  -0.204    0.210          0.778          0.591           0.438         -0.207
+                     mean     L6   phrase      3   0.339  -0.444    0.351          0.193          0.991           0.192         -1.085
+                     nouns   L24   phrase      3   0.672  -0.161    0.296          0.284          1.000           0.001         -0.873
+                     query    L6  carrier      3  -0.470  -0.485    0.209          0.499          0.523           0.495         -0.083
+pythia-1.4b@step8000 last    L18  carrier      1  -0.076   0.650    0.407          0.947          0.966           0.139         -0.739
+                     mean    L12   phrase      1   0.663   0.471    0.545          0.740          1.000           0.072         -0.841
+                     nouns   L12   phrase      1   0.877   0.725    0.500          0.774          1.000           0.000         -0.972
+                     query   L18  carrier      1  -0.065  -0.047    0.345          0.566          0.835           0.214          0.009
+pythia-12b           last    L18  carrier      2   0.154   0.640    0.448          0.923          0.983           0.064         -0.630
+                     mean    L18   phrase      2   0.764   0.355    0.555          0.707          1.000           0.019         -0.816
+                     nouns   L18   phrase      2   0.871   0.637    0.519          0.751          1.000           0.000         -1.006
+                     query   L18  carrier      2   0.227   0.358    0.463          0.837          0.986           0.092         -0.338

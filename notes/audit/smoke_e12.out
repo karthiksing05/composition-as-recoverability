@@ -1,0 +1,8 @@
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/mlp_base_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.299), 'heldout': np.float64(0.38)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/mlp_single8_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.263), 'heldout': np.float64(0.382)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/mlp_single64_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.324), 'heldout': np.float64(0.481)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/mlp_single256_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.353), 'heldout': np.float64(0.516)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/slot_base_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.352), 'heldout': np.float64(0.613)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/slot_single8_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.431), 'heldout': np.float64(0.819)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/slot_single64_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.495), 'heldout': np.float64(0.791)}
+/coc/flash10/ksingara3/compositionality-theory/notes/audit/smoke_e12/slot_single256_m64_V8_sh0.5_s0.json {'fresh': np.float64(0.491), 'heldout': np.float64(0.765)}

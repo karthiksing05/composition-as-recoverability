@@ -1,0 +1,82 @@
+                         pair   top1  beats_r1  beats_r2
+model           emb                                     
+OLMo-2-1124-13B last    0.000  0.000     0.103     0.000
+                mean    0.000  0.000     0.014     0.000
+                roleq   0.827  0.807     0.894     0.875
+                roleqf  0.770  0.385     0.903     0.818
+OLMo-2-1124-7B  last    0.000  0.000     0.115     0.000
+                mean    0.000  0.000     0.018     0.001
+                roleq   0.384  0.360     0.504     0.459
+                roleqf  0.231  0.097     0.311     0.367
+Qwen3-8B        last    0.005  0.000     0.310     0.011
+                mean    0.001  0.000     0.101     0.045
+                roleq   0.917  0.846     0.921     0.979
+                roleqf  0.847  0.433     0.848     0.942
+gpt2-large      last    0.000  0.000     0.049     0.000
+                mean    0.000  0.000     0.001     0.042
+                roleq   0.001  0.001     0.160     0.002
+                roleqf  0.002  0.002     0.076     0.004
+phi-4           last    0.000  0.000     0.133     0.000
+                mean    0.000  0.000     0.001     0.012
+                roleq   0.999  0.947     0.999     1.000
+                roleqf  0.989  0.034     0.991     0.996
+pythia-1.4b     last    0.000  0.000     0.053     0.000
+                mean    0.000  0.000     0.001     0.028
+                roleq   0.002  0.002     0.148     0.005
+                roleqf  0.002  0.002     0.054     0.004
+
+by relation (pair):
+rel                     behind   hit  inside  left    on
+model           emb                                     
+OLMo-2-1124-13B last      0.00  0.00    0.00  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     0.49  0.99    0.97  0.84  0.85
+                roleqf    0.44  1.00    0.91  0.73  0.76
+OLMo-2-1124-7B  last      0.00  0.00    0.00  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     0.00  0.94    0.88  0.01  0.09
+                roleqf    0.00  0.98    0.02  0.05  0.11
+Qwen3-8B        last      0.00  0.00    0.02  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     0.85  0.80    0.98  1.00  0.96
+                roleqf    0.54  0.81    1.00  1.00  0.88
+gpt2-large      last      0.00  0.00    0.00  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     0.00  0.00    0.01  0.00  0.00
+                roleqf    0.00  0.00    0.01  0.00  0.00
+phi-4           last      0.00  0.00    0.00  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     1.00  1.00    1.00  1.00  1.00
+                roleqf    0.95  1.00    1.00  1.00  1.00
+pythia-1.4b     last      0.00  0.00    0.00  0.00  0.00
+                mean      0.00  0.00    0.00  0.00  0.00
+                roleq     0.00  0.00    0.01  0.00  0.00
+                roleqf    0.00  0.00    0.01  0.00  0.00
+
+chosen layers: model            emb   
+OLMo-2-1124-13B  last      L40,L10,L10
+                 mean      L10,L10,L10
+                 roleq     L40,L30,L40
+                 roleqf    L40,L30,L30
+OLMo-2-1124-7B   last      L32,L16,L16
+                 mean      L16,L16,L16
+                 roleq     L24,L24,L24
+                 roleqf    L24,L24,L24
+Qwen3-8B         last      L36,L36,L36
+                 mean      L36,L18,L18
+                 roleq     L36,L36,L36
+                 roleqf    L36,L36,L36
+gpt2-large       last      L18,L18,L18
+                 mean      L18,L18,L18
+                 roleq     L27,L18,L18
+                 roleqf    L27,L18,L18
+phi-4            last      L40,L40,L10
+                 mean      L10,L10,L10
+                 roleq     L30,L30,L30
+                 roleqf    L30,L30,L30
+pythia-1.4b      last      L12,L12,L12
+                 mean      L12,L12,L12
+                 roleq     L24,L18,L12
+                 roleqf    L18,L12,L12
+
+seeds: {'OLMo-2-1124-13B': 3, 'OLMo-2-1124-7B': 3, 'Qwen3-8B': 3, 'gpt2-large': 3, 'phi-4': 3, 'pythia-1.4b': 3}

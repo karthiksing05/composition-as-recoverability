@@ -1,0 +1,9 @@
+e11_tokens.py --models EleutherAI/pythia-1.4b@step1000 --seeds 0 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step1000 --seeds 1 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step1000 --seeds 2 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step2000 --seeds 0 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step2000 --seeds 1 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step2000 --seeds 2 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step8000 --seeds 0 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step8000 --seeds 1 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-1.4b@step8000 --seeds 2 --outdir results/e11

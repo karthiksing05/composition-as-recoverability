@@ -1,0 +1,7 @@
+e11_tokens.py --models allenai/OLMo-2-1124-7B --seeds 0 --outdir results/e11
+e11_tokens.py --models allenai/OLMo-2-1124-7B --seeds 1 --outdir results/e11
+e11_tokens.py --models allenai/OLMo-2-1124-7B --seeds 2 --outdir results/e11
+e11_tokens.py --models EleutherAI/pythia-12b --seeds 0 --outdir results/e11
+e11_tokens.py --models Qwen/Qwen3-8B --seeds 0 --outdir results/e11
+e11_tokens.py --models Qwen/Qwen3-8B --seeds 1 --outdir results/e11
+e11_tokens.py --models Qwen/Qwen3-8B --seeds 2 --outdir results/e11

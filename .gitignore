@@ -23,3 +23,7 @@ recoverability-theory/*.blg
 recoverability-theory/*.log
 notes/fonts_dl/
 recoverability-theory/temporary/
+# per-relation checkpoints of E11 (assembled into the .json files)
+experiments/results/e11/*.part
+# layout-scan page renders
+notes/audit/ws/*.png

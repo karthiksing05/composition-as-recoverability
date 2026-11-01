@@ -1,0 +1,15 @@
+e15_continual.py --archs mlp --seeds 0
+e15_continual.py --archs cnn --seeds 0
+e15_continual.py --archs slot --seeds 0
+e15_continual.py --archs mlp --seeds 1
+e15_continual.py --archs cnn --seeds 1
+e15_continual.py --archs slot --seeds 1
+e15_continual.py --archs mlp --seeds 2
+e15_continual.py --archs cnn --seeds 2
+e15_continual.py --archs slot --seeds 2
+e15_continual.py --archs mlp --seeds 3
+e15_continual.py --archs cnn --seeds 3
+e15_continual.py --archs slot --seeds 3
+e15_continual.py --archs mlp --seeds 4
+e15_continual.py --archs cnn --seeds 4
+e15_continual.py --archs slot --seeds 4
