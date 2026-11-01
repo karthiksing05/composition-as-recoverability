@@ -171,3 +171,31 @@ Lessons:
 - Picking the peak-κ checkpoint buys recovery of the second noun but no semantic roles in any state.
 - Behavior stays at chance (E9).
 - S5 therefore does not repair the behavioral failure. Peak κ measures part recovery, not role meaning.
+
+## E17 encoder behavior (2026-11-01; e17_encoder_behavior.py, results/e17, agg_e17.py, notes/audit/agg_e17.txt)
+
+Image-text matching on E8's fresh classes, BESIDE and ABOVE, 1000 composites, 3 seeds.
+
+| model | roles (correct vs swapped) | identity (vs one wrong object) |
+|---|---|---|
+| CLIP-B/32 | 0.50 | 0.92 |
+| CLIP-H/14 | 0.51 | 0.88 |
+| SigLIP | 0.51 | 0.97 |
+
+Lesson: the image encoders dissociate in the glyph-network direction. Their quadrant states keep each photo's place (κ 0.81-0.94), but their own matching ignores the place. So the limitation "no behavior of the encoders" is now answered for the image-text encoders.
+
+## E16 other prompts and the ground task (2026-11-01; e16_prompts.py, results/e16, agg_e16.py, agg_e16_layers.py)
+
+Query state read at each model's E11 layer and code. Values are answer accuracy / transfer to converse sentences.
+
+| model | reword | zeroshot | ground |
+|---|---|---|---|
+| phi-4 | 0.98/0.94 | 0.92/0.82 | 0.98/0.94 |
+| Qwen3-8B | 0.94/0.77 | 0.76/0.34 | 1.00/0.89 |
+| OLMo-2 13B | 0.76/0.47 | 0.90/0.70 | 0.91/0.83 |
+| OLMo-2 7B | 0.72/0.17 | 0.72/0.18 | 0.80/0.21 |
+| GPT-2 / Pythia | ~0.5/≤0.11 | ~0.5-0.64/≤0.18 | ~0.5/≤0.10 |
+
+Lessons:
+- Transfer tracks answer accuracy across 4 prompts and 7 models. The role-question result is a property of the answering, not of one prompt.
+- GOTCHA: selecting the layer on canonical-only validation picks early, order-bound layers (phi-4 L10: 0.12, against L30: 0.94). Fix the layer from E11, or select with both phrasings.

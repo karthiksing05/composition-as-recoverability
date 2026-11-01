@@ -1,0 +1,22 @@
+[
+ {
+  "model": "siglip-so400m",
+  "seed": 1,
+  "rel": "beside",
+  "n_classes": 46,
+  "roles": 0.525,
+  "roles_first": 0.54,
+  "roles_second": 0.51,
+  "identity": 0.97
+ },
+ {
+  "model": "siglip-so400m",
+  "seed": 1,
+  "rel": "above",
+  "n_classes": 46,
+  "roles": 0.496,
+  "roles_first": 0.51,
+  "roles_second": 0.482,
+  "identity": 0.962
+ }
+]

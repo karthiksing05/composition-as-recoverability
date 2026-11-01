@@ -1,0 +1,1 @@
+e16_prompts.py --models gpt2 --seeds 0 --variants zeroshot,ground --outdir ../notes/audit/smoke_e16

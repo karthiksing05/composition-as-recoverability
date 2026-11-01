@@ -1,0 +1,170 @@
+                                     xfer_rec_val  xfer_role_can  xfer_role_conv
+model           variant  li code                                                
+OLMo-2-1124-13B ground   10 carrier         0.549          0.974           0.162
+                            phrase          0.490          0.958           0.172
+                         20 carrier         0.554          0.967           0.312
+                            phrase          0.515          0.978           0.300
+                         30 carrier         0.536          0.934           0.756
+                            phrase          0.617          0.951           0.834
+                         40 carrier         0.451          0.880           0.709
+                            phrase          0.403          0.833           0.738
+                reword   10 carrier         0.625          0.980           0.091
+                            phrase          0.538          0.967           0.145
+                         20 carrier         0.603          0.974           0.208
+                            phrase          0.558          0.978           0.200
+                         30 carrier         0.548          0.954           0.436
+                            phrase          0.613          0.969           0.466
+                         40 carrier         0.422          0.852           0.464
+                            phrase          0.387          0.842           0.473
+                zeroshot 10 carrier         0.593          0.965           0.118
+                            phrase          0.515          0.947           0.160
+                         20 carrier         0.630          0.982           0.306
+                            phrase          0.595          0.988           0.293
+                         30 carrier         0.601          0.972           0.644
+                            phrase          0.672          0.990           0.702
+                         40 carrier         0.505          0.931           0.612
+                            phrase          0.443          0.897           0.629
+OLMo-2-1124-7B  ground   8  carrier         0.555          0.965           0.135
+                            phrase          0.480          0.945           0.147
+                         16 carrier         0.536          0.976           0.214
+                            phrase          0.498          0.976           0.226
+                         24 carrier         0.586          0.960           0.499
+                            phrase          0.615          0.965           0.519
+                         32 carrier         0.463          0.875           0.493
+                            phrase          0.421          0.867           0.488
+                reword   8  carrier         0.634          0.983           0.076
+                            phrase          0.560          0.975           0.112
+                         16 carrier         0.585          0.979           0.166
+                            phrase          0.511          0.976           0.200
+                         24 carrier         0.566          0.951           0.356
+                            phrase          0.586          0.954           0.389
+                         32 carrier         0.388          0.783           0.436
+                            phrase          0.362          0.788           0.435
+                zeroshot 8  carrier         0.651          0.992           0.077
+                            phrase          0.565          0.979           0.122
+                         16 carrier         0.621          0.990           0.180
+                            phrase          0.543          0.982           0.236
+                         24 carrier         0.589          0.972           0.351
+                            phrase          0.580          0.963           0.410
+                         32 carrier         0.400          0.829           0.387
+                            phrase          0.362          0.813           0.400
+Qwen3-8B        ground   9  carrier         0.480          0.910           0.233
+                            phrase          0.414          0.880           0.268
+                         18 carrier         0.487          0.956           0.238
+                            phrase          0.440          0.913           0.269
+                         27 carrier         0.599          0.979           0.885
+                            phrase          0.598          0.981           0.910
+                         36 carrier         0.382          0.887           0.816
+                            phrase          0.299          0.826           0.767
+                reword   9  carrier         0.467          0.917           0.209
+                            phrase          0.425          0.892           0.225
+                         18 carrier         0.471          0.958           0.255
+                            phrase          0.410          0.924           0.285
+                         27 carrier         0.569          0.974           0.767
+                            phrase          0.558          0.973           0.794
+                         36 carrier         0.311          0.815           0.809
+                            phrase          0.245          0.733           0.751
+                zeroshot 9  carrier         0.547          0.971           0.102
+                            phrase          0.498          0.960           0.121
+                         18 carrier         0.534          0.977           0.158
+                            phrase          0.481          0.957           0.184
+                         27 carrier         0.540          0.970           0.336
+                            phrase          0.515          0.963           0.370
+                         36 carrier         0.282          0.702           0.529
+                            phrase          0.200          0.600           0.560
+gpt2-large      ground   9  carrier         0.255          0.569           0.422
+                            phrase          0.240          0.561           0.436
+                         18 carrier         0.546          0.972           0.099
+                            phrase          0.508          0.969           0.094
+                         27 carrier         0.563          0.918           0.148
+                            phrase          0.588          0.944           0.116
+                         36 carrier         0.453          0.848           0.208
+                            phrase          0.459          0.848           0.206
+                reword   9  carrier         0.281          0.678           0.356
+                            phrase          0.266          0.677           0.361
+                         18 carrier         0.634          0.987           0.064
+                            phrase          0.602          0.988           0.058
+                         27 carrier         0.287          0.776           0.305
+                            phrase          0.280          0.767           0.323
+                         36 carrier         0.275          0.729           0.314
+                            phrase          0.281          0.697           0.364
+                zeroshot 9  carrier         0.272          0.686           0.362
+                            phrase          0.259          0.700           0.361
+                         18 carrier         0.588          0.985           0.094
+                            phrase          0.513          0.982           0.110
+                         27 carrier         0.568          0.932           0.215
+                            phrase          0.560          0.934           0.225
+                         36 carrier         0.433          0.822           0.272
+                            phrase          0.417          0.779           0.304
+phi-4           ground   10 carrier         0.652          0.987           0.087
+                            phrase          0.495          0.955           0.134
+                         20 carrier         0.588          0.985           0.560
+                            phrase          0.452          0.969           0.564
+                         30 carrier         0.644          0.989           0.927
+                            phrase          0.670          0.988           0.939
+                         40 carrier         0.568          0.977           0.919
+                            phrase          0.501          0.948           0.903
+                reword   10 carrier         0.657          0.989           0.116
+                            phrase          0.495          0.961           0.170
+                         20 carrier         0.572          0.983           0.446
+                            phrase          0.424          0.965           0.474
+                         30 carrier         0.592          0.976           0.918
+                            phrase          0.637          0.979           0.943
+                         40 carrier         0.501          0.952           0.891
+                            phrase          0.458          0.917           0.873
+                zeroshot 10 carrier         0.726          0.996           0.077
+                            phrase          0.548          0.983           0.095
+                         20 carrier         0.628          0.989           0.278
+                            phrase          0.455          0.977           0.345
+                         30 carrier         0.641          0.979           0.779
+                            phrase          0.642          0.969           0.815
+                         40 carrier         0.561          0.956           0.771
+                            phrase          0.468          0.902           0.758
+pythia-1.4b     ground   6  carrier         0.455          0.904           0.154
+                            phrase          0.421          0.870           0.198
+                         12 carrier         0.596          0.990           0.028
+                            phrase          0.581          0.990           0.029
+                         18 carrier         0.471          0.884           0.184
+                            phrase          0.478          0.891           0.182
+                         24 carrier         0.405          0.825           0.239
+                            phrase          0.331          0.740           0.321
+                reword   6  carrier         0.494          0.936           0.134
+                            phrase          0.453          0.899           0.165
+                         12 carrier         0.551          0.983           0.076
+                            phrase          0.521          0.984           0.072
+                         18 carrier         0.358          0.791           0.276
+                            phrase          0.347          0.798           0.259
+                         24 carrier         0.276          0.658           0.382
+                            phrase          0.224          0.583           0.446
+                zeroshot 6  carrier         0.454          0.940           0.164
+                            phrase          0.427          0.919           0.197
+                         12 carrier         0.598          0.983           0.183
+                            phrase          0.534          0.982           0.196
+                         18 carrier         0.371          0.779           0.312
+                            phrase          0.336          0.757           0.335
+                         24 carrier         0.333          0.752           0.331
+                            phrase          0.242          0.624           0.416
+pythia-12b      ground   9  carrier         0.509          0.948           0.084
+                            phrase          0.505          0.942           0.101
+                         18 carrier         0.665          0.989           0.046
+                            phrase          0.670          0.987           0.064
+                         27 carrier         0.515          0.935           0.135
+                            phrase          0.559          0.935           0.137
+                         36 carrier         0.437          0.847           0.230
+                            phrase          0.421          0.833           0.243
+                reword   9  carrier         0.479          0.961           0.101
+                            phrase          0.457          0.947           0.121
+                         18 carrier         0.576          0.982           0.082
+                            phrase          0.550          0.976           0.107
+                         27 carrier         0.355          0.830           0.259
+                            phrase          0.353          0.810           0.288
+                         36 carrier         0.272          0.680           0.382
+                            phrase          0.223          0.602           0.459
+                zeroshot 9  carrier         0.637          0.996           0.046
+                            phrase          0.608          0.992           0.050
+                         18 carrier         0.757          0.997           0.114
+                            phrase          0.726          0.998           0.121
+                         27 carrier         0.585          0.971           0.231
+                            phrase          0.577          0.953           0.287
+                         36 carrier         0.471          0.902           0.312
+                            phrase          0.387          0.833           0.370

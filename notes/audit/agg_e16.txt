@@ -1,0 +1,23 @@
+                         layer     code  seeds  answer  answer_can  answer_conv  xfer_can  xfer_conv
+model           variant                                                                             
+OLMo-2-1124-13B ground     L30   phrase      3   0.912       0.865        0.960     0.951      0.834
+                reword     L30   phrase      3   0.761       0.826        0.697     0.969      0.466
+                zeroshot   L30   phrase      3   0.901       0.953        0.850     0.990      0.702
+OLMo-2-1124-7B  ground     L16  carrier      3   0.795       0.879        0.712     0.976      0.214
+                reword     L16  carrier      3   0.719       0.816        0.621     0.979      0.166
+                zeroshot   L16  carrier      3   0.719       0.674        0.764     0.990      0.180
+Qwen3-8B        ground     L27  carrier      3   0.997       0.997        0.997     0.979      0.885
+                reword     L27  carrier      3   0.944       0.894        0.993     0.974      0.767
+                zeroshot   L27  carrier      3   0.757       0.606        0.908     0.970      0.336
+gpt2-large      ground     L18  carrier      3   0.521       0.829        0.213     0.972      0.099
+                reword     L18  carrier      3   0.499       0.041        0.957     0.987      0.064
+                zeroshot   L18  carrier      3   0.538       0.644        0.431     0.985      0.094
+phi-4           ground     L30   phrase      3   0.979       0.994        0.963     0.988      0.939
+                reword     L30   phrase      3   0.982       0.978        0.986     0.979      0.943
+                zeroshot   L30   phrase      3   0.919       0.937        0.901     0.969      0.815
+pythia-1.4b     ground     L12  carrier      3   0.513       0.845        0.182     0.990      0.028
+                reword     L12  carrier      3   0.496       0.167        0.824     0.983      0.076
+                zeroshot   L12  carrier      3   0.489       0.160        0.817     0.983      0.183
+pythia-12b      ground     L18  carrier      3   0.549       0.878        0.220     0.989      0.046
+                reword     L18  carrier      3   0.522       0.120        0.923     0.982      0.082
+                zeroshot   L18  carrier      3   0.644       0.629        0.658     0.997      0.114

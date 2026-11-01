@@ -1,0 +1,13 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+fig1_avocado.pdf 461 197
+fig7_test_domain.pdf 335 98
+fig_calibration.pdf 450 186
+fig_case_real.pdf 471 183
+fig_depth_pretrained.pdf 407 179
+fig_design_real.pdf 471 176
+fig_fibers.pdf 377 178
+fig_networks.pdf 439 253
+fig_protocol.pdf 471 212
+fig_real.pdf 499 156
+fig_structure.pdf 512 281
+fig_taxonomy.pdf 366 155

@@ -1,0 +1,3 @@
+e17_encoder_behavior.py --models clip-b32
+e17_encoder_behavior.py --models clip-h14
+e17_encoder_behavior.py --models siglip-so400m

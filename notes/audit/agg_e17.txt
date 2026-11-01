@@ -1,0 +1,15 @@
+                      roles  roles_first  roles_second  identity
+model         rel                                               
+clip-b32      above   0.497        0.501         0.493     0.920
+              beside  0.505        0.491         0.519     0.914
+clip-h14      above   0.510        0.469         0.552     0.896
+              beside  0.509        0.489         0.528     0.864
+siglip-so400m above   0.494        0.506         0.483     0.964
+              beside  0.520        0.520         0.520     0.966
+               roles        identity       
+                mean    sem     mean    sem
+model                                      
+clip-b32       0.501  0.007    0.917  0.005
+clip-h14       0.509  0.006    0.880  0.008
+siglip-so400m  0.507  0.006    0.965  0.002
+seeds {'clip-b32': 3, 'clip-h14': 3, 'siglip-so400m': 3}

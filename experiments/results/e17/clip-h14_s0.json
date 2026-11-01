@@ -1,0 +1,22 @@
+[
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "beside",
+  "n_classes": 47,
+  "roles": 0.508,
+  "roles_first": 0.466,
+  "roles_second": 0.55,
+  "identity": 0.868
+ },
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "above",
+  "n_classes": 47,
+  "roles": 0.51,
+  "roles_first": 0.474,
+  "roles_second": 0.546,
+  "identity": 0.889
+ }
+]
