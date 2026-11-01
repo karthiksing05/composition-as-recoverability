@@ -36,8 +36,8 @@ e9 = pd.read_csv("results/agg_r8_e9.csv", index_col=0)  # the model's own answer
 gr = pd.read_csv("results/agg_r8_e8grid.csv", index_col=[0, 1])  # quadrant-pooled image states
 e8 = kappa_seeds(load("e8"), ["beside", "above", "overlap"])
 
-fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.35), gridspec_kw=dict(wspace=0.5, width_ratios=[1.1, 0.9, 1.3, 1.2]))
-fig.subplots_adjust(bottom=0.24, left=0.07, right=0.99)
+fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.55), gridspec_kw=dict(wspace=0.5, width_ratios=[1.1, 0.9, 1.3, 1.2]))
+fig.subplots_adjust(bottom=0.31, left=0.07, right=0.99)
 
 # a: scale (Pythia suite) and other large language models
 ax = axs[0]; ygrid(ax)
@@ -80,7 +80,7 @@ ax.fill_between(xs, k410.min(0), k410.max(0), color=GREEN, alpha=0.25, lw=0)
 ax.plot(xs, k410.mean(0), color=GREEN, lw=0.9, label="410m, 6 seeds")
 ax.legend(fontsize=5.0, loc="lower right", handlelength=1.6, borderaxespad=0.1, labelspacing=0.2)
 ax.set_xscale("log"); ax.set_xticks([100, 1e3, 1e4, 1e5]); ax.set_xticklabels(["0", "$10^3$", "$10^4$", "$10^5$"]); ax.minorticks_off()
-ax.set_xlabel("training step"); ax.set_ylim(-0.45, 1.05); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels([])
+ax.set_xlabel("training step"); ax.set_ylim(-0.45, 1.05); ax.set_yticks([0, 0.5, 1]); ax.set_ylabel(r"$\kappa$, fresh nouns")
 ax.axhline(0, color=DGREY, lw=0.5); ax.axhline(1, color=INK, lw=0.8, ls=":")
 panel(ax, "b", "Training peaks early")
 
@@ -112,6 +112,7 @@ ax.plot([v for v, _ in bx], [y for _, y in bx], "*", color=INK, ms=4.6, ls="", l
 ax.set_yticks(yy); ax.set_yticklabels([l for _, l in SEL], fontsize=5.8)
 ax.set_xlim(-0.03, 1.03); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(yy[-1] - 0.7, 4.4)
 ax.set_xlabel("role accuracy, fresh nouns")
+ax.set_ylabel("model", rotation=0, ha="right", va="bottom"); ax.yaxis.set_label_coords(-0.03, 0.72)
 ax.legend(fontsize=5.4, loc="upper left", handlelength=0.8, handletextpad=0.3, borderaxespad=0.1, labelspacing=0.2)
 ax.spines["left"].set_visible(False); ax.tick_params(axis="y", length=0)
 panel(ax, "c", "States follow word order")
@@ -126,7 +127,7 @@ for j, (pre, c, lab) in enumerate([("", BLUE, "trained"), ("rand-", LGREY, "rand
     ax.plot(np.arange(len(ENC)) + (j - 0.5) * 0.4, [gr.loc[(pre + m, "grid"), "kappa"] for m, _ in ENC], "D",
             color=DGREY if pre else BLUE, mfc="white", ms=2.8, mew=0.8, ls="", label="quadrant pooling" if not pre else None, zorder=4)
 ax.axhline(0, color=DGREY, lw=0.5)
-ax.set_xticks(range(len(ENC))); ax.set_xticklabels([l for _, l in ENC], rotation=60, ha="right", fontsize=5.8)
+ax.set_xticks(range(len(ENC))); ax.set_xticklabels([l for _, l in ENC], rotation=60, ha="right", fontsize=5.8); ax.set_xlabel("image encoder")
 ax.set_ylabel(r"$\kappa$, fresh photographs"); ax.set_ylim(-0.4, 1.3); ax.set_yticks([0, 0.5, 1]); ax.axhline(1, color=INK, lw=0.8, ls=":")
 ax.legend(fontsize=5.0, loc="upper left", handlelength=0.9, borderaxespad=0.1, ncol=3, columnspacing=0.6, handletextpad=0.3)
 panel(ax, "d", "Pooling blends photographs")

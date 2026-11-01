@@ -31,8 +31,8 @@ def kappa(d, model, layer=None, code=None):
     return k.mean(), k.sem(), layer, code
 
 
-fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.6), gridspec_kw=dict(wspace=0.38, width_ratios=[1, 1, 1.25, 1.25]))
-fig.subplots_adjust(bottom=0.27)
+fig, axs = plt.subplots(1, 4, figsize=(6.5, 2.85), gridspec_kw=dict(wspace=0.5, width_ratios=[1, 1, 1.25, 1.25]))
+fig.subplots_adjust(bottom=0.36)
 
 # a: fresh-leaf recovery by depth for the learned recursive composer
 ax = axs[0]
@@ -62,7 +62,7 @@ for w, c in ((64, GREY), (256, BLUE), (1024, GREEN)):
     t = s.groupby("depth")["crosstalk_pred"].mean()
     ax.plot(t.index, t.clip(lower=-0.5).values, color=c, ls=":", lw=0.8)
 ax.set_ylim(-0.5, 1.05); ax.set_xticks([1, 2, 3, 4, 5])
-ax.set_xlabel("depth $n$"); ax.set_yticklabels([])
+ax.set_xlabel("depth $n$"); ax.set_ylabel("fresh leaves recovered ($R^2$)")
 ax.legend(loc="lower left", fontsize=6.0, handlelength=1.2, bbox_to_anchor=(0, 0.0))
 panel(ax, "b", "HRR unbinding")
 from matplotlib.lines import Line2D
@@ -86,7 +86,7 @@ for i, m in enumerate(models):
     ax.bar(i + 0.2, kr[0], 0.38, yerr=kr[1], color=LGREY, error_kw=dict(lw=0.5), label="random weights" if i == 0 else None)
 ax.axhline(0, color=DGREY, lw=0.5)
 ax.set_xticks(x); ax.set_xticklabels([NAMES[m] for m in models], rotation=60, fontsize=5.6)
-ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns")
+ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns"); ax.set_xlabel("text encoder")
 ax.legend(loc="upper left", fontsize=5.6, handlelength=1, borderaxespad=0.1)
 panel(ax, "c", "Training helps partway")
 
@@ -100,7 +100,7 @@ for i, m in enumerate(models):
     ax.plot(i, kc[0], "o", mfc="white", mec=DGREY, mew=1.0, ms=4, zorder=4, label="“a $x$ and a $y$” (order only)" if i == 0 else None)
 ax.axhline(0, color=DGREY, lw=0.5)
 ax.set_xticks(x); ax.set_xticklabels([NAMES[m] for m in models], rotation=60, fontsize=5.6)
-ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns")
+ax.set_ylim(-0.25, 0.75); ax.set_ylabel(r"$\kappa$, fresh nouns"); ax.set_xlabel("text encoder")
 ax.legend(loc="upper left", fontsize=5.6, handlelength=1, borderaxespad=0.1)
 panel(ax, "d", "Order alone suffices")
 

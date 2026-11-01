@@ -43,7 +43,7 @@ for t, op in zip(ax.get_yticklabels(), ORDER):
     t.set_color(CAT[op] if CAT[op] != GREY else DGREY)
 ax.set_xlim(-0.02, 1.04); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(-0.7, len(ORDER) - 0.3)
 ax.axvline(0.5, color=LGREY, lw=0.6, ls=":", zorder=0)
-ax.set_xlabel("parts recovered")
+ax.set_xlabel("parts recovered"); ax.set_ylabel("operator")
 ax.legend(handles=[Line2D([], [], marker="o", ls="", mfc="white", mec=DGREY, label="familiar parts, lookup"),
                    Line2D([], [], marker="o", ls="", color=DGREY, label="fresh parts, affine readout"),
                    Line2D([], [], marker="x", ls="", color=DGREY, label="fresh parts, MLP readout")],

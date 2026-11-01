@@ -13,8 +13,8 @@ d64 = df[df.V == 64]
 case = np.load("results/case/glyph.npz")
 NET, PRED = GREY, BLUE
 
-fig = plt.figure(figsize=(6.5, 4.0))
-gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.55], height_ratios=[1, 1], wspace=0.42, hspace=0.62)
+fig = plt.figure(figsize=(6.5, 4.2))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.55], height_ratios=[1, 1], wspace=0.42, hspace=0.78)
 
 # a: states predicted from the role maps decode as well as the network's own
 ax = fig.add_subplot(gs[0, 0]); ygrid(ax)
@@ -26,6 +26,7 @@ for g, (kn, kp, rel) in enumerate(groups):
         ax.bar(g + (j - 0.5) * 0.38, s[k].mean(), 0.36, yerr=s[k].sem(), color=c, error_kw=dict(lw=0.5),
                label=(["network's own state", "predicted state"][j] if g == 0 else None))
 ax.set_xticks(range(4)); ax.set_xticklabels(["over", "occlude", "over", "occlude"], fontsize=6.0)
+ax.set_xlabel("relation, grouped by test", labelpad=13)
 for xg, t in ((0.5, "reversal"), (2.5, "new role")):
     ax.text(xg, -0.22, t, ha="center", va="top", fontsize=6.6, transform=ax.get_xaxis_transform())
 ax.set_ylim(0, 1.22); ax.set_yticks([0, 0.5, 1.0]); ax.set_ylabel("output $R^2$ ($V = 64$)")
@@ -65,7 +66,7 @@ for i, (k, lab, c) in enumerate(EDITS):
     ax.plot(o, -i, "o", mfc="white", mec=c, ms=3.4, mew=0.9, zorder=3)
 ax.set_yticks(-np.arange(len(EDITS))); ax.set_yticklabels([e[1] for e in EDITS], fontsize=6.0)
 ax.axvline(1, color=LGREY, lw=0.6, ls=":")
-ax.set_xlim(0, 1.6); ax.set_xticks([0, 0.5, 1, 1.5]); ax.set_xlabel("spill into the other role")
+ax.set_xlim(0, 1.6); ax.set_xticks([0, 0.5, 1, 1.5]); ax.set_xlabel("spill into the other role"); ax.set_ylabel("edit")
 ax.set_ylim(-6.6, 1.0)
 ax.text(1.58, 0.55, "bars: over   rings: occlude", fontsize=5.6, color=DGREY, ha="right", va="center")
 panel(ax, "c", "Edits stay local")
@@ -80,7 +81,7 @@ xs = np.arange(len(conds))
 for j, (key, c, lab) in enumerate((("heldout", GREY, "old pairs"), ("role1", PRED, "role 1"), ("role2", ORANGE, "role 2"))):
     mu = [s[f"newpart_{key}_{t}"].mean() for t, _ in conds]; se = [s[f"newpart_{key}_{t}"].sem() for t, _ in conds]
     ax.bar(xs + (j - 1) * 0.27, mu, 0.26, yerr=se, color=c, label=lab, error_kw=dict(lw=0.5))
-ax.set_xticks(xs); ax.set_xticklabels([l for _, l in conds], fontsize=6.2)
+ax.set_xticks(xs); ax.set_xticklabels([l for _, l in conds], fontsize=6.2); ax.set_xlabel("adding a new part")
 ax.set_ylim(0.4, 1.17); ax.set_yticks([0.4, 0.6, 0.8, 1.0]); ax.set_ylabel("output $R^2$")
 ax.legend(fontsize=5.8, loc="upper center", handlelength=0.9, ncol=3, columnspacing=0.8, borderaxespad=0.1)
 panel(ax, "d", "Fine-tuning on one role hurts the other; adding the code does not")
