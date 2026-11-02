@@ -199,3 +199,50 @@ Query state read at each model's E11 layer and code. Values are answer accuracy 
 Lessons:
 - Transfer tracks answer accuracy across 4 prompts and 7 models. The role-question result is a property of the answering, not of one prompt.
 - GOTCHA: selecting the layer on canonical-only validation picks early, order-bound layers (phi-4 L10: 0.12, against L30: 0.94). Fix the layer from E11, or select with both phrasings.
+- Layer robustness (agg_e16_layers.txt):
+  - Where a model answers at ≥0.90, its two deepest layers transfer at 0.61-0.94 with either code.
+  - GPT-2/Pythia never go above 0.46 at any layer, code or prompt. That is below the 0.5 a role-blind readout gives.
+
+## E18 text-only encoder behavior (2026-11-01; e18_text_behavior.py, results/e18, agg_e18.py, notes/audit/agg_e18.txt)
+
+Behavior = cosine of each encoder's sentence embedding:
+- CLIP: projected EOS state.
+- SD1.5: pooled state.
+- T5/BERT: mean of the last layer.
+
+Uses E7's fresh nouns, 1000 pairs per relation, 3 seeds. The three tests:
+- **roles:** the anchor against its converse paraphrase versus the same paraphrase with the nouns swapped. The two candidates have the same words. 0 = order of mention, 1 = meaning.
+- **order:** the anchor against its reversal in the same phrasing.
+- **identity:** the anchor against its paraphrase with one fresh noun replaced.
+
+| model | roles | order | identity |
+|---|---|---|---|
+| CLIP-B/32 | 0.12 | 0.93 | 1.00 |
+| SD1.5 CLIP-L | 0.10 | 0.95 | 1.00 |
+| CLIP-H/14 | 0.12 | 0.94 | 1.00 |
+| T5-small/base/large | 0.02/0.03/0.15 | 1.00/0.98/0.81 | 0.98/0.99/0.97 |
+| BERT-base/large | 0.07/0.15 | 0.92/0.80 | 0.96/0.89 |
+
+Lesson: the text-only encoders' own behavior follows word order, in agreement with their states (E7 transfer 0.00-0.32). There is no dissociation here: they fail on both sides. INSIDE is the outlier for CLIP, at 0.42.
+
+## E19 nonlinear readouts (2026-11-02; e19_nonlinear.py, results/e19 [v1 with narrower grids in results/e19_v1], agg_e19.py, notes/audit/agg_e19.txt)
+
+Setup:
+- Models: phi-4, Qwen3-8B and OLMo-2 13B, 3 seeds, 5 relations. Same rows, splits, layer and code as E11.
+- Readouts of the figure, fitted on canonical sentences and scored on converse ones:
+  - ridge;
+  - Gaussian kernel ridge on the top 256 PCs (bandwidth 0.25-32×median, penalty 1e-7..1e3);
+  - 512-tanh MLP (weight decay 1e-3..100).
+
+| state | ridge | kernel | MLP | oracle over grid (kernel / MLP) |
+|---|---|---|---|---|
+| mean | 0.01-0.05 | 0.02-0.06 | 0.02-0.05 | ≤0.56 / ≤0.39 |
+| nouns | 0.00 | 0.00 | 0.00 | ≤0.56 / ≤0.38 |
+| query | 0.73-0.98 | 0.60-0.95 | 0.65-0.97 | up to 1.00 |
+
+Canonical role accuracy is ≥0.98 everywhere.
+
+Lessons:
+- No readout class finds the semantic figure in the sentence-alone states. The oracle tops out at the role-blind ~0.5 level, which degenerate settings reach.
+- The "readout too weak" objection to the word-order finding is answered for these three models.
+- GOTCHA: v1's grids put the selected hyperparameters at the edges. v2 widened them and the selected results did not change. Report the oracle bound when edges are hit.

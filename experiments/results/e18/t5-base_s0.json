@@ -1,0 +1,62 @@
+[
+ {
+  "model": "t5-base",
+  "seed": 0,
+  "rel": "on",
+  "roles": 0.003,
+  "roles_can": 0.0,
+  "roles_conv": 0.006,
+  "order": 0.964,
+  "identity": 0.998,
+  "margin_roles": -0.059769243001937866,
+  "margin_order": 0.04589575156569481
+ },
+ {
+  "model": "t5-base",
+  "seed": 0,
+  "rel": "left",
+  "roles": 0.0,
+  "roles_can": 0.0,
+  "roles_conv": 0.0,
+  "order": 0.983,
+  "identity": 0.99,
+  "margin_roles": -0.062263328582048416,
+  "margin_order": 0.03780760243535042
+ },
+ {
+  "model": "t5-base",
+  "seed": 0,
+  "rel": "inside",
+  "roles": 0.042,
+  "roles_can": 0.05,
+  "roles_conv": 0.034,
+  "order": 0.984,
+  "identity": 0.996,
+  "margin_roles": -0.03870083764195442,
+  "margin_order": 0.05043669044971466
+ },
+ {
+  "model": "t5-base",
+  "seed": 0,
+  "rel": "behind",
+  "roles": 0.001,
+  "roles_can": 0.0,
+  "roles_conv": 0.002,
+  "order": 0.965,
+  "identity": 1.0,
+  "margin_roles": -0.05236995220184326,
+  "margin_order": 0.045045044273138046
+ },
+ {
+  "model": "t5-base",
+  "seed": 0,
+  "rel": "hit",
+  "roles": 0.112,
+  "roles_can": 0.046,
+  "roles_conv": 0.178,
+  "order": 0.986,
+  "identity": 0.974,
+  "margin_roles": -0.02711435779929161,
+  "margin_order": 0.03957509994506836
+ }
+]

@@ -1,0 +1,62 @@
+[
+ {
+  "model": "clip-b32",
+  "seed": 1,
+  "rel": "on",
+  "roles": 0.061,
+  "roles_can": 0.086,
+  "roles_conv": 0.036,
+  "order": 0.947,
+  "identity": 1.0,
+  "margin_roles": -0.0293467678129673,
+  "margin_order": 0.03317011892795563
+ },
+ {
+  "model": "clip-b32",
+  "seed": 1,
+  "rel": "left",
+  "roles": 0.001,
+  "roles_can": 0.0,
+  "roles_conv": 0.002,
+  "order": 0.965,
+  "identity": 1.0,
+  "margin_roles": -0.02219041809439659,
+  "margin_order": 0.020501527935266495
+ },
+ {
+  "model": "clip-b32",
+  "seed": 1,
+  "rel": "inside",
+  "roles": 0.414,
+  "roles_can": 0.388,
+  "roles_conv": 0.44,
+  "order": 0.938,
+  "identity": 1.0,
+  "margin_roles": -0.0031173410825431347,
+  "margin_order": 0.0312351007014513
+ },
+ {
+  "model": "clip-b32",
+  "seed": 1,
+  "rel": "behind",
+  "roles": 0.013,
+  "roles_can": 0.008,
+  "roles_conv": 0.018,
+  "order": 0.933,
+  "identity": 1.0,
+  "margin_roles": -0.03140362724661827,
+  "margin_order": 0.028339169919490814
+ },
+ {
+  "model": "clip-b32",
+  "seed": 1,
+  "rel": "hit",
+  "roles": 0.067,
+  "roles_can": 0.066,
+  "roles_conv": 0.068,
+  "order": 0.878,
+  "identity": 1.0,
+  "margin_roles": -0.012881435453891754,
+  "margin_order": 0.01809239387512207
+ }
+]

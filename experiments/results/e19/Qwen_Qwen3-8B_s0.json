@@ -1,0 +1,407 @@
+[
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "on",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.03,
+  "kernel_can": 0.99,
+  "kernel_conv": 0.064,
+  "mlp_can": 0.99,
+  "mlp_conv": 0.036,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6661084446221578
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.6173656049745377
+  },
+  "kernel_oracle_can": 0.996,
+  "kernel_oracle_conv": 0.512,
+  "mlp_oracle_can": 0.99,
+  "mlp_oracle_conv": 0.374
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "on",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 1e-07,
+   "val_r2": 0.7966200708164404
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.77679501313362
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.512,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.362
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "on",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.918,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.646,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.878,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6227335953288959
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.5535068562932255
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.904,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.878
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "left",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.0,
+  "kernel_can": 0.996,
+  "kernel_conv": 0.012,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.012,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.1,
+   "val_r2": 0.6745063813788144
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.6380952268600213
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.53,
+  "mlp_oracle_can": 0.996,
+  "mlp_oracle_conv": 0.364
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "left",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.002,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 1e-07,
+   "val_r2": 0.7958308791427692
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7733350428506184
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.53,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.352
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "left",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.992,
+  "ridge_conv": 0.962,
+  "kernel_can": 0.992,
+  "kernel_conv": 0.648,
+  "mlp_can": 0.99,
+  "mlp_conv": 0.914,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6250285386615626
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.543745305812312
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.954,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.928
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "inside",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.098,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.104,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.118,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6590519664783312
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.6163904978785167
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.522,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.386
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "inside",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.002,
+  "kernel_hp": {
+   "bw": 8,
+   "alpha": 1e-07,
+   "val_r2": 0.7963306455785741
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.7785563529057546
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.522,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.384
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "inside",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.722,
+  "kernel_can": 0.99,
+  "kernel_conv": 0.668,
+  "mlp_can": 0.986,
+  "mlp_conv": 0.722,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6581611655291022
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.5803334299609919
+  },
+  "kernel_oracle_can": 0.992,
+  "kernel_oracle_conv": 0.71,
+  "mlp_oracle_can": 0.988,
+  "mlp_oracle_conv": 0.722
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "behind",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.068,
+  "kernel_can": 0.992,
+  "kernel_conv": 0.058,
+  "mlp_can": 0.992,
+  "mlp_conv": 0.036,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6494833787573322
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.5917557904097406
+  },
+  "kernel_oracle_can": 0.994,
+  "kernel_oracle_conv": 0.512,
+  "mlp_oracle_can": 0.994,
+  "mlp_oracle_conv": 0.354
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "behind",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.0,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.0,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 8,
+   "alpha": 1e-07,
+   "val_r2": 0.8048907669368175
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7903358552138755
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.512,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.32
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "behind",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.984,
+  "ridge_conv": 0.908,
+  "kernel_can": 0.98,
+  "kernel_conv": 0.596,
+  "mlp_can": 0.986,
+  "mlp_conv": 0.856,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.64900019756621
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.585873244911304
+  },
+  "kernel_oracle_can": 0.994,
+  "kernel_oracle_conv": 0.892,
+  "mlp_oracle_can": 0.986,
+  "mlp_oracle_conv": 0.856
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "hit",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.988,
+  "ridge_conv": 0.042,
+  "kernel_can": 0.984,
+  "kernel_conv": 0.044,
+  "mlp_can": 0.986,
+  "mlp_conv": 0.03,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6086732640270945
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.5609423667265003
+  },
+  "kernel_oracle_can": 0.992,
+  "kernel_oracle_conv": 0.476,
+  "mlp_oracle_can": 0.99,
+  "mlp_oracle_conv": 0.32
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "hit",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.0,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.03162277660168379,
+   "val_r2": 0.7927388293548687
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7668613802746104
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.476,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.326
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 0,
+  "rel": "hit",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.992,
+  "ridge_conv": 0.932,
+  "kernel_can": 0.988,
+  "kernel_conv": 0.596,
+  "mlp_can": 0.992,
+  "mlp_conv": 0.902,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 1e-07,
+   "val_r2": 0.6365956057697031
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.5647471715759127
+  },
+  "kernel_oracle_can": 0.996,
+  "kernel_oracle_conv": 0.944,
+  "mlp_oracle_can": 0.994,
+  "mlp_oracle_conv": 0.904
+ }
+]

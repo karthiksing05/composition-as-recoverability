@@ -1,0 +1,407 @@
+[
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.02,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.034,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.028,
+  "kernel_hp": {
+   "bw": 16,
+   "alpha": 0.1,
+   "val_r2": 0.6784277282328555
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.6391354491776612
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.494,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.284
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 32,
+   "alpha": 3.1622776601683795e-05,
+   "val_r2": 0.9432148077679627
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.9401456062805684
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.494,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.268
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.99,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.974,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.992,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.03162277660168379,
+   "val_r2": 0.6535162045546539
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.6254425105511687
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.996,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.996
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 16,
+   "alpha": 0.1,
+   "val_r2": 0.7238374723430772
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.699102904405214
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.548,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.316
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 32,
+   "alpha": 1e-07,
+   "val_r2": 0.9423864167393434
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.9408493382284543
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.548,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.326
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.992,
+  "ridge_conv": 0.994,
+  "kernel_can": 0.986,
+  "kernel_conv": 0.986,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.992,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 1e-07,
+   "val_r2": 0.6602151436225767
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.6115558137318088
+  },
+  "kernel_oracle_can": 0.996,
+  "kernel_oracle_conv": 0.996,
+  "mlp_oracle_can": 0.994,
+  "mlp_oracle_conv": 0.994
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.09,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.08,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.084,
+  "kernel_hp": {
+   "bw": 32,
+   "alpha": 0.03162277660168379,
+   "val_r2": 0.7338248381281702
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7041796224225614
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.5,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.302
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 32,
+   "alpha": 1e-07,
+   "val_r2": 0.95122961756357
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.9491791108881165
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.5,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.252
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.988,
+  "ridge_conv": 0.96,
+  "kernel_can": 0.98,
+  "kernel_conv": 0.938,
+  "mlp_can": 0.984,
+  "mlp_conv": 0.942,
+  "kernel_hp": {
+   "bw": 16,
+   "alpha": 0.1,
+   "val_r2": 0.6185949829885675
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.561432899075289
+  },
+  "kernel_oracle_can": 0.99,
+  "kernel_oracle_conv": 0.948,
+  "mlp_oracle_can": 0.984,
+  "mlp_oracle_conv": 0.942
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.066,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.026,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.048,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.7340836858862462
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7087371456030791
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.538,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.256
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.01,
+   "val_r2": 0.9501934811539555
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.9471151276394182
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.536,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.27
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.924,
+  "kernel_can": 0.986,
+  "kernel_conv": 0.888,
+  "mlp_can": 0.988,
+  "mlp_conv": 0.914,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 1e-07,
+   "val_r2": 0.6277318618488068
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.5989756717203476
+  },
+  "kernel_oracle_can": 0.99,
+  "kernel_oracle_conv": 0.922,
+  "mlp_oracle_can": 0.988,
+  "mlp_oracle_conv": 0.918
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.1,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.076,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.096,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.7505292918197715
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.7269837894658904
+  },
+  "kernel_oracle_can": 0.998,
+  "kernel_oracle_conv": 0.516,
+  "mlp_oracle_can": 0.998,
+  "mlp_oracle_conv": 0.288
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 16,
+   "alpha": 0.001,
+   "val_r2": 0.963927874567451
+  },
+  "mlp_hp": {
+   "wd": 10,
+   "val_r2": 0.9610042885111967
+  },
+  "kernel_oracle_can": 1.0,
+  "kernel_oracle_conv": 0.514,
+  "mlp_oracle_can": 1.0,
+  "mlp_oracle_conv": 0.272
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.99,
+  "ridge_conv": 0.992,
+  "kernel_can": 0.988,
+  "kernel_conv": 0.928,
+  "mlp_can": 0.988,
+  "mlp_conv": 0.984,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.0031622776601683794,
+   "val_r2": 0.6065078346091224
+  },
+  "mlp_hp": {
+   "wd": 1,
+   "val_r2": 0.5625284627489762
+  },
+  "kernel_oracle_can": 0.99,
+  "kernel_oracle_conv": 0.994,
+  "mlp_oracle_can": 0.988,
+  "mlp_oracle_conv": 0.984
+ }
+]

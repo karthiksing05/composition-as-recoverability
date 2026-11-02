@@ -1,0 +1,62 @@
+[
+ {
+  "model": "t5-large",
+  "seed": 1,
+  "rel": "on",
+  "roles": 0.039,
+  "roles_can": 0.026,
+  "roles_conv": 0.052,
+  "order": 0.817,
+  "identity": 0.984,
+  "margin_roles": -0.060904309153556824,
+  "margin_order": 0.036274947226047516
+ },
+ {
+  "model": "t5-large",
+  "seed": 1,
+  "rel": "left",
+  "roles": 0.035,
+  "roles_can": 0.038,
+  "roles_conv": 0.032,
+  "order": 0.854,
+  "identity": 0.979,
+  "margin_roles": -0.05326254293322563,
+  "margin_order": 0.02421238273382187
+ },
+ {
+  "model": "t5-large",
+  "seed": 1,
+  "rel": "inside",
+  "roles": 0.313,
+  "roles_can": 0.304,
+  "roles_conv": 0.322,
+  "order": 0.81,
+  "identity": 0.979,
+  "margin_roles": -0.013722585514187813,
+  "margin_order": 0.03843243047595024
+ },
+ {
+  "model": "t5-large",
+  "seed": 1,
+  "rel": "behind",
+  "roles": 0.072,
+  "roles_can": 0.062,
+  "roles_conv": 0.082,
+  "order": 0.821,
+  "identity": 0.972,
+  "margin_roles": -0.05206916853785515,
+  "margin_order": 0.03057812713086605
+ },
+ {
+  "model": "t5-large",
+  "seed": 1,
+  "rel": "hit",
+  "roles": 0.257,
+  "roles_can": 0.234,
+  "roles_conv": 0.28,
+  "order": 0.782,
+  "identity": 0.939,
+  "margin_roles": -0.022576140239834785,
+  "margin_order": 0.03082081861793995
+ }
+]

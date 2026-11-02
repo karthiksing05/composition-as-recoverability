@@ -1,0 +1,62 @@
+[
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "on",
+  "roles": 0.027,
+  "roles_can": 0.044,
+  "roles_conv": 0.01,
+  "order": 0.967,
+  "identity": 1.0,
+  "margin_roles": -0.05516105517745018,
+  "margin_order": 0.06861008703708649
+ },
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "left",
+  "roles": 0.001,
+  "roles_can": 0.002,
+  "roles_conv": 0.0,
+  "order": 0.955,
+  "identity": 1.0,
+  "margin_roles": -0.05023127794265747,
+  "margin_order": 0.04461440443992615
+ },
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "inside",
+  "roles": 0.43,
+  "roles_can": 0.422,
+  "roles_conv": 0.438,
+  "order": 0.971,
+  "identity": 1.0,
+  "margin_roles": -0.0039426228031516075,
+  "margin_order": 0.05443432182073593
+ },
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "behind",
+  "roles": 0.044,
+  "roles_can": 0.054,
+  "roles_conv": 0.034,
+  "order": 0.909,
+  "identity": 1.0,
+  "margin_roles": -0.04555884376168251,
+  "margin_order": 0.05168940871953964
+ },
+ {
+  "model": "clip-h14",
+  "seed": 0,
+  "rel": "hit",
+  "roles": 0.127,
+  "roles_can": 0.07,
+  "roles_conv": 0.184,
+  "order": 0.914,
+  "identity": 1.0,
+  "margin_roles": -0.020097168162465096,
+  "margin_order": 0.03917814791202545
+ }
+]

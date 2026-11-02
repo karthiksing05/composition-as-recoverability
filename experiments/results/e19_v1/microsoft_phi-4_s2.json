@@ -1,0 +1,347 @@
+[
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.02,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.04,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.03,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.6769281722309535
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.6332459071475262
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.0031622776601683794,
+   "val_r2": 0.9429929351508867
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.9382369905767929
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "on",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.99,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.974,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.986,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.03162277660168379,
+   "val_r2": 0.6535162045546539
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.617315671150805
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.7217031470855515
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.6976078986855297
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.00031622776601683794,
+   "val_r2": 0.9421986614497034
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.9358667790101552
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "left",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.992,
+  "ridge_conv": 0.994,
+  "kernel_can": 0.986,
+  "kernel_conv": 0.986,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.992,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.0001,
+   "val_r2": 0.6602129597907886
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.6105860961683711
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.09,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.082,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.068,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.73367297482345
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.6842545592281781
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.0001,
+   "val_r2": 0.9510093345547729
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.946114770353129
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "inside",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.988,
+  "ridge_conv": 0.96,
+  "kernel_can": 0.98,
+  "kernel_conv": 0.938,
+  "mlp_can": 0.984,
+  "mlp_conv": 0.932,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.6172375065817592
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5463089461099812
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.066,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.026,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.052,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.7340836858862462
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.694442129570735
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.01,
+   "val_r2": 0.9501934811539555
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.9443977063561411
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "behind",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.924,
+  "kernel_can": 0.986,
+  "kernel_conv": 0.888,
+  "mlp_can": 0.986,
+  "mlp_conv": 0.904,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.0001,
+   "val_r2": 0.6277209186599577
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5792011745677699
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "mean",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.1,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.076,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.084,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.7505292918197715
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.7119999072183639
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "nouns",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 1.0,
+  "ridge_conv": 0.0,
+  "kernel_can": 1.0,
+  "kernel_conv": 0.0,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.01,
+   "val_r2": 0.963753425924617
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.9593528552430186
+  }
+ },
+ {
+  "model": "microsoft/phi-4",
+  "seed": 2,
+  "rel": "hit",
+  "state": "query",
+  "layer": "L30",
+  "code": "phrase",
+  "ridge_can": 0.99,
+  "ridge_conv": 0.992,
+  "kernel_can": 0.988,
+  "kernel_conv": 0.928,
+  "mlp_can": 0.986,
+  "mlp_conv": 0.982,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.0031622776601683794,
+   "val_r2": 0.6065078346091224
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5576167400578864
+  }
+ }
+]

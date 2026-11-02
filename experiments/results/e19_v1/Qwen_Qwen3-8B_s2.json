@@ -1,0 +1,347 @@
+[
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "on",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.988,
+  "ridge_conv": 0.056,
+  "kernel_can": 0.988,
+  "kernel_conv": 0.072,
+  "mlp_can": 0.99,
+  "mlp_conv": 0.04,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.1,
+   "val_r2": 0.6332672687634195
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5192781950844393
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "on",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.004,
+  "kernel_can": 0.996,
+  "kernel_conv": 0.002,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.002,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.1,
+   "val_r2": 0.7720917502186172
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.7321410177876138
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "on",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.97,
+  "ridge_conv": 0.838,
+  "kernel_can": 0.968,
+  "kernel_conv": 0.628,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.844,
+  "kernel_hp": {
+   "bw": 0.5,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.5141996983184037
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.25426319562664856
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "left",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.994,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.984,
+  "kernel_conv": 0.016,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.012,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.0001,
+   "val_r2": 0.6734145515050076
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.59365913278614
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "left",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.1,
+   "val_r2": 0.7757050603474658
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.7447418239664141
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "left",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.976,
+  "ridge_conv": 0.91,
+  "kernel_can": 0.99,
+  "kernel_conv": 0.572,
+  "mlp_can": 0.994,
+  "mlp_conv": 0.854,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.6029283448935137
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.3786340031427663
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "inside",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.094,
+  "kernel_can": 0.996,
+  "kernel_conv": 0.122,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.104,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.1,
+   "val_r2": 0.6678956681364555
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5695190115464599
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "inside",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.0,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.0,
+  "mlp_can": 0.998,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 2,
+   "alpha": 0.1,
+   "val_r2": 0.7881418883131813
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.7555469993272903
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "inside",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.988,
+  "ridge_conv": 0.772,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.62,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.74,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.6046691626757879
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.4182548954368267
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "behind",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.996,
+  "ridge_conv": 0.05,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.036,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.032,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.0001,
+   "val_r2": 0.6515998459047649
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5477091830338947
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "behind",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.002,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.0,
+  "kernel_hp": {
+   "bw": 4,
+   "alpha": 0.1,
+   "val_r2": 0.7859294977977568
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.746718003099239
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "behind",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.972,
+  "ridge_conv": 0.898,
+  "kernel_can": 0.992,
+  "kernel_conv": 0.514,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.66,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.0001,
+   "val_r2": 0.5734447739233912
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.39939062453736174
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "hit",
+  "state": "mean",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.994,
+  "ridge_conv": 0.07,
+  "kernel_can": 0.994,
+  "kernel_conv": 0.052,
+  "mlp_can": 0.996,
+  "mlp_conv": 0.042,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.0001,
+   "val_r2": 0.6200104457408452
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.5109237988138113
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "hit",
+  "state": "nouns",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.998,
+  "ridge_conv": 0.006,
+  "kernel_can": 0.998,
+  "kernel_conv": 0.002,
+  "mlp_can": 1.0,
+  "mlp_conv": 0.002,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.31622776601683794,
+   "val_r2": 0.76411849063395
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.7285100463562064
+  }
+ },
+ {
+  "model": "Qwen/Qwen3-8B",
+  "seed": 2,
+  "rel": "hit",
+  "state": "query",
+  "layer": "L27",
+  "code": "carrier",
+  "ridge_can": 0.994,
+  "ridge_conv": 0.924,
+  "kernel_can": 0.984,
+  "kernel_conv": 0.564,
+  "mlp_can": 0.992,
+  "mlp_conv": 0.824,
+  "kernel_hp": {
+   "bw": 1,
+   "alpha": 0.0001,
+   "val_r2": 0.5709391021140753
+  },
+  "mlp_hp": {
+   "wd": 0.1,
+   "val_r2": 0.40212831653944126
+  }
+ }
+]

@@ -1,0 +1,62 @@
+[
+ {
+  "model": "bert-large-uncased",
+  "seed": 2,
+  "rel": "on",
+  "roles": 0.084,
+  "roles_can": 0.088,
+  "roles_conv": 0.08,
+  "order": 0.811,
+  "identity": 0.933,
+  "margin_roles": -0.04480047523975372,
+  "margin_order": 0.029253806918859482
+ },
+ {
+  "model": "bert-large-uncased",
+  "seed": 2,
+  "rel": "left",
+  "roles": 0.019,
+  "roles_can": 0.024,
+  "roles_conv": 0.014,
+  "order": 0.769,
+  "identity": 0.931,
+  "margin_roles": -0.04946933686733246,
+  "margin_order": 0.02352280728518963
+ },
+ {
+  "model": "bert-large-uncased",
+  "seed": 2,
+  "rel": "inside",
+  "roles": 0.222,
+  "roles_can": 0.24,
+  "roles_conv": 0.204,
+  "order": 0.836,
+  "identity": 0.937,
+  "margin_roles": -0.018335426226258278,
+  "margin_order": 0.026905478909611702
+ },
+ {
+  "model": "bert-large-uncased",
+  "seed": 2,
+  "rel": "behind",
+  "roles": 0.138,
+  "roles_can": 0.098,
+  "roles_conv": 0.178,
+  "order": 0.746,
+  "identity": 0.878,
+  "margin_roles": -0.02870897762477398,
+  "margin_order": 0.02820136398077011
+ },
+ {
+  "model": "bert-large-uncased",
+  "seed": 2,
+  "rel": "hit",
+  "roles": 0.253,
+  "roles_can": 0.3,
+  "roles_conv": 0.206,
+  "order": 0.782,
+  "identity": 0.843,
+  "margin_roles": -0.023534473031759262,
+  "margin_order": 0.04055154696106911
+ }
+]

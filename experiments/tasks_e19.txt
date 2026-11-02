@@ -1,0 +1,9 @@
+e19_nonlinear.py --models microsoft/phi-4 --seeds 0 --outdir results/e19
+e19_nonlinear.py --models microsoft/phi-4 --seeds 1 --outdir results/e19
+e19_nonlinear.py --models microsoft/phi-4 --seeds 2 --outdir results/e19
+e19_nonlinear.py --models Qwen/Qwen3-8B --seeds 0 --outdir results/e19
+e19_nonlinear.py --models Qwen/Qwen3-8B --seeds 1 --outdir results/e19
+e19_nonlinear.py --models Qwen/Qwen3-8B --seeds 2 --outdir results/e19
+e19_nonlinear.py --models allenai/OLMo-2-1124-13B --seeds 0 --outdir results/e19
+e19_nonlinear.py --models allenai/OLMo-2-1124-13B --seeds 1 --outdir results/e19
+e19_nonlinear.py --models allenai/OLMo-2-1124-13B --seeds 2 --outdir results/e19

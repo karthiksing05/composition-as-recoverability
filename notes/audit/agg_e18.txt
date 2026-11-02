@@ -1,0 +1,55 @@
+                           roles  order  identity
+model              rel                           
+bert-base-uncased  behind  0.025  0.924     0.942
+                   hit     0.145  0.862     0.912
+                   inside  0.157  0.908     0.971
+                   left    0.000  0.951     0.988
+                   on      0.005  0.930     0.987
+bert-large-uncased behind  0.141  0.759     0.861
+                   hit     0.255  0.785     0.826
+                   inside  0.223  0.847     0.917
+                   left    0.019  0.778     0.937
+                   on      0.107  0.830     0.926
+clip-b32           behind  0.009  0.930     1.000
+                   hit     0.084  0.878     1.000
+                   inside  0.423  0.952     1.000
+                   left    0.002  0.961     1.000
+                   on      0.056  0.949     1.000
+clip-h14           behind  0.042  0.908     1.000
+                   hit     0.122  0.921     1.000
+                   inside  0.416  0.964     1.000
+                   left    0.001  0.957     1.000
+                   on      0.030  0.950     1.000
+sd15-clip-l        behind  0.016  0.939     1.000
+                   hit     0.039  0.931     1.000
+                   inside  0.418  0.956     1.000
+                   left    0.001  0.960     1.000
+                   on      0.045  0.972     1.000
+t5-base            behind  0.003  0.969     0.999
+                   hit     0.107  0.983     0.982
+                   inside  0.039  0.988     0.996
+                   left    0.000  0.983     0.992
+                   on      0.003  0.969     0.999
+t5-large           behind  0.071  0.820     0.979
+                   hit     0.262  0.782     0.932
+                   inside  0.323  0.803     0.980
+                   left    0.045  0.846     0.980
+                   on      0.037  0.794     0.987
+t5-small           behind  0.001  0.998     0.985
+                   hit     0.094  0.996     0.968
+                   inside  0.010  0.998     0.978
+                   left    0.000  1.000     0.956
+                   on      0.000  0.996     0.996
+                    roles         order        identity       
+                     mean    sem   mean    sem     mean    sem
+model                                                         
+bert-base-uncased   0.066  0.019  0.915  0.009    0.960  0.008
+bert-large-uncased  0.149  0.023  0.800  0.010    0.893  0.012
+clip-b32            0.115  0.042  0.934  0.008    1.000  0.000
+clip-h14            0.122  0.041  0.940  0.006    1.000  0.000
+sd15-clip-l         0.104  0.042  0.952  0.004    1.000  0.000
+t5-base             0.031  0.011  0.978  0.002    0.994  0.002
+t5-large            0.148  0.032  0.809  0.007    0.971  0.005
+t5-small            0.021  0.010  0.998  0.000    0.976  0.004
+seeds {'bert-base-uncased': 3, 'bert-large-uncased': 3, 'clip-b32': 3, 'clip-h14': 3, 'sd15-clip-l': 3, 't5-base': 3, 't5-large': 3, 't5-small': 3}
+['model', 'seed', 'rel', 'layer', 'code', 'system', 'pos_rec_val', 'pos_role_val', 'pos_rec_fresh', 'pos_role_fresh', 'sem_rec_val', 'sem_role_val', 'sem_rec_fresh', 'sem_role_fresh', 'sem_rec_conv', 'sem_role_conv', 'xfer_rec_can', 'xfer_role_can', 'xfer_rec_conv', 'xfer_role_conv']
