@@ -153,7 +153,7 @@ Strong composition adds decomposition to composition. A system composes when it 
   \item \textbf{Inspection.} A decomposition shows the share each part donates to the whole, and an edit of that share changes one part alone.
   \item \textbf{Nesting.} A composite that decomposes can serve as a part, so wholes nest inside wholes.
 \end{itemize}
-The repairs of Table~\ref{tab:remedies} test each use on held-out parts.
+We test each use on held-out parts (Section~\ref{sec:success}).
 
 Decomposition alone comes cheap. A lookup table decomposes any composite that is injective on a finite vocabulary (Lemma~\ref{lem:lookup}), an unrestricted probe decodes almost anything \citep{hewitt2019}, and a recoding of the parts makes any assignment of meanings compositional \citep{zadrozny1994}. Two conditions give decomposition content.
 
@@ -263,19 +263,24 @@ In this section, we place existing accounts of compositionality on one spectrum,
     Framework & Demand on decomposition & Rung \\
     \midrule
     Conceptual blending and combination \citep{fauconnier2002,osherson1981,kamp1995} & Wholes gain structure of their own, and parts need not return intact & Blend \\
+    \addlinespace
     Frege's principle, Montague semantics \citep{frege1923,montague1970} & Fixes how a whole is built and asks nothing of the way back & Weak \\
     Compositional generalization benchmarks \citep{lake2018,keysers2020,hupkes2020,lake2023} & Scores the system's outputs on new combinations of training parts & Weak \\
     Text-to-image and diffusion composition \citep{ramesh2021,okawa2023,favero2025diffusion} & Scores generated outputs against the concepts or rules of the prompt & Weak \\
     Recursive auto-associative memories \citep{pollack1990} & A learned decomposer returns the leaves at trained depths & Weak; the root state can be strong \\
     Vector-symbolic architectures \citep{plate1995,gayler2006,kanerva2009} & Unbinding and clean-up against a stored vocabulary & Weak; strong while the width holds every part \\
+    \addlinespace
     Reverse compositionality \citep{fodor2002} & Understanding a whole requires understanding its parts & Strong \\
     Functional compositionality \citep{vangelder1990} & General procedures build and decompose every whole & Strong \\
     Context-dependent constituents \citep{smolensky1988} & Parts return approximately, through codes that change with their context & Strong without shared codes \\
     Decodable factors \citep{montero2021} & A readout recovers factors that the model's own decoder fails to combine & Strong without weak \\
+    \addlinespace
     Tensor-product representations \citep{smolensky1990} & Fillers bind to independent role vectors and unbind affinely & Shared role codes \\
     Disentanglement and additive decoders \citep{bengio2013,lachapelle2023,wiedemer2024} & Each factor keeps its own coordinates, or each slot its own term of a sum & Shared role codes \\
     Compression measures \citep{andreas2019,elmoznino2024} & A composition of part codes reproduces the state, usually on training parts & Shared role codes, tested by composing \\
+    \addlinespace
     Classical constituent structure \citep{fodor1988} & Constituents are tokened in every whole that contains them & Tokened constituents \\
+    \addlinespace
     Probes \citep{belinkov2022,hewitt2019} and recodings \citep{zadrozny1994} & No declared class, or no held-out parts & Outside; every injective system passes \\
     \bottomrule
   \end{tabularx}
@@ -439,7 +444,7 @@ Text encoders fail the same way (Figure~\ref{fig:weak}d). Eight of them tell a s
 \section{Decomposition is what strong composition adds}
 \label{sec:success}
 
-In this section, we read parts through recoverable states to build the procedures that weak composition lacks. A system that only composes gets the combinations its procedures learned. A system whose composites also decompose lets other procedures reuse the parts, and each failure of the previous section has a repair that reads through the state (Table~\ref{tab:remedies}).
+In this section, we read parts through recoverable states to build the procedures that weak composition lacks. A system that only composes gets the combinations its procedures learned. A system whose composites also decompose lets other procedures reuse the parts, and each failure of the previous section has a repair that reads through the state (Table~\ref{tab:remedies}). The tests follow the four uses of decomposition. A new decoder tests reuse, edits of role codes test inspection, written codes test new parts in every role, and training at depth tests nesting.
 
 \begin{figure}[t]
   \centering
