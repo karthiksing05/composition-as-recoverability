@@ -11,6 +11,9 @@ for _f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fo
 
 BLUE, ORANGE, GREEN, RED, PURPLE = "#4c72b0", "#dd8452", "#55a868", "#c44e52", "#8172b3"
 GREY, LGREY, DGREY = "#929292", "#d5d5d5", "#5e5e5e"
+# One meaning per color, in every figure of the paper.
+REP, BEH, CTRL, LOST, FIX = BLUE, ORANGE, GREY, RED, GREEN  # readout of the state; own procedure; control; blend or word order; repair or intervention
+REP2, BEH2 = "#2f4b7c", "#eebfa0"  # a second series of the same kind
 INK = "#262626"
 FIGDIR = "/coc/flash10/ksingara3/compositionality-theory/recoverability-theory/figures"
 

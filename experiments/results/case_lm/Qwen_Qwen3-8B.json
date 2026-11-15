@@ -1,0 +1,424 @@
+{
+ "model": "Qwen/Qwen3-8B",
+ "seed": 0,
+ "rel": "on",
+ "layer": "L27",
+ "code": "carrier",
+ "n_test_can": 500,
+ "n_test_conv": 500,
+ "prompt_head": "Read each sentence and answer the question with one object.\n\nSentence: a chair under a parrot.\nQuestion: Which object is on top?\nAnswer: the parrot\n\nSentence: a plum under a tree.\nQuestion: Which object is underneath?\nAnswer: the plum\n\nSentence: a submarine on a dog.\nQuestion: Which object is on top?\nAnswer: the submarine\n\nSentence: a tablet on a kite.\nQuestion: Which object is underneath?\nAnswer: the kite\n\n",
+ "aggregates": {
+  "xfer_query_can": 0.994,
+  "xfer_query_conv": 0.916,
+  "ridge_alpha_query": 10000.0,
+  "xfer_mean_can": 0.998,
+  "xfer_mean_conv": 0.03,
+  "ridge_alpha_mean": 10000.0,
+  "ans_qprompt_can": 0.998,
+  "ans_qprompt_conv": 1.0,
+  "ans_qprompt_all": 0.999,
+  "ans_e9": {
+   "canonical_figure": 0.995,
+   "canonical_ground": 0.9,
+   "converse_figure": 1.0,
+   "converse_ground": 1.0,
+   "all": 0.97375
+  }
+ },
+ "headline": {
+  "xfer_query": 0.87,
+  "answers": null
+ },
+ "reference": {
+  "e11_xfer_mean_conv": 0.03,
+  "e11_xfer_query_conv": 0.918,
+  "e9_choice_on": 0.97375,
+  "e9_choice_allrels": 0.99175
+ },
+ "cases": [
+  {
+   "figure": "book",
+   "ground": "bench",
+   "phrasing": "canonical",
+   "sentence": "a book on a bench",
+   "question": "Which object is on top?",
+   "first_mentioned": "book",
+   "answer": {
+    "preferred": "book",
+    "logp_figure": -0.0003486264031380415,
+    "logp_ground": -8.000349044799805,
+    "margin_figure_minus_ground": 8.000000418396667
+   },
+   "readout_query": {
+    "returned": "book",
+    "dist_figure": 1.985684446436672,
+    "dist_ground": 3.040194774055856
+   },
+   "readout_mean": {
+    "returned": "book",
+    "dist_figure": 1.9187474481062876,
+    "dist_ground": 2.872131592157099
+   }
+  },
+  {
+   "figure": "book",
+   "ground": "bench",
+   "phrasing": "converse",
+   "sentence": "a bench under a book",
+   "question": "Which object is on top?",
+   "first_mentioned": "bench",
+   "answer": {
+    "preferred": "book",
+    "logp_figure": -9.858122211880982e-05,
+    "logp_ground": -9.37509822845459,
+    "margin_figure_minus_ground": 9.374999647232471
+   },
+   "readout_query": {
+    "returned": "book",
+    "dist_figure": 2.431262363117212,
+    "dist_ground": 2.8037595922346115
+   },
+   "readout_mean": {
+    "returned": "bench",
+    "dist_figure": 3.091928571369282,
+    "dist_ground": 1.6684060711130007
+   }
+  },
+  {
+   "figure": "cake",
+   "ground": "plate",
+   "phrasing": "canonical",
+   "sentence": "a cake on a plate",
+   "question": "Which object is on top?",
+   "first_mentioned": "cake",
+   "answer": {
+    "preferred": "cake",
+    "logp_figure": -3.886147169396281e-05,
+    "logp_ground": -10.250039100646973,
+    "margin_figure_minus_ground": 10.250000239175279
+   },
+   "readout_query": {
+    "returned": "cake",
+    "dist_figure": 1.3099838045929497,
+    "dist_ground": 1.8271625480356775
+   },
+   "readout_mean": {
+    "returned": "cake",
+    "dist_figure": 1.1997385658820368,
+    "dist_ground": 2.3796654390713705
+   }
+  },
+  {
+   "figure": "cake",
+   "ground": "plate",
+   "phrasing": "converse",
+   "sentence": "a plate under a cake",
+   "question": "Which object is on top?",
+   "first_mentioned": "plate",
+   "answer": {
+    "preferred": "cake",
+    "logp_figure": -8.106198947643861e-06,
+    "logp_ground": -12.625007629394531,
+    "margin_figure_minus_ground": 12.624999523195584
+   },
+   "readout_query": {
+    "returned": "cake",
+    "dist_figure": 2.0401253282322136,
+    "dist_ground": 2.5663844861503513
+   },
+   "readout_mean": {
+    "returned": "plate",
+    "dist_figure": 2.7099832433146642,
+    "dist_ground": 1.644795279020623
+   }
+  },
+  {
+   "figure": "lamp",
+   "ground": "rug",
+   "phrasing": "canonical",
+   "sentence": "a lamp on a rug",
+   "question": "Which object is on top?",
+   "first_mentioned": "lamp",
+   "answer": {
+    "preferred": "lamp",
+    "logp_figure": -2.6940935640595853e-05,
+    "logp_ground": -10.75002670288086,
+    "margin_figure_minus_ground": 10.749999761945219
+   },
+   "readout_query": {
+    "returned": "lamp",
+    "dist_figure": 1.7396208979171408,
+    "dist_ground": 2.6812239370935464
+   },
+   "readout_mean": {
+    "returned": "lamp",
+    "dist_figure": 1.4097452654304337,
+    "dist_ground": 2.9288106155877025
+   }
+  },
+  {
+   "figure": "lamp",
+   "ground": "rug",
+   "phrasing": "converse",
+   "sentence": "a rug under a lamp",
+   "question": "Which object is on top?",
+   "first_mentioned": "rug",
+   "answer": {
+    "preferred": "lamp",
+    "logp_figure": -9.65590606938349e-06,
+    "logp_ground": -12.250009536743164,
+    "margin_figure_minus_ground": 12.249999880837095
+   },
+   "readout_query": {
+    "returned": "lamp",
+    "dist_figure": 1.6956736519468043,
+    "dist_ground": 2.5650861387807202
+   },
+   "readout_mean": {
+    "returned": "rug",
+    "dist_figure": 2.863897445217349,
+    "dist_ground": 2.0364835693308603
+   }
+  },
+  {
+   "figure": "leaf",
+   "ground": "rock",
+   "phrasing": "canonical",
+   "sentence": "a leaf on a rock",
+   "question": "Which object is on top?",
+   "first_mentioned": "leaf",
+   "answer": {
+    "preferred": "leaf",
+    "logp_figure": -4.5536911784438416e-05,
+    "logp_ground": -10.250045776367188,
+    "margin_figure_minus_ground": 10.250000239455403
+   },
+   "readout_query": {
+    "returned": "leaf",
+    "dist_figure": 1.485494467930463,
+    "dist_ground": 2.686655507214567
+   },
+   "readout_mean": {
+    "returned": "leaf",
+    "dist_figure": 1.6718534804643654,
+    "dist_ground": 3.5362676210658277
+   }
+  },
+  {
+   "figure": "leaf",
+   "ground": "rock",
+   "phrasing": "converse",
+   "sentence": "a rock under a leaf",
+   "question": "Which object is on top?",
+   "first_mentioned": "rock",
+   "answer": {
+    "preferred": "leaf",
+    "logp_figure": -1.1444026313256472e-05,
+    "logp_ground": -15.375011444091797,
+    "margin_figure_minus_ground": 15.375000000065484
+   },
+   "readout_query": {
+    "returned": "leaf",
+    "dist_figure": 2.9235096230864297,
+    "dist_ground": 3.3741241232045343
+   },
+   "readout_mean": {
+    "returned": "rock",
+    "dist_figure": 2.291386153977365,
+    "dist_ground": 1.911235569996955
+   }
+  },
+  {
+   "figure": "key",
+   "ground": "map",
+   "phrasing": "canonical",
+   "sentence": "a key on a map",
+   "question": "Which object is on top?",
+   "first_mentioned": "key",
+   "answer": {
+    "preferred": "key",
+    "logp_figure": -9.142934868577868e-05,
+    "logp_ground": -9.375091552734375,
+    "margin_figure_minus_ground": 9.37500012338569
+   },
+   "readout_query": {
+    "returned": "key",
+    "dist_figure": 2.025875990008001,
+    "dist_ground": 2.6000470718269413
+   },
+   "readout_mean": {
+    "returned": "key",
+    "dist_figure": 1.5883373887784473,
+    "dist_ground": 1.8563651194112496
+   }
+  },
+  {
+   "figure": "key",
+   "ground": "map",
+   "phrasing": "converse",
+   "sentence": "a map under a key",
+   "question": "Which object is on top?",
+   "first_mentioned": "map",
+   "answer": {
+    "preferred": "key",
+    "logp_figure": -0.0002060916303889826,
+    "logp_ground": -8.500205993652344,
+    "margin_figure_minus_ground": 8.499999902021955
+   },
+   "readout_query": {
+    "returned": "key",
+    "dist_figure": 2.211372612653421,
+    "dist_ground": 2.3268705403965395
+   },
+   "readout_mean": {
+    "returned": "map",
+    "dist_figure": 3.3155537171672704,
+    "dist_ground": 1.7652612336905384
+   }
+  },
+  {
+   "figure": "hat",
+   "ground": "sofa",
+   "phrasing": "canonical",
+   "sentence": "a hat on a sofa",
+   "question": "Which object is on top?",
+   "first_mentioned": "hat",
+   "answer": {
+    "preferred": "hat",
+    "logp_figure": -1.0490362910786644e-05,
+    "logp_ground": -11.62501049041748,
+    "margin_figure_minus_ground": 11.62500000005457
+   },
+   "readout_query": {
+    "returned": "hat",
+    "dist_figure": 3.0154986527282195,
+    "dist_ground": 3.0436812709497443
+   },
+   "readout_mean": {
+    "returned": "hat",
+    "dist_figure": 2.430782916109356,
+    "dist_ground": 3.0519910080999373
+   }
+  },
+  {
+   "figure": "hat",
+   "ground": "sofa",
+   "phrasing": "converse",
+   "sentence": "a sofa under a hat",
+   "question": "Which object is on top?",
+   "first_mentioned": "sofa",
+   "answer": {
+    "preferred": "hat",
+    "logp_figure": -3.576272320060525e-06,
+    "logp_ground": -13.625003814697266,
+    "margin_figure_minus_ground": 13.625000238424946
+   },
+   "readout_query": {
+    "returned": "hat",
+    "dist_figure": 2.978811273061779,
+    "dist_ground": 3.6653585315433266
+   },
+   "readout_mean": {
+    "returned": "sofa",
+    "dist_figure": 2.895971177578269,
+    "dist_ground": 2.077541376273646
+   }
+  },
+  {
+   "figure": "cherry",
+   "ground": "pie",
+   "phrasing": "canonical",
+   "sentence": "a cherry on a pie",
+   "question": "Which object is on top?",
+   "first_mentioned": "cherry",
+   "answer": {
+    "preferred": "cherry",
+    "logp_figure": -1.3589766240329482e-05,
+    "logp_ground": -13.62501335144043,
+    "margin_figure_minus_ground": 13.62499976167419
+   },
+   "readout_query": {
+    "returned": "cherry",
+    "dist_figure": 1.8710091438902352,
+    "dist_ground": 3.189823122178047
+   },
+   "readout_mean": {
+    "returned": "cherry",
+    "dist_figure": 1.5747180097657054,
+    "dist_ground": 3.181432478652064
+   }
+  },
+  {
+   "figure": "cherry",
+   "ground": "pie",
+   "phrasing": "converse",
+   "sentence": "a pie under a cherry",
+   "question": "Which object is on top?",
+   "first_mentioned": "pie",
+   "answer": {
+    "preferred": "cherry",
+    "logp_figure": -0.0001525762490928173,
+    "logp_ground": -8.875152587890625,
+    "margin_figure_minus_ground": 8.875000011641532
+   },
+   "readout_query": {
+    "returned": "cherry",
+    "dist_figure": 2.4611022237088074,
+    "dist_ground": 2.825399379499097
+   },
+   "readout_mean": {
+    "returned": "pie",
+    "dist_figure": 3.793362140757704,
+    "dist_ground": 1.4086852189806864
+   }
+  },
+  {
+   "figure": "basket",
+   "ground": "tractor",
+   "phrasing": "canonical",
+   "sentence": "a basket on a tractor",
+   "question": "Which object is on top?",
+   "first_mentioned": "basket",
+   "answer": {
+    "preferred": "basket",
+    "logp_figure": -6.9141146923357155e-06,
+    "logp_ground": -12.375006675720215,
+    "margin_figure_minus_ground": 12.374999761605523
+   },
+   "readout_query": {
+    "returned": "basket",
+    "dist_figure": 1.6710670590368466,
+    "dist_ground": 3.814556670508526
+   },
+   "readout_mean": {
+    "returned": "basket",
+    "dist_figure": 1.2551914748974766,
+    "dist_ground": 3.938548876776112
+   }
+  },
+  {
+   "figure": "basket",
+   "ground": "tractor",
+   "phrasing": "converse",
+   "sentence": "a tractor under a basket",
+   "question": "Which object is on top?",
+   "first_mentioned": "tractor",
+   "answer": {
+    "preferred": "basket",
+    "logp_figure": -2.3841830625315197e-06,
+    "logp_ground": -15.625001907348633,
+    "margin_figure_minus_ground": 15.62499952316557
+   },
+   "readout_query": {
+    "returned": "basket",
+    "dist_figure": 2.025571435533018,
+    "dist_ground": 3.589822506431511
+   },
+   "readout_mean": {
+    "returned": "tractor",
+    "dist_figure": 3.693380902017894,
+    "dist_ground": 2.040687352136808
+   }
+  }
+ ]
+}

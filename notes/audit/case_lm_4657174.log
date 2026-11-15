@@ -1,0 +1,57 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:00<00:00, 39.70it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 41.26it/s]
+microsoft/phi-4 {"xfer_query_can": 0.994, "xfer_query_conv": 0.974, "ridge_alpha_query": 31622.776601683792, "xfer_mean_can": 0.998, "xfer_mean_conv": 0.026, "ridge_alpha_mean": 3162.2776601683795, "ans_qprompt_can": 1.0, "ans_qprompt_conv": 1.0, "ans_qprompt_all": 1.0, "ans_e9": {"canonical_figure": 1.0, "canonical_ground": 1.0, "converse_figure": 0.995, "converse_ground": 0.985, "all": 0.995}} {"e11_xfer_mean_conv": 0.024, "e11_xfer_query_conv": 0.974, "e9_choice_on": 0.995, "e9_choice_allrels": 0.9887499999999999}
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:00, 11.02it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:00<00:00, 10.57it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:00<00:00, 13.20it/s]
+Traceback (most recent call last):
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/case_lm.py", line 222, in <module>
+    r = run(name, a.seed, dev)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/case_lm.py", line 113, in run
+    H.update(embed_query(tok, mod.base_model, qprompts, dev))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/e11_tokens.py", line 73, in embed_query
+    hs = mod(**b, output_hidden_states=True).hidden_states
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/utils/generic.py", line 1072, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 410, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/modeling_layers.py", line 94, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/utils/generic.py", line 1031, in wrapped_forward
+    output = orig_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 275, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 82, in forward
+    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 88.00 MiB. GPU 0 has a total capacity of 44.42 GiB of which 71.81 MiB is free. Including non-PyTorch memory, this process has 44.35 GiB memory in use. Of the allocated memory 43.51 GiB is allocated by PyTorch, and 530.21 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

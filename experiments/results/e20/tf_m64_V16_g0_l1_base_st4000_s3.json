@@ -1,0 +1,23 @@
+{
+ "arch": "tf",
+ "m": 64,
+ "V": 16,
+ "seed": 3,
+ "steps": 4000,
+ "gain": 0.0,
+ "layers": 1,
+ "arm": "base",
+ "final_loss": 7.57945526856929e-05,
+ "train_secs": 173.47450947761536,
+ "own_heldout": 0.3185527991098182,
+ "own_newpairs": 0.8991095682471599,
+ "read_trained": 0.6995419278801276,
+ "read_untrained": 0.3978394613314603,
+ "read_input": 0.9149904468479533,
+ "read_vocab": 0.06728416759097189,
+ "read_rendered": 0.7700741967624225,
+ "ref_concat": 0.9818513271487357,
+ "ref_sum": 0.4807699502774524,
+ "redec_trained": 0.6544095482865449,
+ "redec_untrained": 0.41422799584096925
+}

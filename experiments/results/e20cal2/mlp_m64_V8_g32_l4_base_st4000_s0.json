@@ -1,0 +1,23 @@
+{
+ "arch": "mlp",
+ "m": 64,
+ "V": 8,
+ "seed": 0,
+ "steps": 4000,
+ "gain": 32.0,
+ "layers": 4,
+ "arm": "base",
+ "final_loss": 1.4557313079421874e-06,
+ "train_secs": 23.6186740398407,
+ "own_heldout": 0.11067656165674972,
+ "own_newpairs": 0.062445156257700196,
+ "read_trained": 0.32841945691724383,
+ "read_untrained": 0.262536105843496,
+ "read_input": 0.4637558920754192,
+ "read_vocab": 0.03175518865564697,
+ "read_rendered": 0.3900933572809702,
+ "ref_concat": 0.9813550239905823,
+ "ref_sum": 0.4950361950206103,
+ "redec_trained": 0.3475820366563426,
+ "redec_untrained": 0.3069250858207509
+}

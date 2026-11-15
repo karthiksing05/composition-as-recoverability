@@ -1,0 +1,1691 @@
+
+===== PDF PAGE 1 =====
+Bigger Isn’t Always Memorizing:
+Early Stopping Overparameterized Diffusion Models
+Alessandro Favero∗
+EPFL, Lausanne, Switzerland
+alessandro.favero@epfl.ch
+Antonio Sclocchi∗
+Gatsby Unit, UCL, London, UK
+a.sclocchi@ucl.ac.uk
+Matthieu Wyart
+Johns Hopkins University, Baltimore, MD, USA
+EPFL, Lausanne, Switzerland
+mwyart1@jh.edu
+Abstract
+Diffusion probabilistic models have become a cornerstone of modern generative
+AI, yet the mechanisms underlying their generalization remain poorly understood.
+In fact, if these models were perfectly minimizing their training loss, they would
+just generate data belonging to their training set, i.e., memorize, as empirically
+found in the overparameterized regime. We revisit this view by showing that, in
+highly overparameterized diffusion models, generalization in natural data domains
+is progressively achieved during training before the onset of memorization. Our
+results, ranging from image to language diffusion models, systematically support
+the empirical law that memorization time is proportional to the dataset size. Gener-
+alization vs. memorization is then best understood as a competition between time
+scales. We show that this phenomenology is recovered in diffusion models learning
+a simple probabilistic context-free grammar with random rules, where generaliza-
+tion corresponds to the hierarchical acquisition of deeper grammar rules as training
+time grows, and the generalization cost of early stopping can be characterized.
+We summarize these results in a phase diagram. Overall, our results support that
+a principled early-stopping criterion – scaling with dataset size – can effectively
+optimize generalization while avoiding memorization, with direct implications for
+hyperparameter transfer and privacy-sensitive applications.
+1
+Introduction
+Diffusion models [1, 2] have recently emerged as a transformative paradigm in generative AI, enabling
+the synthesis of high-quality data across a wide range of modalities – images [3–5], videos [6, 7], text
+[8–11], and complex 3D structures such as molecular conformations and protein sequences [12, 13].
+Their strength lies in their scalability in generating diverse, high-fidelity samples by reversing a
+progressive noise addition process, making them both versatile and robust across domains.
+At the heart of this process is the estimation of a score function [14, 15]: a noise-dependent vector field
+that guides denoising by pointing in the direction of increasing data likelihood. Since this function
+is learned from the empirical training distribution, minimizing the training loss optimally leads the
+model to reproduce the training data itself – a phenomenon known as memorization [16, 17]. This
+phenomenon is observed in practical settings and raises significant privacy and copyright concerns, as
+models trained on sensitive or proprietary data may inadvertently regenerate such content, exposing
+∗Equal contribution.
+Preprint.
+arXiv:2505.16959v2  [cs.LG]  1 Sep 2025
+
+===== PDF PAGE 2 =====
+private information or violating intellectual property rights [18–20]. In contrast, generalization
+corresponds to the model producing novel samples that are consistent with, but not identical to, the
+training data, thereby approximating the broader target distribution.
+Despite the empirical success of diffusion models, the mechanisms underlying their ability to gen-
+eralize remain poorly understood. A prevailing view – rooted in classical learning theory – is that
+generalization depends on underparameterization [21–23]: only models that lack the capacity to
+memorize their training data are expected to generalize. In this work, we go beyond this view by
+demonstrating that even heavily overparameterized diffusion models exhibit generalization during
+training before they start memorizing the training data. We systematically investigate this phe-
+nomenon, showing that generalization and memorization are not mutually exclusive but unfold as
+distinct temporal phases of training. Our main contributions are as follows:
+• We empirically demonstrate the transition from generalization to memorization during
+training in a range of overparametrized diffusion models – including Improved DDPM
+[24], Stable Diffusion [4], MD4 [10], and D3PM [8] – on both images and text data. We
+measure memorization and generalization metrics and systematically vary the training set
+size, showing that generalization improves gradually, before the onset of memorization.
+• In all settings, we find the empirical law that the onset of memorization requires a number
+of training steps that is proportional to the training set size. In the appendix, we provide a
+theoretical scaling argument for kernel methods – including kernels corresponding to infinite-
+width neural networks – showing that a generic empirical score at fixed, low diffusion noise
+is learned with a training time proportional to the training set size.
+• We study a discrete diffusion model trained to learn a simple probabilistic context-free
+grammar, where the number of training steps or samples required to generalize is known
+to be polynomial in the sequence length [25]. We show that for moderate training set
+sizes, the diffusion model only learns the lowest levels of the hierarchical grammar rules
+– corresponding to partial generalization – before starting to memorize. For larger training
+set sizes, the onset of memorization appears after perfect total generalization is achieved.
+These results lead to a phase diagram for memorization and generalization as a function
+of sample complexity and time.
+On the theoretical level, these findings call for a revision of the view of generalization in diffusion
+models as being solely determined by model capacity, showing that generalization arises dynamically
+during training in overparameterized diffusion models.
+On the practical level, our results suggest that early stopping and dataset-size-aware training protocols
+may be optimal strategies for preserving generalization and avoiding memorization as the size of
+diffusion models is scaled up. In fact, meeting privacy and copyright requirements with principled
+procedures is of utmost importance for the deployment of generative AI, in contrast to heuristic
+procedures that lack quantitative grounding [26–28].
+2
+Diffusion Models and the Score Function
+Denoising diffusion models are generative models that sample from a data distribution q(x0) by
+reversing a noise addition process [1, 2, 14, 15]. The forward process generates a sequence of
+increasingly noised data {xt}1≤t≤T , with distribution q(x1, . . . , xT |x0) = QT
+t=1 q(xt|xt−1), where
+t indicate the time step in a sequence [0, . . . , T]. At the final time T, xT corresponds to pure noise.
+The backward process reverts the forward one by gradually removing noise and is obtained by
+learning the backward transition kernels pθ(xt−1|xt) using a neural network with parameters θ.
+Learning these backward kernels is equivalent to learning the score function, which is proportional
+to the conditional expectation Eq(x0|xt) [x0]. To learn the score function, the training is performed
+by minimizing a variational bound on the negative log likelihood of the data:
+Eq(x0) [−log pθ(x0)] ≤Eq(x0)
+"
+−log pθ(xT ) −
+T
+X
+t=1
+log pθ(xt−1|xt)
+q(xt|xt−1)
+#
+:= L.
+(1)
+The loss L to learn the score function requires an integral over the target data distribution q(x0). In
+practice, this integral is estimated with a Monte Carlo sampling from P training examples {x(i)
+0 }i∈[P ],
+2
+
+===== PDF PAGE 3 =====
+10
+4
+10
+3
+10
+2
+10
+1
+100
+loss
+mem
+mem
+mem
+mem
+Validation
+Train
+10
+2
+101
+/P
+Validation
+Train
+100
+101
+102
+103
+104
+105
+training step 
+10
+3
+10
+2
+10
+1
+100
+fraction of copies
+10
+2
+101
+/P
+P = 2048
+P = 4096
+P = 8192
+P = 16384
+Figure 1: Memorization dynamics in vision diffusion models. Left: Train loss, validation loss, and
+fraction of copied images as a function of training steps τ for iDDPM models trained on CIFAR10
+with varying training set sizes P. Both losses decrease initially, indicating generalization, but diverge
+at the onset of memorization (τmem), where the models start copying training data. Larger training
+sets delay τmem, scaling approximately linearly with P (insets). Right: Samples generated with early
+stopping at τmem with a model trained on 16, 384 images, achieving generalization and low FID.
+Further examples are presented in Appendix C
+associated with the empirical distribution ˆq(x0) = P −1 PP
+i=1 δ(x0 −x(i)
+0 ), where δ are Dirac deltas.
+Therefore, perfectly minimizing the empirical loss corresponds to learning the empirical score
+function, which generates ˆq(x0). As a result, diffusion models would only generate data of the
+training set, corresponding to memorization. Their generalization abilities, therefore, derive from not
+perfectly minimizing the empirical loss.
+Diffusion processes
+For continuous data, like images, the forward process corresponds to time-
+discretized Gaussian diffusion with q(xt|xt−1) = N(xt; √1 −βtxt−1, βtI), where N represents the
+normal distribution and the sequence {βt}1≤t≤T is the variance schedule.
+For discrete data, several noising processes have been considered [29, 8]. The most popular for text
+data is masked diffusion with an absorbing state, which progressively randomly masks tokens in the
+forward process. Another common choice is uniform diffusion, where in the forward process, tokens
+can flip to any other symbol with some probability depending on the noise level.
+3
+Numerical Experiments
+In this section, we present a systematic analysis of the generalization and memorization behaviors of
+overparameterized diffusion models across two distinct data modalities: images and text.
+3.1
+Vision diffusion models
+Generalization before memorization
+We assess the generalization and memorization behaviors of
+vision diffusion models by considering Improved Denoising Diffusion Probabilistic Models (iDDPMs)
+[24] with a U-Net architecture [30, 31], including attention blocks [32]. Each model, comprising
+approximately 0.5B parameters, is trained on four distinct subsets of the CIFAR-10 dataset [33], with
+3
+
+===== PDF PAGE 4 =====
+102
+103
+104
+105
+training step 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+cosine similarity
+mem
+Generations from two diffusion models
+Generation vs. closest training data
+closest image 
+from D1
+from model 
+trained on D1
+closest image 
+from D2
+from model 
+trained on D2
+τ = 256 < τ mem
+τ = 131,072 > τ mem
+Figure 2: Progressive generalization in vision diffusion models. Cosine similarity between images
+generated by two diffusion models trained on disjoint subsets of CelebA of size P = 2, 048, as a
+function of training steps τ. Before the onset of memorization (τ < τmem), the two models generate
+nearly identical images, indicating they are learning the same score function, and thus generalizing.
+After τmem, the models diverge, generating images increasingly similar to their own training sets.
+training set sizes P ∈{2048, 4096, 8192, 16384}. The models are trained for a total of 262,144
+training steps, with full training details in Appendix A.
+We track model performance using the diffusion losses on the train set and a validation set of
+1,024 images. At regular checkpoints, we generate 32,768 images using each model, and evaluate
+memorization by calculating the fraction of generated images that are near-exact replicas of training
+samples. Specifically, following [16, 21], for a generated image x, we identify the two closest images
+x′ and x′′ in Euclidean distance from the training set, and classify x as a copy if ∥x −x′∥2/∥x −
+x′′∥2 < 1/3. This threshold aligns with human perception of visual similarity [21].
+Results and analysis
+Figure 1 (left panel) presents the results of this experiment. Our key findings
+are as follows:
+1. Generalization before memorization: Initially, both train and validation loss decrease, indicating
+that the model is generalizing, i.e., approaching the population score. However, at some critical
+time τmem, the two losses bifurcate, signalling the onset of memorization. After this point, the
+number of copies among generated images steadily increases. By the end of training, all models
+exhibit some degree of memorization, with copy rates ranging from 1% for the largest training set
+to 100% for the smaller ones.
+2. Memorization is delayed by larger training sets: The onset of memorization τmem scales
+approximatively linearly with the training set size P, as indicated in the insets of Figure 1.
+These observations suggest that early stopping can effectively prevent the model from entering the
+memorization phase. As a concrete example, the right panel of Figure 1 displays images generated by
+a diffusion model trained on 16,384 images, with early stopping applied. The quality and diversity of
+these images are quantified using the Fréchet Inception Distance (FID), calculated using Inception
+v3. The model achieves an FID score of 5.4, indicating – despite being strongly overparameterized –
+robust generalization, while the rate of copies is 0%. In Appendix B, we show the same overfitting
+phenomenon in Stable Diffusion [4] – a text-to-image latent diffusion model – fine-tuned on a subset
+of the LAION dataset [34].
+Progressive generalization before memorization
+We extend our analysis by conducting a second
+experiment inspired by Kadkhodaie et al. [23]. Specifically, we train two models on two non-
+overlapping subsets D1 and D2 of 2, 048 images of CelebA [35], a dataset with faces of celebrities,
+each using an iDDPM (details in Appendix A). Our setup goes beyond prior work by dynamically
+tracking the evolution of the generated images throughout training, rather than statically only at
+convergence [23]. This approach provides a detailed view of how models first approach the population
+score and then diverge after entering the memorization phase.
+4
+
+===== PDF PAGE 5 =====
+Results and analysis
+We generate samples from both models at multiple checkpoints during
+training, initializing the generations from the same Gaussian random noise and fixing the stochastic
+part of the backward trajectories. Remarkably, initially, the images generated by the two models are
+nearly identical, reflecting that the two models are learning the same score function, even though
+they are trained on disjoint data subsets. However, at some time τmem, the models begin to diverge.
+This divergence coincides with the onset of memorization, where the models start generating images
+increasingly similar to the ones contained in their respective training sets.
+We quantitatively assess this phenomenon using cosine similarity between whitened images generated
+by the two models and their nearest training images. As shown in Figure 2:
+1. Before memorization (τ < τmem), the two models generate nearly identical images, indicating
+that they are dynamically learning the same underlying distribution.
+2. During memorization (τ > τmem), the similarity between the models’ generated images de-
+creases monotonically, while the similarity between each model’s generated images and their own
+training set increases. This reflects the transition from generalization to memorization.
+Our findings extend those of Kadkhodaie et al. by revealing that the transition from generalization
+to memorization is not only a matter of model capacity and final convergence but is dynamically
+observable throughout training. In practice, this further supports the view that early stopping can
+prevent the memorization phase and maintain generalization.
+3.2
+Language diffusion models
+We further extend our analysis of generalization and memorization to language data, using MD4, a
+masked diffusion model specifically designed for text [10]. Our experiments are conducted on the
+text8 dataset, a standard benchmark for language modeling based on Wikipedia, with character-level
+tokenization. To the best of our knowledge, this is the first demonstration of memorization in the
+language diffusion setting.
+We train MD4 from scratch using a standard GPT-like transformer architecture with approximately
+165M parameters. Following the masked diffusion approach, the model is trained to predict masked
+tokens in noisy text sequences, effectively learning a score function over text data. Full details are
+presented in Appendix A.
+0
+2
+4
+6
+8
+10
+loss
+mem
+mem
+mem
+mem
+mem
+Validation
+Train
+10
+1
+101
+/P
+0
+5
+10
+P = 64
+P = 128
+P = 256
+P = 512
+P = 1024
+101
+102
+103
+104
+training step 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+fraction of copies
+10
+1
+101
+/P
+0.0
+0.5
+1.0
+Figure 3: Memorization dynamics in language
+diffusion models. Train loss, validation loss, and
+fraction of copied text as a function of training steps
+for GPT-based MD4 models trained on text8 with
+character-level tokenization and varying training set
+sizes P. Both losses initially decrease, indicating
+generalization, but diverge at the onset of memoriza-
+tion (τmem), where the models start copying training
+text. τmem grows linearly with P (insets).
+We
+use
+training
+set
+sizes
+P
+∈
+{64, 128, 256, 512, 1024}
+ranging
+from
+16,384 to 262,144 tokens. We track model
+performance using the validation loss on
+19,531 sentences, which provides a lower
+bound to the negative log likelihood, and
+monitor memorization by generating 1,024
+text samples at regular training checkpoints.
+Memorization is quantified by calculating the
+Hamming distance between each generated
+text sample and the closest training set text,
+averaged over the generations and divided by
+the sequence length. This metric captures the
+fraction of exact token matches between the
+generated and training text.
+Results and analysis
+Figure 3 presents
+the results of this experiment.
+As with
+the vision diffusion models, MD4 initially
+generalizes, improving the log-likelihood
+on the validation corpus.
+However, after
+τmem the model begins to produce exact or
+near-exact copies of training text, signaling
+the onset of memorization. Notably, τmem
+scales linearly with the training set size P,
+consistent with our previous findings. The
+5
+
+===== PDF PAGE 6 =====
+transition to memorization is also marked by a sudden increase in the validation loss, indicating
+that early stopping can effectively prevent memorization also in this setting.
+3.3
+Summary of results
+We have shown empirically that as they train, diffusion models generate higher and higher quality
+data, which are novel. This is true up to an early stopping time τmem where memorization starts,
+which we found to follow a remarkably universal empirical law:
+τmem ∝P.
+(2)
+Theoretical support to the linear dependence
+In Appendix E, we provide a theoretical basis
+for this scaling within the analytically tractable framework of kernel regression. We analyze the
+gradient flow dynamics for fitting the empirical score of P training points in the low noise regime
+with variance σ2, where the Gaussian modes centered at the training points are well separated. Using
+an ansatz for the score modes, we show that the time to fit the empirical score scales as τmem ∝P/σν.
+The exponent ν is determined by the kernel’s expansion near the origin. This result generalizes to any
+isotropic kernel the contemporaneous findings of Bonnaire et al. [36], who studied random features
+in the proportional regime (width proportional to input dimension) using a Gaussian equivalence
+assumption. In particular, our results show that random features and neural networks in the Neural
+Tangent Kernel (NTK) regime [37, 38] have different behaviors.
+We empirically validate these predictions with a one-hidden-layer network with lazy (NTK)
+initialization [37], trained by gradient descent to fit the empirical score of Gaussian random points.
+The observed τmem precisely follows the predicted scaling. Interestingly, the same scaling holds under
+feature learning initialization, suggesting our theory captures a more general phenomenon beyond its
+fixed-kernel assumption. Moreover, we show that τmem is insensitive to batch size – from small-batch
+SGD to full-batch gradient descent – indicating that memorization time is governed by the number
+of optimization steps required to fit the empirical score, not by how often each example is revisited.
+We will now study a controlled model of synthetic data that captures the phenomenology observed
+for natural data. Most importantly, it will allow us to quantify in detail the inaccuracy of generations
+of diffusion models with limited training, responsible for the inconsistent images in Figure 2.
+4
+Generalization vs. Memorization with a Simple Grammar
+g
+h
+i
+j
+g
+h
+k
+l
+d
+e
+d
+f
+b
+c
+a
+input tokens
+(level 0)
+low-level latents
+(level 1)
+high-level latents
+(level 2)
+root
+Figure 4: Random Hierarchy Model. In this
+example, depth L = 3 and branching factor
+s = 2. Different values of the input and latent
+variables are represented with different colors.
+In this section, we consider diffusion models trained
+to generate sentences respecting the rules of a simple
+formal grammar, which gives a theoretical framework
+to interpret the generalization-memorization dynam-
+ics in real data.
+4.1
+Probabilistic graphical models
+In theoretical linguistics, Probabilistic Context-Free
+Grammars (PCFG) have been proposed as a frame-
+work to describe the hierarchical structure of the syn-
+tax of several languages [39–43]. Moreover, they
+have been proposed for describing semantic aspects
+of images under the name of Pattern Theory [44–46].
+PCFGs consist of a vocabulary of latent (nontermi-
+nal) symbols and a vocabulary of visible (terminal)
+symbols, together with probabilistic production rules
+establishing how one latent symbol generates tuples
+of latent or visible symbols.
+The Random Hierarchy Model (RHM)
+The RHM [47] is a simple PCFG introduced as a theoreti-
+cal toy model describing hierarchy and compositionality in data. With respect to generic PCFGs, it is
+built with some simplifying assumptions:
+6
+
+===== PDF PAGE 7 =====
+• Symbols are organized in a regular-tree topology of depth L and branching factor s. The
+bottom layer, indexed as ℓ= 0, corresponds to the leaves of the tree, which are the visible
+(terminal) symbols. The upper part of the tree, with layers ℓ= 1, . . . , L, corresponds to
+latent (nonterminal) symbols in the data structure.
+• Nonterminal symbols are taken from L finite vocabularies (Vℓ)ℓ=1,...,L of size v for each
+layer ℓ= 1, . . . , L. Terminal symbols belong to the vocabulary V ≡V0 of size v.
+• The production rules transform one symbol in a node at level ℓ+ 1 into a string of s symbols
+in its children nodes at level ℓ. For each non-terminal symbol, there are m rules with equal
+probability, which are unambiguous, i.e., two distinct symbols cannot generate the same
+s-string. Rules are sampled randomly without replacement and frozen for a given instance
+of the RHM. The m strings generated by the same latent symbol are referred to as synonyms.
+The fixed tree topology ensures that visible data at the leaves are strings of fixed length d = sL, corre-
+sponding to the data dimension d. In analogy with language modeling, we call visible symbols tokens.
+The number of possible data generated by this model is vm
+d−1
+s−1 , which is exponential in the data
+dimension. Because of the random production rules, the tokens of the RHM data have non-trivial
+correlations reflecting the latent hierarchical structure [48].
+4.2
+Diffusion on the Random Hierarchy Model
+The exact score function of the RHM
+Because of its correlations, the probability distribution of the
+RHM data and its corresponding score function are highly non-trivial. Nevertheless, if the production
+rules are known, thanks to the latent tree structure, the score function for any noise level can be
+computed exactly using the Belief Propagation (BP) algorithm [49]. Given a noisy RHM datum,
+Belief Propagation computes the marginal probabilities, conditioned on this noisy observation, of the
+symbols in any node of the tree. Computing the expectations from these conditional probabilities at
+the leaf nodes corresponds to computing the score function, which can be used to reverse a diffusion
+process. Moreover, BP also provides a way to sample directly from these posterior probabilities,
+corresponding to a perfect integration of the backward diffusion process. The exact sampling of
+diffusion processes with the RHM data was studied in [50, 51].
+Sample complexity
+Favero et al. [25] studied the sample complexity for diffusion models based on
+deep neural networks trained on finite RHM data. Their main findings are the following.
+• The sample complexity to learn to generate valid data depends on the parameters of the
+model as P ∗∼vmL+1, which is polynomial in the dimension, i.e., P ∗∼vmdlog m/ log s.
+This scale can be theoretically predicted by comparing the size of the correlations between
+tokens and latent features, used in deep architectures for denoising, with their sampling
+noise.
+• For P < P ∗, there are regimes of partial generalization where the generated data are
+consistent with the rules up to layer ℓ. The sample complexity to learn the rules at layer ℓ
+scales as P ∗
+ℓ∼vmℓ+1.
+• When P > P ∗
+ℓ, the number of training steps τ ∗
+ℓrequired to learn the rules at layer ℓ
+is proportional to P ∗
+ℓ, therefore having the same polynomial scaling with the dimension.
+Complete generalization is therefore achieved with τ ∗∝P ∗= P ∗
+L number of training
+steps.
+Notice that the sample complexity depends on the underlying distribution, e.g., the parameters of the
+grammar, and not on the specific number of available training samples.
+4.3
+Generalization vs. memorization
+We consider an instantiation of the RHM with a given set of parameters (depth L, branching factor s,
+vocabulary size v, and number of synonyms m). We generate P distinct strings from this grammar,
+which constitute the training set. Each token is one-hot encoded, and we train a Discrete Denoising
+Diffusion Probabilistic Model (D3PM) [8] with uniform transition probabilities [29]. The architecture
+of the diffusion model is made of a convolutional U-Net [30] with 2L layers in total – L in the
+7
+
+===== PDF PAGE 8 =====
+encoder and L in the decoder. We consider highly overparameterized networks with 8,192 channels
+per layer, with a total number of parameters varying between 0.4B for L = 3 and 0.7B for L = 5.
+We use the maximal-update (µP) initialization to ensure feature learning [52]. We train the neural
+network using Adam to optimize the training loss of discrete diffusion [8], derived from a variational
+bound on the negative log-likelihood [1]. Further experimental details are reported in Appendix A.
+We study the evolution of the models during training. For checkpoints at different training times,
+we track the training loss and the validation loss on 2,048 held-out data. In addition, we generate
+1,024 data points with the diffusion model and measure their Hamming distance with the training
+data, determining if they are copies or not. We also check if the generated data are compatible with
+all the rules of the RHM, determining if they are valid strings of the grammar or not.
+10
+3
+10
+2
+loss
+validation
+train
+10
+2
+101
+/P
+validation
+train
+0.00
+0.25
+0.50
+0.75
+1.00
+fraction of copies
+10
+2
+101
+/P
+100
+101
+102
+103
+104
+105
+training step 
+0.00
+0.25
+0.50
+0.75
+1.00
+fraction of errors
+*
+P = 256
+P = 1024
+P = 4096
+P = 16384
+Figure 5: Memorization vs. generalization on the
+RHM. For training set size P = 256, the diffusion
+model generates valid data (i.e., the fraction of errors
+becomes small) only when it is memorizing the training
+data (i.e., the fraction of copies goes to 1). For P =
+16,384, instead, the model generalizes, approximately
+at τ ∗, before starting to memorize. The memorization
+time scales linearly in P (insets); therefore, P controls
+the presence or absence of a generalization phase. Data
+for RHM parameters v = 16, m = 4, L = 3, s = 2.
+Results and analysis
+Figure 5 shows the
+evolution of a diffusion model during train-
+ing with RHM parameters v = 16, m = 4,
+L = 3, s = 2. For these parameters, the
+sample complexity to learn all the rules of
+the grammar is P ∗≈4,096. Varying the
+training set size P, we observe that the val-
+idation and training losses start decreasing
+at the same time and follow the same be-
+havior until separating later in training, at
+a time depending on P. Comparing these
+losses with the fraction of copies between
+the generated data and the training ones, we
+observe that the increase of the validation
+loss corresponds to the onset of memoriza-
+tion. As observed for real data in Section 3,
+we find empirically that the onset of memo-
+rization requires a number of training steps
+τmem proportional to P (insets of Figure 5).
+The fraction of errors measures how many
+of the generated data are not compatible
+with the RHM rules. We observe that for
+P < 4,096, the fraction of errors decreases
+only in correspondence with memorization:
+the generated data are valid according to
+the grammar rules, but they are copies of
+the training set. For P > 4,096, instead,
+the fraction of errors decreases before the
+onset of memorization: the diffusion model
+is generating valid data that do not belong
+to the training set, and it is therefore gener-
+alizing. In Appendix D, we show that the
+generated data respect the correct statistics
+of the RHM rules, therefore learning the
+true data distribution. As a reference, Fig-
+ure 5 reports the time τ ∗= P ∗as a vertical
+dashed line. We observe that the generalizing models (P = 4,096 and P = 16,384) achieve a fraction
+of errors < 15% for τ > τ ∗. Therefore, these models present a dynamical phase τ ∗< τ < τmem
+where they achieve nearly perfect generalization before starting to memorize. This phase becomes
+longer with increasing P.
+4.4
+Partial generalization
+For P < P ∗, the diffusion model does not have enough training data to learn the deeper levels of
+the rules. However, it can still learn the lower levels of the rules up to layer ˜ℓ, with P > P ∗
+˜ℓ, as
+the sample complexity P ∗
+ℓincreases with ℓ. In this case, the model achieves partial generalization,
+8
+
+===== PDF PAGE 9 =====
+101
+102
+103
+104
+105
+training step 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+error at  = 1
+error at  = 2
+error at  = 3
+error at  = 4
+error at  = 5
+fraction of copies
+(a) Layer-wise learning in the RHM before memo-
+rization.
+102
+103
+104
+training step 
+0.00
+0.05
+0.10
+0.15
+H2(f 1, f 2)
+mem
+(b) Distance between the outputs of two diffusion
+models trained on disjoint training sets.
+Figure 6: Diffusion models achieve partial generalization in the RHM before memorizing. (a)
+The diffusion model learns progressively deeper RHM rules during training. However, the rules
+at the deepest level L = 5 are never learned, and the corresponding error decreases only when
+memorization occurs, since P = 1,024 is smaller than the sample complexity P ∗
+L ∼104. (b) Two
+diffusion models trained on disjoint training sets learn the same score function before the onset of
+memorization at τmem. Data for RHM parameters v = 16, m = 3, L = 5, s = 2.
+corresponding to learning to generate data with some local coherence but lacking a global one,
+consistent with observations of Figure 2.
+In Figure 6(a), a diffusion model is trained with P = 1,024 training points of an RHM with depth
+L = 5, while the sample complexity to learn all the rules is P ∗= P ∗
+L ≃104. During training, we
+generate data with the diffusion model and measure if they are compatible with the RHM rules at
+layer ℓ, measuring the corresponding fraction of errors. The figure shows that the errors at the layers
+ℓ≤3 decrease at training times depending on ℓ, in accordance with τℓ∝P ∗
+ℓ[25]. However, for
+ℓ> 3, the fractions of errors reach small values only at the onset of memorization τmem, when the
+fraction of copies of the training set goes up. This behavior implies that the model never learns
+the rules at the deeper levels ℓ= 4, 5 since the number of training data is smaller than the sample
+complexity, and generates data with global consistency only when it starts memorizing.
+log P1
+log P2
+log PL
+training set size P
+log
+1
+log
+2
+log
+L
+training time 
+Memorization
+Generalization
+Partial Generalization = 2
+Partial Generalization = 1
+mem
+P
+Figure 7: Phase diagram of generalization
+dynamics vs. memorization indicating dif-
+ferent training regimes as a function of train-
+ing time τ and sample complexity P: partial
+generalization, (full) generalization and mem-
+orization. Note that in the simplest version
+of the RHM, learning proceeds through well-
+defined steps, while it is smoother for natural
+data (or more realistic versions of the RHM
+[53]).
+Even when partially generalizing,
+diffusion
+models learn the same score function
+Even
+without achieving perfect generalization, diffusion
+models gradually improve their generalization during
+training – before memorizing – by capturing some
+structure of the underlying data distribution. In the
+RHM case, this corresponds to the lowest levels of
+the grammar. As a consequence, the score function
+that is learned during training before memorization is
+the same independently of the sampling of the train-
+ing set. In Figure 6(b), we train two diffusion models
+in the same setting as Figure 6(a) but with two dis-
+joint training sets. We measure the difference in their
+outputs – i.e., the components of the learned score –
+during training by computing their Hellinger distance,
+defined as H(p, q) = 2−1/2qPv
+i=1(√pi −√qi)2,
+with p = (pi)i∈[v] and q = (qi)i∈[v] two discrete
+probability distributions; this distance is averaged
+over the tokens and the sampling of the diffusion
+trajectories from 1,024 test data. We observe that
+the distance between the output functions of the two
+models, i.e., the learned scores – which determine
+the generative process – remains stable during
+training and only jumps to higher values when the
+models start memorizing their respective training
+9
+
+===== PDF PAGE 10 =====
+sets. Therefore, the two diffusion models learn very similar score functions when their generalization
+is gradually improving, before they overfit their respective empirical scores.
+5
+Related work
+Memorization in diffusion models
+Several works have documented the tendency of diffusion
+models to memorize the training data [16, 17, 54, 55]. [26] proposes a mitigation strategy based on
+differentially private stochastic gradient descent, while [28] introduces an anti-memorization guidance.
+[21, 23, 56] interpret memorization as an overfitting phenomenon driven by the large capacity of
+overparameterized neural networks. In particular, [23] shows that underparameterized models trained
+on disjoint training sets learn the same score function, therefore generalizing by sampling the same
+target distribution; in contrast, overparameterized models memorize their respective training data.
+[57, 58] find that during their initial training phases, overparameterized diffusion models have an
+inductive bias towards learning a Gaussian approximation of data. This process achieves a primitive
+form of partial generalization by capturing some data’s low-dimensional structure before the model
+begins to fully memorize the training points. Our results extend this viewpoint to later training stages
+and higher-order data statistics. Additionally, we quantify the timescale at which models transition
+from generalizing to memorizing.
+Theory of diffusion
+Under mild assumptions on the data distribution, diffusion models achieve
+a sample complexity scaling exponentially with data dimension [59, 60]. The sampling and mem-
+orization process has been studied for Gaussian mixtures and linear manifolds using the empiri-
+cal score function [61–65]. Learning the empirical score function was studied in [66–68]. The
+memorization-generalization trade-off in terms of model capacity with random features was studied
+in [69]. Generalization bounds for early-stopped random features learning simple score functions
+were derived in [70]. [71, 62, 61] show for Gaussian mixtures the existence of a characteristic noise
+level during the diffusion process where the single modes merge into one. In [61], another noise
+scale is identified, corresponding to short diffusion times, where the backward process collapses into
+the single training data points, associated with memorization. [72] studies generalization in vision
+diffusion models through the inductive bias of translational equivariance and locality.
+Diffusion models for hierarchical data
+For hierarchically structured data, [50, 51] show that the
+reconstruction of high-level features undergoes a phase transition in the diffusion process, while
+low-level features vary smoothly around the same noise scale. For the same data model, [25] shows
+that U-Net diffusion models learn to generate these data by sequentially learning different levels of
+the grammatical rules, with a sample complexity polynomial in data dimension. [50] shows that
+the Bayes-optimal denoising algorithm for hierarchical data corresponds to belief propagation; [73]
+shows that U-Net architectures are able to efficiently approximate this algorithm. Moreover, [74]
+shows that transformers can implement the same algorithm.
+Overfitting in supervised learning vs. diffusion models
+Although the dynamics of first gener-
+alizing and then overfitting to the training data is observed also in some supervised learning settings
+[75, 76] – where recent theoretical progress has been made [77] – these problems have fundamental
+differences with memorization in diffusion models, i.e., learning the empirical score. For instance, in
+a typical regression task, a model fits a target function whose observations are assumed to be corrupted
+by external, unstructured noise. In the diffusion context, instead, the empirical score at low noise levels
+significantly differs from the population one: the corresponding “noise”, i.e., the difference between
+the two functions, is inherent to the training set, structured, and defined over the entire domain of the
+inputs xt. An overparameterized model converging to the empirical target, therefore, memorizes the
+training set and cannot generalize. This contrasts with noisy regression, where overparameterization
+can surprisingly be beneficial, leading to double descent [78, 79] and benign overfitting [80].
+6
+Conclusion
+We have argued that the learning dynamics in diffusion models is best understood as a competition
+between time scales, as summarized in Figure 7. A larger training set implies a larger memorization
+time, thus opening a larger time window to generate more coherent data. These results open new
+10
+
+===== PDF PAGE 11 =====
+avenues for fine control of copyright issues, using early stopping to avoid memorization and building
+backward flows that are nearly independent of the training set, as we demonstrated.
+Acknowledgments
+We thank Florentin Guth and Daniel James Korchinski for providing feedback on this work. After
+completing our manuscript, we became aware of a contemporaneous work by Tony Bonnaire, Raphael
+Urfin, Giulio Biroli, and Marc Mézard, which arrives at similar conclusions.
+References
+[1] Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsuper-
+vised learning using nonequilibrium thermodynamics. In International conference on machine
+learning, pages 2256–2265. PMLR, 2015.
+[2] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. Advances
+in neural information processing systems, 33:6840–6851, 2020.
+[3] Prafulla Dhariwal and Alexander Nichol. Diffusion models beat gans on image synthesis.
+Advances in neural information processing systems, 34:8780–8794, 2021.
+[4] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer. High-
+resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF
+conference on computer vision and pattern recognition, pages 10684–10695, 2022.
+[5] Aditya Ramesh, Prafulla Dhariwal, Alex Nichol, Casey Chu, and Mark Chen. Hierarchical
+text-conditional image generation with clip latents. arXiv preprint arXiv:2204.06125, 1(2):3,
+2022.
+[6] Jonathan Ho, Tim Salimans, Alexey Gritsenko, William Chan, Mohammad Norouzi, and
+David J Fleet. Video diffusion models. Advances in Neural Information Processing Systems,
+35:8633–8646, 2022.
+[7] Andreas Blattmann, Tim Dockhorn, Sumith Kulal, Daniel Mendelevitch, Maciej Kilian, Do-
+minik Lorenz, Yam Levi, Zion English, Vikram Voleti, Adam Letts, et al. Stable video diffusion:
+Scaling latent video diffusion models to large datasets. arXiv preprint arXiv:2311.15127, 2023.
+[8] Jacob Austin, Daniel D Johnson, Jonathan Ho, Daniel Tarlow, and Rianne Van Den Berg.
+Structured denoising diffusion models in discrete state-spaces. Advances in Neural Information
+Processing Systems, 34:17981–17993, 2021.
+[9] Subham Sekhar Sahoo, Marianne Arriola, Yair Schiff, Aaron Gokaslan, Edgar Marroquin,
+Justin T Chiu, Alexander Rush, and Volodymyr Kuleshov. Simple and effective masked
+diffusion language models. arXiv preprint arXiv:2406.07524, 2024.
+[10] Jiaxin Shi, Kehang Han, Zhe Wang, Arnaud Doucet, and Michalis K Titsias. Simplified and
+generalized masked diffusion for discrete data. arXiv preprint arXiv:2406.04329, 2024.
+[11] Shen Nie, Fengqi Zhu, Zebin You, Xiaolu Zhang, Jingyang Ou, Jun Hu, Jun Zhou, Yankai
+Lin, Ji-Rong Wen, and Chongxuan Li. Large language diffusion models. arXiv preprint
+arXiv:2502.09992, 2025.
+[12] Joseph L Watson, David Juergens, Nathaniel R Bennett, Brian L Trippe, Jason Yim, Helen E
+Eisenach, Woody Ahern, Andrew J Borst, Robert J Ragotte, Lukas F Milles, et al. De novo
+design of protein structure and function with rfdiffusion. Nature, 620(7976):1089–1100, 2023.
+[13] Amira Alakhdar, Barnabas Poczos, and Newell Washburn. Diffusion models in de novo drug
+design. Journal of Chemical Information and Modeling, 64(19):7238–7256, 2024.
+[14] Yang Song and Stefano Ermon. Generative modeling by estimating gradients of the data
+distribution. Advances in neural information processing systems, 32, 2019.
+11
+
+===== PDF PAGE 12 =====
+[15] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and
+Ben Poole. Score-based generative modeling through stochastic differential equations. arXiv
+preprint arXiv:2011.13456, 2020.
+[16] Nicolas Carlini, Jamie Hayes, Milad Nasr, Matthew Jagielski, Vikash Sehwag, Florian Tramer,
+Borja Balle, Daphne Ippolito, and Eric Wallace. Extracting training data from diffusion models.
+In 32nd USENIX Security Symposium (USENIX Security 23), pages 5253–5270, 2023.
+[17] G Somepalli, V Singla, M Goldblum, J Geiping, and T Goldstein. Diffusion art or digital
+forgery. Investigating Data Replication in Diffusion Models, 2022.
+[18] Yixin Wu, Ning Yu, Zheng Li, Michael Backes, and Yang Zhang. Membership inference attacks
+against text-to-image generation models. arXiv preprint arXiv:2210.00968, 2022.
+[19] Tomoya Matsumoto, Takayuki Miura, and Naoto Yanai. Membership inference attacks against
+diffusion models. In 2023 IEEE Security and Privacy Workshops (SPW), pages 77–83. IEEE,
+2023.
+[20] Hailong Hu and Jun Pang.
+Membership inference of diffusion models.
+arXiv preprint
+arXiv:2301.09956, 2023.
+[21] TaeHo Yoon, Joo Young Choi, Sehyun Kwon, and Ernest K Ryu. Diffusion probabilistic models
+generalize when they fail to memorize. In ICML 2023 Workshop on Structured Probabilistic
+Inference & Generative Modeling, 2023.
+[22] Huijie Zhang, Jinfan Zhou, Yifu Lu, Minzhe Guo, Peng Wang, Liyue Shen, and Qing Qu.
+The emergence of reproducibility and generalizability in diffusion models. arXiv preprint
+arXiv:2310.05264, 2023.
+[23] Zahra Kadkhodaie, Florentin Guth, Eero P Simoncelli, and Stéphane Mallat. Generalization
+in diffusion models arises from geometry-adaptive harmonic representations. arXiv preprint
+arXiv:2310.02557, 2023.
+[24] Alexander Quinn Nichol and Prafulla Dhariwal. Improved denoising diffusion probabilistic
+models. In International Conference on Machine Learning, pages 8162–8171. PMLR, 2021.
+[25] Alessandro Favero, Antonio Sclocchi, Francesco Cagnetta, Pascal Frossard, and Matthieu Wyart.
+How compositional generalization and creativity improve as diffusion models are trained. arXiv
+preprint arXiv:2502.12089, 2025.
+[26] Tim Dockhorn, Tianshi Cao, Arash Vahdat, and Karsten Kreis. Differentially private diffusion
+models. arXiv preprint arXiv:2210.09929, 2022.
+[27] Nikhil Vyas, Sham M Kakade, and Boaz Barak. On provable copyright protection for generative
+models. In International conference on machine learning, pages 35277–35299. PMLR, 2023.
+[28] Chen Chen, Daochang Liu, and Chang Xu. Towards memorization-free diffusion models. In
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages
+8425–8434, 2024.
+[29] Emiel Hoogeboom, Didrik Nielsen, Priyank Jaini, Patrick Forré, and Max Welling. Argmax
+flows and multinomial diffusion: Learning categorical distributions. Advances in Neural
+Information Processing Systems, 34:12454–12465, 2021.
+[30] Olaf Ronneberger, Philipp Fischer, and Thomas Brox.
+U-net: Convolutional networks
+for biomedical image segmentation. In Medical image computing and computer-assisted
+intervention–MICCAI 2015: 18th international conference, Munich, Germany, October 5-9,
+2015, proceedings, part III 18, pages 234–241. Springer, 2015.
+[31] Tim Salimans, Andrej Karpathy, Xi Chen, and Diederik P Kingma. Pixelcnn++: Improving the
+pixelcnn with discretized logistic mixture likelihood and other modifications. arXiv preprint
+arXiv:1701.05517, 2017.
+12
+
+===== PDF PAGE 13 =====
+[32] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
+Lukasz Kaiser, and Illia Polosukhin. Attention is All you Need. In Advances in Neural
+Information Processing Systems, volume 30. Curran Associates, Inc., 2017.
+[33] Shankar Krishnan, Ying Xiao, and Rif A Saurous. Neumann optimizer: A practical optimization
+algorithm for deep neural networks. arXiv preprint arXiv:1712.03298, 2017.
+[34] Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade Gordon, Ross Wightman,
+Mehdi Cherti, Theo Coombes, Aarush Katta, Clayton Mullis, Mitchell Wortsman, et al. Laion-
+5b: An open large-scale dataset for training next generation image-text models. Advances in
+neural information processing systems, 35:25278–25294, 2022.
+[35] Ziwei Liu, Ping Luo, Xiaogang Wang, and Xiaoou Tang. Large-scale celebfaces attributes
+(celeba) dataset. Retrieved August, 15(2018):11, 2018.
+[36] Tony Bonnaire, Raphaël Urfin, Giulio Biroli, and Marc Mézard.
+Why diffusion models
+don’t memorize: The role of implicit dynamical regularization in training. arXiv preprint
+arXiv:2505.17638, 2025.
+[37] Arthur Jacot, Franck Gabriel, and Clément Hongler. Neural tangent kernel: Convergence
+and generalization in neural networks. Advances in Neural Information Processing Systems,
+31:8580–8589, 2018.
+[38] Lenaic Chizat, Edouard Oyallon, and Francis Bach. On lazy training in differentiable program-
+ming. In Advances in Neural Information Processing Systems, pages 2937–2947, 2019.
+[39] Noam Chomsky. Three models for the description of language. IRE Transactions on information
+theory, 2(3):113–124, 1956.
+[40] Grzegorz Rozenberg and Arto Salomaa. Handbook of Formal Languages. Springer, January
+1997.
+[41] Geoffrey K. Pullum and Gerald Gazdar. Natural languages and context-free languages. Linguist.
+Philos., 4(4):471–504, 1982.
+[42] Aravind K. Joshi. Tree adjoining grammars: How much context-sensitivity is required to
+provide reasonable structural descriptions? In David R. Dowty, Lauri Karttunen, and Arnold M.
+Zwicky, editors, Natural Language Parsing: Psychological, Computational, and Theoretical
+Perspectives, pages 206–250. Cambridge Univ. Press, Cambridge, UK, 1985.
+[43] Christopher D. Manning and Hinrich Schütze. Foundations of Statistical Natural Language
+Processing. MIT Press, Cambridge, MA, 1999.
+[44] Ulf Grenander. Elements of pattern theory. JHU Press, 1996.
+[45] Ya Jin and Stuart Geman. Context and hierarchy in a probabilistic image model. In 2006 IEEE
+computer society conference on computer vision and pattern recognition (CVPR’06), volume 2,
+pages 2145–2152. IEEE, 2006.
+[46] Jeffrey Mark Siskind, J Sherman, Ilya Pollak, Mary P Harper, and Charles A Bouman. Spatial
+random tree grammars for modeling hierarchal structure in images with regions of arbitrary
+shape. IEEE Transactions on Pattern Analysis and Machine Intelligence, 29(9):1504–1519,
+2007.
+[47] Francesco Cagnetta, Leonardo Petrini, Umberto M. Tomasini, Alessandro Favero, and Matthieu
+Wyart. How deep neural networks learn compositional data: The random hierarchy model.
+Phys. Rev. X, 14:031001, Jul 2024.
+[48] Francesco Cagnetta and Matthieu Wyart. Towards a theory of how the structure of language
+is acquired by deep neural networks. In The Thirty-eighth Annual Conference on Neural
+Information Processing Systems, 2024.
+[49] Marc Mezard and Andrea Montanari. Information, physics, and computation. Oxford University
+Press, 2009.
+13
+
+===== PDF PAGE 14 =====
+[50] Antonio Sclocchi, Alessandro Favero, and Matthieu Wyart. A phase transition in diffusion
+models reveals the hierarchical nature of data. arXiv preprint arXiv:2402.16991, 2024.
+[51] Antonio Sclocchi, Alessandro Favero, Noam Itzhak Levi, and Matthieu Wyart. Probing the
+latent hierarchical structure of data via diffusion models. arXiv preprint arXiv:2410.13770,
+2024.
+[52] Greg Yang and Edward J Hu. Feature learning in infinite-width neural networks. arXiv preprint
+arXiv:2011.14522, 2020.
+[53] Francesco Cagnetta, Hyunmo Kang, and Matthieu Wyart. Learning curves theory for hierarchi-
+cally compositional data with power-law distributed features. arXiv preprint arXiv:2505.07067,
+2025.
+[54] Gowthami Somepalli, Vasu Singla, Micah Goldblum, Jonas Geiping, and Tom Goldstein.
+Understanding and mitigating copying in diffusion models. Advances in Neural Information
+Processing Systems, 36:47783–47803, 2023.
+[55] Wenhao Wang, Yifan Sun, Zongxin Yang, Zhengdong Hu, Zhentao Tan, and Yi Yang. Replica-
+tion in visual diffusion models: A survey and outlook. CoRR, 2024.
+[56] Xiangming Gu, Chao Du, Tianyu Pang, Chongxuan Li, Min Lin, and Ye Wang. On memorization
+in diffusion models. Transactions on Machine Learning Research, 2025.
+[57] Xiang Li, Yixiang Dai, and Qing Qu. Understanding generalizability of diffusion models
+requires rethinking the hidden gaussian structure. Advances in neural information processing
+systems, 37:57499–57538, 2024.
+[58] Binxu Wang and John J Vastola. The unreasonable effectiveness of gaussian score approximation
+for diffusion models and its applications. arXiv preprint arXiv:2412.09726, 2024.
+[59] Adam Block, Youssef Mroueh, and Alexander Rakhlin. Generative modeling with denoising
+auto-encoders and langevin sampling. arXiv preprint arXiv:2002.00107, 2020.
+[60] Kazusato Oko, Shunta Akiyama, and Taiji Suzuki. Diffusion models are minimax optimal
+distribution estimators. arXiv preprint arXiv:2303.01861, 2023.
+[61] Giulio Biroli, Tony Bonnaire, Valentin de Bortoli, and Marc Mézard. Dynamical regimes of
+diffusion models, 2024.
+[62] Luca Ambrogioni. The statistical thermodynamics of generative diffusion models. arXiv
+preprint arXiv:2310.17467, 2023.
+[63] Beatrice Achilli, Enrico Ventura, Gianluigi Silvestri, Bao Pham, Gabriel Raya, Dmitry Krotov,
+Carlo Lucibello, and Luca Ambrogioni. Losing dimensions: Geometric memorization in
+generative diffusion. arXiv preprint arXiv:2410.08727, 2024.
+[64] Beatrice Achilli, Luca Ambrogioni, Carlo Lucibello, Marc Mézard, and Enrico Ventura. Memo-
+rization and generalization in generative diffusion under the manifold hypothesis. arXiv preprint
+arXiv:2502.09578, 2025.
+[65] Marvin Li and Sitan Chen. Critical windows: non-asymptotic theory for feature emergence
+in diffusion models. In International Conference on Machine Learning, pages 27474–27498.
+PMLR, 2024.
+[66] Hugo Cui, Florent Krzakala, Eric Vanden-Eijnden, and Lenka Zdeborová. Analysis of learning a
+flow-based generative model from limited sample complexity. arXiv preprint arXiv:2310.03575,
+2023.
+[67] Kulin Shah, Sitan Chen, and Adam Klivans. Learning mixtures of gaussians using the ddpm
+objective. Advances in Neural Information Processing Systems, 36:19636–19649, 2023.
+[68] Yinbin Han, Meisam Razaviyayn, and Renyuan Xu. Neural network-based score estimation in
+diffusion models: Optimization and generalization. arXiv preprint arXiv:2401.15604, 2024.
+14
+
+===== PDF PAGE 15 =====
+[69] Anand Jerry George, Rodrigo Veiga, and Nicolas Macris. Denoising score matching with
+random features: Insights on diffusion models from precise learning curves. arXiv preprint
+arXiv:2502.00336, 2025.
+[70] Puheng Li, Zhong Li, Huishuai Zhang, and Jiang Bian. On the generalization properties of
+diffusion models. Advances in Neural Information Processing Systems, 36:2097–2127, 2023.
+[71] Giulio Biroli and Marc Mézard. Generative diffusion in very large dimensions. arXiv preprint
+arXiv:2306.03518, 2023.
+[72] Mason Kamb and Surya Ganguli. An analytic theory of creativity in convolutional diffusion
+models. arXiv preprint arXiv:2412.20292, 2024.
+[73] Song Mei. U-nets as belief propagation: Efficient classification, denoising, and diffusion in
+generative hierarchical models. arXiv preprint arXiv:2404.18444, 2024.
+[74] Jérôme Garnier-Brun, Marc Mézard, Emanuele Moscato, and Luca Saglietti. How transformers
+learn structured data: insights from hierarchical filtering. arXiv preprint arXiv:2408.15138,
+2024.
+[75] Madhu S. Advani, Andrew M. Saxe, and Haim Sompolinsky. High-dimensional dynamics of
+generalization error in neural networks. Neural Networks, September 2020.
+[76] Preetum Nakkiran, Gal Kaplun, Yamini Bansal, Tristan Yang, Boaz Barak, and Ilya Sutskever.
+Deep double descent: Where bigger models and more data hurt. Journal of Statistical Mechanics:
+Theory and Experiment, 2021(12):124003, 2021.
+[77] Andrea Montanari and Pierfrancesco Urbani. Dynamical decoupling of generalization and
+overfitting in large two-layer networks. arXiv preprint arXiv:2502.21269, 2025.
+[78] S. Spigler, M. Geiger, S. d’Ascoli, L. Sagun, G. Biroli, and M. Wyart. A jamming transition
+from under- to over-parametrization affects generalization in deep learning. Journal of Physics
+A: Mathematical and Theoretical, 52(47):474001, October 2019. Publisher: IOP Publishing.
+[79] Mikhail Belkin, Daniel Hsu, Siyuan Ma, and Soumik Mandal. Reconciling modern machine-
+learning practice and the classical bias–variance trade-off. Proceedings of the National Academy
+of Sciences, 116(32):15849–15854, 2019.
+[80] Peter L Bartlett, Philip M Long, Gábor Lugosi, and Alexander Tsigler. Benign overfitting in
+linear regression. Proceedings of the National Academy of Sciences, 117(48):30063–30070,
+2020.
+[81] Ed Pizzi, Sreya Dutta Roy, Sugosh Nagavara Ravindra, Priya Goyal, and Matthijs Douze. A self-
+supervised descriptor for image copy detection. In Proceedings of the IEEE/CVF Conference
+on Computer Vision and Pattern Recognition, pages 14532–14542, 2022.
+[82] Song Mei, Andrea Montanari, and Phan-Minh Nguyen. A mean field view of the landscape of
+two-layer neural networks. Proceedings of the National Academy of Sciences, 115(33):E7665–
+E7671, August 2018. Publisher: National Academy of Sciences Section: PNAS Plus.
+15
+
+===== PDF PAGE 16 =====
+Supplementary Material
+A
+Experimental Details
+A.1
+Vision diffusion models
+iDDPM
+In our experiments, we utilize Improved Denoising Diffusion Probabilistic Models (iD-
+DPMs) for image generation on the CIFAR-10 and CelebA datasets, following the codebase of
+Improved DDPMs [24]: https://github.com/openai/improved-diffusion. Specifically, we
+train iDDPMs with 256 and 128 channels for CIFAR-10 and CelebA, respectively. Our models are
+implemented using a U-Net architecture with attention layers and 3 resolution blocks. We use 4, 000
+diffusion steps, a cosine noise schedule, a learning rate of 10−4, and a batch size of 128. Training is
+performed for 262,144 steps using a hybrid objective [24] and the Adam optimizer with dropout of 0.3.
+Stable Diffusion
+We fine-tune Stable Diffusion v2.12 using the codebase https://github.com/
+somepago/DCR from [17, 54]. The model is pre-trained on LAION-2B [34] and consists of a latent
+diffusion U-Net architecture with frozen text and autoencoder components. We fine-tune the U-Net
+for 262,144 steps on 8,192 images from the LAION-10k dataset at resolution 256 × 256, using a
+batch size of 16. We employ a constant learning rate of 5 × 10−6 with 5,000 warm-up steps and use
+a single image-caption pair per datapoint.
+A.2
+Language diffusion models
+MD4
+Our experiments leverage the codebase of MD4 [10], available at https://github.com/
+google-deepmind/md4. MD4 is a masked diffusion model that progressively transforms tokens
+into a special [MASK] token as training proceeds. Specifically, at each timestep t, each non-masked
+token has a probability βt of being replaced by [MASK]. The forward transition process for this
+model can be formally described using a one-hot encoding of the |V| + 1 states, where the transition
+matrix is defined as:
+Qt = (1 −βt)I + βt1e⊤
+M.
+(3)
+Here I the identity matrix, 1 a vector of ones and eM the one-hot-encoding vector corresponding to
+the [MASK] symbol. The entries [Qt]ij of Qt indicate the probability of the token xk transitioning
+from state i to state j, i.e., [Qt]ij = q(xk,t = j|xk,t−1 = i). At the final timestep T, all tokens are
+fully masked, i.e., xk,T = [MASK] for every k ∈[dim(x)]. For our experiments, we train MD4
+using a batch size of 64 and a context size of 256. All other hyperparameters are kept consistent with
+the original MD4 implementation.
+A.3
+Random Hierarchy Model
+D3PM
+For our experiments on the Random Hierarchy Model, we employ convolutional U-Net-
+based Discrete Denoising Diffusion Probabilistic Models (D3PMs) [8]. These models are tasked to
+predict the conditional expectation E(x0|xt), which parameterizes the reverse diffusion process. In
+particular, we consider a uniform diffusion process [29, 8], where, at each timestep t, tokens can
+either stay unchanged or, with probability βt, can transition to some other symbol in the vocabulary.
+One-hot encoding the |V| states, the forward transition matrix formally reads:
+Qt = (1 −βt)I + βt
+|V| 11⊤.
+(4)
+Here I is the identity and 1 is a vector of all ones. At the final time T, the stationary distribution is
+uniform over the vocabulary. The convolutional U-Net has L resolution blocks in both the encoder and
+decoder parts. Each block features the following specification: filter size s, stride s, 8,192 channels
+per layer, GeLU non-linearity, skip connections linking encoder and decoder blocks of matching
+resolution to preserve multi-scale feature information. We include embedding and unembedding
+layers implemented as convolutional layers with a filter size of 1. This architecture is specifically
+aligned with the RHM’s hierarchical structure, where the filter size and stride of s in the convolutional
+layers mirror the branching factor of the RHM tree. While this design provides practical benefits in
+2https://huggingface.co/stabilityai/stable-diffusion-2-1
+16
+
+===== PDF PAGE 17 =====
+102
+103
+104
+105
+training step 
+3 × 10
+1
+4 × 10
+1
+6 × 10
+1
+loss
+mem
+Validation
+Train
+(a) Generalization-memorization dynamics.
+8,192
+262,144
+training step 
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+similarity score
+LAION-10k
+(b) Similarity scores.
+Figure 8: memorization dynamics in Stable Diffusion. (a) Training and validation losses as a function
+of training step τ for Stable Diffusion fine-tuned on LAION-10k. Both losses initially decrease,
+indicating generalization, and diverge at the memorization onset time τmem. (b) Cosine similarity
+scores between SSDC ResNet embedding for generated images and their nearest training neighbor
+at early stopping (τ = 8,192) and final training (τ = 262,144). The dashed line indicates the mean
+similarity score between the closest LAION-10k samples. The sharp increase at late training signals
+memorization.
+Figure 9: Replicates generated by Stable Diffusion. Example generations (left) from the final
+training checkpoint (τ = 262,144) with similarity score > 0.5 to their nearest neighbor in the training
+set (right), confirming memorization.
+terms of training efficiency, it should not alter the fundamental sample complexity of the problem, as
+long as the network is sufficiently deep and expressive [47]. The networks are initialized with the
+maximal-update (µP) parameterization [52], ensuring stable feature learning even in the large-width
+regime. We train with Adam with a learning rate of 0.1 and a batch size of 32. For the diffusion
+process, we adopt a linear schedule with 1,000 noise levels.
+A.4
+Hardware
+All experiments are run on a single NVIDIA H100 SXM5 GPU with 94GB of RAM.
+B
+Experiments on Stable Diffusion
+We consider Stable Diffusion v2.1 [30], a text-to-image latent diffusion model pre-trained on the
+LAION-2B dataset [34]. We fine-tune this model for 262,144 steps on 8, 192 samples from the
+LAION-10k dataset [54], using a resolution of 256 × 256. During fine-tuning, the text encoder and
+encoder-decoder components are kept frozen. We use a held-out validation set of 1,024 image-text
+pairs to monitor the validation loss. Full training details are provided in Appendix A.
+To quantify memorization, we follow the protocol of [17] and compute a similarity score for each
+generated image based on the cosine similarity of SSCD (Self-Supervised Descriptor for Image Copy
+Detection) [81] features, extracted from a ResNet-50 model. Each score is defined as the similarity
+between a generated image and its nearest neighbor in the training set.
+17
+
+===== PDF PAGE 18 =====
+104
+105
+training step 
+101
+102
+FID score
+mem
+Figure 10: FID dynamics. Fréchet Inception Distance (FID) as a function of training step τ for
+a DDPM trained on 16,384 CIFAR-10 images. The FID initially decreases, reflecting improved
+generation quality and diversity, but begins to rise past τmem as the model starts copying training
+examples.
+Figure 8(a) plots the training and validation losses as a function of the training step τ. As observed
+in the main text, initially, both losses decrease, indicating generalization: the model output aligns
+increasingly with the population score. At a critical time τmem, the validation loss diverges from the
+training loss, marking the onset of memorization. Early stopping at this point can prevent the model
+from entering the memorization phase.
+In Figure 8(b), we report the similarity scores for 200 generated images at two checkpoints: early
+stopping (τ = 8,192) and the final training step (τ = 262,144). For reference, we also show the
+similarity score for real images from the full LAION-10k dataset (black dashed line). At the early
+stopping time, the generated images exhibit diversity similar to that of the dataset. In contrast, by the
+end of training, the similarity score increases by a factor of two, indicating memorization.
+Finally, in Figure 9, we show representative examples of replicated samples (similarity score > 0.5)
+from the final checkpoint, confirming that Stable Diffusion memorized part of its training set.
+C
+Further Results on iDDPMs
+FID dynamics
+Figure 10 reports the Fréchet Inception Distance (FID) as a function of the training
+step τ for a DDPM trained on 16,384 CIFAR-10 images, consistent with the setup in Figure 1. At
+each checkpoint, we generate 32,768 samples and compute the FID against the union of CIFAR-10
+standard train and test splits. The FID captures both the quality and diversity of the generated images.
+As training progresses, the FID decreases monotonically until the memorization onset time τmem,
+after which it gradually increases – reflecting a loss in sample diversity as the model begins replicating
+its training data.
+Further examples of generations
+Figure 11 presents further images sampled from the early
+stopped iDDPM trained on 16,384 CIFAR-10 images.
+Examples of copies
+Figure 12 shows examples of generated samples (top row) and their nearest
+neighbors in the training set (bottom row) for the iDDPM trained on 8,192 CIFAR-10 images. These
+examples are taken from the end of training, within the memorization phase, where the model begins
+to replicate its training data.
+D
+Further Results on the RHM
+Production rules sampling
+Figure 13 shows the mean occurrence and centered covariance of the
+production rules sampled by a diffusion model trained on P = 16,384 strings (v = 16, m = 4,
+L = 3, s = 2). The model, trained with early stopping (τ = 32,768), samples all RHM rules with a
+mean occurrence that is approximately uniform (up to sampling noise); likewise, the correlations
+between the cooccurrence of sampled rules show that they are sampled approximately independently.
+Therefore, the generated data reproduce the correct data distribution of the RHM, corresponding to
+generalization.
+18
+
+===== PDF PAGE 19 =====
+Figure 11: CIFAR-10 samples generated with early-stopped model. Additional samples from
+the iDDPM trained on 16,384 CIFAR-10 images, generated at the early stopping point before
+memorization. The model produces diverse and high-quality images without replicating the training
+data.
+Figure 12: Examples of copies on CIFAR-10. Top: samples generated by the iDDPM trained on
+8,192 CIFAR-10 images at the end of training. Bottom: nearest neighbors from the training set. The
+model reproduces specific training examples, indicating memorization.
+19
+
+===== PDF PAGE 20 =====
+0
+100
+200
+300
+400
+Rule index
+10
+2
+Mean occurrence
+1/(vm)
+0
+50
+100
+150
+200
+250
+300
+350
+400
+Rule index
+0
+50
+100
+150
+200
+250
+300
+350
+400
+Rule index
+10
+5
+10
+4
+10
+3
+10
+2
+10
+1
+100
+Figure 13: Sampling of RHM production rules. Mean occurrence (left) and centered covariance
+(right) of the production rules sampled by a diffusion model trained on P = 16,384 strings (v = 16,
+m = 4, L = 3, s = 2). The model, trained with early stopping (τ = 32,768), samples all RHM
+rules with a mean occurrence that is approximately uniform (up to sampling noise). Likewise, the
+correlations between the cooccurrence of sampled rules show that they are sampled approximately
+independently.
+E
+Scaling argument for the memorization time of kernel methods
+In this section, we analyze the training time τmem required for a kernel to learn the score of P well-
+separated training points in the low-noise limit for a fixed noise level. This timescale corresponds to
+the one for diffusion models to memorize the training data.
+Setting
+We assume the empirical data distribution is the Gaussian mixture
+pσ(x) = 1
+P
+P
+X
+j=1
+N(x|xj, σ2Id),
+(5)
+where the xj ∈Rd are P distinct training points. We work in a low-noise limit, where the noise
+standard deviation σ is much smaller than the typical distance between data points, i.e., σ ≪
+minj̸=i ∥xi −xj∥. This ensures that the Gaussian components have negligible overlap, so pσ is
+approximately supported on P disjoint neighborhoods.
+We consider learning the score ∇x log pσ(x) at fixed σ with kernel regression. The dynamics of
+learning is governed by the spectral properties of the integral operator of the kernel K, defined as
+(Kf)(x) =
+Z
+K(x, y)f(y)dpσ(y),
+(6)
+with respect to the measure pσ. The learning time for a specific mode (eigenfunction) of the data
+scales inversely with the corresponding eigenvalue of this operator.
+We assume that the kernel K(x, y) can be expanded for small distances r = ∥x −y∥as K(x, y) =
+κ(r) = 1 + Crν + O(rν+1) as r →0. For instance, the Neural Tangent Kernel (NTK) [37] of neural
+networks with ReLU activations corresponds to ν = 1, while their Random Feature Kernel (RFK)
+corresponds to ν = 2.
+Local eigenfunctions
+In the low-noise limit, the score in the vicinity of a data point xi is dominated
+by the i-th Gaussian component:
+∇x log pσ(x) ≃∇x log
+ 1
+P N(x|xi, σ2Id)
+
+= −x −xi
+σ2
+.
+(7)
+This shows that the target function is locally linear and motivates our ansatz of approximate eigen-
+functions to probe the spectrum of K. In particular, we construct a set of vector-valued functions
+{ψi}i∈[P ] centered at each data point xi:
+ψi(x) ≡(x −xi) R
+∥x −xi∥
+σ
+
+,
+(8)
+20
+
+===== PDF PAGE 21 =====
+where R : [0, ∞) →R is a smooth cutoff function (e.g., R(r) = e−r) that decays rapidly for
+r ≳1. The support of ψi is thus concentrated in the ball Bσ(xi). These functions are asymptotically
+orthogonal in L2(pσ): ⟨ψi, ψj⟩L2(pσ) = O(e−c/σ2) for i̸ = j.
+Eigenvalues and memorization time
+We compute the eigenvalue λi associated with each ψi:
+λi = ⟨ψi, Kψi⟩L2(pσ)
+∥ψi∥2
+L2(pσ)
+.
+(9)
+The squared norm is dominated by the integral over the i-th component of the mixture:
+∥ψi∥2
+L2(pσ) =
+Z
+∥ψi(x)∥2pσ(x)ddx ≃1
+P
+Z
+∥x−xi∥2R2
+∥x −xi∥
+σ
+
+N(x|xi, σ2Id)ddx. (10)
+Changing to local coordinates u = x−xi
+σ
+:
+∥ψi∥2
+L2(pσ) ≃σ2
+P
+Z
+∥u∥2R2(∥u∥)N(u|0, Id)ddu ∝σ2
+P ,
+(11)
+where the proportionality constant depends only on d and the choice of R. The numerator is given by
+the quadratic form
+⟨ψi, Kψi⟩L2(pσ) =
+ZZ
+ψi(x) · ψi(y)K(x, y)pσ(x)pσ(y) ddx ddy.
+(12)
+Given the localized support of ψi and the non-overlapping assumption for the Gaussians, the integral
+is non-negligible only when both x and y are near xi:
+⟨ψi, Kψi⟩L2(pσ) ≃1
+P 2
+ZZ
+ψi(x) · ψi(y)K(x, y)N(x|xi, σ2Id)N(y|xi, σ2Id) ddx ddy.
+(13)
+We now substitute the expansion of the kernel near the origin:
+⟨ψi, Kψi⟩L2(pσ) ≃1
+P 2
+Z
+ψi(x)N(x|xi, σ2Id)ddx
+
+·
+Z
+ψi(y)N(y|xi, σ2Id)ddy
+
+(14)
++ C
+P 2
+ZZ
+ψi(x) · ψi(y)∥x −y∥νN(x|xi, σ2Id)N(y|xi, σ2Id) ddx ddy.
+The first term vanishes because ψi(x) is an odd function with respect to the center xi, while
+N(x|xi, σ2Id) is even. The integral is therefore zero. The leading contribution comes from the
+second term. We again change variables to u = (x −xi)/σ and v = (y −xi)/σ obtaining
+⟨ψi, Kψi⟩L2(pσ) ≃C
+P 2
+ZZ
+σuR(∥u∥) · σvR(∥v∥)σν∥u −v∥νN(u|0, Id)N(v|0, Id) ddu ddv.
+(15)
+Collecting the powers of σ we find the scaling:
+⟨ψi, Kψi⟩L2(pσ) ∝σ2+ν
+P 2 .
+(16)
+The remaining double integral is a dimensionless constant. Combining the numerator and denominator,
+we obtain the eigenvalue scaling:
+λi ∝σ2+ν/P 2
+σ2/P
+= σν
+P .
+(17)
+The training time required to learn these localized eigenfunction scales as the inverse of the eigenvalue.
+This defines the memorization timescale
+τmem ∼λ−1
+i
+∼P
+σν .
+(18)
+This argument extends the results from contemporaneous work on random features in the proportional
+regime (number of neurons proportional to the input dimension) [36] to any isotropic kernels. Our
+derivation relies only on the local behavior of the kernel and shows that random features and neural
+networks in the NTK limit have different behaviors.
+21
+
+===== PDF PAGE 22 =====
+10
+2
+10
+1
+100
+101
+102
+103
+104
+105
+10
+2
+10
+1
+100
+101
+102
+103
+104
+Loss
+100
+101
+102
+103
+104
+105
+106
+training step 
+10
+2
+10
+1
+100
+101
+102
+103
+Loss
+Training Loss
+Test Loss
+2 = 2.2e-04
+2 = 5.2e-04
+2 = 1.1e-03
+2 = 2.2e-03
+2 = 4.4e-03
+2 = 8.4e-03
+2 = 1.6e-02
+2 = 3.2e-02
+10
+3
+10
+2
+10
+1
+100
+101
+102
+103
+104
+/P
+10
+2
+10
+1
+100
+101
+Loss
+100
+101
+102
+103
+104
+105
+106
+training step 
+10
+2
+10
+1
+100
+101
+Loss
+Training Loss
+Test Loss
+P = 128
+P = 256
+P = 512
+P = 1024
+P = 2048
+Figure 14: Neural Tangent Kernel (NTK) initialization: one-hidden layer ReLU neural network
+(width 8192) learning the empirical score at fixed diffusion noise variance σ2, trained with
+full-batch gradient descent. Training points sampled from a Gaussian distribution in d = 64
+dimensions. Left: at fixed training set size P = 128, training and test loss diverge at a timescale
+(τmem) depending on σ (inset), which scales as σ−1 (main). Right: at fixed σ2 = 3.2 · 10−2, τmem
+increases with P (inset), consistently with the scaling τmem ∝P (main).
+10
+2
+10
+1
+100
+101
+102
+103
+104
+105
+10
+3
+10
+2
+10
+1
+100
+101
+102
+103
+104
+Loss
+100
+101
+102
+103
+104
+105
+106
+training step 
+10
+3
+10
+2
+10
+1
+100
+101
+102
+103
+Loss
+Training Loss
+Test Loss
+2 = 2.2e-04
+2 = 5.2e-04
+2 = 1.1e-03
+2 = 2.2e-03
+2 = 4.4e-03
+2 = 8.4e-03
+2 = 1.6e-02
+2 = 3.2e-02
+10
+3
+10
+2
+10
+1
+100
+101
+102
+103
+104
+/P
+10
+3
+10
+2
+10
+1
+100
+101
+Loss
+100
+101
+102
+103
+104
+105
+106
+training step 
+10
+3
+10
+2
+10
+1
+100
+101
+Loss
+Training Loss
+Test Loss
+P = 128
+P = 256
+P = 512
+P = 1024
+P = 2048
+Figure 15: Feature learning (mean-field) initialization, same setting as Fig. 14. Also in this case,
+τmem is compatible with the scaling τmem ∼σ−1 at fixed P (left), and τmem ∝P at fixed σ (right).
+Numerical experiments
+We confirm our theoretical scaling numerically in Figure 14 for a one-
+hidden-layer fully-connected network in the lazy (NTK) regime [38]. Notably, the same experimental
+setting under a mean-field (feature learning) initialization [82] also exhibits a memorization time
+consistent with our NTK-based prediction.
+Furthermore, Figure 16 investigates the effect of batch size B. For both lazy and feature learning
+regimes, the timescale to fit the empirical score appears independent of B, from small-batch SGD
+(B = 8) to full-batch gradient descent (B = P). This observation implies that the memorization time
+only depends on the size of the training set and not on the number of times a training point is observed.
+22
+
+===== PDF PAGE 23 =====
+100
+101
+102
+103
+104
+105
+106
+107
+training step 
+10
+3
+10
+2
+10
+1
+100
+101
+Loss
+Training Loss
+Test Loss
+B = 8
+B = 16
+B = 32
+B = 64
+B = 128
+100
+101
+102
+103
+104
+105
+106
+107
+training step 
+10
+3
+10
+2
+10
+1
+100
+101
+Loss
+Training Loss
+Test Loss
+B = 8
+B = 16
+B = 32
+B = 64
+B = 128
+Figure 16: Effect of changing batch size B, same setting as Figs. 14 and 15 (fixed σ2 = 3.2 · 10−2,
+P = 128). Varying the batch size B of training, both with the NTK (left) and feature learning (right)
+initialization, does not affect τmem.
+23

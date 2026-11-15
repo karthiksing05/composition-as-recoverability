@@ -1,0 +1,18 @@
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 8 --layers 3 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 8 --layers 3 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 8 --layers 4 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 8 --layers 4 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 8 --layers 6 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 8 --layers 6 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 16 --layers 3 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 16 --layers 3 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 16 --layers 4 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 16 --layers 4 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 16 --layers 6 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 16 --layers 6 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 32 --layers 3 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 32 --layers 3 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 32 --layers 4 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 32 --layers 4 --steps 12000 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 64+256 --Vs 8+64 --seed 0 --gain 32 --layers 6 --outdir results/e20cal2
+e20_entangled.py --archs mlp --ms 256 --Vs 8+64 --seed 0 --gain 32 --layers 6 --steps 12000 --outdir results/e20cal2

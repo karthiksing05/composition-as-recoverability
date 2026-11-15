@@ -1,0 +1,8 @@
+e21b_subspace.py --models microsoft/phi-4 --seeds 0 --outdir results/e21b
+e21b_subspace.py --models microsoft/phi-4 --seeds 1 --outdir results/e21b
+e21b_subspace.py --models Qwen/Qwen3-8B --seeds 0 --outdir results/e21b
+e21b_subspace.py --models Qwen/Qwen3-8B --seeds 1 --outdir results/e21b
+e21b_subspace.py --models allenai/OLMo-2-1124-13B --seeds 0 --outdir results/e21b
+e21b_subspace.py --models allenai/OLMo-2-1124-13B --seeds 1 --outdir results/e21b
+e21b_subspace.py --models allenai/OLMo-2-1124-7B --seeds 0 --outdir results/e21b
+e21b_subspace.py --models allenai/OLMo-2-1124-7B --seeds 1 --outdir results/e21b

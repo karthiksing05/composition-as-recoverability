@@ -1,74 +1,42 @@
-"""Conceptual figures: taxonomy of modes of combination, and fibers of a blend."""
-import numpy as np
-from matplotlib.patches import FancyBboxPatch
-from figstyle import *
+"""Figure 1: two parts, and two ways of combining them that keep different amounts of the parts."""
+import matplotlib.pyplot as plt
+from diagram import *
 
-TINT = {BLUE: "#e4ebf5", GREY: "#efefef", ORANGE: "#f9eadf"}
+plt.rcParams["savefig.dpi"] = 400
+A = "assets/"
+avocado, armchair, on, blend = [plt.imread(A + f"im{k}.png")[..., :3] for k in (13, 14, 15, 16)]
 
+F = Flow(6.5, 1.5)
+S, s = 1.3, 0.63  # composite and part image heights
+y = 0.02
 
-def box(ax, x, y, w, h, title, body, color, dashed=False, fs=7.5, ty=0.68, by=0.3):
-    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.008,rounding_size=0.015",
-                                fc=TINT.get(color, "white"), ec=color, lw=1.4, ls="--" if dashed else "-"))
-    ax.text(x + w / 2, y + h * ty, title, ha="center", va="center", fontsize=fs, fontweight="bold", color="#222222")
-    ax.text(x + w / 2, y + h * by, body, ha="center", va="center", fontsize=6.2, color=DGREY, linespacing=1.15)
+F.head(0.03, 1.39, "a", "Two parts")
+F.img(0.05, y + s + 0.04, avocado, s, edge=DGREY, lw=0.6)
+F.img(0.05, y, armchair, s, edge=DGREY, lw=0.6)
+F.text(0.9, y + 0.72, "combine", fs=5.8, c=DGREY)
+F.arrow((0.72, y + 0.65), (1.08, y + 0.65), lw=0.9)
 
+x = 1.12
+F.head(x, 1.39, "b", "Role–filler composition")
+F.img(x, y, on, S, edge=BLUE, lw=0.9)
+tx = x + S + 0.07
+F.text(tx, y + 1.17, "on(avocado, armchair)", fs=6.2, ha="left", fontweight="bold", c=BLUE)
+F.text(tx, y + 0.97, "each part stays intact", fs=5.9, ha="left", c=DGREY)
+F.text(tx, y + 0.85, "in its role", fs=5.9, ha="left", c=DGREY)
+F.text(tx, y + 0.63, "both parts return", fs=5.9, ha="left", fontweight="bold")
+F.text(tx, y + 0.31, r"$x\otimes\rho_1 + y\otimes\rho_2$", fs=6.6, ha="left", c=BLUE)
+F.text(tx, y + 0.17, "one decomposition", fs=5.9, ha="left", c=DGREY)
 
-def line(ax, pts):
-    xs, ys = zip(*pts)
-    ax.plot(xs, ys, color=GREY, lw=0.9, solid_capstyle="round")
+x = 3.72
+F.head(x, 1.39, "c", "Blending")
+F.img(x, y, blend, S, edge=RED, lw=0.9)
+tx = x + S + 0.07
+F.text(tx, y + 1.17, "an armchair in the shape", fs=6.2, ha="left", fontweight="bold", c=RED)
+F.text(tx, y + 1.06, "of an avocado", fs=6.2, ha="left", fontweight="bold", c=RED)
+F.text(tx, y + 0.85, "the parts merge", fs=5.9, ha="left", c=DGREY)
+F.text(tx, y + 0.63, "neither part returns", fs=5.9, ha="left", fontweight="bold")
+F.text(tx, y + 0.31, r"$x + y$", fs=6.6, ha="left", c=RED)
+F.text(tx, y + 0.17, "a line of decompositions", fs=5.9, ha="left", c=DGREY)
 
-
-# ---------------- taxonomy ----------------
-fig, ax = plt.subplots(figsize=(6.5, 2.75))
-ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-box(ax, 0.25, 0.83, 0.48, 0.15, "Combination of parts", "the whole is a function of its parts", "#222222")
-box(ax, 0.77, 0.83, 0.22, 0.15, "Chunking", "orthogonal: stores a\ncomposite as a unit", GREY, dashed=True, ty=0.78, by=0.3)
-line(ax, [(0.5, 0.83), (0.5, 0.76)]); line(ax, [(0.15, 0.76), (0.85, 0.76)])
-for x in (0.15, 0.5, 0.85):
-    line(ax, [(x, 0.76), (x, 0.70)])
-box(ax, 0.01, 0.50, 0.28, 0.20, "Blending", "fresh parts not recoverable;\nroles collide when symmetric", ORANGE)
-box(ax, 0.335, 0.50, 0.33, 0.20, "Fixed-width superposition", "role-distinct; recoverable only by\nclean-up over a known vocabulary", GREY)
-box(ax, 0.71, 0.50, 0.28, 0.20, "Role–filler composition", "parts recoverable, including parts\nthe readout was not fitted on", BLUE)
-ax.text(0.15, 0.39, "symmetric: $x+y$, $x\\odot y$;\nconceptual blending", ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
-ax.text(0.5, 0.39, "HRR, MAP, head\u2013modifier $x+\\alpha y$,\nprojections with $m<kd$\n(fresh-part ceiling $\\mathrm{rank}/kd$)",
-        ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
-ax.text(0.85, 0.39, "tensor products, concatenation,\nsuperposition in disjoint regions",
-        ha="center", va="top", fontsize=6.3, color=DGREY, style="italic")
-ax.add_patch(FancyBboxPatch((0.01, 0.02), 0.655, 0.13, boxstyle="round,pad=0.006,rounding_size=0.012", fc="#fbfbfb", ec=LGREY, lw=0.8))
-ax.text(0.3375, 0.085, "Familiar parts: decodable when the relation is injective on the vocabulary\n"
-        "Systematicity and productivity are contingent on the data", ha="center", va="center", fontsize=6.2, color=DGREY)
-ax.add_patch(FancyBboxPatch((0.71, 0.02), 0.28, 0.13, boxstyle="round,pad=0.006,rounding_size=0.012", fc=TINT[BLUE], ec=BLUE, lw=0.8))
-ax.text(0.85, 0.085, "Fresh parts: recoverable\nReversals fixed by the state", ha="center", va="center", fontsize=6.6, color=BLUE)
-fig.savefig(f"{FIGDIR}/fig_taxonomy.pdf")
-fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_taxonomy.png", dpi=200)
-
-# ---------------- fibers ----------------
-fig, axs = plt.subplots(1, 2, figsize=(6.5, 2.4), gridspec_kw=dict(wspace=0.35))
-rng = np.random.default_rng(1)
-voc = np.sort(rng.uniform(-1, 1, 7))
-X, Y = np.meshgrid(voc, voc)
-z = 0.3
-ax = axs[0]
-xs = np.linspace(-1.2, 1.2, 50)
-ax.plot(xs, z - xs, color=ORANGE, lw=1.4)
-ax.scatter(X, Y, s=12, color=LGREY, zorder=2, label="vocabulary pairs")
-near = np.abs(X + Y - z) < 0.06
-ax.scatter(X[near], Y[near], s=16, color=DGREY, zorder=3)
-fr = rng.uniform(-1, 1, 6)
-ax.scatter(fr, z - fr, s=16, marker="D", color=ORANGE, zorder=4, ec="white", lw=0.4, label="fresh pairs, same composite")
-ax.set_xlim(-1.2, 1.2); ax.set_ylim(-1.2, 1.2); ax.set_aspect("equal")
-ax.set_xlabel("part in role 1, $x$"); ax.set_ylabel("part in role 2, $y$")
-ax.text(1.1, -0.95, "$x+y=z$", color=ORANGE, fontsize=7, ha="right")
-ax.legend(loc="lower left", fontsize=5.9, handletextpad=0.2, borderaxespad=0.1)
-panel(ax, "a", "Blend: many decompositions")
-ax = axs[1]
-ax.scatter(X, Y, s=12, color=LGREY, zorder=2)
-ax.scatter([0.45], [-0.15], s=26, color=BLUE, zorder=4, ec="white", lw=0.5)
-ax.axvline(0.45, color=BLUE, lw=0.6, ls=":"); ax.axhline(-0.15, color=BLUE, lw=0.6, ls=":")
-ax.text(-1.1, 1.0, "$(x, y)$ read back from $x\\otimes\\rho_1 + y\\otimes\\rho_2$", color=BLUE, fontsize=6.6, zorder=5, bbox=dict(fc="white", ec="none", pad=0.6))
-ax.set_xlim(-1.2, 1.2); ax.set_ylim(-1.2, 1.2); ax.set_aspect("equal")
-ax.set_xlabel("part in role 1, $x$"); ax.set_ylabel("part in role 2, $y$")
-panel(ax, "b", "Role\u2013filler: one decomposition")
-fig.savefig(f"{FIGDIR}/fig_fibers.pdf")
-fig.savefig("/coc/flash10/ksingara3/compositionality-theory/notes/fig_fibers.png", dpi=200)
+F.save("fig_parts")
 print("ok")

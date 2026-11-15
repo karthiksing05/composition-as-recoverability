@@ -1,0 +1,23 @@
+{
+ "arch": "cnn",
+ "m": 64,
+ "V": 32,
+ "seed": 0,
+ "steps": 4000,
+ "gain": 4.0,
+ "layers": 3,
+ "arm": "base",
+ "final_loss": 0.00032277085119858384,
+ "train_secs": 120.26611375808716,
+ "own_heldout": 0.5704883904657994,
+ "own_newpairs": 0.7388926209700182,
+ "read_trained": 0.5913678240065302,
+ "read_untrained": 0.4694448793802468,
+ "read_input": 0.6843830226833437,
+ "read_vocab": 0.4610531892629082,
+ "read_rendered": 0.6655959565948306,
+ "ref_concat": 0.9813550239905823,
+ "ref_sum": 0.4950361950206103,
+ "redec_trained": 0.6447939067075766,
+ "redec_untrained": 0.5002916615654451
+}

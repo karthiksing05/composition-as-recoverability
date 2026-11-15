@@ -1,0 +1,41 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+gpt2-large {"xfer_query_can": 0.992, "xfer_query_conv": 0.012, "ridge_alpha_query": 31.622776601683793, "xfer_mean_can": 0.986, "xfer_mean_conv": 0.0, "ridge_alpha_mean": 1000.0, "ans_qprompt_can": 0.09, "ans_qprompt_conv": 0.906, "ans_qprompt_all": 0.498, "ans_e9": {"canonical_figure": 0.075, "canonical_ground": 0.87, "converse_figure": 0.92, "converse_ground": 0.115, "all": 0.495}} {"e11_xfer_mean_conv": 0.0, "e11_xfer_query_conv": 0.012, "e9_choice_on": 0.5025000000000001, "e9_choice_allrels": 0.5032499999999999}
+EleutherAI/pythia-1.4b {"xfer_query_can": 0.996, "xfer_query_conv": 0.018, "ridge_alpha_query": 100.0, "xfer_mean_can": 0.996, "xfer_mean_conv": 0.02, "ridge_alpha_mean": 316.22776601683796, "ans_qprompt_can": 0.182, "ans_qprompt_conv": 0.828, "ans_qprompt_all": 0.505, "ans_e9": {"canonical_figure": 0.46, "canonical_ground": 0.605, "converse_figure": 0.525, "converse_ground": 0.355, "all": 0.48624999999999996}} {"e11_xfer_mean_conv": 0.02, "e11_xfer_query_conv": 0.018, "e9_choice_on": 0.48624999999999996, "e9_choice_allrels": 0.5032500000000001}
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:06<00:31,  6.23s/it]Loading checkpoint shards:  33%|███▎      | 2/6 [00:12<00:23,  5.99s/it]Loading checkpoint shards:  50%|█████     | 3/6 [00:18<00:18,  6.25s/it]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:25<00:12,  6.48s/it]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:31<00:06,  6.42s/it]Loading checkpoint shards: 100%|██████████| 6/6 [00:37<00:00,  6.26s/it]Loading checkpoint shards: 100%|██████████| 6/6 [00:37<00:00,  6.29s/it]
+allenai/OLMo-2-1124-7B {"xfer_query_can": 0.988, "xfer_query_conv": 0.142, "ridge_alpha_query": 3.1622776601683795, "xfer_mean_can": 0.984, "xfer_mean_conv": 0.018, "ridge_alpha_mean": 31.622776601683793, "ans_qprompt_can": 0.754, "ans_qprompt_conv": 0.85, "ans_qprompt_all": 0.802, "ans_e9": {"canonical_figure": 0.875, "canonical_ground": 0.86, "converse_figure": 0.79, "converse_ground": 0.805, "all": 0.8325}} {"e11_xfer_mean_conv": 0.018, "e11_xfer_query_conv": 0.144, "e9_choice_on": 0.8325, "e9_choice_allrels": 0.7752499999999999}
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 3/6 [00:00<00:00, 20.13it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 20.77it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:00<00:00, 20.66it/s]
+Traceback (most recent call last):
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/case_lm.py", line 221, in <module>
+    r = run(name, a.seed, dev)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/case_lm.py", line 112, in run
+    H.update(embed_query(tok, mod, qprompts, dev))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/coc/flash10/ksingara3/compositionality-theory/experiments/e11_tokens.py", line 73, in embed_query
+    hs = mod(**b, output_hidden_states=True).hidden_states
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/utils/generic.py", line 918, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/transformers/models/phi3/modeling_phi3.py", line 479, in forward
+    logits = self.lm_head(hidden_states[:, slice_indices, :])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nethome/ksingara3/flash/miniconda3/envs/chunks/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 712.00 MiB. GPU 0 has a total capacity of 44.42 GiB of which 363.88 MiB is free. Including non-PyTorch memory, this process has 44.06 GiB memory in use. Of the allocated memory 43.06 GiB is allocated by PyTorch, and 700.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

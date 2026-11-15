@@ -1,0 +1,8 @@
+128 3 2 3 0 lvl 1 phi R2 held-out -0.047 train-sym 0.592
+128 3 2 3 0 lvl 1 random R2 held-out -0.152 train-sym 0.677
+128 3 2 3 0 lvl 2 phi R2 held-out -0.071 train-sym 0.569
+128 3 2 3 0 lvl 2 random R2 held-out -0.130 train-sym 0.648
+128 3 8 3 2 lvl 1 phi R2 held-out -0.042 train-sym 0.134
+128 3 8 3 2 lvl 1 random R2 held-out -0.054 train-sym 0.140
+128 3 8 3 2 lvl 2 phi R2 held-out -0.039 train-sym 0.045
+128 3 8 3 2 lvl 2 random R2 held-out -0.038 train-sym 0.052

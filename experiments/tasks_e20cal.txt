@@ -1,0 +1,14 @@
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 0 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 1 --gain 0 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 1 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 1 --layers 2 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 1 --layers 3 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 2 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 2 --layers 2 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 2 --layers 3 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 4 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 4 --layers 2 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 4 --layers 3 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 8 --layers 1 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 8 --layers 2 --outdir results/e20cal
+e20_entangled.py --archs mlp --ms 64 --Vs 8+64 --seed 0 --gain 8 --layers 3 --outdir results/e20cal

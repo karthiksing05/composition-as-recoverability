@@ -1,0 +1,3385 @@
+
+===== PDF PAGE 1 =====
+How Deep Neural Networks Learn Compositional Data:
+The Random Hierarchy Model
+Francesco Cagnetta,∗Leonardo Petrini,∗Umberto M. Tomasini, and Matthieu Wyart†
+Institute of Physics, EPFL, Lausanne, Switzerland
+Alessandro Favero
+Institute of Physics, EPFL, Lausanne, Switzerland and
+Institute of Electrical Engineering, EPFL, Lausanne, Switzerland
+Deep learning algorithms demonstrate a surprising ability to learn high-dimensional tasks from
+limited examples. This is commonly attributed to the depth of neural networks, enabling them to
+build a hierarchy of abstract, low-dimensional data representations. However, how many training
+examples are required to learn such representations remains unknown. To quantitatively study this
+question, we introduce the Random Hierarchy Model: a family of synthetic tasks inspired by the
+hierarchical structure of language and images. The model is a classification task where each class
+corresponds to a group of high-level features, chosen among several equivalent groups associated
+with the same class. In turn, each feature corresponds to a group of sub-features chosen among
+several equivalent ones and so on, following a hierarchy of composition rules. We find that deep
+networks learn the task by developing internal representations invariant to exchanging equivalent
+groups. Moreover, the number of data required corresponds to the point where correlations between
+low-level features and classes become detectable. Overall, our results indicate how deep networks
+overcome the curse of dimensionality by building invariant representations, and provide an estimate
+of the number of data required to learn a hierarchical task.
+Deep learning methods exhibit superhuman perfor-
+mances in areas ranging from image recognition [1] to
+Go-playing [2]. However, despite these accomplishments,
+we still lack a fundamental understanding of their work-
+ing principles. Indeed, Go configurations and images lie
+in high-dimensional spaces, which are hard to sample due
+to the curse of dimensionality: the distance δ between
+neighboring data points decreases very slowly with their
+number P, as δ = O(P −1/d) where d is the space di-
+mension. Solving a generic task such as regression of a
+continuous function [3] requires a small δ, implying that
+P must be exponential in the dimension d. Such a number
+of data is unrealistically large: for example, the bench-
+mark dataset ImageNet [4], whose effective dimension is
+estimated to be ≈50 [5], consists of only ≈107 data,
+significantly smaller than e50 ≈1020. This immense dif-
+ference implies that learnable tasks are not generic, but
+highly structured. What is then the nature of this struc-
+ture, and why are deep learning methods able to exploit
+it?
+A popular idea attributes the efficacy of these meth-
+ods to their ability to build a useful representation of the
+data, which becomes increasingly complex across the lay-
+ers [6]. Interestingly, a similar increase in complexity is
+also found in the visual cortex of the primate brain [7, 8].
+In simple terms, neurons closer to the input learn to de-
+tect simple features like edges in a picture, whereas those
+deeper in the network learn to recognize more abstract
+∗These two authors contributed equally
+† Correspondence
+to
+francesco.cagnetta@epfl.ch,
+matthieu.wyart@epfl.ch
+features, such as faces [9, 10]. Intuitively, if these repre-
+sentations are also invariant to aspects of the data unre-
+lated to the task, such as the exact position of an object
+in a frame for image classification [11], they may effec-
+tively reduce the dimensionality of the problem and make
+it tractable. This view is supported by several empirical
+studies of the hidden representations of trained networks.
+In particular, measures such as the mutual information
+between such representations and the input [12, 13], their
+intrinsic dimensionality [14, 15], and their sensitivity to-
+ward transformations that do not affect the task (e.g.,
+smooth deformations for image classification [16, 17]),
+all eventually decay with the layer depth. However, none
+of these studies addresses the sample complexity, i.e., the
+number of training data necessary for learning such rep-
+resentations, and thus the task.
+In this paper, we study the relationship between sam-
+ple complexity, depth of the learning method, and struc-
+ture of the data by focusing on tasks with a hierarchically
+compositional structure—arguably a key property for the
+learnability of real data [18–25]. To provide a concrete
+example, consider a picture that consists of several high-
+level features like face, body, and background. Each fea-
+ture is composed of sub-features like ears, mouth, eyes,
+and nose for the face, which can be further thought of
+as combinations of low-level features such as edges [26].
+Recent studies have revealed that deep networks can
+represent hierarchically compositional functions with far
+fewer parameters than shallow networks [21], implying an
+information-theoretic lower bound on the sample com-
+plexity which is only polynomial in the input dimen-
+sion [24].
+While these works offer important insights,
+they do not characterize the performance of deep neural
+networks trained with gradient descent.
+arXiv:2307.02129v5  [cs.LG]  3 Jul 2024
+
+===== PDF PAGE 2 =====
+2
+We investigate this question by adopting the physi-
+cist’s approach [27–31] of introducing a model of syn-
+thetic data, which is inspired by the structure of natural
+problems, yet simple enough to be investigated system-
+atically. This model (Section I) belongs to a family of
+hierarchical classification problems where the class labels
+generate the input data via a hierarchy of composition
+rules. These problems were introduced to highlight the
+importance of input-to-label correlations for learnabil-
+ity [19] and were found to be learnable via an iterative
+clustering algorithm [22]. Under the assumption of ran-
+domness of the composition rules, we show empirically
+that shallow networks suffer from the curse of dimension-
+ality (Section II), whereas the sample complexity P ∗of
+deep networks (both convolutional networks and multi-
+layer perceptrons) is only polynomial in the size of the
+input. More specifically, with nc classes and L compo-
+sition rules that associate m equivalent low-level repre-
+sentations to each class/high-level features, P ∗≃ncmL
+asymptotically in m (Section II).
+Furthermore, we find that P ∗coincides with both (a)
+the number of data that allows for learning a representa-
+tion that is invariant to exchanging the m semantically
+equivalent low-level features (Section II A) and (b) the
+size of the training set for which the correlations between
+low-level features and class label become detectable (Sec-
+tion III). We prove for a simplified architecture trained
+with gradient descent that (a) and (b) must indeed coin-
+cide. Via (b), P ∗can be derived analytically under our
+assumption of randomness of the composition rules.
+A.
+Relationship to other models of data structure
+Characterizing
+the
+properties
+that
+make
+high-
+dimensional data learnable is a classical problem in statis-
+tics.
+Typical assumptions that allow for avoiding the
+curse of dimensionality include (i) data lying on a low-
+dimensional manifold and (ii) the task being smooth [32].
+For instance, in the context of regression, the sample
+complexity is not controlled by the bare input dimen-
+sionality d, but by the ratio dM/s [33–35], where dM
+is the dimension of the data manifold and s the num-
+ber of bounded derivatives of the target function. How-
+ever, dM is also large in practice [5], thus keeping dM/s
+low requires an unrealistically large number of bounded
+derivatives. Moreover, properties (i) and (ii) can already
+be leveraged by isotropic kernel methods, and thus can-
+not account for the significant advantage of deep learn-
+ing methods in many benchmark datasets [36]. Alterna-
+tively, learnability can be achieved when (iii) the task
+depends on a small number of linear projections of the
+input variables, such as regression of a target function
+f ∗(x) = g(xt) where x ∈Rd and xt ∈Rt [37–40]. Meth-
+ods capable of learning features from the data can lever-
+age this property to achieve a sample complexity that
+depends on t instead of d [41].
+However, one-hidden-
+layer networks are sufficient for that, hence this property
+does not explain the need for deep architectures.
+In the context of statistical physics, the quest for a
+model of data structure has been pursued within the
+framework of teacher-student models [42–44], where a
+teacher uses some ground truth knowledge to gener-
+ate data, while a student tries to infer the ground
+truth from the data. The structural properties (i,ii,iii)
+can be incorporated into this approach [45, 46].
+In
+addition, using a shallow convolutional network as a
+teacher allows for modeling (iv) the locality of image-
+like datasets [31, 47, 48]. In the context of regression,
+this property can be modelled with a function f ∗(x) =
+P
+i f ∗
+i (xi) where the sum is on all patches xi of t ad-
+jacent pixels. Convolutional networks learn local tasks
+with a sample complexity controlled by the patch dimen-
+sion t [47], even in the ‘lazy’ regime [49, 50] where they do
+not learn features. However, locality does not allow for
+long-range nonlinear dependencies in the task. It might
+be tempting to include these dependencies by consider-
+ing a deep convolutional teacher network, but then the
+sample complexity would be exponential in the input di-
+mension d [25].
+The present analysis based on hierarchical generative
+models shows that properties (i,ii,iii) are not necessary
+to beat the curse of dimensionality.
+Indeed, for some
+choices of the parameters, the model generates all possi-
+ble d-dimensional sequences of input features, which vi-
+olates (i). Additionally, changing a single input feature
+has a finite probability of changing the label, violating
+the smoothness assumption (ii). Finally, the label de-
+pends on all of the d input variables of the input, violat-
+ing (iii). Yet, we find that the sample complexity of deep
+neural networks is only polynomial in d. Since locality
+is incorporated hierarchically in the generative process,
+it generates long-range dependencies in the task, but it
+can still be leveraged by building a hierarchical represen-
+tation of the data.
+I.
+THE RANDOM HIERARCHY MODEL
+In this section, we introduce our generative model,
+which can be thought of as an L-level context-free
+grammar—a generative model of language from formal
+language theory [51].
+The model consists of a set of
+class labels C ≡{1, . . . , nc} and L disjoint vocabular-
+ies Vℓ≡
+
+aℓ
+1, . . . , aℓ
+vℓ
+	
+of low- and high-level features. As
+illustrated in Fig. 1, left panel, data are generated from
+the class labels. Specifically, each label generates m dis-
+tinct high-level representations via m composition rules
+of the form
+α 7→µ(L)
+1
+, . . . , µ(L)
+s
+for α ∈C and µ(L)
+i
+∈VL,
+(1)
+having size s > 1. The s elements of these representations
+are high-level features µ(L)
+i
+such as background, face, and
+body for a picture. Each high-level feature generates in
+
+===== PDF PAGE 3 =====
+3
+Figure 1. The Random Hierarchy Model. Left: Structure of the generative model. The class label α = 1, . . . , nc generates
+a set of m equivalent (i.e., synonymic) high-level representations with elements taken from a vocabulary of high-level features
+VL. Similarly, high-level features generate m equivalent lower-level representations, taken from a vocabulary VL−1. Repeating
+this procedure L −2 times yields all the input data with label α, consisting of low-level features taken from V1. Right: example
+of Random Hierarchy Model with nc = 2 classes, L = 3, s = 2, m = 3 and homogeneous vocabulary size v1 = v2 = v3 = 3. The
+three sets of rules are listed at the top, while two examples of data generation are shown at the bottom. The first example is
+obtained by following the rules in the colored boxes.
+turn m lower-level representations via other m rules,
+µ(ℓ) 7→µ(ℓ−1)
+1
+, . . . , µ(ℓ−1)
+s
+for µ(ℓ) ∈Vℓ, µ(ℓ−1)
+i
+∈Vℓ−1,
+(2)
+from ℓ= L down to ℓ= 1. The input features µ(1) rep-
+resent low-level features such as the edges in an image.
+Due to the hierarchical structure of the generative pro-
+cess, each datum can be represented as a tree of branch-
+ing factor s and depth L, where the root is the class label,
+the leaves are the input features, and the hidden nodes
+are the level-ℓfeatures with ℓ= 2, . . . , L.
+In addition, for each level ℓ, there are m distinct rules
+emanating from the same higher-level feature µ(ℓ), i.e.,
+there are m equivalent lower-level representations of µ(ℓ)
+(see Fig. 1, right panel, for an example with m = 3).
+Following the analogy with language, we refer to these
+equivalent representations as synonyms. We assume that
+a single low-level representation can only be generated
+by one high-level feature, i.e., that there are no ambigu-
+ities. Since the number of distinct s-tuples at level ℓis
+bounded by vs
+ℓ, this assumption requires mvℓ+1 ≤vs
+ℓfor
+all ℓ= 1, . . . , L (with vL+1 ≡nc). If m = 1, each label gen-
+erates only a single datum and the model is trivial. For
+m > 1, the number of data per class grows exponentially
+with the input dimension d = sL,
+m × ms × · · · × msL−1 = m
+PL−1
+i=0 si = m
+d−1
+s−1 .
+(3)
+In particular, in the case where mvℓ+1 = vs
+ℓ, the model
+generates all the possible data made of d features in V1.
+Instead, for mvℓ+1 < vs
+ℓ, the set of available input data is
+given by the application of the composition rules, there-
+fore it inherits the hierarchical structure of the model.
+Let us remark that, due to the non-ambiguity assump-
+tion, each set of composition rules can be summarized
+with a function gℓthat associates s-tuples of level-ℓfea-
+tures to the corresponding level-(ℓ+ 1) feature. The do-
+main of gℓis a subset of Vs
+ℓconsisting of the mvℓ+1 s-
+tuples generated by the features at level (ℓ+ 1). Using
+these functions, the label α ≡µ(L+1) of an input datum
+µ(1) =
+
+µ(1)
+1 , . . . , µ(1)
+d
+
+can be written as a hierarchical
+composition of L local functions of s variables [20, 21]:
+µ(ℓ+1)
+i
+= gℓ
+
+µ(ℓ)
+(i−1)s+1, . . . , µ(ℓ)
+(i−1)s+1
+
+,
+(4)
+for i = 1, . . . , sL−ℓand ℓ= 1, . . . , L.
+Notice that, while we keep s and m constant through-
+out the levels for ease of exposition, our results can be
+generalized without additional effort. Likewise, we will
+set the vocabulary size to v for all levels. To sum up, a
+single classification task is specified by the parameters nc,
+v, m and s and by the L composition rules. In the Ran-
+dom Hierarchy Model (RHM) the composition rules are
+chosen uniformly at random over all the possible assign-
+ments of m representations of s low-level features to each
+of the v high-level features. An example of binary classi-
+fication task (nc = 2), with s = 2, L = 3, and v = m = 3, is
+shown in Fig. 1, right panel, together with two examples
+of label-input pairs. Notice that the random choice in-
+duces correlations between low- and high-level features.
+In simple terms, each of the high-level features—e.g., the
+level-2 features d, e or f in the figure—is more likely to
+be represented with a certain low-level feature in a given
+position—e.g., i on the right for d, g on the right for e and
+h on the right for f. These correlations are crucial for
+our predictions and are analyzed in detail in Section C.
+
+===== PDF PAGE 4 =====
+4
+II.
+SAMPLE COMPLEXITY OF DEEP NEURAL
+NETWORKS
+The main focus of our work is the answer to the fol-
+lowing question.
+Q: How much data is required to learn a typical in-
+stance of the Random Hierarchy Model with a deep
+neural network?
+Thus, after generating an instance of the RHM with fixed
+parameters nc, s, m, v, and L, we train neural networks
+of varying depth with stochastic gradient descent (SGD)
+on a set of P training points. The training points are
+sampled uniformly at random without replacement from
+the set of available RHM data, hence they are all distinct.
+We adopt a one-hot encoding of the input features, so
+that each input point x is a d × v-dimensional sequence
+where, for i = 1, . . . , d and ν ∈V1,
+xi,ν =
+(
+1, if µ(1)
+i
+= ν,
+0, otherwise.
+(5)
+All our experiments consider over-parameterized net-
+works, which we achieve in practice by choosing the width
+H of the network’s hidden layers such that i) training loss
+reaches 0 ii) test accuracy does not improve by increasing
+H. To guarantee representation learning as H grows, we
+consider the maximal update parametrization [52], equiv-
+alent to having the standard H−1/2 scaling of the hidden
+layer weights plus an extra factor of H−1/2 at the last
+layer. Further details of the machine learning methods
+can be found in Section A.
+a.
+Shallow networks are cursed.
+Let us begin with
+the sample complexity of two-layer fully-connected net-
+works. As shown in Fig. 2, in the maximal case nc = v,
+m = vs−1 these networks learn the task only if trained on
+a significant fraction of the total number of data Pmax.
+From Eq. (3),
+Pmax = ncm
+d−1
+s−1 ,
+(6)
+which equals vsL in the maximal case. The bottom panel
+of Fig. 2, in particular, highlights that the number of
+training data required for having a test error ϵ ≤0.7 ϵrand,
+with ϵrand = 1−n−1
+c
+denoting the error of a random guess
+of the label, is proportional to Pmax. Since Pmax is ex-
+ponential in d, this is an instance of the curse of dimen-
+sionality.
+b.
+Deep networks break the curse.
+For networks hav-
+ing a depth larger than that of the RHM L, the test error
+displays a sigmoidal behavior as a function of the train-
+ing set size. This finding is illustrated in the top panels
+of Fig. 3 and Fig. 4 (and Fig. 12 of Section F for vary-
+ing nc) for Convolutional Neural Networks (CNNs) of
+depth L+1 (details in Section A). Similar results are ob-
+tained for multi-layer perceptions of depth > L, as shown
+in Section F. All these results suggest the existence of
+a well-defined number of training data at which the task
+101
+102
+103
+104
+105
+106
+P
+0.4
+0.6
+0.8
+1.0
+test error ¯ϵ
+101
+102
+103
+104
+105
+106
+Pmax = vsL
+102
+104
+106
+P ∗s.t. ¯ϵ = 70%
+v = 4
+v = 8
+v = 16
+v = 24
+v = 32
+y = x
+Figure 2.
+Sample
+complexity
+of
+two-layer
+fully-
+connected networks, for L = s = 2 and v = nc = m. Top:
+Test error vs the number of training data. Different colors
+correspond to different vocabulary sizes v. Bottom: number
+of training data resulting in test error ¯ϵ = 0.7 as a function of
+Pmax, with the black dashed line indicating a linear relation-
+ship.
+is learned. Mathematically, we define the sample com-
+plexity P ∗as the smallest training set size P such that
+the test error ϵ(P) is smaller than ϵrand/10. The bottom
+panels of Fig. 3 and Fig. 4 (and Fig. 12, Fig. 13) show
+that
+P ∗≃ncmL ⇔P ∗
+nc
+≃d ln(m)/ ln(s),
+(7)
+independently of the vocabulary size v.
+Since P ∗is a
+power of the input dimension d = sL, the curse of dimen-
+sionality is beaten, which evidences the ability of deep
+networks to harness the hierarchical compositionality of
+the task. It is crucial to note, however, that this abil-
+ity manifests only in feature learning regimes, e.g., under
+the maximal update parameterization considered in this
+work. Conversely, as shown in Fig. 14 of Section F for the
+maximal case nc = v, m = vs−1, deep networks trained in
+the ‘lazy’ regime [49]—where they do not learn features—
+suffer from the curse of dimensionality, even when their
+architecture is matched to the structure of the RHM.
+We now turn to study the internal representations of
+trained networks and the mechanism that they employ
+to solve the task.
+A.
+Emergence of Synonymic Invariance in Deep
+CNNs
+A natural approach to learning the RHM would be to
+identify the sets of s-tuples of input features that corre-
+
+===== PDF PAGE 5 =====
+5
+101
+102
+103
+104
+105
+P
+0.00
+0.25
+0.50
+0.75
+1.00
+test error ¯ϵ
+101
+102
+103
+104
+105
+ncmL
+102
+104
+P ∗s.t. ¯ϵ = 10%
+m = 3
+m = 4
+m = 5
+m = 6
+m = 7
+m = 8
+m = 10
+m = 12
+m = 16
+m = 18
+m = 20
+m = 24
+m = 32
+L = 2
+L = 3
+L = 4
+y = x
+Figure 3. Sample complexity of depth-(L+1) CNNs, for
+s = 2 and m = nc = v. Top: Test error vs number of train-
+ing points. Different colors correspond to different vocabu-
+lary sizes v while the markers indicate the hierarchy depth L.
+Bottom: sample complexity P ∗corresponding to a test error
+ϵ∗= 0.1ϵrand. The empirical points show remarkable agree-
+ment with the law P ∗= ncmL, shown as a black dashed line.
+spond to the same higher-level feature, i.e., synonyms.
+Identifying synonyms at the first level would allow for
+replacing each s-dimensional patch of the input with a
+single symbol, reducing the dimensionality of the prob-
+lem from sL to sL−1. Repeating this procedure L times
+would lead to the class labels and, consequently, to the
+solution of the task.
+To test if deep networks trained on the RHM resort to a
+similar solution, we introduce the synonymic sensitivity,
+which is a measure of the invariance of a function with
+respect to the exchange of synonymic low-level features.
+Mathematically, we define Sk,l as the sensitivity of the
+k-th layer representation of a deep network with respect
+to exchanges of synonymous s-tuples of level-l features.
+Namely,
+Sk,l = ⟨∥fk(x) −fk(Plx)∥2⟩x,Pl
+⟨∥fk(x) −fk(y)∥2⟩x,y
+,
+(8)
+where: fk is the sequence of activations of the k-th layer
+in the network; Pl is an operator that replaces all the
+level-l tuples with one of their m −1 synonyms chosen
+uniformly at random; ⟨·⟩with subscripts x, y denotes av-
+erage over pairs of input data of an instance of the RHM;
+the subscript Pl denotes average over all the exchanges
+of synonyms.
+Fig. 5 reports S2,1, which measures the sensitivity
+to exchanges of synonymic tuples of input features, as
+a function of the training set size P for Deep CNNs
+trained on RHMs with different parameters.
+We fo-
+cused on S2,1—the sensitivity of the second layer of the
+101
+102
+103
+104
+P
+0.00
+0.25
+0.50
+0.75
+1.00
+test error ¯ϵ
+101
+102
+103
+104
+ncmL
+101
+102
+103
+104
+P ∗s.t. ¯ϵ = 10%
+v = 4
+v = 8
+v = 16
+L = 2
+L = 3
+L = 4
+y = x
+Figure 4. Sample complexity of depth-(L + 1) CNNs,
+for s = 2, nc = v and varying m ≤v. Top: Test error vs
+number of training points, with different colors correspond-
+ing to different vocabulary sizes v and markers indicating the
+hierarchy depth L. Bottom: sample complexity P ∗, with the
+law P ∗= ncmL shown as a black dashed line.
+network—since a single linear transformation of the in-
+put cannot produce an invariant representation in gen-
+eral. [53] Notice that all the curves display a sigmoidal
+shape, signaling the existence of a characteristic sample
+size which marks the emergence of synonymic sensitivity
+in the learned representations. Remarkably, by rescaling
+the x-axis by the sample complexity of Eq. (7) (bottom
+panel), curves corresponding to different parameters col-
+lapse. We conclude that the generalization ability of a
+network relies on the synonymic invariance of its hidden
+representations.
+Measures of the synonymic sensitivity Sk,1 for different
+layers k are reported in Fig. 6 (blue lines), showing in-
+deed that the layers k ≥2 become insensitive to exchang-
+ing level-1 synonyms.
+Fig. 6 also shows the sensitivi-
+ties to exchanges of higher-level synonyms: all levels are
+learned together as P increases, and invariance to level-l
+exchanges is achieved from layer k = l + 1. The test er-
+ror is also shown (gray dashed) to further emphasize its
+correlation with synonymic invariance.
+a.
+Synonymic invariance and effective dimension.
+Notice that the collapse of the representations of syn-
+onymic tuples to the same value implies a progressive
+reduction of the effective dimensionality of the hidden
+representations, as reported in Fig. 11 of Section E.
+
+===== PDF PAGE 6 =====
+6
+Figure 5. Synonymic sensitivity S2,1 for a depth-(L + 1)
+CNN trained on the RHM with s = 2, nc = m = v as
+a function of the training set size (L and v as in the key).
+The collapse achieved after rescaling by P ∗= ncmL high-
+lights that the sample complexity coincides with the number
+of training points required to build internal representations
+invariant to exchanging synonyms.
+0.0
+0.5
+1.0
+sensitivity, Sk,l
+k = 1
+l = 1
+l = 2
+l = 3
+test error
+k = 2
+104
+train set size, P
+0.0
+0.5
+1.0
+sensitivity, Sk,l
+k = 3
+104
+train set size, P
+output
+Figure 6. Synonymic sensitivities Sk,l of the layers of a
+depth-(L+1) CNN trained on a RHM with L = 3, s = 2,
+nc = m = v = 8, as a function of the training set size P. The
+colors denote the level of the exchanged synonyms (as in the
+key), whereas different panels correspond to the sensitivity
+of the activations of different layers (layer index in the gray
+box). Synonymic invariance is learned at the same training
+set size for all layers, and invariance to level-l exchanges is
+obtained from layer k = l + 1.
+III.
+CORRELATIONS GOVERN SYNONYMIC
+INVARIANCE
+We now provide a theoretical argument for under-
+standing the scaling of P ∗of Eq. (7) with the param-
+eters of the RHM. First, we compute a third characteris-
+tic sample size Pc, defined as the size of the training set
+for which the local correlations between any of the input
+patches and the label become detectable. Remarkably, Pc
+coincides with P ∗of Eq. (7). Secondly, we demonstrate
+how a shallow (two-layer) neural network acting on a sin-
+gle patch can use such correlations to build a synonymic
+invariant representation in a single step of gradient de-
+scent so that Pc and P ∗also correspond to the emergence
+of an invariant representation. Lastly, we show empiri-
+cally that removing such correlations leads again to the
+curse of dimensionality, even if the network architecture
+is matched to the structure of the RHM.
+A.
+Identify Synonyms by Counting
+Groups of input patches forming synonyms can be in-
+ferred by counting, at any given location, the occurrences
+of such patches in all the data corresponding to a given
+class α.
+Indeed, tuples of features that appear with
+identical frequencies are likely synonyms. More specif-
+ically, let us denote xj an s-dimensional input patch
+for j in 1, . . . , sL−1, a s-tuple of input features with
+µ = (µ1, . . . , µs), and the number of data in class α hav-
+ing xj = µ with Nj(µ; α) [54]. Normalizing this number
+by Nj(µ) = P
+α Nj(µ; α) yields the conditional probabil-
+ity fj(α|µ) for a datum to belong to class α conditioned
+on displaying the s-tuple µ in the j-th input patch,
+fj(α|µ) := Pr {x ∈α|xj = µ} = Nj(µ; α)
+Nj(µ) .
+(9)
+If the low-level features are homogeneously spread across
+classes, then f = n−1
+c , independently of and α, µ, and j.
+In contrast, due to the aforementioned correlations, the
+probabilities of the RHM are all different from n−1
+c —we
+refer to this difference as signal. Distinct level-1 tuples
+µ and ν yield a different f (and thus a different signal)
+with high probability unless µ and ν are synonyms, i.e.
+they share the same level-2 representation.
+Therefore,
+this signal can be used to identify synonymous level-1
+tuples.
+B.
+Signal vs Sampling Noise
+When measuring the conditional class probabilities
+with only P training data, the occurrences in the right-
+hand side of Eq. (9) are replaced with empirical occur-
+rences, which induce a sampling noise on the f’s. For
+the identification of synonyms to be possible, this noise
+must be smaller in magnitude than the aforementioned
+signal—a visual representation of the comparison be-
+tween signal and noise is depicted in Fig. 7.
+The magnitude of the signal can be computed as the ra-
+tio between the standard deviation and mean of fj(α|µ)
+over realizations of the RHM. The full calculation is pre-
+sented in Section C: here we present a simplified argu-
+ment based on an additional independence assumption.
+
+===== PDF PAGE 7 =====
+7
+signal
+noise
+Figure 7. Signal vs noise illustration. The dashed func-
+tion represents the distribution of f(α|µ) resulting from the
+random sampling of the RHM rules. The solid dots illustrate
+the true frequencies f(α|µ) sampled from this distribution,
+with different colors corresponding to different groups of syn-
+onyms. The typical spacing between the solid dots, given by
+the width of the distribution, represents the signal. Trans-
+parent dots represent the empirical frequencies ˆfj(α|µ), with
+dots of the same color corresponding to synonymous features.
+The spread of transparent dots of the same color, which is
+due to the finiteness of the training set, represents the noise.
+Given a class α, the tuple µ appearing in the j-th in-
+put patch is determined by a sequence of L choices—one
+choice per level of the hierarchy—of one among m pos-
+sible lower-level representations. These mL possibilities
+lead to all the mv distinct input s-tuples. Nj(µ; α) is pro-
+portional to how often the tuple µ is chosen—mL/(mv)
+times on average. Under the assumption of independence
+of the mL choices, the fluctuations of Nj(µ; α) relative
+to its mean are given by the central limit theorem and
+read (mL/(mv))−1/2 in the limit of large m. If nc is suf-
+ficiently large, the fluctuations of Nj(µ) are negligible in
+comparison. Therefore, the relative fluctuations of fj are
+the same as those of Nj(µ; α), and the size of the signal
+is (mL/(mv))−1/2.
+The magnitude of the noise is given by the ratio be-
+tween the standard deviation and mean, over indepen-
+dent samplings of a training set of fixed size P, of the em-
+pirical conditional probabilities ˆfj(α|µ). Only P/(ncmv)
+of the training points will, on average, belong to class α
+while displaying feature µ in the j-th patch. Therefore,
+by the convergence of the empirical measure to the true
+probability, the sampling fluctuations of ˆf relative to the
+mean are of order [P/(ncmv)]−1/2—see Section C for a
+detailed derivation. Balancing signal and noise yields the
+characteristic Pc for the emergence of correlations. For
+large m, nc and P,
+Pc = ncmL,
+(10)
+which coincides with the empirical sample complexity of
+deep networks discussed in Section II.
+C.
+Learning Level-1 Synonyms With One Step of
+Gradient Descent
+To complete the argument, we consider a simplified
+one-step gradient descent setting [55, 56], where Pc marks
+the number of training examples required to learn a syn-
+onymic invariant representation. In particular, we focus
+on the s-dimensional patches of the data and study how
+a two-layer network acting on one of such patches learns
+the first composition rule of the RHM by building a rep-
+resentation invariant to exchanges of level-1 synonyms.
+Let us then sample an instance of the RHM, and
+P input-label pairs (xk,1, αk) with αk := α(xk) for all
+k = 1, . . . , P and xk,1 denoting the first s-patch of the
+datum xk. The network output reads
+FNN(x1) = 1
+H
+H
+X
+h=1
+ahσ(wh · x1),
+(11)
+where the inner-layer weights wh’s have the same dimen-
+sion as x1, the top-layer weights ah’s are nc-dimensional
+and σ(x) = max (0, x) is the ReLU activation function.
+To further simplify the problem, we represent x1 as a
+vs-dimensional one-hot encoding of the corresponding s-
+tuple of features. This representation is equivalent to an
+orthogonalization of the input points. In addition, the
+top-layer weights are initialized as i.i.d. Gaussian with
+zero mean and unit variance and fixed, whereas the wh’s
+are initialized with all their elements set to 1 and trained
+by Gradient Descent (GD) on the empirical cross-entropy
+loss,
+L = 1
+P
+P
+X
+k=1
+"
+−log
+ 
+e(FNN(xk,1))α(xk)
+Pnc
+β=1 e(FNN(xk,1))β
+!#
+.
+(12)
+Finally, we consider the mean-field limit W →∞, so
+that, at initialization, F(0)
+NN = 0 identically.
+Let us denote with µ(x1) the s-tuple of features en-
+coded in x1. Due to the one-hot encoding, fh(x1) := wh ·
+x1 coincides with the µ(x1)-th component of the weight
+wh. This component, which is set to 1 at initialization,
+is updated by (minus) the corresponding component of
+the gradient of the loss in Eq. (12). Recalling also that
+the predictor is 0 at initialization, we get
+∆fh(x1) = −∇(wh)µ(x1)L =
+1
+P
+P
+X
+k=1
+nc
+X
+α=1
+ah,αδµ(x1),µ(xk,1)
+
+δα,α(xk) −1
+nc
+
+=
+nc
+X
+α=1
+ah,α
+ ˆN1(µ(x1); α)
+P
+−1
+nc
+ˆN1(µ)
+P
+!
+,
+(13)
+where ˆN1(µ) is the empirical occurrence of the s-tuple µ
+in the first patch of the P training points and ˆN1(µ; α) is
+the (empirical) joint occurrence of the s-tuple µ and the
+class label α. As P increases, the empirical occurrences
+ˆN converge to the true occurrences N, which are invari-
+ant for the exchange of synonym s-tuples µ. Hence, the
+hidden representation is also invariant for the exchange
+of synonym s-tuples in this limit.
+This prediction is confirmed empirically in Fig. 8,
+which shows the sensitivity S1,1 of the hidden represen-
+tation [57] of shallow fully-connected networks trained in
+
+===== PDF PAGE 8 =====
+8
+102
+103
+104
+105
+106
+train set size P
+0.00
+0.25
+0.50
+0.75
+1.00
+sensitivity S1,1
+10−1
+100
+101
+P/ncmL
+0.00
+0.25
+0.50
+0.75
+1.00
+sensitivity S1,1
+m = v = 24
+m = v = 16
+m = v = 11
+m = v = 8
+L = 2
+L = 3
+L = 4
+Figure 8. Synonymic sensitivity of the hidden repre-
+sentation vs P for a two-layer fully-connected network
+trained on the first patch of the inputs of an RHM with s = 2
+and m = v, for varying L, v, and nc. The top panel shows
+the bare curves whereas, in the bottom panel, the x-axis is
+rescaled by Pc = ncmL. The collapse of the rescaled curves
+highlights that Pc coincides with the number of training data
+for building a synonymic invariant representation.
+the setting of this section, as a function of the number P
+of training data for different combinations of the model
+parameters. The bottom panel, in particular, highlights
+that the sensitivity is close to 1 for P ≪Pc and close to
+0 for P ≫Pc.
+In addition, notice that the collapse of
+the pre-activations of synonymic tuples onto the same,
+synonymic invariant value, implies that the rank of the
+hidden weights matrix tends to v—the vocabulary size
+of higher-level features. This low-rank structure is typ-
+ical in the weights of deep networks trained on image
+classification [58–61].
+a.
+Including all patches via weight sharing.
+Let us
+remark that one can easily extend the one-step setting
+to include the information from all the input patches,
+for instance by replacing the network in Eq. (11) with a
+one-hidden-layer convolutional network with filter size s
+and nonoverlapping patches. Consequently, the empiri-
+cal occurrences on the right-hand side of Eq. (13) would
+be replaced with average occurrences over the patches.
+However, this average results in a reduction of both the
+signal and the sampling noise contributions to the empir-
+ical occurrences by the same factor
+√
+sL−1. Therefore,
+weight sharing does not affect the sample size required
+for synonymic invariance in the one-step setting.
+b.
+Improved sample complexity via clustering.
+A
+distance-based clustering method acting on the repre-
+sentations of Eq. (13) can actually identify synonyms at
+P ≃√ncmL = Pc/√nc, which is much smaller than Pc in
+the large-nc limit. Intuitively, using a sequence instead of
+a scalar amplifies the signal by a factor nc and the sam-
+pling noise by a factor √nc, improving the signal-to-noise
+ratio. We show that this is indeed the case in Section D
+for the maximal dataset case nc = v and m = vs−1. Pre-
+vious theoretical studies have considered the possibility
+of intercalating clustering steps in standard gradient de-
+scent methods [22, 62], but the question of whether deep
+learning methods can achieve a similar sample complex-
+ity with standard end-to-end training remains open.
+D.
+Curse of Dimensionality without Correlations
+To support the argument that learning is possible be-
+cause of the detection of local input-label correlations,
+we show that their removal in the RHM leads to a sam-
+ple complexity exponential in d, even for deep networks.
+Removing such correlations implies that, at any level,
+features are uniformly distributed among classes. This is
+achieved enforcing that a tuple µ in the j−th patch at
+level ℓbelongs to a class α with probability n−1
+c , inde-
+pendently on µ, j, ℓand α, as discussed in Section III A.
+Such procedure produces an uncorrelated version of the
+RHM, which generalizes the parity problem (realized for
+m = v = nc = 2), a task that cannot be learned effi-
+ciently with gradient-based methods [63]. Indeed, deep
+CNNs with depth L + 1, trained on this uncorrelated
+RHM, are cursed by dimensionality, as shown in Fig. 9.
+The CNN test error is close to ϵrand, given by randomly
+guessing the label, even for P/Pmax > 0.9, particularly
+for v > 2.
+IV.
+CONCLUSION
+What makes real-world tasks learnable? This question
+extends from machine learning to brain science [64]. To
+start thinking quantitatively about it, we introduced the
+Random Hierarchy Model: a family of tasks that cap-
+tures the compositional structure of natural data. We
+showed that neural networks can learn such tasks with a
+limited training set, by developing a hierarchical repre-
+sentation of the data. Overall, these results rationalize
+several phenomena associated with deep learning.
+First, our finding that for hierarchical tasks, the sam-
+ple complexity is polynomial in the input dimension (and
+not exponential) leads to a plausible explanation for the
+learnability of real-world tasks.
+Moreover, our results
+provide a rule of thumb for estimating the order of mag-
+nitude of the sample complexity of benchmark datasets.
+In the case of CIFAR10 [65], for instance, having 10
+classes, taking reasonable values for task parameters such
+as m ∈[5, 15] and L = 3, yields P ∗∈[103, 3 × 104], com-
+
+===== PDF PAGE 9 =====
+9
+0.5
+0.6
+0.7
+0.8
+0.9
+P/Pmax
+0.2
+0.4
+0.6
+test error, L = 2
+v = 2
+v = 3
+v = 4
+v = 2
+v = 3
+v = 4
+0.5
+0.6
+0.7
+0.8
+0.9
+P/Pmax
+0.2
+0.4
+0.6
+test error, L = 3
+Figure 9. Test error of depth-(L + 1) CNNs trained on
+uncorrelated RHM vs number P of training points
+rescaled with Pmax, with s = 2 and m = nc = v with different
+v (different colors), for L = 2 (top) and L = 3 (bottom).
+Horizontal dashed lines stand for ϵrand, given by guessing the
+label uniformly at random.
+parable with the sample complexity of modern architec-
+tures (see Fig. 15).
+Secondly, our results quantify the intuition that depth
+is crucial to building a hierarchical representation that
+effectively lowers the dimension of the problem, and al-
+lows for avoiding the curse of dimensionality. On the one
+hand, this result gives a foundation to the claim that
+deep is better than shallow, beyond previous analyses
+that focused on expressivity [21, 24] rather than learn-
+ing. On the other hand, our result that the internal rep-
+resentations of trained networks mirror the hierarchical
+structure of the task explains why these representations
+become increasingly complex with depth in real-world
+applications [9, 10].
+Furthermore, we provided a characterization of the in-
+ternal representations based on their sensitivity towards
+transformations of the low-level features that leave the
+class label unchanged. This viewpoint complements ex-
+isting ones that focus instead on the input features that
+maximize the response of hidden neurons, thus enhanc-
+ing the interpretability of neural nets. In addition, our
+approach bypasses several issues of previous characteriza-
+tions. For example, approaches based on mutual informa-
+tion [12] are ill-defined when the network representations
+are deterministic functions of the input [13], whereas
+those based on intrinsic dimension [14, 15] can display
+counterintuitive results—see Section E for a deeper dis-
+cussion of the intrinsic dimension and on how it behaves
+in our framework.
+Finally, our study predicts a fundamental relationship
+between sample complexity, correlations between low-
+level features and labels, and the emergence of invariant
+representations.
+This prediction can be tested beyond
+the context of our model, for instance by studying in-
+variance to exchanging synonyms in language modeling
+tasks.
+Looking forward, the Random Hierarchy Model is a
+suitable candidate for the clarification of other open ques-
+tions in the theory of deep learning.
+For instance, a
+formidable challenge is to obtain a detailed description of
+the gradient-descent dynamics of deep networks. Indeed,
+dynamics may be significantly easier to analyze in this
+model, since quantities characterizing the network suc-
+cess, such as sensitivity to synonyms, can be delineated.
+In addition, the model could be generalized to describe
+additional properties of data, e.g., noise in the form of
+errors in the composition rules or inhomogeneities in the
+frequencies at which high-level features generate low-level
+representations. The latter, in particular, would gener-
+ate data where certain input features are more abundant
+than others and, possibly, to a richer learning scenario
+with several characteristic training set sizes.
+Beyond supervised learning, in the Random Hierar-
+chy Model the set of available input data inherits the
+hierarchical structure of the generative process.
+Thus,
+this model offers a new way to study the effect of com-
+positionality on self-supervised learning or probabilistic
+generative models—extremely powerful techniques whose
+understanding is still in its infancy.
+ACKNOWLEDGEMENTS
+The authors thank Antonio Sclocchi for fruitful discus-
+sions and helpful feedback on the manuscript. This work
+was supported by a grant from the Simons Foundation
+(#454953 Matthieu Wyart).
+[1] A. Voulodimos, N. Doulamis, A. Doulamis, and E. Pro-
+topapadakis, Deep learning for computer vision: A brief
+review, Computational Intelligence and Neuroscience ,
+1–13 (2018).
+[2] D. Silver, J. Schrittwieser, K. Simonyan, I. Antonoglou,
+A. Huang, A. Guez, T. Hubert, L. Baker, M. Lai,
+
+===== PDF PAGE 10 =====
+10
+A. Bolton, et al., Mastering the game of go without hu-
+man knowledge, Nature 550, 354 (2017).
+[3] U. v. Luxburg and O. Bousquet, Distance-based classifi-
+cation with lipschitz functions, The Journal of Machine
+Learning Research 5, 669 (2004).
+[4] J. Deng, W. Dong, R. Socher, L.-J. Li, K. Li, and L. Fei-
+Fei, Imagenet: A large-scale hierarchical image database,
+in 2009 IEEE conference on computer vision and pattern
+recognition (IEEE, 2009) pp. 248–255.
+[5] P. Pope, C. Zhu, A. Abdelkader, M. Goldblum, and
+T. Goldstein, The intrinsic dimension of images and
+its impact on learning, in International Conference on
+Learning Representations (2021).
+[6] Y. LeCun, Y. Bengio, and G. Hinton, Deep learning, Na-
+ture 521, 436 (2015).
+[7] D. C. Van Essen and J. H. Maunsell, Hierarchical organi-
+zation and functional streams in the visual cortex, Trends
+in neurosciences 6, 370 (1983).
+[8] K. Grill-Spector and R. Malach, The human visual cor-
+tex, Annu. Rev. Neurosci. 27, 649 (2004).
+[9] M. D. Zeiler and R. Fergus, Visualizing and understand-
+ing convolutional networks, in Computer Vision – ECCV
+2014, Lecture Notes in Computer Science (2014) pp. 818–
+833.
+[10] D. Doimo, A. Glielmo, A. Ansuini, and A. Laio, Hierar-
+chical nucleation in deep neural networks, Advances in
+Neural Information Processing Systems 33, 7526 (2020).
+[11] J. Bruna and S. Mallat, Invariant scattering convolution
+networks, IEEE transactions on pattern analysis and ma-
+chine intelligence 35, 1872 (2013).
+[12] R. Shwartz-Ziv and N. Tishby, Opening the black box
+of deep neural networks via information, Preprint at
+http://arxiv.org/abs/1703.00810 (2017).
+[13] A.
+M.
+Saxe,
+Y.
+Bansal,
+J.
+Dapello,
+M.
+Advani,
+A. Kolchinsky, B. D. Tracey, and D. D. Cox, On the
+information bottleneck theory of deep learning, Journal
+of Statistical Mechanics: Theory and Experiment 2019,
+124020 (2019).
+[14] A. Ansuini, A. Laio, J. H. Macke, and D. Zoccolan, In-
+trinsic dimension of data representations in deep neu-
+ral networks, Advances in Neural Information Processing
+Systems 32, 6111 (2019).
+[15] S. Recanatesi, M. Farrell, M. Advani, T. Moore, G. La-
+joie, and E. Shea-Brown, Dimensionality compression
+and expansion in deep neural networks, Preprint at
+http://arxiv.org/abs/1906.00443 (2019).
+[16] L. Petrini, A. Favero, M. Geiger, and M. Wyart, Relative
+stability toward diffeomorphisms indicates performance
+in deep nets, Advances in Neural Information Processing
+Systems 34, 8727 (2021).
+[17] U. M. Tomasini, L. Petrini, F. Cagnetta, and M. Wyart,
+How deep convolutional neural networks lose spatial in-
+formation with training, Machine Learning: Science and
+Technology 4, 045026 (2023).
+[18] A. B. Patel,
+T. Nguyen, and R. G. Baraniuk, A
+probabilistic
+theory
+of
+deep
+learning,
+Preprint
+at
+http://arxiv.org/abs/1504.00641 (2015).
+[19] E. Mossel, Deep learning and hierarchal generative
+models, Preprint at http://arxiv.org/abs/18612.09057
+(2016).
+[20] H. Mhaskar, Q. Liao, and T. Poggio, When and why
+are deep networks better than shallow ones?, Proceed-
+ings of the AAAI Conference on Artificial Intelligence
+31, https://doi.org/10.1609/aaai.v31i1.10913 (2017).
+[21] T. Poggio, H. Mhaskar, L. Rosasco, B. Miranda, and
+Q. Liao, Why and when can deep-but not shallow-
+networks avoid the curse of dimensionality: a review, In-
+ternational Journal of Automation and Computing 14,
+503 (2017).
+[22] E. Malach and S. Shalev-Shwartz, A provably correct al-
+gorithm for deep learning that actually works, Preprint
+at http://arxiv.org/abs/1803.09522 (2018).
+[23] J. Zazo, B. Tolooshams, D. Ba, and H. J. A. Paul-
+son, Convolutional dictionary learning in hierarchical
+networks, in 2019 IEEE 8th International Workshop on
+Computational Advances in Multi-Sensor Adaptive Pro-
+cessing (CAMSAP) (2019) pp. 131–135.
+[24] J. Schmidt-Hieber, Nonparametric regression using deep
+neural networks with relu activation function, The An-
+nals of Statistics 48, 1875 (2020).
+[25] F. Cagnetta, A. Favero, and M. Wyart, What can be
+learnt with wide convolutional neural networks?, in Pro-
+ceedings of the 40th International Conference on Machine
+Learning, Proceedings of Machine Learning Research,
+Vol. 202, edited by A. Krause, E. Brunskill, K. Cho,
+B. Engelhardt, S. Sabato, and J. Scarlett (PMLR, 2023)
+pp. 3347–3379.
+[26] U. Grenander, Elements of pattern theory (JHU Press,
+1996).
+[27] M. M´ezard, Mean-field message-passing equations in the
+hopfield model and its generalizations, Physical Review
+E 95, 022117 (2017).
+[28] E. DeGiuli, Random language model, Phys. Rev. Lett.
+122, 128301 (2019).
+[29] A. M. Saxe, J. L. McClelland, and S. Ganguli, A math-
+ematical theory of semantic development in deep neural
+networks, Proceedings of the National Academy of Sci-
+ences 116, 11537 (2019).
+[30] Y. Bahri, J. Kadmon, J. Pennington, S. S. Schoenholz,
+J. Sohl-Dickstein, and S. Ganguli, Statistical mechanics
+of deep learning, Annual Review of Condensed Matter
+Physics 11, 501 (2020).
+[31] A. Ingrosso and S. Goldt, Data-driven emergence of con-
+volutional structure in neural networks, Proceedings of
+the National Academy of Sciences 119, e2201854119
+(2022).
+[32] F. Bach, The quest for adaptivity, Machine Learning Re-
+search Blog (2021).
+[33] L. Gy¨orfi, M. Kohler, A. Krzyzak, H. Walk, et al.,
+A distribution-free theory of nonparametric regression,
+Vol. 1 (Springer New York, NY, 2002).
+[34] S. Kpotufe, k-nn regression adapts to local intrinsic di-
+mension, in Advances in Neural Information Processing
+Systems, Vol. 24, edited by J. Shawe-Taylor, R. Zemel,
+P. Bartlett, F. Pereira, and K. Weinberger (Curran As-
+sociates, Inc., 2011) pp. 729–737.
+[35] T. Hamm and I. Steinwart, Adaptive learning rates for
+support vector machines working on data with low intrin-
+sic dimension, The Annals of Statistics 49, 3153 (2021).
+[36] M. Geiger, L. Petrini, and M. Wyart, Landscape and
+training regimes in deep learning, Physics Reports 924
+(2021).
+[37] J. Paccolat,
+L. Petrini,
+M. Geiger,
+K. Tyloo, and
+M. Wyart, Geometric compression of invariant mani-
+folds in neural networks, Journal of Statistical Mechanics:
+Theory and Experiment 2021, 044001 (2021), publisher:
+IOP Publishing.
+
+===== PDF PAGE 11 =====
+11
+[38] E. Abbe, E. Boix-Adsera, M. S. Brennan, G. Bresler,
+and D. Nagaraj, The staircase property:
+How hierar-
+chical structure can guide deep learning, in Advances in
+Neural Information Processing Systems, Vol. 34, edited
+by M. Ranzato, A. Beygelzimer, Y. Dauphin, P. Liang,
+and J. W. Vaughan (Curran Associates, Inc., 2021) pp.
+26989–27002.
+[39] B. Barak, B. Edelman, S. Goel, S. Kakade, E. Malach,
+and C. Zhang, Hidden progress in deep learning: Sgd
+learns parities near the computational limit, in Advances
+in Neural Information Processing Systems, Vol. 35,
+edited by S. Koyejo, S. Mohamed, A. Agarwal, D. Bel-
+grave, K. Cho, and A. Oh (Curran Associates, Inc., 2022)
+pp. 21750–21764.
+[40] Y. Dandi, F. Krzakala, B. Loureiro, L. Pesce, and
+L. Stephan, Learning two-layer neural networks, one (gi-
+ant) step at a time, arXiv preprint arXiv:2305.18270
+(2023).
+[41] F. Bach, Breaking the curse of dimensionality with con-
+vex neural networks, Journal of Machine Learning Re-
+search 18, 1 (2017).
+[42] E. Gardner and B. Derrida, Three unfinished works on
+the optimal storage capacity of networks, Journal of
+Physics A: Mathematical and General 22, 1983 (1989).
+[43] L. Zdeborov´a and F. Krzakala, Statistical physics of in-
+ference: Thresholds and algorithms, Advances in Physics
+65, 453 (2016).
+[44] M. M´ezard, Spin glass theory and its new challenge:
+structured disorder, Indian Journal of Physics , 1 (2023).
+[45] S. Spigler, M. Geiger, and M. Wyart, Asymptotic learn-
+ing curves of kernel methods:
+empirical data versus
+teacher–student paradigm, Journal of Statistical Me-
+chanics: Theory and Experiment 2020, 124001 (2020),
+publisher: IOP Publishing.
+[46] S. Goldt, M. M´ezard, F. Krzakala, and L. Zdeborov´a,
+Modeling the Influence of Data Structure on Learning
+in Neural Networks: The Hidden Manifold Model, Phys-
+ical Review X 10, 041044 (2020), publisher: American
+Physical Society.
+[47] A. Favero, F. Cagnetta, and M. Wyart, Locality de-
+feats the curse of dimensionality in convolutional teacher-
+student scenarios, in Advances in Neural Information
+Processing Systems, Vol. 34, edited by M. Ranzato,
+A. Beygelzimer, Y. Dauphin, P. Liang, and J. W.
+Vaughan (Curran Associates, Inc., 2021) pp. 9456–9467.
+[48] R. Aiudi, R. Pacelli, A. Vezzani, R. Burioni, and P. Ro-
+tondo, Local kernel renormalization as a mechanism for
+feature learning in overparametrized convolutional neural
+networks, arXiv preprint arXiv:2307.11807 (2023).
+[49] A. Jacot, F. Gabriel, and C. Hongler, Neural tangent ker-
+nel: Convergence and generalization in neural networks,
+in Advances in Neural Information Processing Systems,
+Vol. 31, edited by S. Bengio, H. Wallach, H. Larochelle,
+K. Grauman, N. Cesa-Bianchi, and R. Garnett (Curran
+Associates, Inc., 2018) pp. 8571–8580.
+[50] L. Chizat, E. Oyallon, and F. Bach, On lazy training in
+differentiable programming, in Advances in Neural Infor-
+mation Processing Systems, Vol. 32, edited by H. Wal-
+lach, H. Larochelle, A. Beygelzimer, F. d'Alch´e-Buc,
+E. Fox, and R. Garnett (Curran Associates, Inc., 2019)
+pp. 2937–2947.
+[51] G. Rozenberg and A. Salomaa, Handbook of Formal Lan-
+guages (Springer, 1997).
+[52] G. Yang and E. J. Hu, Feature learning in infinite-
+width neural networks, arXiv preprint arXiv:2011.14522
+(2020).
+[53] Let us focus on the first s-dimensional patch of the input
+x1, which can take mv distinct values—m for each of the
+v level-2 features. For a linear transformation, insensitiv-
+ity is equivalent to the following set of constraints: for
+each level-2 features µ, and x1,i encoding for one of the
+m level-1 representations generated by µ, w · x1,i = cµ.
+Since cµ is an arbitrary constant, there are v × (m −1)
+constraints for the v × s components of w, which cannot
+be satisfied in general unless m ≤(s + 1).
+[54] The notation xj = µ means that the elements of the
+patch xj encode the tuple of features µ.
+[55] A. Damian, J. Lee, and M. Soltanolkotabi, Neural net-
+works can learn representations with gradient descent,
+in Proceedings of Thirty Fifth Conference on Learning
+Theory, Proceedings of Machine Learning Research, Vol.
+178, edited by P.-L. Loh and M. Raginsky (PMLR, 2022)
+pp. 5413–5452.
+[56] J. Ba, M. A. Erdogdu, T. Suzuki, Z. Wang, D. Wu, and
+G. Yang, High-dimensional asymptotics of feature learn-
+ing: How one gradient step improves the representation,
+in Advances in Neural Information Processing Systems,
+Vol. 35, edited by S. Koyejo, S. Mohamed, A. Agarwal,
+D. Belgrave, K. Cho, and A. Oh (Curran Associates, Inc.,
+2022) pp. 37932–37946.
+[57] Here invariance to exchange of level-1 synonyms can al-
+ready be achieved at the first hidden layer due to the
+orthogonalization of the s-dimensional patches of the in-
+put, which makes them linearly separable.
+[58] M. Denil, B. Shakibi, L. Dinh, M. A. Ranzato, and
+N. de Freitas, Predicting parameters in deep learning,
+in Advances in Neural Information Processing Systems,
+Vol. 26, edited by C. Burges, L. Bottou, M. Welling,
+Z. Ghahramani, and K. Weinberger (Curran Associates,
+Inc., 2013) pp. 2148–2156.
+[59] E. L. Denton, W. Zaremba, J. Bruna, Y. LeCun, and
+R. Fergus, Exploiting linear structure within convolu-
+tional networks for efficient evaluation, in Advances in
+Neural Information Processing Systems, Vol. 27, edited
+by Z. Ghahramani, M. Welling, C. Cortes, N. Lawrence,
+and K. Weinberger (Curran Associates, Inc., 2014) pp.
+1269–1277.
+[60] X. Yu, T. Liu, X. Wang, and D. Tao, in Proceedings of
+the IEEE Conference on Computer Vision and Pattern
+Recognition (CVPR) (2017) pp. 7370–7379.
+[61] F. Guth, B. M´enard, G. Rochette, and S. Mallat,
+A rainbow in deep network black boxes, Preprint at
+http://arxiv.org/abs/2305.18512 (2023).
+[62] E. Malach and S. Shalev-Shwartz, The implications of
+local correlation on learning some deep functions, in
+Advances in Neural Information Processing Systems,
+Vol. 33, edited by H. Larochelle, M. Ranzato, R. Hadsell,
+M. Balcan, and H. Lin (Curran Associates, Inc., 2020)
+pp. 1322–1332.
+[63] S. Shalev-Shwartz, O. Shamir, and S. Shammah, Fail-
+ures of gradient-based deep learning, in Proceedings of
+the 34th International Conference on Machine Learn-
+ing, Proceedings of Machine Learning Research, Vol. 70,
+edited by D. Precup and Y. W. Teh (PMLR, 2017) pp.
+3067–3075.
+[64] N.
+Kruger,
+P.
+Janssen,
+S.
+Kalkan,
+M.
+Lappe,
+A. Leonardis, J. Piater, A. J. Rodriguez-Sanchez, and
+
+===== PDF PAGE 12 =====
+12
+L. Wiskott, Deep hierarchies in the primate visual cortex:
+What can we learn for computer vision?, IEEE transac-
+tions on pattern analysis and machine intelligence 35,
+1847 (2012).
+[65] A.
+Krizhevsky,
+Learning
+multiple
+layers
+of
+features
+from
+tiny
+images,
+Preprint
+at
+https://www.cs.toronto.edu/
+kriz/learning-features-
+2009-TR.pdf (2009).
+[66] G. Yang, Scaling limits of wide neural networks with
+weight sharing: Gaussian process behavior, gradient in-
+dependence, and neural tangent kernel derivation, arXiv
+preprint arXiv:1902.04760 (2019).
+[67] A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury,
+G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga,
+A. Desmaison, A. Kopf, E. Yang, Z. DeVito, M. Rai-
+son, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang,
+J. Bai, and S. Chintala, Pytorch: An imperative style,
+high-performance deep learning library, in Advances in
+Neural Information Processing Systems, Vol. 32, edited
+by H. Wallach, H. Larochelle, A. Beygelzimer, F. d'Alch´e-
+Buc, E. Fox, and R. Garnett (Curran Associates, Inc.,
+2019) pp. 8026–8037.
+Appendix A: Methods
+1.
+RHM implementation
+The
+code
+implementing
+the
+RHM
+is
+avail-
+able
+online
+at
+https://github.com/pcsl-epfl/
+hierarchy-learning/blob/master/datasets/
+hierarchical.py.
+The inputs sampled from the
+RHM are represented as a one-hot encoding of low-level
+features so that each input consists of sL pixels and v
+channels (size sL × v). The input pixels are whitened
+over channels, i.e., each pixel has zero mean and unit
+variance over the channels.
+2.
+Machine Learning Models
+We consider both generic deep neural networks and
+deep convolutional networks (CNNs) tailored to the
+structure of the RHM. Generic deep neural networks are
+made by stacking fully-connected layers, i.e., linear trans-
+formations of the kind
+x ∈Rdin →d−1/2
+in
+W · x + b ∈Rdout,
+(A1)
+where W is a dout × din matrix of weights, b a dout se-
+quence of biases, and the factor d−1/2
+in
+guarantees that
+the outputs remain of order 1 when din is varied. Con-
+volutional layers, instead, act on image-like inputs that
+have a spatial dimension d and cin channels and com-
+pute the convolution of the input with a filter of spatial
+size f. This operation is equivalent to applying the lin-
+ear transformation of Eq. (A1) to input patches of spa-
+tial size f, i.e., groups of f adjacent pixels (dimension
+din = (f × cin)). The output has an image-like structure
+analogous to that of the input, with spatial dimension
+depending on how many patches are considered. In the
+nonoverlapping patches case, for instance, the spatial di-
+mension of the output is d/f.
+For all layers but the last, the linear transformation
+is followed by an element-wise nonlinear activation func-
+tion σ. We resort to the popular Rectified Linear Unit
+(ReLU) σ(x) = max (0, x). The output dimension is al-
+ways fixed to the number of classes nc, while the input
+dimension of the first layer is the same as the input data:
+spatial dimension sL and v channels, flattened into a sin-
+gle sL × v sequence when using a fully-connected layer.
+The dimensionalities of the other hidden layers are set to
+the same constant H throughout the network. Following
+the maximal update parametrization [66], the weights of
+the last layer are multiplied by an additional factor H−1.
+This factor causes the output at initialization to vanish
+as H grows, which induces representation learning even
+in the H →∞limit. In practice, we set H = (4 −8)×vs.
+Increasing this number further does not affect any of the
+results presented in the paper.
+To tailor deep CNNs to the structure of the RHM,
+we set f = s so that, in the nonoverlapping patches
+setting, each convolutional filter acts on a group of s
+low-level features that correspond to the same higher-
+level feature.
+Since the spatial dimensionality of the
+input is sL and each layer reduces it by s, the num-
+ber of nonlinear layers in a tailored CNN is fixed to
+the depth of the RHM L, so that the network depth is
+L + 1. Fully-connected networks, instead, can have any
+depth. The code for the implementation of both architec-
+tures is available at https://github.com/pcsl-epfl/
+hierarchy-learning/blob/master/models.
+3.
+Training Procedure
+Training is performed within the PyTorch deep learn-
+ing framework [67].
+Neural networks are trained on
+P training points sampled uniformly at random from
+the RHM data, using stochastic gradient descent (SGD)
+on the cross-entropy loss.
+The batch size is 128 for
+P ≥128 and P otherwise, the learning rate is initialised
+to 10−1 and follows a cosine annealing schedule which
+reduces it to 10−2 over 100 epochs.
+Training stops
+when the training loss reaches 10−3. The corresponding
+code is available at https://github.com/pcsl-epfl/
+hierarchy-learning/blob/master
+The performance of the trained models is measured as
+the classification error on a test set. The size of the test
+set is set to min(Pmax −P, 20′000). Synonymic sensitiv-
+ity, as defined in Eq. (8), is measured on a test set of size
+min(Pmax −P, 1′000). Reported results for a given value
+of RHM parameters are averaged over 10 jointly different
+instances of the RHM and network initialization.
+
+===== PDF PAGE 13 =====
+13
+Appendix B: Statistics of The Composition Rules
+In this section, we consider a single composition rule,
+that is the assignment of m s-tuples of low-level features
+to each of the v high-level features. In the RHM these
+rules are chosen uniformly at random over all the possi-
+ble rules, thus their statistics are crucial in determining
+the correlations between the input features and the class
+label.
+1.
+Statistics of a single rule
+For each rule, we call Ni(µ1; µ2) the number of oc-
+currences of the low-level feature µ1 in position i of the
+s-tuples generated by the higher-level feature µ2. The
+probability of Ni(µ1; µ2) is that of the number of suc-
+cesses when drawing m (number of s-tuples associated
+with the high-level feature µ2) times without replace-
+ment from a pool of vs (total number of s-tuples with
+vocabulary size v) objects where only vs−1 satisfy a cer-
+tain condition (number of s-tuples displaying feature µ1
+in position i):
+Pr {Ni(µ0; µ1) = k} =
+vs−1
+k
+vs −vs−1
+m −k
+ vs
+m
+
+,
+(B1)
+which is a Hypergeometric distribution Hgvs,vs−1,m, with
+mean
+⟨N⟩= mvs−1
+vs
+= m
+v ,
+(B2)
+and variance
+σ2
+N :=
+D
+(N −⟨N⟩)2E
+= mvs−1
+vs
+vs −vs−1
+vs
+vs −m
+vs −1
+= m
+v
+v −1
+v
+vs −m
+vs −1
+m ≫1
+−−−−→m
+v ,
+(B3)
+independently of the position i and the specific low- and
+high-level features. Notice that, since m ≤vs−1 with s
+fixed, large m implies also large v.
+2.
+Joint statistics of a single rule
+a.
+Shared high-level feature.
+For a fixed high-level
+feature µ2, the joint probability of the occurrences of two
+different low-level features µ1 and ν1 is a multivariate
+Hypergeometric distribution,
+Pr {Ni(µ1; µ2) = k; Ni(ν1; µ2) = l}
+=
+vs−1
+k
+vs−1
+l
+vs −2vs−1
+m −k −l
+ vs
+m
+
+,
+(B4)
+giving the following covariance,
+cN := ⟨(Ni(µ1; µ2) −⟨N⟩) (Ni(ν1; µ2) −⟨N⟩)⟩
+= −m
+v2
+vs −m
+vs −1
+m ≫1
+−−−−→−
+m
+v
+2 1
+m.
+(B5)
+The covariance can also be obtained via the constraint
+P
+µ1 Ni(µ1; µ2) = m.
+For any finite sequence of identi-
+cally distributed random variables Xµ with a constraint
+on the sum P
+µ Xµ = m,
+v
+X
+µ=1
+Xµ = m ⇒
+v
+X
+µ=1
+(Xµ −⟨Xµ⟩) = 0 ⇒
+(Xν −⟨Xν⟩)
+v
+X
+µ=1
+(Xµ −⟨Xµ⟩) = 0 ⇒
+v
+X
+µ=1
+⟨(Xν −⟨Xν⟩)(Xµ −⟨Xµ⟩)⟩= 0 ⇒
+Var [Xµ] + (v −1)Cov [Xµ, Xν] = 0.
+(B6)
+In the last line, we used the identically distributed vari-
+ables hypothesis to replace the sum over µ̸ = ν with the
+factor (v −1). Therefore,
+cN = Cov [Ni(µ1; µ2), Ni(ν1; µ2)]
+= −Var [Ni(µ1; µ2)]
+v −1
+= −σ2
+N
+v −1.
+(B7)
+b.
+Shared low-level feature.
+The joint probability of
+the occurrences of the same low-level feature µ1 starting
+from different high-level features µ2̸ = ν2 can be written
+as follows,
+Pr {N(µ1; µ2) = k; N(µ1; ν2) = l} =
+Pr {N(µ1; µ2) = k|N(µ1; ν2) = l} × Pr {N(µ1; ν2) = l} =
+Hgvs−m,vs−1−l,m(k) × Hgvs,vs−1,m(l),
+(B8)
+resulting in the following ‘inter-feature’ covariance,
+cif := Cov [Ni(µ1; µ2), Ni(µ1; ν2)] = −
+m
+v
+2 v −1
+vs −1.
+(B9)
+c.
+No shared features.
+Finally, by multiplying both
+sides of P
+µ1 N(µ1; µ2) = m with N(ν1; ν2) and averaging,
+we get
+cg := Cov [Ni(µ1; µ2), Ni(ν1; ν2)] =
+−Cov [Ni(µ1; µ2), Ni(µ1; ν2)]
+v −1
+=
+m
+v
+2
+1
+vs −1. (B10)
+Appendix C: Emergence of input-output
+correlations (Pc)
+As discussed in the main text, the Random Hierar-
+chy Model presents a characteristic sample size Pc cor-
+responding to the emergence of the input-output corre-
+lations. This sample size predicts the sample complexity
+of deep CNNs, as we also discuss in the main text. In
+this appendix, we prove that
+Pc
+nc,m→∞
+−−−−−−→ncmL.
+(C1)
+
+===== PDF PAGE 14 =====
+14
+1.
+Estimating the Signal
+The correlations between input features and the class
+label can be quantified via the conditional probability
+(over realizations of the RHM) of a data point belonging
+to class α conditioned on displaying the s-tuple µ in the
+j-th input patch,
+fj(α|µ) := Pr {x ∈α|xj = µ} ,
+(C2)
+where the notation xj = µ means that the elements of
+the patch xj encode the tuple of features µ. We say that
+the low-level features are correlated with the output if
+fj(α|µ)̸ = 1
+nc
+,
+(C3)
+and define a ‘signal’ as the difference fj(α|µ) −n−1
+c . In
+the following, we compute the statistics of the signal over
+realizations of the RHM.
+a.
+Occurrence of low-level features
+Let us begin by defining the joint occurrences of a class
+label α and a low-level feature µ1 in a given position of
+the input. Using the tree representation of the model,
+we will identify an input position with a set of L indices
+iℓ= 1, . . . , s, each indicating which branch to follow when
+descending from the root (class label) to a given leaf (low-
+level feature). These joint occurrences can be computed
+by combining the occurrences of the single rules intro-
+duced in Section B. With L = 2, for instance,
+N (1→2)
+i1i2
+(µ1; α) =
+v
+X
+µ2=1
+
+ms−1N (1)
+i1 (µ1; µ2)
+
+× N (2)
+i2 (µ2; α),
+(C4)
+where:
+i) N (2)
+i2 (µ2; α) counts the occurrences of µ2 in position
+i2 of the level-2 representations of α, i.e.
+the s-
+tuples generated from α according to the second-
+layer composition rule;
+ii) N (1)
+i1 (µ1; µ2) counts the occurrences of µ1 in po-
+sition i1 of the level-1 representations of µ2, i.e.
+s-tuples generated by µ2 according to the compo-
+sition rule of the first layer;
+iii) the factor ms−1 counts the descendants of the re-
+maining s−1 elements of the level-2 representation
+(m descendants per element);
+iv) the sum over µ2 counts all the possible paths of
+features that lead to µ1 from α across 2 generations.
+The generalization of Eq. (C4) is immediate once one
+takes into account that the multiplicity factor accounting
+for the descendants of the remaining positions at the ℓ-
+th generation is equal to msℓ−1/m (sℓ−1 is the size of the
+representation at the previous level). Hence, the overall
+multiplicity factor after L generations is
+1 × ms
+m × ms2
+m × · · · × msL−1
+m
+= m
+sL−1
+s−1 −L,
+(C5)
+so that the number of occurrences of feature µ1 in posi-
+tion i1 . . . iL of the inputs belonging to class α is
+N (1→L)
+i1→L (µ1; α) = m
+sL−1
+s−1 −L
+v
+X
+µ2,...,µL=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; α),
+(C6)
+where we used i1→L as a shorthand notation for the tuple
+of indices i1, i2, . . . , iL.
+The same construction allows us to compute the num-
+ber of occurrences of up to s −1 features within the s-
+dimensional patch of the input corresponding to the path
+i2→L. The number of occurrences of a whole s-tuple, in-
+stead, follows a slightly different rule, since there is only
+one level-2 feature µ2 which generates the whole s-tuple
+of level-1 features µ1 = (µ1,1, . . . , µ1,s)—we call this fea-
+ture g1(µ1), with g1 denoting the first-layer composition
+rule. As a result, the sum over µ2 in the right-hand side
+of Eq. (C6) disappears and we are left with
+N (1→L)
+i2→L (µ1; α) = m
+sL−1
+s−1 −L
+v
+X
+µ3,...,µL=1
+N (2)
+i2 (g1(µ1); µ3) × · · · × N (L)
+iL (µL; α).
+(C7)
+Coincidentally, Eq. (C7) shows that the joint occurrences
+of a s-tuple of low-level features µ1 depend on the level-
+
+===== PDF PAGE 15 =====
+15
+2 feature corresponding to µ1. Hence, N (1→L)
+i2→L (µ1; α) is
+invariant for the exchange of µ1 with one of its synonyms,
+i.e. level-1 tuples ν1 corresponding to the same level-2
+feature.
+b.
+Class probability conditioned on low-level observations
+We can turn these numbers into probabilities by normalizing them appropriately.
+Upon dividing by the total
+occurrences of a low-level feature µ1 independently of the class, for instance, we obtain the conditional probability of
+the class of a given input, conditioned on the feature in position i1 . . . iL being µ1.
+f (1→L)
+i1→L (α|µ1) :=
+N (1→L)
+i1→L (µ1; α)
+nc
+X
+α′=1
+N (1→L)
+i1→L (µ1; α′)
+=
+v
+X
+µ2,...,µL=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; α)
+v
+X
+µ2,...,µL=1
+nc
+X
+µL+1=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; µL+1)
+.
+(C8)
+Let us also introduce, for convenience, the numerator and denominator of the right-hand side of Eq. (C8).
+U (1→L)
+i1→L (µ1α) =
+v
+X
+µ2,...,µL=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; α);
+D(1→L)
+i1→L (µ1) =
+nc
+X
+α=1
+U (1→L)
+i1→L (µ1; α).
+(C9)
+c.
+Statistics of the numerator U
+We now determine the first and second moments of the numerator of f (1→L)
+i1→L (µ1; α). Let us first recall the definition
+for clarity,
+U (1→L)
+i1→L (µ1; α) =
+v
+X
+µ2,...,µL=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; α)
+(C10)
+a.
+Level 1 L = 1.
+For L = 1, U is simply the occurrence of a single production rule Ni(µ1; α),
+D
+U (1)E
+= m
+v ;
+(C11)
+σ2
+U (1) := Var
+h
+U (1)i
+= m
+v
+v −1
+v
+vs −m
+vs −1
+v≫1
+−−−→m
+v ;
+(C12)
+cU (1) := Cov
+h
+U (1)(µ1; α), U (1)(ν1; α)
+i
+= −Var
+
+U (1)
+(v −1)
+= −
+m
+v
+2 vs −m
+vs −1
+1
+m
+v≫1
+−−−→
+m
+v
+2 1
+m;
+(C13)
+where the relationship between variance and covariance is due to the constraint on the sum of U (1) over µ1, see Eq. (B6).
+b.
+Level 2 L = 2.
+For L = 2,
+U (1→2)
+i1→2 (µ1; α) =
+v
+X
+µ2=1
+N (1)
+i1 (µ1; µ2) × N (2)
+i2 (µ2; α) =
+v
+X
+µ2=1
+N (1)
+i1 (µ1; µ2)U (2)
+i2 (µ2; α).
+(C14)
+
+===== PDF PAGE 16 =====
+16
+Therefore,
+D
+U (1→2)E
+= v
+m
+v
+
+×
+D
+U (1)E
+= v
+m
+v
+2
+;
+(C15)
+σ2
+U (2) := Var
+h
+U (1→2)i
+=
+v
+X
+µ2,ν2=1
+D
+N (1)(µ1; µ2)N (1)(µ1; ν2)
+E D
+U (2)(µ2; α)U (2)(ν2; α)
+E
+−⟨N⟩2 D
+U (1)E2
+=
+X
+µ2,ν2=µ2
+· · · +
+X
+µ2
+X
+ν2̸=µ2
+. . .
+= v
+
+σ2
+Nσ2
+U (1) + σ2
+N
+D
+U (1)E2
++ σ2
+U (1) ⟨N⟩2
+
++ v(v −1)
+
+cifcU (1) + cif
+D
+U (1)E2
++ cU (1) ⟨N⟩2
+
+= v
+ σ2
+Nσ2
+U (1) + (v −1)cifcU (1)
+
++ v
+D
+U (1)E2  σ2
+N + (v −1)cif
+
++ v ⟨N⟩2  σ2
+U (1) + (v −1)cU (1)
+
+= vσ2
+U (1)
+ σ2
+N −cif
+
++ v
+D
+U (1)E2  σ2
+N + (v −1)cif
+
+,
+(C16)
+cU (2) = −σ2
+U (2)
+(v −1)
+(C17)
+c.
+Level L.
+In general,
+U (1→L)
+i1→L (µ1; α) =
+v
+X
+µ2=1
+N (1)
+i1 (µ1; µ2)U (2→L)
+i2→L (µ2; α).
+(C18)
+Therefore,
+D
+U (L)E
+= v
+m
+v
+
+×
+D
+U (L−1)E
+= vL−1 m
+v
+L
+;
+(C19)
+σ2
+U (L) =
+v
+X
+µ2,ν1=1
+D
+N (1)(µ1; µ2)N (1)(µ1; ν2)
+E D
+U (2→L)(µ2; α)U (2→L)(ν1; α)
+E
+−⟨N⟩2 D
+U (1→(L−1))E2
+=
+X
+µ2,ν2=µ2
+· · · +
+X
+µ2
+X
+ν2̸=µ2
+. . .
+= v
+
+σ2
+Nσ2
+U (L−1) + σ2
+N
+D
+U (L−1)E2
++ σ2
+U (L−1) ⟨N⟩2
+
++ v(v −1)
+
+σ2
+ifcU (L−1) + cif
+D
+U (L−1)E2
++ cU (L−1) ⟨N⟩2
+
+= vσ2
+U (L−1)
+ σ2
+N −cif
+
++ v
+D
+U (L−1)E2  σ2
+N + (v −1)cif
+
+,
+(C20)
+cU (L) = −σ2
+U (L)
+(v −1)
+(C21)
+d.
+Concentration for large m.
+In the large multiplicity limit m ≫1, the U’s concentrate around their mean value.
+Due to m ≤vs−1, large m implies large v, thus we can proceed by setting m = qvs−1, with q ∈(0, 1] and studying the
+v ≫1 limit. From Eq. (C19),
+D
+U (L)E
+= qLvL(s−1)−1.
+(C22)
+In addition,
+σ2
+N
+v≫1
+−−−→m
+v = qv(s−1)−1,
+cif
+v≫1
+−−−→−
+m
+v
+2
+1
+vs−1 = −q2v(s−1)−2,
+(C23)
+so that
+σ2
+U (L) = vσ2
+U (L−1)
+ σ2
+N −σ2
+if
+
++ v
+D
+U (L−1)E2  σ2
+N + (v −1)σ2
+if
+
+v≫1
+−−−→σ2
+U (L−1)qv(s−1) + σ2
+U (L−1)q2v(s−1)−1 + q2L−1(1 −q)v(2L−1)(s−1)−2
+(C24)
+The second of the three terms is always subleading with respect to the first, so we can discard it for now. It remains to
+compare the first and the third terms. For L = 2, since σ2
+U (1) = σ2
+N, the first term depends on v as v2(s−1)−1, whereas
+
+===== PDF PAGE 17 =====
+17
+the third is proportional to v3(s−1)−2. For L ≥3 the dominant scaling is that of the third term only: for L = 3 it
+can be shown by simply plugging the L = 2 result into the recursion, and for larger L it follows from the fact that
+replacing σ2
+U (L−1) in the first term with the third term of the precious step always yields a subdominant contribution.
+Therefore,
+σ2
+U (L)
+v≫1
+−−−→
+(
+q2v2(s−1)−1 + q3(1 −q)v3(s−1)−2,
+for L = 2,
+q2L−1(1 −q)v(2L−1)(s−1)−2,
+for L ≥3.
+(C25)
+Upon dividing the variance by the squared mean we get
+σ2
+U (L)
+
+U (L)2
+v≫1
+−−−→
+
+
+
+
+
+
+
+1
+q2
+1
+v2(s−1)−1 + 1 −q
+q
+1
+v(s−1) ,
+for L = 2,
+1 −q
+q
+1
+v(s−1) ,
+for L ≥3,
+(C26)
+whose convergence to 0 guarantees the concentration of the U’s around the average over all instances of the RHM.
+d.
+Statistics of the denominator D
+Here we compute the first and second moments of the denominator of f (1→L)
+i1→L (µ1; α),
+D(1→L)
+i1→L (µ1) =
+v
+X
+µ2,...,µL=1
+nc
+X
+µL+1=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; µL+1)
+(C27)
+a.
+Level 1 L = 1.
+For L = 1, D is simply the sum over classes of the occurrences of a single production rule,
+D(1) = P
+α Ni(µ1; α),
+D
+D(1)E
+= nc
+m
+v ;
+(C28)
+σ2
+D(1) := Var
+h
+D(1)i
+= ncσ2
+N + nc(nc −1)cif = nc
+m
+v
+2 v −1
+vs −1
+vs
+m −nc
+
+v≫1
+−−−→nc
+m
+v
+2  v
+m −
+nc
+vs−1
+
+;
+(C29)
+cD(1) := Cov
+h
+D(1)(µ1), D(1)(ν0)
+i
+= −Var
+
+D(1)
+(v −1)
+= nccN + nc(nc −1)cg,
+(C30)
+where, in the last line, we used the identities σ2
+N +(v −1)cN = 0 from Eq. (B5) and cif +(v −1)cg = 0 from Eq. (B10).
+b.
+Level 2 L = 2.
+For L = 2,
+D(1→2)
+i1→2 (µ1) =
+v
+X
+µ2
+nc
+X
+µ3=1
+N (1)
+i1 (µ1; µ2) × N (2)
+i2 (µ2; µ3) =
+v
+X
+µ2=1
+N (1)
+i1 (µ1; µ2)D(2)
+i2 (µ2).
+(C31)
+Therefore,
+D
+D(1→2)E
+= v
+m
+v
+
+×
+D
+D(1)E
+= nc
+v m2;
+(C32)
+σ2
+D(2) := Var
+h
+D(1→2)i
+=
+v
+X
+µ2,ν1=1
+D
+N (1)(µ1; µ2)N (1)(µ1; ν1)
+E D
+D(2)(µ2)D(2)(ν1)
+E
+−⟨N⟩2 D
+D(1)E2
+=
+X
+µ2,ν1=µ2
+· · · +
+X
+µ2
+X
+ν1̸=µ2
+. . .
+= v
+
+σ2
+Nσ2
+D(1) + σ2
+N
+D
+D(1)E2
++ σ2
+D(1) ⟨N⟩2
+
++ v(v −1)
+
+cifcD(1) + cif
+D
+D(1)E2
++ cD(1) ⟨N⟩2
+
+= v
+ σ2
+Nσ2
+D(1) + (v −1)cifcD(1)
+
++ v
+D
+D(1)E2  σ2
+N + (v −1)cif
+
++ v ⟨N⟩2  σ2
+D(1) + (v −1)cD(1)
+
+= vσ2
+D(1)
+ σ2
+N −cif
+
++ v
+D
+D(1)E2  σ2
+N + (v −1)cif
+
+,
+(C33)
+cD(2) = −σ2
+D(2)
+(v −1).
+(C34)
+
+===== PDF PAGE 18 =====
+18
+c.
+Level L.
+In general,
+D(1→L)
+i1→L (µ1) =
+v
+X
+µ2=1
+N (1)
+i1 (µ1; µ2)D(2→L)
+i2→L (µ2).
+(C35)
+Therefore,
+D
+D(L)E
+= v
+m
+v
+
+×
+D
+D(L−1)E
+= nc
+v mL;
+(C36)
+σ2
+D(L) =
+v
+X
+µ2,ν1=1
+D
+N (1)(µ1; µ2)N (1)(µ1; ν1)
+E D
+D(2→L)(µ2; α)D(2→L)(ν1; α)
+E
+−⟨N⟩2 D
+D(1→(L−1))E2
+=
+X
+µ2,ν1=µ2
+· · · +
+X
+µ2
+X
+ν1̸=µ2
+. . .
+= v
+
+σ2
+Nσ2
+D(L−1) + σ2
+N
+D
+D(L−1)E2
++ σ2
+D(L−1) ⟨N⟩2
+
++ v(v −1)
+
+cifcD(L−1) + cif
+D
+D(L−1)E2
++ cD(L−1) ⟨N⟩2
+
+= vσ2
+D(L−1)
+ σ2
+N −cif
+
++ v
+D
+D(L−1)E2  σ2
+N + (v −1)cif
+
+,
+(C37)
+cD(L) = −σ2
+D(L)
+(v −1).
+(C38)
+d.
+Concentration for large m.
+Since the D’s can be expressed as a sum of different U’s, their concentration for
+m ≫1 follows directly from that of the U’s.
+e.
+Estimate of the conditional class probability
+We can now turn back to the original problem of estimating
+f (1→L)
+i1→L (α|µ1) =
+v
+X
+µ2,...,µL=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; α)
+v
+X
+µ2,...,µL=1
+nc
+X
+µL+1=1
+N (1)
+i1 (µ1; µ2) × · · · × N (L)
+iL (µL; µL+1)
+= U (1→L)
+i1→L (µ1; α)
+D(1→L)
+i1→L (µ1)
+.
+(C39)
+Having shown that both numerator and denominator converge to their average for large m, we can expand for small
+fluctuations around these averages and write
+f (1→L)
+i1→L (α|µ1) =
+v−1mL
+
+1 +
+U (1→L)
+i1→L (µ1;α)−mL/v
+mL/v
+
+ncv−1mL
+
+1 +
+D(1→L)
+i1→L (µ1)−ncmL/v
+mL
+
+(C40)
+= 1
+nc
++ 1
+nc
+U (1→L)
+i1→L (µ1; α) −mL/v
+mL/v
+−1
+nc
+D(1→L)
+i1→L (µ1) −ncmL/v
+mL/v
+= 1
+nc
++
+v
+ncmL
+
+U (1→L)
+i1→L (µ1; α) −1
+nc
+D(1→L)
+i1→L (µ1)
+
+.
+(C41)
+Since the conditional frequencies average to n−1
+c , the term in brackets averages to zero. We can then estimate the
+size of the fluctuations of the conditional frequencies (i.e. the ‘signal’) with the standard deviation of the term in
+brackets.
+It is important to notice that, for each L and position i1→L, D is the sum over α of U, and the U with different α
+at fixed low-level feature µ1 are identically distributed. In general, for a sequence of identically distributed variables
+(Xα)α=1,...,nc,
+*
+1
+nc
+v
+X
+β=1
+Xβ
+
+
+2+
+= 1
+n2c
+nc
+X
+β=1
+
+⟨Xβ⟩2 +
+X
+β′̸=β
+⟨XβXβ′⟩
+
+= 1
+nc
+
+⟨Xβ⟩2 +
+X
+β′̸=β
+⟨XβXβ′⟩
+
+.
+(C42)
+
+===== PDF PAGE 19 =====
+19
+Hence,
+*
+Xα −1
+nc
+nc
+X
+β=1
+Xβ
+
+
+2+
+=
+
+X2
+α
+
++ n−2
+c
+nc
+X
+β,γ=1
+⟨XβXγ⟩−2n−1
+c
+nc
+X
+β=1
+⟨XαXβ⟩
+=
+
+X2
+α
+
+−n−1
+c
+
+⟨Xα⟩2 +
+X
+β̸=α
+⟨XαXβ⟩
+
+
+=
+
+X2
+α
+
+−n−2
+c
+*
+
+nc
+X
+β=1
+Xβ
+
+
+2+
+.
+(C43)
+In our case
+*
+U (1→L)
+i1→L (µ1; α) −1
+nc
+D(1→L)
+i1→L (µ1)
+2+
+=
+
+U (1→L)
+i1→L (µ1; α)
+2
+−nc
+−2
+
+D(1→L)
+i1→L (µ1)
+2
+= σ2
+U (L) −n−2
+c σ2
+D(L),
+(C44)
+where, in the second line, we have used that
+
+U (L)
+=
+
+D(L)
+/nc to convert the difference of second moments into a
+difference of variances. By Eq. (C19) and Eq. (C36),
+σ2
+U (L) −n−2
+c σ2
+D(L) = vσ2
+U (L−1)
+ σ2
+N −σ2
+if
+
++ v
+D
+U (L−1)E2  σ2
+N + (v −1)σ2
+if
+
+−v
+n2c
+σ2
+D(L−1)
+ σ2
+N −σ2
+if
+
+−v
+n2c
+D
+D(L−1)E2  σ2
+N + (v −1)σ2
+if
+
+= v
+ σ2
+N −σ2
+if
+  σ2
+U (L−1) −n−2
+c σ2
+D(L−1)
+
+,
+(C45)
+having used again that
+
+U (L)
+=
+
+D(L)
+/nc. Iterating,
+σ2
+U (L) −n−2
+c σ2
+D(L) =
+
+v
+ σ2
+N −σ2
+if
+L−1   σ2
+U (1) −n−2
+c σ2
+D(1)
+
+.
+(C46)
+Since
+σ2
+U (1) = m
+v
+v −1
+v
+vs −m
+vs −1
+v≫1
+−−−→m
+v ,
+n−2
+c σ2
+D(1) = n−1
+c σ2
+N + n−1
+c (nc −1)σ2
+if
+v≫1
+−−−→n−1
+c
+m
+v
+2  v
+m −
+nc
+vs−1
+
+= 1
+nc
+m
+v
+
+1 −mnc
+vs
+
+,
+(C47)
+One has
+σ2
+U (L) −n−2
+c σ2
+D(L)
+v≫1
+−−−→mL
+v
+
+1 −1 −ncm/vs
+nc
+
+,
+(C48)
+so that
+Var
+h
+f (1→L)
+i1→L (α|µ1)
+i
+= v2
+
+U (1→L)
+i1→L (µ1; α) −
+1
+nc D(1→L)
+i1→L (µ1)
+2
+n2cm2L
+v,nc≫1
+−−−−−→v
+nc
+1
+ncmL .
+(C49)
+2.
+Introducing sampling noise due to the finite
+training set
+In a supervised learning setting where only P of the
+total data are available, the occurrences N are replaced
+with their empirical counterparts ˆN. In particular, the
+empirical joint occurrence ˆN(µ; α) (where we dropped
+level and positional indices to ease notation) coincides
+with the number of successes when sampling P points
+without replacement from a population of Pmax where
+only N(µ; α) belong to class α and display feature µ in
+position j. Thus, ˆN(µ; α) obeys a hypergeometric dis-
+
+===== PDF PAGE 20 =====
+20
+tribution where P plays the role of the number of tri-
+als, Pmax the population size, and the true occurrence
+N(µ; α) the number of favorable cases. If P is large and
+Pmax, N(µ; α) are both larger than P, then
+ˆN(µ; α) →N
+
+P N(µ; α)
+Pmax
+, P N(µ; α)
+Pmax
+
+1 −N(µ; α)
+Pmax
+
+,
+(C50)
+where the convergence is meant as a convergence in prob-
+ability and N(a, b) denotes a Gaussian distribution with
+mean a and variance b. The statement above holds when
+the ratio N(µ; α)/Pmax is away from 0 and 1, which is
+true with probability 1 for large v due to the concen-
+tration of f(α|µ).
+In complete analogy, the empirical
+occurrence ˆN(µ) obeys
+ˆN(µ) →N
+
+P N(µ)
+Pmax
+, P N(µ)
+Pmax
+
+1 −N(µ)
+Pmax
+
+.
+(C51)
+We obtain the empirical conditional frequency by the ra-
+tio of Eq. (C50) and Eq. (C51). Since N(µ) = Pmax/v
+and f(α|µ) = N(µ; α)/N(µ), we have
+ˆf(α|µ) =
+f(α|µ)
+v
++ ξP
+r
+1
+P
+f(α|µ)
+v
+
+1 −f(α|µ)
+v
+
+1
+v + ζP
+q
+1
+P
+1
+v
+ 1 −1
+v
+
+,
+(C52)
+where ξP and ζP are correlated zero-mean and unit-
+variance Gaussian random variables over independent
+drawings of the P training points.
+By expanding the
+denominator of the right-hand side for large P we get,
+after some algebra,
+ˆf(α|µ) ≃f(α|µ) + ξP
+s
+vf(α|µ)
+P
+
+1 −f(α|µ)
+v
+
+−ζP f(α|µ)
+s
+v
+P
+
+1 −1
+v
+
+.
+(C53)
+Recall that, in the limit of large nc and m, f(α|µ) =
+n−1
+c (1 + σfξRHM) where ξRHM is a zero-mean and unit-
+variance Gaussian variable over the realizations of the
+RHM, while σf is the ‘signal’, σ2
+f = v/mL by Eq. (C49).
+As a result,
+ˆf(α|µ)
+nc,m,P ≫1
+−−−−−−−→1
+nc
+
+1 +
+r v
+mL ξRHM +
+rvnc
+P ξP
+
+.
+(C54)
+3.
+Sample complexity
+From Eq. (C54) it is clear that for the ‘signal’ ˆf, the
+fluctuations due to noise must be smaller than those due
+to the random choice of the composition rules. Therefore,
+the crossover takes place when the two nose terms have
+the same size, occurring at P = Pc such that
+r v
+mL =
+rvnc
+Pc
+⇒Pc = ncmL.
+(C55)
+Appendix D: Improved Sample Complexity via
+Clustering
+In this section, we consider the maximal dataset case
+nc = v and m = vs−1, and show that a distance-based
+clustering method acting on the hidden representations
+of Eq. (13) would identify synonyms at P ≃√ncmL.
+Let us then imagine feeding the representations updates
+∆fh(µ) of Eq. (13) to a clustering algorithm aimed at
+identifying synonyms.
+This algorithm is based on the
+distance between the representations of different tuples
+of input features µ and ν,
+∥∆f(µ) −∆f(ν)∥2 := 1
+H
+H
+X
+h=1
+(∆fh(µ) −∆fh(ν))2 ,
+(D1)
+where H is the number of hidden neurons. By defining
+ˆgα(µ) :=
+ˆN1(µ; α)
+P
+−1
+nc
+ˆN1(µ)
+P
+,
+(D2)
+and denoting with ˆg(µ) the nc-dimensional sequence hav-
+ing the ˆgα’s as components, we have
+
+===== PDF PAGE 21 =====
+21
+∥∆f(µ) −∆f(ν)∥2 =
+nc
+X
+α,β=1
+ 
+1
+H
+H
+X
+h
+ah,αah,β
+!
+(ˆgα(µ) −ˆgα(ν)) (ˆgβ(µ) −ˆgβ(ν))
+H→∞
+−−−−→
+nc
+X
+α=1
+(ˆgα(µ) −ˆgα(ν))2 = ∥ˆg(µ) −ˆg(ν)∥2,
+(D3)
+where we used the i.i.d. Gaussian initialization of the
+readout weights to replace the sum over neurons with
+δα,β.
+Due
+to
+the
+sampling
+noise,
+from
+Eq.
+(C50)
+and Eq. (C51), when 1 ≪P ≪Pmax,
+ˆgα(µ) = gα(µ) +
+r
+1
+ncmvP ηα(µ),
+(D4)
+where ηα(µ) is a zero-mean and unit-variance Gaussian
+noise and g without hat denotes the P →Pmax limit of
+ˆg. In the limit 1 ≪P ≪Pmax, the noises with different α
+and µ are independent of each other. Thus,
+∥ˆg(µ) −ˆg(ν)∥2 =
+∥g(µ) −g(ν)∥2 +
+1
+ncmvP ∥η(µ) −η(ν)∥2+
+2
+√ncmvP (g(µ) −g(ν)) · (η(µ) −η(ν)) .
+(D5)
+If µ and ν are synonyms, then g(µ) = g(ν) and only the
+noise term contributes to the right-hand side of Eq. (D5).
+If this noise is sufficiently small, then the distance above
+can be used to cluster tuples into synonymic groups.
+By the independence of the noises and the Central
+Limit Theorem, for nc ≫1,
+∥η(µ) −η(ν)∥2 ∼N(2nc, O(√nc)),
+(D6)
+over independent samplings of the P training points.
+The g’s are also random variables over independent re-
+alizations of the RHM with zero mean and variance pro-
+portional to the variance of the conditional probabilities
+f(α|µ) (see Eq. (C40) and Eq. (C49)),
+Var [gα(µ)] =
+1
+ncmvncmL =
+1
+ncmvPc
+.
+(D7)
+To estimate the size of ∥g(µ) −g(ν)∥2 we must take
+into account the correlations (over RHM realizations) be-
+tween g’s with different class label and tuples. However,
+in the maximal dataset case nc = v and m = vs−1, both
+the sum over classes and the sum over tuples of input fea-
+tures of the joint occurrences N(µ; α) are fixed determin-
+istically. The constraints on the sums allow us to control
+the correlations between occurrences of the same tuple
+within different classes and of different tuples within the
+same class, so that the size of the term ∥g(µ) −g(ν)∥2
+for nc = v ≫1 can be estimated via the Central Limit
+Theorem:
+∥g(µ) −g(ν)∥2 ∼N
+
+2nc
+ncmvPc
+, O(√nc)
+ncmvPc
+
+.
+(D8)
+The mixed term (g(µ) −g(ν)) · (η(µ) −η(ν)) has zero
+average (both with respect to training set sampling and
+RHM realizations) and can also be shown to lead to rela-
+tive fluctuations of order O(√nc) in the maximal dataset
+case.
+Tu sum up, we have that, for synonyms,
+∥ˆg(µ) −ˆg(ν)∥2 = ∥η(µ) −η(ν)∥2
+∼
+1
+mvP
+
+1 +
+1
+√nc
+ξP
+
+,
+(D9)
+where ξP is some O(1) noise dependent on the training
+set sampling. If µ and ν are not synonyms, instead,
+∥ˆg(µ) −ˆg(ν)∥2 ∼
+1
+mvP
+
+1 +
+1
+√nc
+ξP
+
++
+1
+mvPc
+
+1 +
+1
+√nc
+ξRHM
+
+,
+(D10)
+where ξRHM is some O(1) noise dependent on the RHM
+realization. In this setting, the signal is the determin-
+istic part of the difference between representations of
+non-synonymic tuples.
+Due to the sum over class la-
+bels, the signal is scaled up by a factor nc, whereas the
+fluctuations (stemming from both sampling and model)
+are only increased by O
+ √nc
+
+. Therefore, the signal re-
+quired for clustering emerges from the sampling noise at
+P = Pc/√nc = √ncmL, equal to v1/2+L(s−1) in the max-
+imal dataset case.
+This prediction is tested for s = 2
+in Fig. 10, which shows the error achieved by a layerwise
+algorithm which alternates single GD steps to clustering
+of the resulting representations [22, 62].
+More specifi-
+cally, the weights of the first hidden layer are updated
+with a single GD step while keeping all the other weights
+frozen. The resulting representations are then clustered,
+so as to identify groups of synonymic level-1 tuples. The
+centroids of the ensuing clusters, which correspond to
+level-2 features, are orthogonalized and used as inputs of
+another one-step GD protocol, which aims at identifying
+synonymic tuples of level-2 features. The procedure is
+iterated L times.
+
+===== PDF PAGE 22 =====
+22
+Appendix E: Intrinsic Dimensionality of Data
+Representations
+In deep learning, the representation of data at each
+layer of a network can be thought of as lying on a man-
+ifold in the layer’s activation space. Measures of the in-
+trinsic dimensionality of these manifolds can provide in-
+sights into how the networks lower the dimensionality of
+the problem layer by layer. However, such measurements
+have challenges. One key challenge is that it assumes that
+real data exist on a smooth manifold, while in practice,
+the dimensionality is estimated based on a discrete set of
+points. This leads to counter-intuitive results such as an
+increase in the intrinsic dimensionality with depth, es-
+pecially near the input. An effect that is impossible for
+continuous smooth manifolds. We resort to an example
+to illustrate how this increase with depth can result from
+spurious effects. Consider a manifold of a given intrinsic
+dimension that undergoes a transformation where one of
+the coordinates is multiplied by a large factor. This oper-
+ation would result in an elongated manifold that appears
+one-dimensional. The measured intrinsic dimensionality
+would consequently be one, despite the higher dimension-
+ality of the manifold. In the context of neural networks,
+a network that operates on such an elongated manifold
+could effectively ’reduce’ this extra, spurious dimension.
+This could result in an increase in the observed intrin-
+sic dimensionality as a function of network depth, even
+though the actual dimensionality of the manifold did not
+change.
+In the specific case of our data, the intrinsic dimension-
+ality of the internal representations of deep CNNs mono-
+tonically decreases with depth, see Fig. 11, consistently
+with the idea proposed in the main text that the CNNs
+solve the problem by reducing the effective dimensional-
+ity of data layer by layer. We attribute this monotonicity
+to the absence of spurious or noisy directions that might
+lead to the counter-intuitive effect described above.
+Appendix F: Additional Results on Sample
+Complexity
+This section collects additional results on the sample
+complexity of deep networks trained on the RHM (Fig. 12
+and Fig. 13), on the learning curves for ‘lazy’ neural
+networks (Fig. 14), and for a ResNet18 trained on dif-
+ferent sub-samples of the benchmark dataset CIFAR10
+(Fig. 15).
+Fig. 12 shows the behavior of the sample complexity
+with varying number of classes nc when all the other
+parameters of the RHM are fixed, confirming the linear
+scaling discussed in the main text.
+Fig. 13 shows the behavior of the sample complexity for
+deep fully-connected networks having depth larger than
+L+1, which are not tailored to the structure of the RHM.
+Notice that changing architecture seems to induce an ad-
+ditional factor of 2L to the sample complexity, indepen-
+dent of v, nc and m. This factor is also polynomial in
+the input dimension.
+Fig. 14 presents the learning curves for deep CNNs tai-
+lored to the structure of the model and trained in the lazy
+regime on the maximal case, i.e., nc = v and m = vs. In
+particular, we consider the infinite-width limit of CNNs
+with all layers scaled by a factor H−1/2, including the
+last.
+In this limit, CNNs become equivalent to a ker-
+nel method [49], with an architecture-dependent kernel
+known as the Neural Tangent Kernel (NTK). In our ex-
+periments, we use the analytical form of this kernel (see,
+e.g., [25]) and train a kernel logistic regression classifier
+up to convergence. Our main result is that, in the lazy
+regime, the generalization error stays finite even when
+P ≈Pmax; thus, kernels suffer from the curse of dimen-
+sionality.
+Notice that the learning curves of the lazy regime fol-
+low those of the feature learning regime for P ≪P ∗. This
+is because the CNN kernel can also exploit local correla-
+tions between the label and input patches [25] to improve
+its performance. However, unlike in the feature regime,
+kernels cannot build a hierarchical representation, and
+thus their test error does not converge to zero.
+
+===== PDF PAGE 23 =====
+23
+103
+104
+105
+106
+P
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+test error, ¯ϵ = ϵ/ϵrnd
+100
+101
+102
+P/vL+1/2
+v = 6
+v = 8
+v = 10
+v = 12
+v = 16
+v = 20
+v = 24
+100
+101
+P/vL+1
+Figure 10.
+Sample complexity for layerwise training, m = nc = v, L = 3, s = 2.
+Training of a L-layers network
+is performed layerwise by alternating one-step GD as described in Section 4.C and clustering of the hidden representations.
+Clustering of the mv = v2 representations for the different one-hot-encoded input patches is performed with the k-means
+algorithms. Clustered representations are then orthogonalized and the result is given to the next one-step GD procedure. Left:
+Test error vs number of training points. Different colors correspond to different values of v. Center: collapse of the test error
+curves when rescaling the x-axis by vL+1/2. Right: analogous, when rescaling the x-axis by vL+1. The curves show a better
+collapse when rescaling by vL+1/2, suggesting that these layerwise algorithms have an advantage of a factor √v over end-to-end
+training with deep CNNs, for which P ∗= vL+1.
+101
+102
+103
+dataset size, P
+10−1
+100
+near neigh. distance, δ/δ0
+input, deff = 7.06
+layer 1, deff = 6.89
+layer 2, deff = 3.86
+layer 3, deff = 3.66
+output, deff = 2.25
+input
+layer 1
+layer 2
+layer 3
+output
+3
+4
+5
+6
+7
+eﬀective dimension, deff
+Figure 11. Effective dimension of the internal representation of a CNN trained on one instance of the RHM with m = nc =
+v, L = 3 resulting in Pmax = 6′232. Left: average nearest neighbor distance of input or network activations when probing them
+with a dataset of size P. The value reported on the y-axis is normalized by δ0 = δ(P = 10). The slope of δ(P) is used as
+an estimate of the effective dimension. Right: effective dimension as a function of depth. We observe a monotonic decrease,
+consistent with the idea that the dimensionality of the problem is reduced by DNNs with depth.
+103
+104
+105
+P
+0.00
+0.25
+0.50
+0.75
+1.00
+test error ¯ε
+nc = 8
+nc = 11
+nc = 16
+nc = 23
+nc = 32
+nc = 45
+nc = 64
+104
+ncmL
+104
+105
+P s.t. ¯ε = 10%
+Figure 12. Sample complexity of deep CNNs, for L = s = 2, v = 256, m = 23 and different values of nc. Left: Test
+error vs number of training points with the color indicating the number of classes (see key). Right: sample complexity P ∗
+(crosses) and law P ∗= ncmL (black dashed).
+
+===== PDF PAGE 24 =====
+24
+102
+103
+104
+105
+P
+0.00
+0.25
+0.50
+0.75
+1.00
+test error ¯ϵ
+m = 6
+m = 8
+m = 11
+m = 16
+m = 23
+L = 2
+L = 3
+depth= L
+depth= 6
+103
+104
+ncmL
+103
+104
+P s.t. ¯ϵ = 10%
+L=3, depth=3
+L=3, depth=6
+L=2, depth=2
+L=2, depth=6
+Figure 13. Sample complexity of deep fully-connected networks with different depth, for s = 2 and m = nc = v.
+Left: Test error vs number of training points. The color denotes the value of m = nc = v, the marker the hierarchy depth of the
+RHM L. Solid lines represent networks having depth L, while dashed lines correspond to networks with depth 6 > L. Notice
+that, in all cases, the behavior of the test error is roughly independent of the network depth. Right: sample complexity P ∗
+(crosses and circles). With respect to the case of deep CNNs tailored to the structure of the RHM, the sample complexity of
+generic deep networks seems to display an additional factor of sL independently of nc, m, and v.
+101
+102
+103
+104
+P
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+test error ¯ϵ
+v = 4
+v = 6
+v = 8
+v = 12
+v = 16
+Lazy
+Feature
+Figure 14. Learning curves of depth-(L + 1) CNNs, for L = 2, s = 2 and m = nc = v trained in the ‘lazy’ regime
+(full lines)—where they are equivalent to a kernel method [49]—and in the ‘feature’ learning regime (dashed
+lines). Different colors correspond to different vocabulary sizes v. Vertical lines signal Pmax = vsL.
+102
+103
+104
+training set size, P
+0.2
+0.4
+0.6
+0.8
+test error
+Figure 15. Test error vs number of training points for a ResNet18 trained on subsamples of the CIFAR10
+dataset. Results are the average of 10 jointly different initializations of the networks and dataset sampling.

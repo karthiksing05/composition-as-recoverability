@@ -1,0 +1,3 @@
+e21_intervene.py --models gpt2-large --seeds 90 --outdir results/smoke21
+e23_nonce.py --models gpt2-large --seeds 90 --outdir results/smoke23
+e24_input.py --models gpt2 --seeds 90 --outdir results/smoke24

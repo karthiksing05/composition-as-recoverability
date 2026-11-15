@@ -23,7 +23,7 @@ from e7_roles import PAIRS
 from e9_behavior import QUESTIONS, item, fmt, N_DEMO
 from e11_tokens import spans, embed_tokens, embed_query
 
-E11_PICK = {"microsoft/phi-4": (30, "phrase"), "Qwen/Qwen3-8B": (27, "carrier"), "allenai/OLMo-2-1124-13B": (30, "phrase")}
+E11_PICK = {"microsoft/phi-4": (30, "phrase"), "Qwen/Qwen3-8B": (27, "carrier"), "allenai/OLMo-2-1124-13B": (30, "phrase"), "allenai/OLMo-2-1124-7B": (16, "carrier")}
 N_PC = 256
 
 
@@ -107,6 +107,7 @@ def run(name, seed, dev):
     tok, mod = E.load(name, dev)
     tok.padding_side = "right"
     li, cname = E11_PICK[name]
+    li = int(os.environ.get("E19_LAYER", li))  # E26 reads OLMo-7B at the layers where patches flip its answers
     P = E.embed(tok, mod, [(f"a {x}" if cname == "phrase" else f"there is a {x} here") for x in nouns], dev, name)[f"L{li}"]
     idx = {x: i for i, x in enumerate(nouns)}
     pca = list(range(E.N_FIT))

@@ -27,3 +27,6 @@ recoverability-theory/temporary/
 experiments/results/e11/*.part
 # layout-scan page renders
 notes/audit/ws/*.png
+notes/audit/figs/mont_*.png
+experiments/slurm-*.out
+experiments/results/smoke*/

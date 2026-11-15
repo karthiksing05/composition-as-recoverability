@@ -1,0 +1,23 @@
+{
+ "arch": "slot",
+ "m": 64,
+ "V": 32,
+ "seed": 1,
+ "steps": 4000,
+ "gain": 4.0,
+ "layers": 3,
+ "arm": "base",
+ "final_loss": 1.789984708011616e-05,
+ "train_secs": 34.84775757789612,
+ "own_heldout": 0.46283036562934315,
+ "own_newpairs": 0.8329764369904422,
+ "read_trained": 0.6368709650472684,
+ "read_untrained": 0.5152675640231628,
+ "read_input": 0.7134234615188233,
+ "read_vocab": 0.5325640831629638,
+ "read_rendered": 0.697374657282803,
+ "ref_concat": 0.9811086389906171,
+ "ref_sum": 0.4841661698816863,
+ "redec_trained": 0.5995231495978675,
+ "redec_untrained": 0.4521609409044309
+}
