@@ -52,7 +52,7 @@
 \maketitle
 
 \begin{abstract}
-A mind that can think that John loves Mary can also think that Mary loves John, a regularity that Fodor and Pylyshyn called systematicity and traced to representations built from reusable parts. We study composition through recoverability, the return of each part in its role from a new composite of parts held out from the reading procedure. Behavioral compositionality, a weak form of composition, is the ability of a system's own procedures to recover parts. However, it fails on parts outside training, on additions to a trained system, on deeper composites and on roles. Representational compositionality, a strong form that adds decomposition, is the ability of a system's states to keep every part recoverable by a declared readout, and prior work ties it to generalization and to the reuse of parts. We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. We contribute a calibrated metric for recoverability, a soft heuristic for design, and proofs of its limits. Recoverability places trained networks and pretrained language, text and image models in all four cells of the dissociation between the two kinds, and procedures reading recoverable states repair the failures of behavior on the same held-out parts.
+A mind that can think that John loves Mary can also think that Mary loves John, a regularity that Fodor and Pylyshyn called systematicity and traced to representations built from reusable parts. We separate two kinds of composition by decomposition, the return of each part in its role from a whole. Behavioral compositionality, a weak form of composition, is the ability of a system's own procedures to recover parts. However, it fails on parts outside training, on additions to a trained system, on deeper composites and on roles. Representational compositionality, a strong form that adds decomposition, is the ability of a system's states to keep every part recoverable by a declared readout, and prior work ties it to generalization and to the reuse of parts. We measure decomposition by recoverability, the return of each part in its role from a new composite of parts held out from the reading procedure. These terms give a shared language for compositionality, and we place classical, connectionist, vector-symbolic, disentanglement and benchmark frameworks on one spectrum of demands on decomposition. We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. We contribute a calibrated metric for recoverability, a soft heuristic for design, and proofs of its limits. Recoverability places trained networks and pretrained language, text and image models in all four cells of the dissociation between the two kinds, and procedures reading recoverable states repair the failures of behavior on the same held-out parts.
 \end{abstract}
 
 %=====================================================================
@@ -71,6 +71,10 @@ We call the two realizations \emph{representational} and \emph{behavioral} compo
 
 The two notions form a weak and a strong version of composition. Behavioral compositionality is the weak version, in which a system composes parts, and any decomposition it performs comes from a procedure trained for that purpose. Representational compositionality is the strong version, in which a system composes parts and its composites also decompose. Recoverability is our heuristic for the strong version, and it asks whether parts read out easily from the internal states of a composite. Decomposition matters because it supports the efficient use of parts and reveals what each part donates to the whole.
 
+Decomposition carries the argument of this paper, so we define it with care. A composite \emph{decomposes} when a procedure returns each of its parts in its role. Stated this loosely, every injective system decomposes, because a lookup table over the parts seen in training inverts it. Two conditions give the notion content. The procedure must come from a simple class declared in advance, and it must succeed on parts held out from its fit. Recoverability scores decomposition under these two conditions.
+
+These terms give a shared language for compositionality. Existing frameworks differ mainly in the demands they place on decomposition. Blends and tests of outputs ask for none, functional compositionality asks for a general procedure, tensor products and disentanglement ask for one shared code per role, and classical architectures ask for constituents copied into the whole. We place each framework on this spectrum and justify its place (Figure~\ref{fig:spectrum}).
+
 We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. A system whose own procedures recover held-out parts has a state that holds them, while a state can hold parts that its system's procedures miss.
 
 Behavior delivers recombination of known parts, and tests on training parts reward it. Those tests miss failures elsewhere. A lookup over a finite vocabulary passes them, success can come from fragments seen in training \citep{dziri2023}, and text-to-image models misplace objects \citep{conwell2022} and attach an attribute to the wrong object \citep{rassin2022}.
@@ -86,7 +90,7 @@ Recoverability places real systems in all four cells of the dissociation (Figure
   \label{fig:map}
 \end{figure}
 
-\textbf{Contributions.} We define both properties so that one protocol measures them on the same held-out parts, and we give a calibrated metric $\kappa$ for recoverability. We prove that behavior on held-out parts entails recoverability under a readout class containing the system's procedure, that the converse fails, and that the rank of a relation and the width of a state bound recovery. We place networks trained from scratch and pretrained models with up to 15 billion parameters in all four cells of the dissociation. We show that procedures reading through recoverable states repair each failure of behavior, and that pretrained models build recoverability beyond their inputs while small trained networks inherit it from theirs.
+\textbf{Contributions.} We define decomposition, and through it both properties, so that one protocol measures them on the same held-out parts, and we give a calibrated metric $\kappa$ for recoverability. We use these definitions as a shared language that places existing frameworks on one spectrum of demands on decomposition. We prove that behavior on held-out parts entails recoverability under a readout class containing the system's procedure, that the converse fails, and that the rank of a relation and the width of a state bound recovery. We place networks trained from scratch and pretrained models with up to 15 billion parameters in all four cells of the dissociation. We show that procedures reading through recoverable states repair each failure of behavior, and that pretrained models build recoverability beyond their inputs while small trained networks inherit it from theirs.
 
 %=====================================================================
 \section{Related work}
@@ -105,12 +109,12 @@ Recoverability places real systems in all four cells of the dissociation (Figure
 \textbf{Recovering parts from representations.} Probes decode constituents \citep{belinkov2022}, tensor-product decompositions \citep{mccoy2019} and interchange interventions \citep{geiger2021} can supply part codes, and compression measures score symbolic redescriptions of a representation \citep{andreas2019,elmoznino2024,elmoznino2026}. Superposition lets a state carry more features than it has dimensions \citep{elhage2022}. Disentanglement seeks codes that separate the factors of variation \citep{bengio2013}, and unsupervised methods cannot find them without inductive biases \citep{locatello2019}. Identifiability results guarantee generalization for additive decoders that an encoder inverts \citep{lachapelle2023,wiedemer2024}, yet decodable factors need not yield a decoder that generalizes \citep{montero2021}. We add the requirement that a readout transfer to parts outside the vocabulary that fitted it, and we use that recovery to compare a system's states with its own procedures.
 
 %=====================================================================
-\section{Two kinds of composition}
+\section{Composition and decomposition}
 \label{sec:definition}
 
 Composition is the study of parts and their combination through some operation. Broadly, any operation that maps parts to a whole composes them, whether it places an avocado on an armchair or merges the two into an armchair shaped like an avocado (Figure~\ref{fig:ops}). These operations differ in how much of their parts they keep, so we ask of each one whether a procedure can undo it.
 
-In this section, we define both properties through the recovery of parts, by the system's own procedures in one case and by a declared readout in the other. We then show that behavior is a subset of representation, describe the structure that produces recoverable states and give the results that follow. Appendix~\ref{app:proofs} gives the proofs.
+In this section, we define weak composition, decomposition and the strong composition that joins them. Weak composition recovers parts through the system's own procedures. Decomposition asks a simple, declared class of procedures to recover them, and recoverability measures it. We then show that behavior is a subset of representation, describe the structure that makes decomposition simple and give the results that limit it. Appendix~\ref{app:proofs} gives the proofs.
 
 \begin{figure}[t]
   \centering
@@ -124,11 +128,11 @@ In this section, we define both properties through the recovery of parts, by the
 
 A part is a draw from a distribution $\D$ over possible parts, such as glyphs, nouns or photographs. A system assigns each part $x$ a \emph{part code} $e(x) \in \R^d$, and it assigns a composite $r(x_1, \ldots, x_k)$ of $k$ parts in the roles of a relation $r$ a state $h = g_r(x_1, \ldots, x_k) \in \R^m$. Training exposes a system to a finite \emph{vocabulary} $\Voc$ of \emph{training} parts.
 
-A part is \emph{held out} from a procedure when no composite containing it helped fit the procedure. A glyph can be held out both from a readout and from the network that encodes it, while a noun in a pretrained model can be held out only from the readout. \emph{Recovery} is the return of a part in its role from a composite. Recovery is close to the reverse compositionality of \citet{fodor2002}, on which understanding a complex requires understanding its parts.
+A part is \emph{held out} from a procedure when no composite containing it helped fit the procedure. A glyph can be held out both from a readout and from the network that encodes it, while a noun in a pretrained model can be held out only from the readout. \emph{Recovery} is the return of a part in its role from a composite, and a procedure \emph{decomposes} a composite when it recovers every part. Recovery is close to the reverse compositionality of \citet{fodor2002}, on which understanding a complex requires understanding its parts.
 
 Suppose a system adds two part vectors $x$ and $y$. Every pair on the line $x + y = z$ yields the same composite (Figure~\ref{fig:ops}c), so no procedure can return the parts. A tensor-product binding $x \otimes \rho_1 + y \otimes \rho_2$ with independent role vectors \citep{smolensky1990} keeps one decomposition for each composite (Figure~\ref{fig:ops}b). A small vocabulary hides the difference, because few vocabulary pairs share a line and a lookup finds the summed parts. A held-out pair exposes it, because its line holds infinitely many other decompositions.
 
-\subsection{Behavior recovers parts through the system's own procedures}
+\subsection{Weak composition recovers parts through the system's own procedures}
 \label{sec:notions}
 
 Behavior scores the system's own outputs. A decoder renders parts, a decomposer returns them, and a language model answers questions about them. Each is a recovery of parts through a procedure that the system itself learned.
@@ -139,10 +143,30 @@ A system is \emph{behaviorally compositional} with respect to a relation $r$ to 
 
 This definition asks for held-out parts because training parts decode anyway. A non-invertible relation can be injective on a finite vocabulary, and a lookup table then inverts it (Lemma~\ref{lem:lookup}), as clean-up does for vector-symbolic codes \citep{plate1995}. Any procedure learned from a vocabulary shares this limit. Composites fix an affine procedure only on the codes they contain, so the procedure covers held-out composites only when the codes of the training parts in each role have full rank $d$ (Proposition~\ref{prop:span}). This result is a procedure-side form of the argument of \citet{marcus1998} that networks fail to extend a relation outside their training space. Behavior on training parts therefore reveals little about composition, and a system can fail on held-out parts for two separate reasons, a state that lost them or a procedure that cannot read them.
 
-\subsection{Representation recovers parts through a declared readout}
+\subsection{Decomposition makes parts reusable}
+\label{sec:decomposition}
+
+Strong composition adds decomposition to composition. A system composes when it builds wholes from parts, and its composites decompose when a procedure can take each whole apart into the same parts in the same roles. Decomposition matters because every later use of a part passes through it.
+\begin{itemize}
+  \item \textbf{Reuse.} A new procedure, such as a new decoder or a new task, reads the parts without retraining the system that composed them.
+  \item \textbf{New parts in every role.} A part learned in one role enters another, because the part and its role come apart.
+  \item \textbf{Inspection.} A decomposition shows the share each part donates to the whole, and an edit of that share changes one part alone.
+  \item \textbf{Nesting.} A composite that decomposes can serve as a part, so wholes nest inside wholes.
+\end{itemize}
+The repairs of Table~\ref{tab:remedies} test each use on held-out parts.
+
+Decomposition alone comes cheap. A lookup table decomposes any composite that is injective on a finite vocabulary (Lemma~\ref{lem:lookup}), an unrestricted probe decodes almost anything \citep{hewitt2019}, and a recoding of the parts makes any assignment of meanings compositional \citep{zadrozny1994}. Two conditions give decomposition content.
+
+\begin{defbox}{Decomposition}{decomp}
+The composites of a relation $r$ \emph{decompose} under a declared class $\U$ of procedures if, for every role $i$, one procedure $u_i \in \U$, fitted on composites of some parts, returns the part in role $i$ from composites of parts held out from its fit. A system shows \emph{strong composition} when it composes parts and its composites decompose.
+\end{defbox}
+
+The class makes decomposition simple, and the held-out parts make it general. A procedure from a small class cannot memorize a vocabulary, so its success on held-out parts shows that the parts survive in the state. Decomposition so defined is a property of the state, and it differs from a decomposing act of the system. A system decomposes when one of its own procedures returns the parts, which is weak composition. Its states decompose when a fixed, simple class of procedures would return them. The two come apart in both directions. Glyph networks hold parts that their own decoders lose, and OLMo-2 7B answers beyond the readouts we declare (Figure~\ref{fig:map}).
+
+\subsection{Recoverability measures decomposition}
 \label{sec:repcomp}
 
-A representational test separates those two reasons by reading the state directly. A \emph{readout class} $\U$, such as affine maps, contains the procedures allowed to recover a part's code from a state. We fix the class in advance, because when the coordinates of an additive decomposition are unrestricted, every invertible relation is additive (Lemma~\ref{lem:psi}).
+Recoverability turns Definition~\ref{def:decomp} into a number, by reading the state directly. A \emph{readout class} $\U$, such as affine maps, contains the procedures allowed to recover a part's code from a state. We fix the class in advance, because when the coordinates of an additive decomposition are unrestricted, every invertible relation is additive (Lemma~\ref{lem:psi}).
 
 \begin{defbox}{Recoverable relations}{recoverable}
 Fix a part distribution $\D$, a part code $e$, and a readout class $\U$. A relation $r$, which a system realizes by $g_r$, is \emph{$\varepsilon$-recoverable} if for every role $i$ some $u_i \in \U$ satisfies, for parts $x_1, \ldots, x_k$ drawn independently from $\D$,
@@ -182,7 +206,7 @@ The inclusion is strict, because a state can hold parts that the system's own pr
 This relation restates an old dispute. \citet{smolensky1990} built states that return their constituents without containing them explicitly, and recoverability adopts this notion, because it asks only that a declared procedure return each part \citep[cf.][]{vangelder1990}. \citet{smolensky1988} had argued that the commonalities among a constituent's context-dependent patterns drive its role in processing, and \citet{fodor1990} objected that constituents that are not tokened cannot act in processing. A recoverable state alone leaves this objection open, and this gap makes the inclusion strict. A behavioral success answers the objection for one procedure, and interchange edits test it directly (Section~\ref{sec:success}).
 
 
-\subsection{Shared codes produce recoverable states}
+\subsection{Shared role codes make decomposition simple}
 \label{sec:mechanics}
 
 Recoverability describes an end effect, and a state can produce it in several ways. The simplest gives each part one code that enters every whole, changed only by its role.
@@ -210,6 +234,52 @@ Appendix~\ref{app:proofs} proves two lemmas and eight propositions, and three re
 \textbf{A shared code fixes reversals from one composite.} If a relation is role-factorized with $\delta = 0$ and $[B_1 \cdots B_k]$ has full column rank, an affine function of a single composite gives every role reversal and every assignment of a known part to a new role (Proposition~\ref{prop:systematic}). This is the unbinding argument for tensor-product representations \citep{smolensky1990}. \citet{fodor1990} objected that recoverable constituents need not act in processing. An interchange intervention that replaces one role's component of a state tests this objection, because it should change the system's behavior for that role alone.
 
 \textbf{Productivity needs invertibility on the relation's own outputs.} A nested linear blend of depth $n$ into a state of width $d$ loses at least $(2^n - 1)d$ dimensions of its leaves (Proposition~\ref{prop:depth}). A relation that inverts on composites of parts can still fail on composites of composites, because they come from another distribution. Recursive tensor products avoid this loss by raising the tensor rank, so their states grow with depth \citep{smolensky1990}.
+
+%=====================================================================
+\section{A shared language for compositionality}
+\label{sec:spectrum}
+
+In this section, we place existing accounts of compositionality on one spectrum, ordered by the demands each places on decomposition (Figure~\ref{fig:spectrum}). Each account fixes some aspects of a decomposition and leaves others open, and its place follows from the aspects it fixes (Table~\ref{tab:spectrum}).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_spectrum.pdf}
+  \caption{\textbf{Frameworks for compositionality differ in the demands they place on decomposition.} Each card names a rung, its demand, the frameworks that make that demand and the systems of this paper that meet it. A blend loses its parts, and weak composition leaves their return to the system's own procedure. Strong composition adds decomposition by a simple readout declared in advance, and two stricter rungs also fix the form of that decomposition. Colors follow Figure~\ref{fig:protocol}.}
+  \label{fig:spectrum}
+\end{figure}
+
+\paragraph{Five rungs.} A \emph{blend} composes parts and keeps no decomposition, so no procedure returns them. \emph{Weak composition} asks the system's own procedure to return the parts, on the task that procedure learned. \emph{Strong composition} asks a simple procedure declared in advance to return every part in every role, for parts held out from its fit (Definition~\ref{def:decomp}). \emph{Shared role codes} also require each part to enter every whole through one code that changes only with its role (Definition~\ref{def:factor}). \emph{Tokened constituents} also require that code to be the part itself, copied into the whole \citep{fodor1988}. Each rung above weak composition fixes more of the decomposition. Strong composition fixes the class of the decomposing procedure, shared role codes fix its form, and tokened constituents fix the code.
+
+\paragraph{Placing frameworks.} Frege's principle and Montague's homomorphism fix how the meaning of a whole is built and ask nothing of the way back, so they define composition alone. Reverse compositionality adds the way back \citep{fodor2002}, and functional compositionality asks for general procedures that build and decompose every whole \citep{vangelder1990}. Both reach strong composition, and our declared class supplies the generality they leave open. Benchmarks, text-to-image models and diffusion models on the random hierarchy score the outputs of the system's own procedure, so they test weak composition and cannot tell a lost part from an unread one. Vector-symbolic architectures sit on two rungs. Clean-up against a stored vocabulary decomposes as weak composition does, and a readout recovers held-out parts only while the width holds every part. Tensor products, disentangled codes and additive decoders fix one code per role, and compression measures score how well such a composition of part codes reproduces a state. Two tests sit outside the spectrum, because every injective system passes them. Unrestricted probes and recodings fix no class, and readouts scored on training parts hold out nothing.
+
+\paragraph{A claim should name its rung.} A claim that a system is compositional should say which rung it reaches and declare the terms of that rung. A claim of weak composition scores the system's own procedure on held-out parts, a claim of strong composition states its readout class, part codes and held-out parts, and a claim of shared role codes reports the residual $\delta$. The remaining sections apply these terms to real systems and place each on the spectrum.
+
+\begin{table}[t]
+  \caption{\textbf{Each framework lands on the rung its demand on decomposition sets.} The middle column gives the demand in the terms of this paper, and the last column gives the rung of Figure~\ref{fig:spectrum}.}
+  \label{tab:spectrum}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.30\linewidth}YP{0.17\linewidth}@{}}
+    \toprule
+    Framework & Demand on decomposition & Rung \\
+    \midrule
+    Conceptual blending and combination \citep{fauconnier2002,osherson1981,kamp1995} & Wholes gain structure of their own, and parts need not return intact & Blend \\
+    Frege's principle, Montague semantics \citep{frege1923,montague1970} & Fixes how a whole is built and asks nothing of the way back & Weak \\
+    Compositional generalization benchmarks \citep{lake2018,keysers2020,hupkes2020,lake2023} & Scores the system's outputs on new combinations of training parts & Weak \\
+    Text-to-image and diffusion composition \citep{ramesh2021,okawa2023,favero2025diffusion} & Scores generated outputs against the concepts or rules of the prompt & Weak \\
+    Recursive auto-associative memories \citep{pollack1990} & A learned decomposer returns the leaves at trained depths & Weak; the root state can be strong \\
+    Vector-symbolic architectures \citep{plate1995,gayler2006,kanerva2009} & Unbinding and clean-up against a stored vocabulary & Weak; strong while the width holds every part \\
+    Reverse compositionality \citep{fodor2002} & Understanding a whole requires understanding its parts & Strong \\
+    Functional compositionality \citep{vangelder1990} & General procedures build and decompose every whole & Strong \\
+    Context-dependent constituents \citep{smolensky1988} & Parts return approximately, through codes that change with their context & Strong without shared codes \\
+    Decodable factors \citep{montero2021} & A readout recovers factors that the model's own decoder fails to combine & Strong without weak \\
+    Tensor-product representations \citep{smolensky1990} & Fillers bind to independent role vectors and unbind affinely & Shared role codes \\
+    Disentanglement and additive decoders \citep{bengio2013,lachapelle2023,wiedemer2024} & Each factor keeps its own coordinates, or each slot its own term of a sum & Shared role codes \\
+    Compression measures \citep{andreas2019,elmoznino2024} & A composition of part codes reproduces the state, usually on training parts & Shared role codes, tested by composing \\
+    Classical constituent structure \citep{fodor1988} & Constituents are tokened in every whole that contains them & Tokened constituents \\
+    Probes \citep{belinkov2022,hewitt2019} and recodings \citep{zadrozny1994} & No declared class, or no held-out parts & Outside; every injective system passes \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 %=====================================================================
 \section{Measuring recoverability}
@@ -454,11 +524,11 @@ In this section, we ask what supplies the recoverable states of the previous sec
 \section{Conclusion and limitations}
 \label{sec:discussion}
 
-We distinguished two kinds of composition. Weak, behavioral composition asks a system's own procedures to recover parts, and strong, representational composition asks its composites to decompose, so that a declared readout recovers every part in its role. Recoverability measured both on the same held-out parts and placed real systems in all four cells of their dissociation. Language models that answered by meaning carried the role in the state at the question, and interventions on that state changed their answers. Glyph networks, recursive composers and image encoders kept parts in their states that their own procedures lost. OLMo-2 7B answered beyond our readouts, and models that answered by word order showed neither kind. Procedures that read through recoverable states repaired each failure of behavior, so decomposition gave these systems abilities that composition alone did not. Both parts of the hypothesis held in the systems we tested. Success at behavior traced to a state that held the parts, and states held parts that their system's procedures missed.
+We distinguished two kinds of composition by decomposition. Weak, behavioral composition asks a system's own procedures to recover parts, and strong, representational composition asks its composites to decompose, so that a declared readout recovers every part in its role. Decomposition becomes a useful notion only under a simple class of procedures and on held-out parts, and these two conditions gave a shared language that placed existing frameworks on one spectrum. Recoverability measured both on the same held-out parts and placed real systems in all four cells of their dissociation. Language models that answered by meaning carried the role in the state at the question, and interventions on that state changed their answers. Glyph networks, recursive composers and image encoders kept parts in their states that their own procedures lost. OLMo-2 7B answered beyond our readouts, and models that answered by word order showed neither kind. Procedures that read through recoverable states repaired each failure of behavior, so decomposition gave these systems abilities that composition alone did not. Both parts of the hypothesis held in the systems we tested. Success at behavior traced to a state that held the parts, and states held parts that their system's procedures missed.
 
 Our results suggest five requirements for a compositional network. Its state must have room for every part (Propositions~\ref{prop:ceiling} and~\ref{prop:ey}). Its procedure for reading parts must learn from many distinct parts (Proposition~\ref{prop:span}). Each part should enter every role through one code, so that one composite fixes its reversal (Proposition~\ref{prop:systematic}). The role components must be the ones the system uses. The relation must stay invertible on its own outputs, and the system's procedure must follow it (Proposition~\ref{prop:depth}).
 
-We therefore argue that a claim that a model is compositional should say which of the two kinds it concerns. A representational claim should state its state, readout class, part codes and held-out parts, and a behavioral claim should score the model's own procedures on the same held-out parts.
+We therefore argue that a claim that a model is compositional should say which of the two kinds it concerns, and which rung of the spectrum of decomposition it reaches. A representational claim should state its state, readout class, part codes and held-out parts, and a behavioral claim should score the model's own procedures on the same held-out parts.
 
 \paragraph{Limitations and next steps.} The inclusion of behavior in representation is a logical result for a readout class that contains the system's procedure, and the evidence that it is strict comes from the systems we tested. Our evidence for design comes from repairs and from a recovery objective that also adds data, and separating the objective from the data is the next test. Our trained networks are small and their domains rendered, chosen so that we could hold out parts, and their recoverability comes largely from their inputs. In pretrained models the parts are held out only from the readout, apart from invented words. Richer methods, such as a discovered tensor-product decomposition \citep{mccoy2019}, may find structure our readouts miss. A human study could ask whether people show the same gap, by testing whether they recover the parts of composites built from newly learned parts.
 
