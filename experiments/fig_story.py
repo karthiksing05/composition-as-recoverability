@@ -171,7 +171,7 @@ if mode in ("all", "strong_only"):
     ax.set_ylim(-0.6, 7.3); ax.set_xlim(0.3, 1.04); ax.set_xticks([0.5, 0.75, 1]); ax.set_xticklabels(["0.5", "0.75", "1"])
     ax.set_xlabel("score on held-out photographs")
     tag(ax, 0.32, 6.65, "caption places (chance 0.5)", BEH, va="center", fontsize=6.0); tag(ax, 0.32, 6.05, r"$\kappa$ of the quadrant state", REP, va="center", fontsize=6.0)
-    panel(ax, "d", "Images: places held, not matched")
+    panel(ax, "d", "Images: states hold places that matching misses")
     save(fig, "fig_strong_only")
     print("e17 roles", enc.round(3).to_dict())
 
