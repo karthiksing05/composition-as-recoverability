@@ -1,0 +1,70 @@
+\section{Weak and strong compositionality}
+\label{sec:definition}
+
+In this section, we define the two forms of compositionality by their capabilities. Weak compositionality recombines known parts. Decomposition takes wholes apart under a simple, declared class of procedures, and strong compositionality adds it to the weak form. We then relate the two forms to behavior and to representation. Appendix~\ref{app:proofs} gives the proofs.
+
+\subsection{Parts, composites and roles}
+\label{sec:intuition}
+
+A part is a draw from a distribution $\D$ over possible parts, such as glyphs, nouns or photographs. A system assigns each part $x$ a \emph{part code} $e(x) \in \R^d$. It assigns a composite $r(x_1, \ldots, x_k)$ of $k$ parts in the roles of a relation $r$ a state $h = g_r(x_1, \ldots, x_k) \in \R^m$. Training exposes the system to a finite \emph{vocabulary} $\Voc$ of \emph{training} parts. We call a part \emph{held out} from a procedure when no composite containing it helped fit the procedure. We can hold a glyph out from both a readout and the network that encodes it, but we can hold a noun out from a pretrained model's readout alone.
+
+Suppose a system adds two part vectors $x$ and $y$. Every pair on the line $x + y = z$ yields the same composite, so no procedure can return the parts. A tensor-product binding $x \otimes \rho_1 + y \otimes \rho_2$ with independent role vectors \citep{smolensky1990} instead keeps one decomposition for each composite. A small vocabulary hides the difference, because few vocabulary pairs share a line and a lookup finds the summed parts. A held-out pair exposes it, because its line holds infinitely many other decompositions.
+
+\subsection{Weak compositionality recombines known parts}
+\label{sec:notions}
+
+Weak compositionality asks a system to act correctly on new combinations of parts it has seen. A decoder renders a new pair of training glyphs, a language model answers a question about a new sentence of nouns from pretraining, and a benchmark scores a new command built from training words.
+
+\begin{defbox}{Weak compositionality}{behcomp}
+A system is \emph{weakly compositional} with respect to a relation $r$ to the degree that its procedures, such as a decoder, a decomposer or its answers to questions about the roles, give the correct output for new composites of training parts.
+\end{defbox}
+
+Weak compositionality asks nothing of the way back from a whole to its parts. A relation that loses information can still keep a finite vocabulary distinct, and a lookup table then inverts it (Lemma~\ref{lem:lookup}), as clean-up does for vector-symbolic codes \citep{plate1995}. Every procedure learned from a vocabulary shares this limit. Composites fix an affine procedure only on the codes they contain. The procedure therefore reaches held-out parts only when the training parts' codes in each role have full rank $d$ (Proposition~\ref{prop:span}). This result restates the argument of \citet{marcus1998} for procedures.
+
+\subsection{Decomposition makes parts reusable}
+\label{sec:decomposition}
+
+A system composes when it builds wholes from parts. Its composites decompose when a procedure can take each whole apart into the same parts in the same roles. Decomposition matters because every later use of a part passes through it (Table~\ref{tab:capabilities}).
+\begin{itemize}
+  \item \textbf{Held-out parts.} A whole that comes apart exposes each part, including parts its system never combined.
+  \item \textbf{New parts in every role.} A part learned in one role enters another, because the part and its role come apart.
+  \item \textbf{Additions without forgetting.} A new part enters through its own code, so old wholes stay intact.
+  \item \textbf{Nesting.} A composite that decomposes can serve as a part, so wholes nest inside wholes.
+  \item \textbf{Inspection.} A decomposition shows the share each part donates to the whole, and an edit of that share changes one part alone.
+\end{itemize}
+
+Decomposition alone, however, comes cheap. A lookup table decomposes any composite that keeps a finite vocabulary distinct, and an unrestricted probe decodes almost anything \citep{hewitt2019}. A recoding of the parts even makes any assignment of meanings compositional \citep{zadrozny1994}. We therefore add two conditions.
+
+\begin{defbox}{Decomposition and strong compositionality}{decomp}
+The composites of a relation $r$ \emph{decompose} under a declared class $\U$ of procedures if, for every role $i$, one procedure $u_i \in \U$, fitted on composites of some parts, returns the part in role $i$ from composites of parts held out from its fit. A system is \emph{strongly compositional} with respect to $r$ when it is weakly compositional and its composites decompose.
+\end{defbox}
+
+The declared class makes decomposition simple, and the held-out parts make it general. A procedure from a small class cannot memorize a vocabulary, so its success on held-out parts shows that the parts survive in the state. By definition, every strongly compositional system is weakly compositional. The capabilities in Table~\ref{tab:capabilities} separate the two forms.
+
+\begin{table}[t]
+  \caption{\textbf{Strong compositionality keeps every weak capability and adds those that need decomposition.} Each row names a capability, the form that supports it and the test of this paper that scores it on held-out parts.}
+  \label{tab:capabilities}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.27\linewidth}P{0.11\linewidth}Y@{}}
+    \toprule
+    Capability & Form & Test in this paper \\
+    \midrule
+    New combinations of training parts & weak & Glyph decoders on new pairs of training glyphs; role questions about sentences of nouns from pretraining \\
+    Parts never combined & strong & Decoders and readouts on composites of held-out glyphs; answers about invented words \\
+    A new part in every role & strong & Writing a held-out glyph's code into a role it never filled \\
+    Additions without forgetting & strong & Adding 32 glyphs in sequence by written codes, against fine-tuning \\
+    Nesting & strong & Recursive decomposers and readouts at depths beyond training \\
+    Inspection and editing & strong & Interchange edits of one role's code; patches of the question state \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Behavior and representation}
+\label{sec:subset}
+
+A system can show either form in two places. Its own procedures show it in behavior, and its states show it in representation. A behavioral test scores the system's outputs. A representational test reads a state through a readout that we declare, so it scores decomposition directly.
+
+Behavioral compositionality is a subset of representational compositionality. When a system's own procedure returns the parts of held-out composites, the state it reads holds those parts. The procedure itself then witnesses decomposition under any readout class that contains it (Proposition~\ref{prop:subset}). The inclusion is strict, because a state can hold parts that the system's procedures miss. A system can therefore act weakly while its states support the strong form, and a new procedure that reads those states can reach the strong capabilities. For a fixed readout class, behavior can still outrun the declared readouts, and this case marks a limit of the class.
+
+This relation restates an old dispute. \citet{smolensky1990} built states that return their constituents without containing them explicitly. Our definition adopts this notion, because it asks only that a declared procedure return each part \citep[cf.][]{vangelder1990}. \citet{fodor1990} objected that constituents of this kind cannot act in processing. A decomposable state alone leaves the objection open, so we test it directly with interchange edits (Section~\ref{sec:success}).
+

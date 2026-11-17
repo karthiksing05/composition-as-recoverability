@@ -1,0 +1,38 @@
+%=====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Composition is the study of parts and their combination through some operation. A compositional system builds wholes from reusable parts. The meaning of a sentence follows from the meanings of its words and the way they combine \citep{frege1923,janssen1997}, and a scene follows from its objects and their places.
+
+Composition matters because finite experience must support an unbounded number of new situations. People understand sentences they have never heard \citep{chomsky1957}. A person who learns the verb \emph{dax} understands \emph{dax twice} at once \citep{lake2018}, and anyone who can think that John loves Mary can think that Mary loves John \citep{fodor1988}. Composition earns its value through the abilities that follow from reuse \citep{lake2017}. A compositional system handles new combinations of known parts. It can also use a new part in every role, add knowledge without damaging old knowledge, nest wholes inside wholes and keep each part in its role.
+
+Wholes differ in how much of their parts they keep (Figure~\ref{fig:intro}). An avocado placed on an armchair can be lifted off again, whereas an armchair shaped like an avocado keeps neither object whole. Two photographs side by side keep their places, but their pixel average mixes them. A sentence keeps each noun in its role in either word order. We call the building of a whole \emph{composition}, and the return of the same parts in the same roles \emph{decomposition}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_intro.pdf}
+  \caption{\textbf{Some wholes give their parts back, and others blend them.} Each column composes two parts into a whole. Placing an avocado on an armchair, setting two photographs side by side and naming two nouns in a sentence keep each part in its role, so the whole comes apart again (blue). An avocado-shaped armchair and the pixel average of two photographs merge the parts, and many pairs of parts give the same whole (red). Canva's text-to-image tool generated the avocado and armchair images \citep[after][]{openai2021dalle}, and the photographs come from Tiny-ImageNet \citep{le2015tiny}.}
+  \label{fig:intro}
+\end{figure}
+
+Current tests score composition through behavior. Benchmarks ask a model to act on new combinations of training parts \citep{lake2018,keysers2020,hupkes2020}, and we judge text-to-image models by the scenes they compose \citep{ramesh2021}. These tests reward recombination, yet they miss failures elsewhere. A lookup over a finite vocabulary passes them, and success can come from fragments seen in training \citep{dziri2023}. Meanwhile, text-to-image models misplace objects \citep{conwell2022} and attach attributes to the wrong object \citep{rassin2022}.
+
+We propose that compositionality is a spectrum of capabilities, and that the spectrum divides into two forms, one containing the other. \emph{Weak compositionality} combines known parts into new wholes and acts on them correctly. \emph{Strong compositionality} keeps every weak capability and adds the capabilities that need wholes to come apart. A strongly compositional system handles parts it never combined, places a new part in every role, adds parts without damaging old ones and nests wholes inside wholes. Every strongly compositional system is therefore weakly compositional. A weakly compositional system, however, may lack decomposition entirely.
+
+The two notions form a weak and a strong version of composition. Behavioral compositionality is the weak version, in which a system composes parts, and any decomposition it performs comes from a procedure trained for that purpose. Representational compositionality is the strong version, in which a system composes parts and its composites also decompose. Recoverability is our heuristic for the strong version, and it asks whether parts read out easily from the internal states of a composite. Decomposition matters because it supports the efficient use of parts and reveals what each part donates to the whole.
+
+Decomposition needs a careful definition, because a loose one holds for every system. A lookup table over the training parts inverts any whole that keeps them distinct, and an unrestricted probe decodes almost anything \citep{hewitt2019}. We therefore impose two conditions. The procedure that takes a whole apart must come from a simple class declared in advance, and it must succeed on parts held out from its fit. Recoverability scores decomposition under both conditions.
+
+We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. A system whose own procedures handle held-out parts must have a state that holds them. A state, in contrast, can hold parts that the system's procedures miss. A recoverable state therefore tells us which capabilities a procedure reading it could reach, before anyone builds that procedure.
+
+\textbf{Contributions.}
+\begin{itemize}
+  \item \textbf{A spectrum of compositional capabilities.} We define weak and strong compositionality by the capabilities each supports. The strong form contains the weak form and adds decomposition.
+  \item \textbf{Decomposition and its measure.} We define decomposition under a declared readout class on held-out parts. We then introduce recoverability and its calibrated score $\kappa$, which runs from a blend of the parts to a copy of each.
+  \item \textbf{Limits in theory.} We prove that tests on training parts cannot detect decomposition and that a state bounds the behavior that reads it. Rank, width and depth each cap recoverability.
+  \item \textbf{A shared language.} We place fifteen accounts of compositionality, from classical constituents to benchmarks, on one spectrum of demands on decomposition.
+  \item \textbf{Evidence across systems.} We test networks trained from scratch and pretrained models with up to 15 billion parameters. Behavior often lags the state, procedures that read recoverable states repair each failure, and pretrained models build recoverability beyond their inputs.
+\end{itemize}
+
+%=====================================================================
+\section{Related work}
