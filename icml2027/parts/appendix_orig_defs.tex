@@ -1,0 +1,32 @@
+
+\begin{defbox}{Informative part vectors and productivity}{informative}
+A part vector $e$ is \emph{informative} at tolerance $\tau$ if a linear probe of $e$ recovers a description $z(x)$ of the parts that does not depend on the system, with $R^2 \ge 1 - \tau$ on new parts. A relation is \emph{productive to depth $n$} if Definition~\ref{def:repcomp} holds when the parts are themselves wholes of depth up to $n - 1$, with the state of each whole as its part vector.
+\end{defbox}
+
+The informative requirement closes the loophole of Section~\ref{sec:repcomp}. The blend $(Px, Py)$, with $P$ a projection of rank $r < d$, discards $d - r$ dimensions of each part, yet it is exactly recoverable with the part vector $e(x) = Px$. An informative part vector rules this case out, because $Px$ fails to recover a description of $x$ itself. We report informativeness wherever such a description exists apart from the system, which holds for the glyph latents.
+
+\textbf{The three limits in full.} A linear relation $g(x_1, \ldots, x_k) = A x$ with $A = [A_1 \cdots A_k]$ gives each whole a translate of $\ker A$ of decompositions, of dimension $kd - \mathrm{rank}\,A$ (Proposition~\ref{prop:fiber}). For Gaussian parts, no procedure of any kind recovers role $i$ with $R^2$ above $\mathrm{tr}(A_i^{\top}(AA^{\top})^{+}A_i)/d$, which gives 0.8 for role~1 of $x + 0.5y$ and 0.5 for $x + y$ (Proposition~\ref{prop:ceiling}). For any relation and part distribution, a linear probe of an $m$-dimensional state explains at most the share of the parts' variance in the top $m$ principal components of the stacked part vectors (Proposition~\ref{prop:ey}). A nested linear blend of depth $n$ into a state of width $d$ loses at least $(2^n - 1)d$ dimensions of its leaves (Proposition~\ref{prop:depth}). Recursive tensor products avoid this loss by raising the tensor rank, so their states grow with depth \citep{smolensky1990}.
+
+\textbf{Width and relation set ceilings.} At $m = 8$, glyph states reach 0.67--0.71 against the ceiling of 0.79 from Proposition~\ref{prop:ey}. The non-additive \textsc{occlude} relation lowers recovery to 0.75--0.83.
+
+\textbf{Asking for recovery over many parts improves behavior.} We add a linear head that recovers both glyphs of wholes built from 64 other glyphs to networks trained on 8 glyphs (Table~\ref{tab:objective}). The head improves both the state and the network's own decoder, which never sees those glyphs. The probe rises by 0.04--0.07 on plain inputs, by 0.12--0.13 on entangled inputs and by about 0.3 in the transformer. Read through a fixed renderer, the head reaches 0.92 and 0.70, above the 0.89 and 0.62 of networks trained end to end on 64 glyphs. The same head fitted on the training glyphs leaves the probe unchanged, as Proposition~\ref{prop:span} predicts. The 64 extra glyphs also give the encoder more data, so this result leaves open whether the objective beats plain training on the same parts.
+
+\begin{table}[h]
+  \caption{\textbf{A recovery objective over many parts improves the state and the network's own decoder, whereas one over training parts leaves the state unchanged.} Values are $R^2$ on new glyphs at $V = 8$, averaged over MLP, CNN and role--filler networks with 5 seeds. The fixed renderer draws the glyphs that the linear head predicts.}
+  \label{tab:objective}
+  \centering\small
+  \begin{tabular}{@{}lcccccc@{}}
+    \toprule
+    & \multicolumn{3}{c}{Plain inputs} & \multicolumn{3}{c}{Entangled inputs} \\
+    Objective & Probe & Own decoder & Renderer & Probe & Own decoder & Renderer \\
+    \midrule
+    None & 0.85 & 0.29 & --- & 0.54 & 0.13 & --- \\
+    Training glyphs & 0.84 & 0.36 & 0.52 & 0.54 & 0.17 & 0.22 \\
+    64 other glyphs & 0.90 & 0.47 & 0.92 & 0.66 & 0.39 & 0.70 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{A random hierarchy supplies none of it.} In the random hierarchy model \citep{cagnetta2024rhm}, random rule tables expand a root symbol through levels of latent symbols into a string of tokens. We score linear probes of the one-hot string against vectors of the latents that the grammar alone fixes (Appendix~\ref{app:protocol}). Across 144 settings of vocabulary, rules per symbol, arity, depth, level and part vector, the input recovers the latents of new symbols with $R^2$ between $-0.63$ and $-0.03$, even though it recovers those of training symbols with up to 0.90. On this grammar, any recoverability in a trained network's state must come from training.
+
+%=====================================================================

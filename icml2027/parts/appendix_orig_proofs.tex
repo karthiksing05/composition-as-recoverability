@@ -1,0 +1,146 @@
+
+Throughout, a relation acts on parts $x_1, \ldots, x_k$ with codes in $\R^d$ and produces a state in $\R^m$. Stacking the codes gives $x = (x_1, \ldots, x_k) \in \R^{kd}$.
+
+
+
+\begin{lemma}[Unrestricted coordinates reduce separability to injectivity]
+\label{lem:psi}
+Call $g$ separable if $\psi(g(x_1, \ldots, x_k)) = \sum_i \varphi_i(x_i)$ for some $\psi$ injective on the image of $g$ and some maps $\varphi_i$. If $\psi$ is unrestricted, every injective $g$ is separable.
+\end{lemma}
+
+\begin{proof}
+Let $\varphi_i(x_i)$ place $x_i$ in the $i$-th block of $\R^{kd}$ and zeros elsewhere, so that $\sum_i \varphi_i(x_i) = x$. On the image of $g$ define $\psi = g^{-1}$, which exists because $g$ is injective; then $\psi(g(x)) = x = \sum_i \varphi_i(x_i)$.
+\end{proof}
+
+\noindent
+Intuitively, separability in arbitrary coordinates says only that the parts can be recovered, so it cannot add anything to invertibility. Definition~\ref{def:factor} therefore fixes the coordinates to be a linear map plus a constant (Eq.~\ref{eq:factor}).
+
+\begin{lemma}[Lookup decodes any relation that is injective on a vocabulary]
+\label{lem:lookup}
+Let $\Voc$ be finite and let $g$ be injective on $\Voc^k$. Then the probe that matches a state to the stored table $\{g(t) : t \in \Voc^k\}$ returns every part of every whole of vocabulary parts.
+\end{lemma}
+
+\begin{proof}
+Each state in the table has exactly one preimage in $\Voc^k$.
+\end{proof}
+
+\noindent
+Every relation except those with collisions on the vocabulary passes this test, including random codes that have no structure at all (Figure~\ref{fig:measure}a).
+
+
+
+\begin{observation}[Behavior entails recoverability, and the converse fails]
+\label{prop:subset}
+Let a system's own procedures $\pi_1, \ldots, \pi_k$ read the state $h = g_r(x_1, \ldots, x_k)$ and return part vectors with error at most $\varepsilon$ in Eq.~\eqref{eq:recover} for parts drawn from $\D$. Then $r$ is $\varepsilon$-recoverable under every kind of probe $\U$ that contains the $\pi_i$. Conversely, for every $\varepsilon$-recoverable relation there is a system with the same state whose own procedures have error 1.
+\end{observation}
+
+\begin{proof}
+The first claim holds with $u_i = \pi_i$ in Definition~\ref{def:recoverable}. For the second, let each own procedure return the constant $\mathbb{E}\,e(x)$, which has normalized error 1 and reads nothing from the state.
+\end{proof}
+
+\noindent
+The first claim concerns the state the procedure reads, which in a language model is the state at the end of the question. It says nothing about a fixed class that excludes the procedure, such as linear probes of a state that a nonlinear decoder reads, and Definition~\ref{def:repcomp} also requires the part vector to be informative.
+
+\begin{proposition}[Non-identifiability of linear blends]
+\label{prop:fiber}
+Let $g(x) = Ax$ with $A = [A_1 \cdots A_k] \in \R^{m \times kd}$, which covers symmetric blending, weighted addition, superposition, and HRR or MAP binding with fixed roles. If $\mathrm{rank}\,A < kd$, which holds whenever $m < kd$, then for every whole $z$ in the image of $g$ the parts with $g(x) = z$ form a translate of $\ker A$, of dimension $kd - \mathrm{rank}\,A \geq 1$, and no probe recovers the parts of every whole.
+\end{proposition}
+
+\begin{proof}
+If $Ax_0 = z$, the solutions of $Ax = z$ are $x_0 + \ker A$, of dimension $kd - \mathrm{rank}\,A$ by rank--nullity. Any nonzero $n \in \ker A$ has a nonzero block $n_i$, so $x_0$ and $x_0 + n$ share the whole but differ in their $i$-th part.
+\end{proof}
+
+\begin{remark}
+No continuous map from $\R^{kd}$ to $\R^m$ with $m < kd$ is injective, so the conclusion extends to continuous nonlinear relations; discontinuous injections exist. A tensor product with linearly independent roles has $\mathrm{rank}\,A = kd$.
+\end{remark}
+
+\begin{proposition}[Ceiling on new-part recovery]
+\label{prop:ceiling}
+Let $x \sim \mathcal{N}(0, I_{kd})$ and $z = Ax$. The probe that minimizes the expected squared error of $x_i$ given $z$, among all measurable functions, is linear, and its $R^2$ for role $i$ is
+\begin{equation}
+  R^2_i = \frac{1}{d}\,\mathrm{tr}\big(A_i^{\top} (A A^{\top})^{+} A_i\big), \qquad \frac{1}{k}\sum_i R^2_i = \frac{\mathrm{rank}\,A}{kd}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+$x$ and $z$ are jointly Gaussian with $\mathrm{Cov}(x, z) = A^{\top}$ and $\mathrm{Cov}(z) = AA^{\top}$, so $\mathbb{E}[x \mid z] = A^{\top}(AA^{\top})^{+}z$, which is linear and is the minimum-mean-square-error estimator over all functions. Its residual covariance is $I - P$ with $P = A^{\top}(AA^{\top})^{+}A$, the orthogonal projection onto the row space of $A$. The variance of $x_i$ explained is the trace of the $i$-th diagonal block of $P$, which is $\mathrm{tr}(A_i^{\top}(AA^{\top})^{+}A_i)$, out of a total of $d$. Summing over blocks gives $\mathrm{tr}\,P = \mathrm{rank}\,A$.
+\end{proof}
+
+\noindent
+Intuitively, a blend keeps only the components of its parts that lie in the row space of the relation. For $x + \alpha y$ the ceiling is $1/(1 + \alpha^2)$ for role~1 and $\alpha^2/(1 + \alpha^2)$ for role~2; for $x + y$ it is $1/2$ for each; for HRR or MAP binding of two parts in $d$ dimensions with fixed roles it averages $1/2$; and for a generic projection into $m < kd$ dimensions it is close to $m/(kd)$ for each role. Figure~\ref{fig:measure}b compares these values with fitted probes. For Gaussian part vectors with covariance $\Sigma$, the same argument gives $R^2_i = \mathrm{tr}(\Sigma_i A_i^{\top}(A\Sigma A^{\top})^{+}A_i\Sigma_i)/\mathrm{tr}\,\Sigma_i$, where $\Sigma_i$ is the covariance of role $i$ and the roles are independent.
+
+\begin{proposition}[Ceiling for any relation under linear probes]
+\label{prop:ey}
+Let the stacked part vectors $x \in \R^{kd}$ have finite second moments and covariance $\Sigma$ with eigenvalues $\lambda_1 \ge \cdots \ge \lambda_{kd}$, and let $h = g(x) \in \R^m$ for any measurable $g$. For any linear probes $u_i(h) = W_i h + b_i$, one per role,
+\begin{equation}
+  \frac{\sum_i \mathbb{E}\,\lVert u_i(h) - x_i \rVert^2}{\mathrm{tr}\,\Sigma} \;\ge\; \frac{\sum_{j > m} \lambda_j}{\mathrm{tr}\,\Sigma},
+\end{equation}
+so the variance-weighted mean $R^2$ over roles is at most $\sum_{j \le m} \lambda_j / \mathrm{tr}\,\Sigma$, which equals $\min(1, m/(kd))$ for isotropic codes.
+\end{proposition}
+
+\begin{proof}
+Stack the probes into $u(h) = Wh + b$ with $W = [W_1; \ldots; W_k] \in \R^{kd \times m}$. Its values lie in the translate $b + \mathrm{range}\,W$ of a linear subspace of dimension at most $m$. For every fixed translate $L$ of a linear subspace of dimension at most $m$ and every random vector $y \in L$, $\mathbb{E}\,\lVert x - y \rVert^2 \ge \mathbb{E}\,\lVert x - \Pi_L x \rVert^2$, where $\Pi_L$ is the orthogonal projection onto $L$, and the right side is minimized over $L$ by the span of the top $m$ principal directions of $x$ through its mean, with value $\sum_{j > m} \lambda_j$ \citep{eckart1936}.
+\end{proof}
+
+\noindent
+The bound does not depend on $g$ at all: it limits any linear function with an offset of any $m$-dimensional vector. Unlike Proposition~\ref{prop:ceiling}, it therefore holds for nonlinear relations, such as trained encoders, and for non-Gaussian parts. Nonlinear probes, which can exploit a nonlinear relation's curvature, escape it. In Section~\ref{sec:states} we compute it from the principal components of the declared part vector.
+
+\begin{proposition}[Fitted linear procedures are determined only on the span of the fitted wholes]
+\label{prop:span}
+Let $g(x) = c + Bx$ with $B = [B_1 \cdots B_k]$ of full column rank, and let a linear procedure $u(h) = Wh + b$ be fitted to return the stacked part vectors $x_t$ exactly on wholes $t = 1, \ldots, n$. Let $T = \mathrm{span}\{x_t - \bar{x}\}$. Then every such $u$ returns $x$ exactly on wholes with $x - \bar{x} \in T$, and two such procedures can disagree arbitrarily on any whole with a component outside $T$. Because $T \subseteq S_1 \oplus \cdots \oplus S_k$, where $S_i$ is the span of the centred role-$i$ codes of the fitted wholes, new parts are recovered by every exact fit only if each $S_i = \R^d$, which requires at least $d + 1$ distinct parts in every role. Conversely, if $B$ has orthonormal columns (as for concatenation) and the fitted pairs vary each role independently enough that $T = S_1 \oplus \cdots \oplus S_k$, the minimum-norm fit returns $\bar{x}_i + \Pi_{S_i}(x_i - \bar{x}_i)$ for each role, so that for isotropic codes with mean zero $R^2_i = \dim S_i/d - \mathbb{E}\,\lVert (I - \Pi_{S_i})\bar{x}_i \rVert^2/d$. For general $B$ the minimum-norm fit returns the projection of $x - \bar{x}$ onto $T$ in the metric $B^{\top}B$, which mixes roles.
+\end{proposition}
+
+\begin{proof}
+Exact fit means $WBx_t + Wc + b = x_t$ for all $t$; subtracting the mean gives $WBv = v$ for $v \in T$, which fixes $u$ on $\bar{x} + T$. Any $W'$ with $W'BT = 0$ can be added, together with the intercept $b' = -W'(c + B\bar{x})$, without changing the fit, and because $B$ is injective, $W'$ can be chosen to be nonzero on $B v$ for any $v \notin T$. The span of $V$ centred points has dimension at most $V - 1$. For the converse, the minimum-norm $W$ vanishes on $(BT)^{\perp}$ and inverts $B$ on $BT$, so $u(h) - \bar{x}$ is the $B^{\top}B$-orthogonal projection of $x - \bar{x}$ onto $T$; when $B^{\top}B = I$ this is the Euclidean projection, whose $i$-th block is $\Pi_{S_i}$ when $T$ is the direct sum. The error in role $i$ is then $(I - \Pi_{S_i})(x_i - \bar{x}_i)$, whose expected squared norm for isotropic $x_i$ independent of $\bar{x}_i$ is $d - \dim S_i + \mathbb{E}\,\lVert (I - \Pi_{S_i})\bar{x}_i \rVert^2$.
+\end{proof}
+
+\noindent
+For concatenation of $V \le d + 1$ isotropic parts in $\R^d$, $\dim S_i = V - 1$ and $\mathbb{E}\,\lVert(I - \Pi_{S_i})\bar{x}_i\rVert^2 = (d - V + 1)/V$, so the minimum-norm probe has $R^2 = (V-1)/d - (d - V + 1)/(Vd)$ on new parts; for $V > d + 1$, $S_i = \R^d$ and $R^2 = 1$. The proposition concerns linear procedures; a nonlinear decoder learned from wholes is likewise unconstrained outside the region its training wholes cover, and the mechanism is the same. It predicts that the number of distinct parts governs whether a learned procedure transfers to new parts more than the number of observed combinations does (Figure~\ref{fig:strong}b). It also explains why a population estimate of Definition~\ref{def:recoverable} needs a probe-training pool of many more than $d$ parts.
+
+
+
+\noindent
+
+\begin{proposition}[Unbinding with shared role codes]
+\label{prop:systematic}
+Let $g(x_1, \ldots, x_k) = c + \sum_i B_i e(x_i)$ with $B = [B_1 \cdots B_k]$ of full column rank, and let $B^{+} = [P_1; \ldots; P_k]$ be its pseudo-inverse in row blocks. Then (i) $P_i(h - c)$ returns each part vector, $e(x_i) = P_i(h - c)$; (ii) for any permutation $\pi$ of roles, the state of the permuted whole is $h_\pi = c + \sum_i B_{\pi(i)} P_i (h - c)$, a linear function of $h$ with an offset; (iii) the contribution of a part observed only in role $i$ to any role $j$ is $B_j P_i (h - c)$ computed from any single whole containing it; and (iv) replacing the part in role $i$ changes $h$ only within the range of $B_i$ and leaves every probe value $P_j(h - c)$, $j \ne i$, unchanged.
+\end{proposition}
+
+\begin{proof}
+(i) $B^{+}B = I$, so $B^{+}(h - c)$ returns the stacked part vectors. (ii) The permuted whole has state $c + \sum_i B_{\pi(i)} e(x_i)$; substitute (i). (iii) The same substitution with $j$ in place of $\pi(i)$. (iv) Only the term $B_i e(x_i)$ depends on $x_i$, and $P_j B_i = 0$ for $j \neq i$.
+\end{proof}
+
+\noindent
+Intuitively, reading one whole yields every part's vector, and the shared role maps say where each vector goes in any other arrangement. The proposition restates the unbinding property of tensor-product representations \citep{smolensky1990} for any relation with shared role codes. It describes the information in the states, and the code swaps of Section~\ref{sec:states} test separately whether a system uses that information when it acts. The residual $\delta$ plays the role of the reconstruction error of a tensor-product decomposition network \citep{mccoy2019}. When the relation has shared role codes only approximately, the quantities of Definitions~\ref{def:recoverable} and~\ref{def:factor} jointly bound the error of the prediction, as the next result states.
+
+\begin{proposition}[Approximate unbinding]
+\label{prop:approx}
+Let $h = c + Bx + \eta$ with roles exchangeable, so that the parts are independent and identically distributed across roles, and let $\hat{e}_i$ be any probes of the part vectors with $\varepsilon$ as in Eq.~\eqref{eq:recover} and $\delta$ as in Eq.~\eqref{eq:factor}. The predicted permuted state $\hat{h}_\pi = c + \sum_i B_{\pi(i)}\hat{e}_i(h)$ satisfies
+\begin{equation}
+  \mathbb{E}\,\lVert \hat{h}_\pi - h_\pi \rVert^2 \;\le\; 2\lVert B \rVert^2\, k\,\varepsilon\, \mathbb{E}\,\lVert e - \mathbb{E}\,e \rVert^2 + 2\,\delta\, \mathbb{E}\,\lVert g - \mathbb{E}\,g \rVert^2 .
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+$\hat{h}_\pi - h_\pi = B_\pi(\hat{e}(h) - x) - \eta_\pi$, where $B_\pi$ permutes the blocks of $B$ and $\eta_\pi$ is the residual of the permuted whole. A block permutation is an orthogonal right factor, so $\lVert B_\pi \rVert = \lVert B \rVert$; $\mathbb{E}\,\lVert \hat{e}(h) - x \rVert^2 \le k\,\varepsilon\,\mathbb{E}\,\lVert e - \mathbb{E}\,e\rVert^2$ by Eq.~\eqref{eq:recover}; and $\mathbb{E}\,\lVert \eta_\pi \rVert^2 = \mathbb{E}\,\lVert \eta \rVert^2$ because the parts are exchangeable. The bound follows from $\lVert a + b \rVert^2 \le 2\lVert a \rVert^2 + 2\lVert b \rVert^2$.
+\end{proof}
+
+\noindent
+With $\hat{e} = B^{+}(h - c)$ the first term is replaced by $\lVert B_\pi B^{+} \rVert^2 \le \mathrm{cond}(B)^2$ times $\mathbb{E}\,\lVert \eta \rVert^2$, so the conditioning of $B$ also matters. Only here do the quantities of Definitions~\ref{def:recoverable} and~\ref{def:factor} jointly bound the error of a predicted state, and Section~\ref{sec:states} measures both quantities without evaluating the bound.
+
+\begin{proposition}[Depth]
+\label{prop:depth}
+Let leaves in $\R^d$ be lifted to $\R^w$ by a linear map and composed by $g(x, y) = Ax + By$ with $A, B \in \R^{w \times w}$, possibly different at each level. The map from the $2^n$ leaves of a balanced whole of depth $n$ to its state has rank at most $\min(w, 2^n d)$, so its kernel has dimension at least $2^n d - w$ (at least $(2^n - 1)d$ when $w = d$), and for Gaussian leaves the average new-leaf $R^2$ of any probe is at most $\min(1, w/(2^n d))$. For any relation, linear or not, the same bound holds for linear probes by Proposition~\ref{prop:ey}.
+\end{proposition}
+
+\begin{proof}
+The map is linear from $\R^{2^n d}$ to $\R^w$, so its rank is at most $\min(w, 2^n d)$, and rank--nullity gives the kernel. The bound on $R^2$ is Proposition~\ref{prop:ceiling} applied to the composite linear map; the last statement is Proposition~\ref{prop:ey} with $m = w$ and $kd = 2^n d$.
+\end{proof}
+
+\noindent
+The bound for linear probes covers a learned nonlinear composer, and Section~\ref{sec:states} compares a broad probe of the composer's state with the composer's own decomposer.
+
+\noindent
+\textbf{Crosstalk in recursive HRR.} The prediction $1 - (2^n - 1)d/w$ of Section~\ref{sec:states} follows from a short calculation. Leaves $x \in \R^d$ are lifted to $xP$ by $P \in \R^{d \times w}$ with i.i.d.\ $\mathcal{N}(0, 1/w)$ entries, and two subtrees $a, b$ at height $h$ are composed as $(a \circledast \rho^h_1 + b \circledast \rho^h_2)/\sqrt{2}$, with unitary role vectors, for which circular convolution is an orthogonal map that circular correlation inverts exactly. Unbinding one path from the root, by correlation with that path's role vectors and multiplication by $\sqrt{2}$ at each level, returns the target leaf's lift plus, for each of the other $2^n - 1$ leaves, its lift transformed by a product of convolutions with unitary vectors. Each of these crosstalk terms has the norm of the leaf's lift, and the role vectors randomize the phases of its spectrum. The spectrum of a lifted Gaussian leaf is close to flat, so each term is close to isotropic and uncorrelated with the target and with the other terms. The probe applies the pseudo-inverse of $P$, which for $w \gg d$ is close to an isometry composed with the orthogonal projection onto the $d$-dimensional row space of $P$, and that projection keeps on average a share $d/w$ of an isotropic vector's squared norm. With leaf variance $d$, the expected squared error is therefore $(2^n - 1)d \cdot d/w$, and $R^2 \approx 1 - (2^n - 1)d/w$. The calculation ignores the departure of $P$ from orthonormal rows, of relative order $\sqrt{d/w}$, and is least accurate at small $w$, where the observed values fall below it.
+
+%=====================================================================

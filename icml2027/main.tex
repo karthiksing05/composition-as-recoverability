@@ -1,0 +1,361 @@
+%%%%%%%% ICML 2027 submission: Weak and Strong Compositionality %%%%%%%%
+% Built from ../recoverability-theory/main.tex (the long preprint). The main body is condensed to the
+% 8-page limit; parts/*.tex hold the long sections, moved verbatim into the appendix.
+\documentclass{article}
+
+\usepackage[T1]{fontenc} % Tectonic (XeTeX) defaults to TU, which has no Times; T1 gives the Type-1 Times of icml2027.sty
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Initial blind submission:
+\usepackage{icml2027}
+% Preprint: \usepackage[preprint]{icml2027}
+% Camera-ready: \usepackage[accepted]{icml2027}
+
+\usepackage{amsmath,amssymb,mathtools,amsthm}
+\usepackage{enumitem}
+\usepackage{placeins}
+\usepackage[most]{tcolorbox}
+
+\definecolor{refnavy}{HTML}{001473}
+\definecolor{boxframe}{HTML}{B2D9D9}
+\definecolor{boxfill}{HTML}{F7FBFB}
+\hypersetup{colorlinks=true,linkcolor=refnavy,citecolor=refnavy,urlcolor=refnavy}
+\graphicspath{{figures/}}
+
+% Tinted boxes for the formal definitions (as in the preprint).
+\tcbset{recbox/.style={enhanced, colback=boxfill, colframe=boxframe, boxrule=0.6pt,
+  sharp corners, left=4pt, right=4pt, top=3pt, bottom=3pt, fonttitle=\bfseries, coltitle=black,
+  attach title to upper, after title={.\ }, separator sign={.}, description delimiters none,
+  description font=\bfseries}}
+\newtcbtheorem{defbox}{Definition}{recbox}{def}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{observation}[proposition]{Observation}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Voc}{\mathcal{V}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlist{itemsep=1pt,topsep=3pt,parsep=0pt}
+
+\icmltitlerunning{Weak and Strong Compositionality}
+
+\begin{document}
+
+\twocolumn[
+  \icmltitle{Benchmarks Test Weak Compositionality, but Strong Compositionality Needs Decomposition}
+
+  % Author information is removed automatically unless [accepted] is passed.
+  \begin{icmlauthorlist}
+    \icmlauthor{Karthik Singaravadivelan}{gt}
+  \end{icmlauthorlist}
+  \icmlaffiliation{gt}{College of Computing, Georgia Institute of Technology, Atlanta, GA, USA}
+  \icmlcorrespondingauthor{Karthik Singaravadivelan}{ANONYMIZED}
+
+  \icmlkeywords{compositionality, systematicity, decomposition, representation, probing, ICML}
+
+  \vskip 0.3in
+]
+
+\printAffiliationsAndNotice{}
+
+\begin{abstract}
+Anyone who can think that John loves Mary can also think that Mary loves John, yet the tests we run on neural networks score only whether a model acts correctly on new combinations of known parts, a test that a lookup table passes. We separate weak compositionality, which recombines known parts, from strong compositionality, which builds wholes that come apart again, and we measure decomposition by recoverability, a calibrated score of how well a linear probe, fixed in advance, returns parts new to it. We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. Toy networks keep parts in their states that their own outputs lose, image encoders and diffusion models do the same for parts at fixed places, and procedures that read the toy states repair the behavior. Every pretrained system we tested binds roles to position, by order of mention in sentences and by absolute place in images, and a role by meaning appears only at a question, in language models that answer by meaning. On one spectrum of twenty-two accounts of compositionality, every family of behavioral tests in current use scores the weak form.
+\end{abstract}
+
+%=====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Composition is the study of parts and their combination through some operation. A compositional system builds wholes from reusable parts, so that the meaning of a sentence follows from the meanings of its words and the way they combine \citep{frege1923,janssen1997}. People understand sentences they have never heard \citep{chomsky1957}, a person who learns the verb \emph{dax} understands \emph{dax twice} at once \citep{lake2018}, and anyone who can think that John loves Mary can think that Mary loves John \citep{fodor1988}. A compositional system handles new combinations of known parts, and it can also use a new part in every role, add knowledge without damaging old knowledge, nest wholes inside wholes and keep each part in its role \citep{lake2017}.
+
+Wholes differ in how much of their parts they keep (Appendix Figure~\ref{fig:intro}). Two photographs side by side keep both pictures and their places, while $x + y$ loses the order of its parts, because it equals $y + x$. We call the building of a whole \emph{composition}, and the return of the same parts in the same roles \emph{decomposition}.
+
+Current tests score composition through behavior. Benchmarks ask a model to act on new combinations of training parts \citep{lake2018,keysers2020,hupkes2020}, vision--language benchmarks swap the roles in a caption \citep{thrush2022winoground,yuksekgonul2023}, detectors judge the scenes that text-to-image models compose \citep{ramesh2021,huang2023t2i}, and reasoning tests chain facts that a language model knows one at a time \citep{press2023}. A lookup over a finite vocabulary passes these tests (Section~\ref{sec:definition}), and when a text-to-image model misplaces an object \citep{conwell2022,rassin2022}, a behavioral test cannot say whether the model lost the part or merely failed to read it.
+
+We propose that compositionality is a spectrum of capabilities, and that the spectrum divides into two forms, one containing the other. \emph{Weak compositionality} combines known parts into new wholes and acts on them correctly. \emph{Strong compositionality} builds wholes that come apart again, and the capabilities that need decomposition follow from it. A state that comes apart supports every weak capability, whereas a weakly compositional system may lack decomposition entirely.
+
+The two notions form a weak and a strong version of composition. Behavioral compositionality is the weak version, in which a system composes parts, and any decomposition it performs comes from a procedure trained for that purpose. Representational compositionality is the strong version, in which a system composes parts and its composites also decompose. Recoverability is our heuristic for the strong version, and it asks whether parts read out easily from the internal states of a composite. Decomposition matters because it supports the efficient use of parts and reveals what each part donates to the whole.
+
+Decomposition needs a careful test, because a lookup table over the training parts takes apart any whole that keeps them distinct, and a flexible enough probe decodes almost anything \citep{hewitt2019}. Our probe is therefore linear and fixed before we see any result, and it must succeed on parts it never saw in its own training. Recoverability scores decomposition under both demands, from 0 for the sum of the parts to 1 for a side-by-side copy of each.
+
+We hypothesize that behavioral compositionality is a subset of representational compositionality, able to do some, and not all, of the things representational compositionality can do. A model whose own procedure handles new parts must have a state that holds them (Observation~\ref{prop:subset}), while a state can hold parts that the model's outputs miss, and the strictness of the inclusion is the empirical hypothesis that we test.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_ladder.pdf}
+  \caption{\textbf{Behavior lags the decomposition that the state supports.} Each point scores one system on parts new to the probe, by a linear probe of its state (horizontal) and by its own output (vertical), each scaled from a blend, chance or word order (0) to exact recovery (1). Bars span models, architectures or relations. Glyph networks, recursive composers, image encoders and diffusion models sit below the diagonal, and a new decoder on a frozen glyph state lifts behavior (green). Image and diffusion points use fixed quadrants, and open circles move the photographs. Language models that answer by meaning sit near the diagonal, and OLMo-2 7B answers beyond our linear probes.}
+  \label{fig:ladder}
+\end{figure}
+
+Small networks that render pairs of glyphs, trained on eight glyphs, fail to draw new glyphs, while a linear probe of their state recovers those glyphs and a new decoder trained on the frozen state renders them (Figure~\ref{fig:ladder}). Pretrained image encoders and diffusion models repeat the pattern for photographs at fixed places, and language models that answer role questions by meaning carry the asked role in the state they answer from. One diagnosis covers the pretrained systems. They bind roles to position, by order of mention in sentences and by absolute place in images, so their states pass our test where position and meaning coincide and fall short of it once a converse paraphrase or a moved scene pulls the two apart.
+
+\textbf{Contributions.} (i) A definition of weak and strong compositionality by the capabilities each supports. (ii) A test of decomposition, recoverability $\kappa$, with proofs that tests on training parts cannot detect decomposition and that rank, width and depth each cap it. (iii) Evidence from toy networks to language models with 15 billion parameters that states keep parts that behavior loses. (iv) A diagnosis of positional binding, with each system placed as a pair. (v) A spectrum of twenty-two accounts of compositionality, with the gap in each family of modern tests.
+
+%=====================================================================
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Meaning and constituents.} Montague made Frege's principle a homomorphism from syntax to semantics \citep{frege1923,montague1970}, yet a recoding of the parts makes any assignment of meanings compositional \citep{zadrozny1994}. \citet{fodor1988} traced systematicity to constituents that appear in every whole that contains them, \citet{smolensky1990} answered with tensor-product representations, and \citet{fodor1990} replied that such implicit constituents cannot act in processing.
+
+\textbf{Tests and measures.} Benchmarks score outputs on new combinations of training parts \citep{lake2018,keysers2020,hupkes2020}. Probes decode constituents from states \citep{belinkov2022}, interventions and tensor-product decompositions supply part vectors \citep{geiger2021,mccoy2019}, and decodable factors need not yield a decoder that generalizes \citep{montero2021}. Compression measures run from parts to whole on the data themselves \citep{andreas2019,elmoznino2024}, and ours runs from whole to parts through a probe fixed in advance on parts new to it. Appendix~\ref{app:related} gives a longer account.
+
+%=====================================================================
+\section{Weak and Strong Compositionality}
+\label{sec:definition}
+
+\textbf{Parts, wholes and roles.} A part is a draw from a distribution $\D$ over possible parts, such as glyphs, nouns or photographs. A system gives each part $x$ a \emph{part vector} $e(x) \in \R^d$, and it gives a whole $r(x_1, \ldots, x_k)$, built from $k$ parts in the roles of a relation $r$, a state $h = g_r(x_1, \ldots, x_k) \in \R^m$. Training exposes the system to a finite \emph{vocabulary} $\Voc$ of \emph{training} parts. A part is \emph{new to a procedure} when no whole containing it helped fit that procedure. A glyph can be new to both a probe and the network that encodes it, whereas a noun can be new only to the probe of a pretrained model.
+
+Suppose a system adds two part vectors $x$ and $y$. Every pair on the line $x + y = z$ yields the same whole, so no procedure can return the parts. A tensor-product binding $x \otimes \rho_1 + y \otimes \rho_2$ with independent role vectors \citep{smolensky1990} instead keeps one decomposition for each whole. A small vocabulary hides the difference, because few vocabulary pairs share a line and a lookup finds the summed parts, and a new pair exposes it.
+
+\begin{defbox}{Weak compositionality}{behcomp}
+A system is \emph{weakly compositional} with respect to a relation $r$ to the degree that its own procedures, such as a decoder, a decomposer or the answering of questions about the roles, give the correct output for new wholes built from training parts.
+\end{defbox}
+
+Weak compositionality asks nothing of the way back from a whole to its parts. A relation that loses information can still keep a finite vocabulary distinct, and a lookup table then inverts it (Lemma~\ref{lem:lookup}). A linear procedure fitted on wholes determines its output only on the span of the part vectors those wholes contain, so it reaches new parts only when the training parts in each role span all $d$ dimensions (Proposition~\ref{prop:span}), which restates the argument of \citet{marcus1998} for procedures.
+
+The harder capabilities start from a whole and need its parts back: taking in new parts, placing a new part in every role, adding parts without forgetting, nesting wholes inside wholes and inspecting each part's share (Appendix Table~\ref{tab:capabilities}). Decomposition alone, however, comes cheap. A lookup table and a flexible enough probe both decode almost any whole \citep{hewitt2019}, so we add two conditions.
+
+\begin{defbox}{Decomposition and strong compositionality}{decomp}
+The wholes of a relation $r$ \emph{decompose} under a kind of probe $\U$, fixed in advance, if for every role $i$ one probe $u_i \in \U$, fitted on wholes built from some parts, returns the part in role $i$ from wholes built from parts new to it. The relation's meaning fixes its roles; for sentences, role 1 is the figure in either phrasing. A system is \emph{strongly compositional} with respect to $r$ when the states it builds for wholes of $r$ decompose.
+\end{defbox}
+
+\textbf{Roles by position and roles by meaning.} Recoverability depends on a declared role assignment, as it depends on the declared part vector. A probe can return parts by position, meaning the order of mention in a sentence or a fixed place on a canvas, and we call this positional binding. Positional binding meets Definition~\ref{def:decomp} only where position and meaning coincide, so our tests of the strong form also move the position while keeping the meaning, through converse paraphrases and moved photographs. We report a placement as a pair, the role assignment and the set that the system reaches under it.
+
+\textbf{Behavior and representation.} A state that decomposes supports every weak capability, because some procedure that starts from the returned parts can act on any new combination, and the system exhibits that capability only when its own procedure is such a procedure. A procedure that returns the parts of wholes built from new parts is itself a probe that succeeds on them, so behavior is included in representation for every kind of probe that contains the procedure (Observation~\ref{prop:subset}). A linear probe need not contain the procedure, so behavior can outrun it, and we report each such case as a limit of the probe.
+
+%=====================================================================
+\section{Measuring Decomposition}
+\label{sec:repcomp}
+
+A \emph{kind of probe} $\U$ contains the procedures that may recover a part's vector from a state. Throughout the paper the probe is linear, with a bias term. We fix it in advance because, with unrestricted coordinates, every invertible relation becomes additive (Lemma~\ref{lem:psi}), and every system would pass.
+
+\begin{defbox}{Recoverable relations}{recoverable}
+Fix a part distribution $\D$, a part vector $e$ and a kind of probe $\U$. A relation $r$, which a system realizes by $g_r$, is \emph{$\varepsilon$-recoverable} if for every role $i$ some $u_i \in \U$ satisfies, for parts drawn independently from $\D$,
+\begin{equation}
+  \frac{\mathbb{E}\,\lVert u_i(g_r(x_1,\ldots,x_k)) - e(x_i) \rVert^2}{\mathbb{E}\,\lVert e(x) - \mathbb{E}\,e(x) \rVert^2} \;\le\; \varepsilon .
+  \label{eq:recover}
+\end{equation}
+We fit $u_i$ on wholes built from the \emph{probe's training parts} and evaluate it on wholes built from other parts.
+\end{defbox}
+
+The quantity $1 - \varepsilon$ is the $R^2$ of the best probe. A symmetric blend already scores $R^2 = 1/2$, because the probe can return the average of the two parts, so we place each system between two references built from the same part vectors.
+
+\begin{defbox}{Recoverability}{repcomp}
+A system's \emph{recoverability} for a relation $r$ is
+\begin{equation}
+  \kappa = \frac{\varepsilon_{\mathrm{blend}} - \varepsilon}{\varepsilon_{\mathrm{blend}} - \varepsilon_{\mathrm{ref}}},
+  \label{eq:kappa}
+\end{equation}
+where the same probe, fitted and tested in the same way, gives $\varepsilon_{\mathrm{ref}}$ for the concatenation and $\varepsilon_{\mathrm{blend}}$ for the sum of the same part vectors. The system is \emph{representationally compositional} at tolerance $\tau$ if $\kappa \ge 1 - \tau$ for a part vector that carries information about the parts (Appendix~\ref{app:defs}).
+\end{defbox}
+
+A system scores $\kappa = 1$ when its state gives the parts back as well as laying them side by side would, and $\kappa = 0$ when it gives them back no better than adding them. Every score depends on the part vector that its protocol declares (Appendix~\ref{app:defs}).
+
+\textbf{Shared role codes.}\label{sec:mechanics} The simplest route to recoverability gives each part one vector that enters every whole and changes only with its role.
+
+\begin{defbox}{Shared role codes}{factor}
+A relation $r$ has \emph{shared role codes} with residual $\delta$ if, for some vector $e'$ of which $e$ is a linear function, some $c \in \R^m$ and injective matrices $B_1, \ldots, B_k$, one per role and shared by all parts,
+\begin{equation}
+  g_r(x_1, \ldots, x_k) = c + \textstyle\sum_{i} B_i\, e'(x_i) + \eta,
+  \label{eq:factor}
+\end{equation}
+with $\mathbb{E}\,\lVert \eta \rVert^2 \le \delta\, \mathbb{E}\,\lVert g_r - \mathbb{E}\,g_r \rVert^2$.
+\end{defbox}
+
+Shared role codes formalize the classical demand that a constituent contribute the same thing to every complex that contains it \citep{fodor1988}, and a tensor product with independent roles meets it with $\delta = 0$ \citep{smolensky1990}. With full-rank role maps, one whole fixes every role reversal and every assignment of a known part to a new role (Propositions~\ref{prop:systematic} and~\ref{prop:approx}). Three limits follow from the definitions. A linear blend loses a computable share of its parts, half of each part for $x + y$ (Proposition~\ref{prop:ceiling}). A state of width $m$ caps any linear probe at the share of the parts' variance in their top $m$ principal components (Proposition~\ref{prop:ey}). Nesting a blend $n$ levels deep loses at least $(2^n - 1)d$ dimensions of its leaves unless the state grows with depth (Proposition~\ref{prop:depth}).
+
+\textbf{Tests on training parts cannot see decomposition.} On fourteen toy operators of two Gaussian parts, a lookup over 32 training parts identifies the role-1 part with accuracy 1.00 for every operator that keeps the vocabulary distinct, including holographic reduced representations (HRR) that keep half of each part. On new parts, linear probes meet the ceilings, with $R^2 = 1.00$ for role--filler binding, 0.80 for $x + 0.5y$ and 0.44 for HRR, while an MLP probe memorizes the vocabulary (Appendix~\ref{app:calibration}).
+
+%=====================================================================
+\section{Experimental Setup}
+\label{sec:experiments}
+
+We test four hypotheses on parts new to every fitted procedure. \textbf{H1}: where a system's own procedure acts correctly on new parts, a probe of the state it reads recovers them. \textbf{H2}: behavior can lag the state. \textbf{H3}: a procedure that reads a recoverable state lifts behavior. \textbf{H4}: a state owes its recoverability to its input, its architecture or its training.
+
+\textbf{Systems.} \emph{Glyph networks} (MLP, CNN, transformer and role--filler encoders with decoders) encode two $8 \times 8$ glyphs on a canvas under three relations, trained on vocabularies of $V = 8$ to 64 glyphs, so a glyph can be new to the network itself. \emph{Recursive composers} \citep{pollack1990} compose trees of Gaussian leaves, trained on depths 1 and 2. \emph{Image encoders} (CLIP B/32 and H/14, DINOv2, SigLIP) and \emph{diffusion models} (SD 1.5 and SDXL) read two Tiny-ImageNet photographs on one canvas \citep{radford2021clip,cherti2023,oquab2024dinov2,zhai2023siglip,rombach2022,le2015tiny}. \emph{Language models} (phi-4, Qwen3-8B, OLMo-2 7B and 13B, seven Pythia models, GPT-2) and eleven text encoders read sentences such as ``a $x$ on a $y$'' over 305 concrete nouns in five asymmetric relations \citep{abdin2024phi4,yang2025qwen3,olmo2024olmo2,biderman2023pythia,radford2019gpt2}. In pretrained models parts are new only to the probe, apart from invented words, and Appendix~\ref{app:setup} lists every system.
+
+\textbf{Roles by meaning.} Each relation has a \emph{converse} paraphrase that reverses the order of mention while keeping the meaning, as in ``a tulip on a barrel'' and ``a barrel under a tulip''. The tulip is the \emph{figure} in both, and the barrel is the \emph{ground}. Language models answer ``Which object is on top?'' after four demonstrations, and we call the state at the final token the \emph{question state}. Image--text encoders match a canvas against a caption and against the same caption with the places swapped.
+
+\textbf{Protocol and metrics.} We split the parts before we fit anything, and new parts give every reported number. For a pretrained model, a part vector is the model's state for one part alone, reduced to 16 whitened principal components \citep{timkey2021}, and validation parts choose only the ridge penalty, the layer and the part vector. Each system also runs with random weights. We report recovery $R^2$, recoverability $\kappa$, \emph{role transfer} (the share of converse sentences on which a figure probe fitted on canonical sentences lands nearer the figure than the ground, so word order scores 0), answer accuracy (word order scores 0.5), the flip rate of answers under activation patches, and the role residual $\delta$. Appendices~\ref{app:setup} and~\ref{app:protocol} give the details.
+
+%=====================================================================
+\section{Results}
+\label{sec:results}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_strong_only.pdf}
+  \caption{\textbf{States decompose where the system's own outputs stay weak.} \textbf{a.} Trained on 8 glyphs, an MLP renders wholes of new glyphs poorly (orange frames), while a linear probe of its state recovers them (blue frames); trained on 64 glyphs, it does both. Numbers give $R^2$ to the target. \textbf{b.} Own decoders reproduce new pairs of training glyphs (dashed, open) but fail on new glyphs at small $V$ (solid), while a probe of the state stays high ($m = 64$). \textbf{c.} A recursive composer's own decomposer fails beyond its training depths (shaded), where a probe of the same root state follows the bound of Proposition~\ref{prop:depth} (dotted). \textbf{d.} Image--text encoders match captions with swapped places at chance, while their quadrant states recover both photographs in their fixed places. Means over 3--9 seeds, with standard errors.}
+  \label{fig:strong}
+\end{figure*}
+
+\subsection{Glyph Networks Keep New Glyphs Their Decoders Cannot Draw}
+\label{sec:states}
+
+Every architecture reproduces new pairs of training glyphs with output $R^2$ of 0.85--1.00, apart from the transformer at $V = 8$, while its output on new glyphs rises from 0.20--0.34 at $V = 8$ to 0.85--0.91 at $V = 64$ (Figure~\ref{fig:strong}b). The states keep the new glyphs. Across the MLP, CNN and role--filler networks, a broad probe recovers 0.83--0.86 at $V = 8$, while a probe fitted on the training glyphs recovers only 0.23--0.29 and tracks each network's own output, as Proposition~\ref{prop:span} predicts. A new decoder trained on the frozen encoder renders new glyphs at 0.75, against 0.25 for the network's own decoder.
+
+The decoders also read the role codes. Under \textsc{over}, the role residual is $\delta = 0.02$--$0.04$, and writing a donor's vector into role 1 makes the decoder render the donor with $R^2 = 0.78$ while spilling 0.16 into the untouched half, which answers the objection of \citet{fodor1990} for these systems. Written vectors add 32 glyphs in sequence and keep old pairs at 0.99, where fine-tuning drops them to 0.18 \citep{mccloskey1989}.
+
+\subsection{Recursive Composers Show the Same Gap at Depth}
+\label{sec:depth}
+
+A recursive composer's own decomposer recovers new leaves at depth 3 with $R^2 = 0.26$ at width 256, whereas a broad probe of the same root state recovers 0.99 and stays within 0.14 of the ceiling of Proposition~\ref{prop:depth} at depths 4 and 5 (Figure~\ref{fig:strong}c). A decomposer trained with its composer on trees of depth 3 to 5 recovers 1.00, 1.00 and 0.97, the values of the probe.
+
+\subsection{Image Encoders Keep Fixed Places That Their Matching Ignores}
+\label{sec:images}
+
+CLIP-B/32, CLIP-H/14 and SigLIP prefer a caption that names the two new photographs over one with a wrong object at 0.88--0.97, yet against the caption with the places swapped they score 0.50--0.51, which is chance (Figure~\ref{fig:strong}d). Their quadrant states recover both photographs in their fixed places with $\kappa = 0.81$--$0.94$, against 0.29--0.72 for random weights, while the average over patches, the state closest to the pooled embedding that matching reads, keeps only 0.17--0.49.
+
+\textbf{Absolute positions carry most of these places.} A fixed quadrant ties each role to one location. When both photographs land at random positions on one row of a larger canvas, with the left one as the figure, the trained encoders recover them in their roles at $\kappa = 0.18$--$0.49$, and random weights fall from 0.63--0.68 to below zero. Features pooled within each photograph's box keep its identity at 0.66--0.80, yet every encoder falls below zero when the probe must find the figure from the two box features in random order.
+
+\subsection{Diffusion Models Keep Fixed Places That Their Own Classifier Ignores}
+\label{sec:diffusion}
+
+A diffusion model's own choice of caption is the one with the lower denoising error \citep{li2023diffclassifier,clark2023diffclassifier}. On the same canvases, SD 1.5 and SDXL reject a caption with a wrong object at 0.86--0.88 and 0.69--0.71, yet they score 0.49--0.50 against swapped places, at every timestep. A linear probe of the denoiser's features, averaged within each quadrant, recovers both photographs in their fixed places with $\kappa = 0.70$ in SD 1.5 and 0.43 in SDXL, against 0.13 and 0.05 for the whole-map average that the denoising error sums over, and $-0.48$ for the autoencoder latent that the denoiser reads. Under moved photographs the places vanish from SD 1.5's state, at $\kappa = -0.06$ to $-0.14$.
+
+\textbf{Generation ignores the relation.} Asked for ``a cherry to the left of a tire'' and its converse, ``a tire to the right of a cherry'', over 150 pairs of new nouns in three relations, SD 1.5 puts the figure in its place with accuracy 0.47--0.56 in every relation and phrasing, judged by a detector \citep{liu2024groundingdino}, and the first-mentioned noun leads equally often. Under a shared seed the two phrasings give the same layout for 0.63--0.75 of pairs, so the noise and the nouns set the layout. SDXL at 1{,}024 pixels repeats the pattern for \textsc{above} and \textsc{left of}, apart from 0.62--0.63 for \textsc{on}. The caption encoder accounts for part of this failure, because a figure probe of CLIP-L's caption state returns the figure for 0.95 of canonical captions and 0.08 of their converses.
+
+\subsection{Language Models Build the Asked Role Where They Answer by Meaning}
+\label{sec:behavior}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.86\textwidth]{fig_both.pdf}
+  \caption{\textbf{Where a model answers by meaning, the answer runs through a recoverable question state.} \textbf{a.} Answers (orange), the figure probe of the question state (blue) and of the average over tokens (grey) for two pairs of new nouns; bold marks the figure and red the ground. \textbf{b.} Answer accuracy against the role transfer of the question state for seven language models on the main prompt (large dots) and three others (small dots); models that answer by word order sit at the lower left (red). \textbf{c.} Patching the whole question state from a source with the opposite figure flips the answer from the later layers on. \textbf{d.} Patching a subspace at each model's selected layer (phi-4, Qwen3-8B, OLMo-2 13B): the top directions of the source--target difference flip more answers than the figure probe or the top principal components, and random directions flip almost none. Means over 3 seeds, and 2 in \textbf{d}.}
+  \label{fig:both}
+\end{figure*}
+
+Asked which object is on top in ``a cake on a plate'' and in ``a plate under a cake'', phi-4 answers \emph{cake} both times, and a probe of its question state returns \emph{cake} both times (Figure~\ref{fig:both}a). Over new nouns and five relations, phi-4 and Qwen3-8B answer with accuracy 0.99, OLMo-2 13B with 0.92 and OLMo-2 7B with 0.77, and the question states of the first three transfer the role at 0.98, 0.87 and 0.73. Across four prompts and seven models, transfer correlates with accuracy at $r = 0.94$ (Figure~\ref{fig:both}b), and with invented words such as \emph{blicket}, phi-4 still answers at 1.00 and transfers at 0.75.
+
+\textbf{The question builds the shared role code.} At the period that ends the sentence, before any question, a figure probe transfers at only 0.12--0.23 in these four models, although it returns the figure of canonical sentences at 0.96--1.00. At the question, the asked role transfers at 0.81--0.98 in phi-4 and Qwen3-8B, while a probe for the unasked role transfers at 0.56--0.61 in phi-4, 0.44--0.50 in Qwen3-8B and 0.12--0.32 in OLMo-2, where a score below 0.5 means the probe returns the asked noun. Patching the question state from a source with the opposite figure flips the answer on 0.99, 0.84 and 0.80 of pairs at three quarters of the depth, against at most 0.21 in the first half of the layers, and the top 64 directions of the source--target difference flip 0.51--0.76 of answers, against at most 0.03 for random directions (Figure~\ref{fig:both}c,d).
+
+\textbf{Models that answer by word order fail in both places.} Every Pythia and GPT-2 model, from 160 million to 12 billion parameters, answers at 0.41--0.56, and their question states transfer at 0.07--0.10. A figure probe of the average over tokens transfers at 0.00--0.05 in every language model, against 0.15 at initialization, and kernel and MLP probes do no better, so sentence states carry the figure through codes that change with the phrasing. OLMo-2 7B marks the limit of a linear probe. It answers by meaning on 0.77 of pairs and patches carry its answer, while ridge, kernel and MLP probes transfer at most 0.51, so H1 fails for these probes, and Observation~\ref{prop:subset} holds only for a probe that contains the model's later layers.
+
+\subsection{Where Recoverability Comes From}
+\label{sec:origins}
+
+Glyph networks inherit recoverability from their input, where the pixels reach $R^2 = 0.91$ and untrained encoders 0.82--0.83, so training in these small networks mostly shapes the decoder. Pretrained models build it beyond their inputs. Within Pythia, $\kappa$ for the nouns in their order of mention rises from 0.27 at 160 million parameters to 0.56--0.58 at 6.9 and 12 billion, far above averaged input embeddings at $-0.21$ to $-0.49$. The control ``a $x$ and a $y$'' gives the same $\kappa$ as the asymmetric relations, so these probes recover a positional binding (Appendix~\ref{app:results}).
+
+%=====================================================================
+\section{A Shared Language for Compositionality}
+\label{sec:spectrum}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_spectrum.pdf}
+  \caption{\textbf{Accounts of compositionality differ in the capabilities they ask for.} Each card names a set of capabilities, its demand on decomposition, the accounts that ask for it and the systems of this paper that meet it. A blend loses its parts, and weak compositionality asks only that the system act on new combinations. Strong compositionality adds decomposition by a linear probe fixed in advance, and two stricter sets also fix the form of that decomposition.}
+  \label{fig:spectrum}
+\end{figure*}
+
+\textbf{Five sets of capabilities.}\label{sec:sets} A \emph{blend} keeps no decomposition in roles. \emph{Weak compositionality} asks the system to act correctly on new combinations of training parts. \emph{Strong compositionality} further asks a linear probe, fixed in advance, to return every part in every role for parts new to it. \emph{Shared role codes} further require each part to enter every whole through one vector that changes only with its role, which lets a written vector or an edit act on one role alone. \emph{Explicit copies} further require that vector to be the part itself \citep{fodor1988}. The states of each set support every capability of the sets before it, although a system exhibits those capabilities only when its own procedures use its states.
+
+\textbf{Placing an account.} Five conditions, checked in order, place any account (Figure~\ref{fig:spectrum}; Appendix Table~\ref{tab:spectrum} places all twenty-two). An account that scores no decomposition is weak when it scores outputs on new combinations, and a blend when it composes without marking roles. An account whose decomposer sees only training parts is weak, because a lookup passes. An account with no probe class fixed in advance lies outside the spectrum, because every injective system passes, and one with a fixed class is strong. Role codes with $\delta \approx 0$ ask for shared role codes, and a whole that tokens each constituent asks for explicit copies. Frege's principle therefore sits in the weak set, functional compositionality \citep{vangelder1990} in the strong set and tensor products among shared role codes, while sparse dictionary features and object-centric slots \citep{cunningham2023sparse,locatello2020slot} carry no roles, so they are strong in parts and a blend in roles.
+
+\textbf{Modern tests score the weak form.} Generalization benchmarks such as SCAN and COGS test new combinations of training primitives, even in their new-role splits, because a known part in a new role is a new combination \citep{lake2018,kim2020cogs}. Winoground and ARO score matching through a pooled embedding \citep{thrush2022winoground,yuksekgonul2023}, text-to-image evaluation scores the end of a chain from text encoder to detector \citep{huang2023t2i,ghosh2023geneval}, and composable diffusion sums its concepts symmetrically, so swapping them leaves every generated latent identical \citep{liu2022composable}. Mechanistic tests reach the strong form once they fix their map in advance and score it on parts new to it \citep{geiger2021,mccoy2019}. Appendix Table~\ref{tab:modern} names the strong version of each test.
+
+\begin{table}[t]
+  \caption{\textbf{Each system receives a pair of placements, one under roles by position and one under roles by meaning.} Image and denoiser entries under meaning give $\kappa$ under moved photographs. No tested system reaches explicit copies.}
+  \label{tab:tested}
+  \centering\footnotesize
+  \begin{tabularx}{\columnwidth}{@{}P{0.26\columnwidth}YY@{}}
+    \toprule
+    System & Roles by position & Roles by meaning \\
+    \midrule
+    Sentence states & Partial, by order of mention ($\kappa \le 0.58$) & Short of strong (transfer 0.00--0.05) \\
+    Question state, phi-4 and Qwen3-8B & Strong & Strong for the asked role \\
+    Image quadrant states & Strong, at fixed places & Low (0.18--0.49) \\
+    SD 1.5 denoiser & Strong, at fixed places & None \\
+    SD 1.5 and SDXL generation & Short of weak: the first-mentioned noun leads at chance & Short of weak: the relation sets no layout \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\textbf{Modern systems bind roles to position.} Across the pretrained systems we tested, the parts that states return sit in slots set by position: the order of mention in sentence states and the absolute location in image and denoiser states, while generation, a behavior, takes its layout from the noise seed and the nouns. Such states pass a probe test on new parts under a positional part map, yet they fail the converse paraphrase and lose most of their recoverability in the moved scene, two tests that Definition~\ref{def:decomp} requires because roles follow meaning. A role code by meaning appears only at the question in language models that answer by meaning, and mostly for the asked role. We therefore place each system as a pair, strong by position and short of strong by meaning (Table~\ref{tab:tested}). Binding IDs in language models \citep{feng2024} are a positional mechanism of the same kind. We propose that a claim of compositionality name the set it tests and state its terms: a claim of the strong form states its probe, part vectors and new parts, and a claim of shared role codes also reports $\delta$.
+
+%=====================================================================
+\section{Conclusion and Limitations}
+\label{sec:discussion}
+
+We described compositionality as a spectrum of capabilities with two forms, weak recombination of known parts and strong decomposition, which recoverability scores under a linear probe fixed in advance on parts new to it. States kept parts that behavior lost, language models that answered by meaning built the asked role at the question, and every pretrained state we tested bound its roles to position.
+
+Our results suggest six requirements for a strongly compositional network. Its state must have room for every part (Propositions~\ref{prop:ceiling} and~\ref{prop:ey}). Its procedure for reading parts must learn from many distinct parts (Proposition~\ref{prop:span}). Each part should enter every role through one code, so that one whole fixes its reversal (Proposition~\ref{prop:systematic}). The system must actually use those role codes (Section~\ref{sec:states}), and nesting needs a relation that stays invertible on its own outputs (Proposition~\ref{prop:depth}). Finally, its role codes must follow meaning, so that they survive a converse paraphrase and a moved scene.
+
+\textbf{Limitations.} The evidence for a strict inclusion comes from the systems we tested. Our trained networks are small, and additions, new roles, nesting and code swaps rest on them alone. In pretrained models parts are new only to the probe, apart from invented words, and image encoders and diffusion models lack a tested repair. Attribute binding and generative vision--language models remain untested (Appendix~\ref{app:limits}).
+
+%=====================================================================
+\section*{Impact Statement}
+
+This paper presents work whose goal is to advance the field of Machine Learning. Tests that separate weak from strong compositionality may help practitioners judge when a model will handle new parts and roles, and a positive score on our test does not certify that a deployed system behaves compositionally. There are many potential societal consequences of our work, none of which we feel must be specifically highlighted here.
+
+\section*{AI Use Statement}
+
+% AUTHOR: check this statement against your own record of AI use before submission.
+We used a large language model assistant (Claude, Anthropic) throughout this project: to write and run experiment code, to aggregate and plot results, to search and summarize related work, and to draft and revise the manuscript. The author designed the framework and the experiments, directed every analysis, checked the reported numbers against the logged results and takes full responsibility for the content.
+
+\bibliography{references}
+\bibliographystyle{icml2027}
+
+%=====================================================================
+\newpage
+\appendix
+\onecolumn
+
+\section{Related Work in Full}
+\label{app:related}
+
+\input{parts/figintro}
+
+\input{parts/related}
+
+\section{Formal Results}
+\label{app:proofs}
+\input{parts/appendix_orig_proofs}
+
+\section{Additional Definitions and Results}
+\label{app:defs}
+\label{app:extra}
+\input{parts/appendix_orig_defs}
+
+\section{Setup in Full}
+\label{app:setup}
+
+\subsection{Capabilities}
+The harder capabilities on the spectrum all start from a whole and need its parts back. Every later use of a part passes through decomposition (Table~\ref{tab:capabilities}).
+\input{parts/capabilities}
+
+\subsection{Calibration on Toy Operators}
+\label{app:calibration}
+\input{parts/calibration}
+
+\input{parts/setup}
+
+\section{Results in Full}
+\label{app:results}
+This appendix gives Section~\ref{sec:results} in full, with the controls that the main text summarizes.
+\input{parts/results}
+
+\section{The Spectrum in Full}
+\label{app:spectrum}
+\input{parts/spectrum}
+
+\section{Limitations in Full}
+\label{app:limits}
+\input{parts/limits}
+
+\section{Experimental Protocol}
+\label{app:protocol}
+\input{parts/appendix_orig_protocol}
+
+\end{document}

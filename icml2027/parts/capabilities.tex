@@ -1,0 +1,25 @@
+The harder capabilities on the spectrum all start from a whole and need its parts back. Every later use of a part passes through decomposition (Table~\ref{tab:capabilities}).
+\begin{itemize}
+  \item \textbf{New parts.} A whole that comes apart exposes each part, including parts its system never combined.
+  \item \textbf{New parts in every role.} A part learned in one role enters another, because the part and its role come apart.
+  \item \textbf{Additions without forgetting.} A new part enters through its own vector, so old wholes stay intact.
+  \item \textbf{Nesting.} A whole that decomposes can serve as a part, so wholes nest inside wholes.
+  \item \textbf{Inspection.} A decomposition shows the share each part donates to the whole, and an edit of that share changes one part alone.
+\end{itemize}
+\begin{table}[t]
+  \caption{\textbf{The strong form supports every weak capability and adds those that need decomposition.} Each row names a capability, the weakest set of the spectrum that supports it in our tests and the test of this paper that scores it on new parts. Five sets order the spectrum: a blend that keeps no decomposition, then weak, strong, shared role codes and explicit copies (Section~\ref{sec:sets}). Shared role codes give each part one vector per role (Section~\ref{sec:mechanics}), so a written vector or an edit acts on one role alone. No system we tested reaches explicit copies.}
+  \label{tab:capabilities}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.25\linewidth}P{0.14\linewidth}Y@{}}
+    \toprule
+    Capability & Set & Test in this paper \\
+    \midrule
+    New combinations of training parts & weak & Glyph decoders on new pairs of training glyphs; role questions about sentences of nouns from pretraining; caption matching and captions chosen by denoising error for new pairs of photographs \\
+    New parts & strong & Decoders and probes on wholes of new glyphs; probes of image and language states on nouns and photographs new to the probe (by position: fixed places; order of mention); answers about invented words \\
+    A new part in every role & shared role codes & Writing a new glyph's vector into a role it never filled \\
+    Additions without forgetting & shared role codes & Adding 32 glyphs in sequence by written vectors, against fine-tuning \\
+    Nesting & strong & Recursive decomposers and probes at depths beyond training \\
+    Inspection and editing & shared role codes & Swapping one role's vector in the state; patches of the question state \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
