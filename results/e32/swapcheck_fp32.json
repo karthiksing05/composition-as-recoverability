@@ -1,0 +1,242 @@
+[
+ {
+  "mode": "and",
+  "x": "turkey",
+  "y": "nest",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.2190098762512207,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "branch",
+  "y": "pineapple",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.1827545166015625,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "harp",
+  "y": "ostrich",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 5.3007659912109375,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "pineapple",
+  "y": "mirror",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.6754798889160156,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "lamp",
+  "y": "elephant",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.6196255683898926,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "cherry",
+  "y": "tire",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 4.0453410148620605,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "glass",
+  "y": "eagle",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 6.585432052612305,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "turkey",
+  "y": "orange",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 7.568817615509033,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "pie",
+  "y": "key",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 5.067500114440918,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "camel",
+  "y": "axe",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 10.06175708770752,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "egg",
+  "y": "cucumber",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 10.110577583312988,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "and",
+  "x": "plane",
+  "y": "robot",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 4.612788200378418,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "turkey",
+  "y": "nest",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 5.025208473205566,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "branch",
+  "y": "pineapple",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.123739242553711,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "harp",
+  "y": "ostrich",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 7.483375072479248,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "pineapple",
+  "y": "mirror",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.2152299880981445,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "lamp",
+  "y": "elephant",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 3.940812110900879,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "cherry",
+  "y": "tire",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 4.054891109466553,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "glass",
+  "y": "eagle",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 14.204095840454102,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "turkey",
+  "y": "orange",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 5.723867893218994,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "pie",
+  "y": "key",
+  "seed": 0,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 4.572431564331055,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "camel",
+  "y": "axe",
+  "seed": 1,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 8.066072463989258,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "egg",
+  "y": "cucumber",
+  "seed": 2,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 11.025537490844727,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ },
+ {
+  "mode": "pos",
+  "x": "plane",
+  "y": "robot",
+  "seed": 3,
+  "max_abs_latent_diff": 0.0,
+  "latent_absmax": 4.110989093780518,
+  "max_abs_pixel_diff": 0,
+  "identical_pixels": true
+ }
+]

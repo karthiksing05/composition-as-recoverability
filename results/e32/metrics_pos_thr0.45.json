@@ -1,0 +1,18 @@
+{
+ "thr": 0.45,
+ "rows": [
+  {
+   "kind": "pos",
+   "rel": "left",
+   "phr": "canon",
+   "n": 600,
+   "both": 0.24333333333333335,
+   "n_both": 146,
+   "rel_acc": 0.4863013698630137,
+   "word_order": 0.4863013698630137,
+   "conv_agree_same_layout": null,
+   "conv_both_correct": null,
+   "n_conv_pairs": 0
+  }
+ ]
+}

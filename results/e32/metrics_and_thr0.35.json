@@ -1,0 +1,18 @@
+{
+ "thr": 0.35,
+ "rows": [
+  {
+   "kind": "and",
+   "rel": "left",
+   "phr": "canon",
+   "n": 600,
+   "both": 0.24,
+   "n_both": 144,
+   "rel_acc": 0.4791666666666667,
+   "word_order": 0.4791666666666667,
+   "conv_agree_same_layout": null,
+   "conv_both_correct": null,
+   "n_conv_pairs": 0
+  }
+ ]
+}
