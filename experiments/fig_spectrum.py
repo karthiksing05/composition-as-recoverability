@@ -14,7 +14,7 @@ RUNGS = [
      ["Glyph decoders, V = 8:", "  new pairs 0.85–1.00,", "  new glyphs 0.20–0.34"]),
     ("Strong", REP, "A linear probe fixed in\nadvance returns new parts",
      ["Functional compositionality", "Reverse compositionality", "Context-dependent", "  constituents"],
-     ["Glyph states: $R^2$ 0.83–0.86", "Image patch states: κ ≥ 0.81", "phi-4 question state:", "  transfer 0.98"]),
+     ["Glyph states: $R^2$ 0.83–0.86", "Image, fixed places: κ ≥ 0.81", "phi-4, asked role: 0.98"]),
     ("Shared role codes", REP2, "One vector per part,\nchanged only by its role",
      ["Tensor products", "Disentanglement", "Additive decoders", "TRE, Kolmogorov scores"],
      ["Glyph states, OVER:", "  δ 0.02–0.04"]),
