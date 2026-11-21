@@ -21,7 +21,7 @@ PTS = [
     ("glyphs, V = 8", (0.83, 0.86), (0.20, 0.34), (-0.035, 0.0), "right"),
     ("tree, depth 3", (0.99, 0.99), (0.26, 0.26), (0.0, -0.1), "right"),
     ("image encoders, places", (0.81, 0.94), (acc(0.50), acc(0.51)), (0.0, -0.075), "center"),  # swapped-caption .50-.51, kappa .81-.94
-    ("diffusion models, places", (0.41, 0.71), (acc(0.49), acc(0.50)), (0.0, 0.065), "center"),  # e30: classifier roles .49-.50, grid kappa SDXL .41, SD1.5 .71
+    ("diffusion models, places", (0.43, 0.70), (acc(0.49), acc(0.50)), (0.0, 0.065), "center"),  # e30 (3 seeds x 3 relations): classifier roles .49-.50, grid kappa SDXL .43, SD1.5 .70
 ]
 REPAIRS = [  # (from point name, to behavior value, label)  sec:success
     ("glyphs, V = 8", 0.75, "new decoder"),
