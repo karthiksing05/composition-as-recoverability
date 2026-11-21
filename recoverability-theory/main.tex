@@ -493,6 +493,63 @@ A state can hold its parts because the input already held them, because the arch
 \section{A shared language for compositionality}
 \label{sec:spectrum}
 
+\begin{table}[tp]
+  \caption{\textbf{Each account asks for the set of capabilities that its demand on decomposition sets.} The middle column gives the demand in the terms of this paper, and the last column gives the set of Figure~\ref{fig:spectrum}.}
+  \label{tab:spectrum}
+  \centering\footnotesize
+  \begin{tabularx}{\linewidth}{@{}P{0.30\linewidth}YP{0.17\linewidth}@{}}
+    \toprule
+    Account & Demand on decomposition & Set of capabilities \\
+    \midrule
+    Conceptual blending and combination \citep{fauconnier2002,osherson1981,kamp1995} & Wholes gain structure of their own, and parts need not return intact & Blend \\
+    Composable diffusion \citep{liu2022composable} & Sums the scores of concepts, symmetric in the concepts & Weak in parts, blend in roles \\
+    \addlinespace
+    Frege's principle, Montague semantics \citep{frege1923,montague1970} & Fixes how a whole is built and asks nothing of the way back & Weak \\
+    Compositional generalization benchmarks \citep{lake2018,kim2020cogs,keysers2020,hupkes2020,lake2023} & Scores the system's outputs on new combinations of training parts & Weak \\
+    Vision--language benchmarks \citep{thrush2022winoground,yuksekgonul2023} & Scores matching against captions with swapped roles & Weak \\
+    Text-to-image evaluation \citep{ramesh2021,huang2023t2i,ghosh2023geneval} & Scores generated outputs against the concepts of the prompt & Weak \\
+    Text-to-image evaluation: concept-space studies \citep{okawa2023,park2024hidden,favero2025diffusion} & Follow in synthetic data when a model learns to generate new combinations of concepts or the rules of a hierarchy & Weak \\
+    Compositional reasoning tests \citep{dziri2023,press2023} & Scores answers that chain facts the model knows one at a time & Weak \\
+    Recursive auto-associative memories \citep{pollack1990} & A learned decomposer returns the leaves at trained depths & Weak; the root state can be strong \\
+    Vector-symbolic architectures \citep{plate1995,gayler2006,kanerva2009} & Unbinding and clean-up against a stored vocabulary & Weak; strong while the width holds every part \\
+    \addlinespace
+    Reverse compositionality \citep{fodor2002} & Understanding a whole requires understanding its parts & Strong \\
+    Functional compositionality \citep{vangelder1990} & General procedures build and decompose every whole & Strong \\
+    Context-dependent constituents \citep{smolensky1988} & Parts return approximately, through codes that change with their context & Strong without shared codes \\
+    Decodable factors \citep{montero2021} & A probe recovers factors that the model's own decoder fails to combine & Strong state, weak decoder \\
+    Mechanistic tests \citep{lepori2023,geiger2021,geiger2024das,mccoy2019} & Maps from states to parts or subroutines & Strong once a test fixes the map and scores it on new parts \\
+    Sparse dictionary features \citep{cunningham2023sparse,bricken2023monosemanticity,park2024linear} & Features add linearly and carry no roles, and a fixed encoder recovers them from new inputs & Strong in parts, blend in roles \\
+    Object-centric slots \citep{locatello2020slot} & Slots are exchangeable, so parts stay and roles are lost by construction & Strong in parts, blend in roles \\
+    \addlinespace
+    Tensor-product representations \citep{smolensky1990} & Fillers bind to independent role vectors and unbind linearly & Shared role codes \\
+    Disentanglement and additive decoders \citep{bengio2013,lachapelle2023,wiedemer2024} & Each factor keeps its own coordinates, or each slot its own term of a sum & Shared role codes \\
+    Compression and Kolmogorov measures \citep{andreas2019,elmoznino2024,elmoznino2026} & A composition of part vectors or part models reproduces the whole, on training data & Shared role codes, tested by composing \\
+    Binding IDs in language models \citep{feng2024} & Each entity and its attribute carry a shared code in context, set by position & Shared role codes by position \\
+    \addlinespace
+    Classical constituent structure \citep{fodor1988} & Constituents appear in every whole that contains them & Explicit copies \\
+    \addlinespace
+    Probes \citep{belinkov2022,hewitt2019} and recodings \citep{zadrozny1994} & No fixed kind of probe, or no new parts & Outside; every injective system passes \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{table}[!htb]
+  \caption{\textbf{Each system tested here receives a pair of placements, one under roles by position and one under roles by meaning.} Image and denoiser entries in the last column give the recoverability under moved photographs. No tested system reaches explicit copies.}
+  \label{tab:tested}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.30\linewidth}YY@{}}
+    \toprule
+    System & Roles by position & Roles by meaning \\
+    \midrule
+    Sentence states & Partial, by order of mention ($\kappa$ up to 0.58) & Short of strong (transfer 0.00--0.05) \\
+    Question state of phi-4 and Qwen3-8B & Strong & Strong for the asked role \\
+    Image quadrant states & Strong, at fixed places & Low under moved photographs (0.18--0.49) \\
+    SD 1.5 denoiser & Strong, at fixed places & None under moved photographs \\
+    SD 1.5 and SDXL generation & Short of weak: the first-mentioned noun leads at chance & Short of weak: the relation sets no layout \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
 The results give each system two scores and, where we have one, a repair. The same terms can sort the accounts of compositionality that the field already uses, and the sorting explains why so many current claims concern weak compositionality alone. We place twenty-two accounts on one spectrum, ordered by the capabilities each asks for (Figure~\ref{fig:spectrum}). Each account meets five conditions about decomposition, listed in Section~\ref{sec:sets}, and its place follows from the answers (Table~\ref{tab:spectrum}).
 
 \begin{figure}[t]
@@ -557,62 +614,6 @@ Four families of tests in current machine learning score the weak form, and a fi
 
 We propose that a claim of compositionality name the set of capabilities it tests and state the terms of that test. A claim of weak compositionality scores the system's own procedure on new combinations. A claim of strong compositionality states its probe, part vectors and new parts, and a claim of shared role codes also reports the role residual $\delta$.
 
-\begin{table}[t]
-  \caption{\textbf{Each account asks for the set of capabilities that its demand on decomposition sets.} The middle column gives the demand in the terms of this paper, and the last column gives the set of Figure~\ref{fig:spectrum}.}
-  \label{tab:spectrum}
-  \centering\small
-  \begin{tabularx}{\linewidth}{@{}P{0.30\linewidth}YP{0.17\linewidth}@{}}
-    \toprule
-    Account & Demand on decomposition & Set of capabilities \\
-    \midrule
-    Conceptual blending and combination \citep{fauconnier2002,osherson1981,kamp1995} & Wholes gain structure of their own, and parts need not return intact & Blend \\
-    Composable diffusion \citep{liu2022composable} & Sums the scores of concepts, symmetric in the concepts & Weak in parts, blend in roles \\
-    \addlinespace
-    Frege's principle, Montague semantics \citep{frege1923,montague1970} & Fixes how a whole is built and asks nothing of the way back & Weak \\
-    Compositional generalization benchmarks \citep{lake2018,kim2020cogs,keysers2020,hupkes2020,lake2023} & Scores the system's outputs on new combinations of training parts & Weak \\
-    Vision--language benchmarks \citep{thrush2022winoground,yuksekgonul2023} & Scores matching against captions with swapped roles & Weak \\
-    Text-to-image evaluation \citep{ramesh2021,huang2023t2i,ghosh2023geneval} & Scores generated outputs against the concepts of the prompt & Weak \\
-    Text-to-image evaluation: concept-space studies \citep{okawa2023,park2024hidden,favero2025diffusion} & Follow in synthetic data when a model learns to generate new combinations of concepts or the rules of a hierarchy & Weak \\
-    Compositional reasoning tests \citep{dziri2023,press2023} & Scores answers that chain facts the model knows one at a time & Weak \\
-    Recursive auto-associative memories \citep{pollack1990} & A learned decomposer returns the leaves at trained depths & Weak; the root state can be strong \\
-    Vector-symbolic architectures \citep{plate1995,gayler2006,kanerva2009} & Unbinding and clean-up against a stored vocabulary & Weak; strong while the width holds every part \\
-    \addlinespace
-    Reverse compositionality \citep{fodor2002} & Understanding a whole requires understanding its parts & Strong \\
-    Functional compositionality \citep{vangelder1990} & General procedures build and decompose every whole & Strong \\
-    Context-dependent constituents \citep{smolensky1988} & Parts return approximately, through codes that change with their context & Strong without shared codes \\
-    Decodable factors \citep{montero2021} & A probe recovers factors that the model's own decoder fails to combine & Strong state, weak decoder \\
-    Mechanistic tests \citep{lepori2023,geiger2021,geiger2024das,mccoy2019} & Maps from states to parts or subroutines & Strong once a test fixes the map and scores it on new parts \\
-    Sparse dictionary features \citep{cunningham2023sparse,bricken2023monosemanticity,park2024linear} & Features add linearly and carry no roles, and a fixed encoder recovers them from new inputs & Strong in parts, blend in roles \\
-    Object-centric slots \citep{locatello2020slot} & Slots are exchangeable, so parts stay and roles are lost by construction & Strong in parts, blend in roles \\
-    \addlinespace
-    Tensor-product representations \citep{smolensky1990} & Fillers bind to independent role vectors and unbind linearly & Shared role codes \\
-    Disentanglement and additive decoders \citep{bengio2013,lachapelle2023,wiedemer2024} & Each factor keeps its own coordinates, or each slot its own term of a sum & Shared role codes \\
-    Compression and Kolmogorov measures \citep{andreas2019,elmoznino2024,elmoznino2026} & A composition of part vectors or part models reproduces the whole, on training data & Shared role codes, tested by composing \\
-    Binding IDs in language models \citep{feng2024} & Each entity and its attribute carry a shared code in context, set by position & Shared role codes by position \\
-    \addlinespace
-    Classical constituent structure \citep{fodor1988} & Constituents appear in every whole that contains them & Explicit copies \\
-    \addlinespace
-    Probes \citep{belinkov2022,hewitt2019} and recodings \citep{zadrozny1994} & No fixed kind of probe, or no new parts & Outside; every injective system passes \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-\begin{table}[t]
-  \caption{\textbf{Each system tested here receives a pair of placements, one under roles by position and one under roles by meaning.} Image and denoiser entries in the last column give the recoverability under moved photographs. No tested system reaches explicit copies.}
-  \label{tab:tested}
-  \centering\small
-  \begin{tabularx}{\linewidth}{@{}P{0.30\linewidth}YY@{}}
-    \toprule
-    System & Roles by position & Roles by meaning \\
-    \midrule
-    Sentence states & Partial, by order of mention ($\kappa$ up to 0.58) & Short of strong (transfer 0.00--0.05) \\
-    Question state of phi-4 and Qwen3-8B & Strong & Strong for the asked role \\
-    Image quadrant states & Strong, at fixed places & Low under moved photographs (0.18--0.49) \\
-    SD 1.5 denoiser & Strong, at fixed places & None under moved photographs \\
-    SD 1.5 and SDXL generation & Short of weak: the first-mentioned noun leads at chance & Short of weak: the relation sets no layout \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
 
 %=====================================================================
 \section{Conclusion and limitations}
