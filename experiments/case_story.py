@@ -49,7 +49,7 @@ def draw(ax, which):
         block(ax, 0.0, 0.68, 0.48, "phi-4", "cake")
         block(ax, 0.52, 0.68, 0.48, "Qwen3-8B", "leaf")
     elif which == "neither":
-        panel(ax, "b", "Models that answer by word order: answers and readouts follow position")
+        panel(ax, "b", "Models that answer by word order: answers and probes follow position")
         ax.text(0.0, 0.9, "Question: Which object is on top?  Bold: the figure.  Red: the noun that word order picks.", fontsize=6.4, color=DGREY, transform=ax.transAxes, va="center")
         block(ax, 0.0, 0.68, 0.47, "Pythia-1.4b", "cake", cols=("answer", "readout_query"))
         block(ax, 0.53, 0.68, 0.47, "GPT-2 large", "leaf", cols=("answer", "readout_query"))

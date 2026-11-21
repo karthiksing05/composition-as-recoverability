@@ -30,7 +30,7 @@ fig, ax = plt.subplots(figsize=(4.3, 3.6))
 lo, hi = -0.25, 1.1
 ax.add_patch(Polygon([[lo, lo], [hi, hi], [lo, hi]], closed=True, fc="#fbeeee", ec="none", zorder=0))
 ax.plot([lo, hi], [lo, hi], color=GREY, lw=0.8, ls="--", zorder=1)
-ax.text(-0.2, 1.0, "behavior exceeds\nthe declared readout", fontsize=6.4, color=LOST, va="top", linespacing=1.1)
+ax.text(-0.2, 1.0, "behavior exceeds\nthe linear probe", fontsize=6.4, color=LOST, va="top", linespacing=1.1)
 ax.text(0.98, -0.2, "behavior lags the state", fontsize=6.4, color=DGREY, ha="right", va="bottom")
 pos = {}
 for name, (s0, s1), (b0, b1), (dx, dy), ha in PTS:
@@ -48,10 +48,10 @@ for name, to, lab in REPAIRS:
     ax.text(s + 0.025, (b + to) / 2 + 0.02, lab, fontsize=6.2, color=FIX, ha="left", va="center", rotation=90)
 s, b = pos["OLMo-2 7B"]
 ax.add_patch(FancyArrowPatch((s + 0.01, b - 0.035), (0.50, b - 0.035), arrowstyle="-|>", mutation_scale=7, color=REP, lw=0.9, ls="-", zorder=2))
-ax.text(0.25, b - 0.11, "best nonlinear\nreadout", fontsize=6.0, color=REP, ha="center", va="center")
+ax.text(0.25, b - 0.11, "best nonlinear\nprobe", fontsize=6.0, color=REP, ha="center", va="center")
 ax.set_xlim(lo, hi); ax.set_ylim(lo, hi)
-ax.set_xlabel("state: declared readout on held-out parts", color=REP)
-ax.set_ylabel("behavior: own procedure on held-out parts", color=BEH)
+ax.set_xlabel("state: linear probe on parts new to the probe", color=REP)
+ax.set_ylabel("behavior: own output on new parts", color=BEH)
 ax.set_xticks([0, 0.5, 1]); ax.set_yticks([0, 0.5, 1])
 ax.set_aspect("equal")
 fig.savefig(f"{FIGDIR}/fig_ladder.pdf"); fig.savefig(f"{NOTES}/fig_ladder.png", dpi=170)

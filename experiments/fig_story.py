@@ -88,7 +88,7 @@ if mode in ("all", "measure"):
     ax.set_xlim(0.2, 1.08); ax.set_xticks([0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["", "0.5", "", "1"]); ax.set_ylim(-0.6, 8.0)
     ax.set_xlabel("parts recovered (accuracy or $R^2$)")
     ax.plot(0.24, 7.45, "o", mfc="white", mec=BEH, ms=4); tag(ax, 0.28, 7.45, "lookup, training parts", BEH, va="center")
-    ax.plot(0.24, 6.75, "o", color=REP, ms=4); tag(ax, 0.28, 6.75, "affine readout, held-out parts", REP, va="center")
+    ax.plot(0.24, 6.75, "o", color=REP, ms=4); tag(ax, 0.28, 6.75, "linear probe, new parts", REP, va="center")
     panel(ax, "a", "Training parts hide the blends")
 
     ax = axs[1]
@@ -100,7 +100,7 @@ if mode in ("all", "measure"):
     tag(ax, 0.88, 0.99, "role–filler", REP, ha="right"); tag(ax, 0.47, 0.57, "$x + y$", RED, ha="center")
     tag(ax, 0.84, 0.74, "$x + 0.5y$", REP, ha="left"); tag(ax, 0.55, 0.42, "HRR, MAP,\nhalf-rank", REP, ha="left", va="center", linespacing=1.05)
     ax.set_xlim(0.35, 1.08); ax.set_ylim(0.35, 1.05); ax.set_xticks([0.4, 0.6, 0.8, 1.0]); ax.set_yticks([0.4, 0.6, 0.8, 1.0])
-    ax.set_xlabel("proven ceiling"); ax.set_ylabel("held-out parts recovered ($R^2$)")
+    ax.set_xlabel("proven ceiling"); ax.set_ylabel("new parts recovered ($R^2$)")
     panel(ax, "b", "Recovery meets the ceiling")
     save(fig, "fig_measure")
 
@@ -109,8 +109,8 @@ if mode in ("all", "strong_only"):
     fig = plt.figure(figsize=(6.5, 3.85))
     gs = fig.add_gridspec(2, 3, height_ratios=[1.15, 1.0], hspace=0.45, wspace=0.5, bottom=0.11, top=0.95, left=0.075, right=0.99)
     ax = fig.add_subplot(gs[0, :]); ax.axis("off")
-    panel(ax, "a", "One MLP trained on 8 glyphs: its state holds held-out glyphs that its decoder cannot render")
-    ROWS = [("target", "target"), ("net", "own decoder"), ("readout", "readout of the state")]
+    panel(ax, "a", "One MLP trained on 8 glyphs: its state holds new glyphs that its decoder cannot render")
+    ROWS = [("target", "target"), ("net", "own decoder"), ("readout", "probe of the state")]
     NK, TW, TH = 4, 0.092, 0.235
     YB = {"target": 0.655, "net": 0.345, "readout": 0.035}
     for b, V in enumerate((8, 64)):
@@ -139,9 +139,9 @@ if mode in ("all", "strong_only"):
     x, b_, e_ = mean3(d, "beh_fresh_1", "V"); band(ax, x, b_, e_, BEH, marker="o", ms=2.8)
     x, n_, e_ = mean3(d, "beh_heldout_1", "V"); band(ax, x, n_, e_, BEH, ls="--", marker="o", ms=2.8, mfc="white")
     tag(ax, 8, 1.13, "own decoder, new pairs of training glyphs", BEH, ha="left", va="center", fontsize=6.0)
-    tag(ax, 66, 0.1, "readout of\nthe state", REP, ha="right", va="center", linespacing=1.0); tag(ax, 19, 0.42, "own decoder,\nheld-out glyphs", BEH, ha="left", va="center", linespacing=1.0)
+    tag(ax, 66, 0.1, "probe of\nthe state", REP, ha="right", va="center", linespacing=1.0); tag(ax, 19, 0.42, "own decoder,\nnew glyphs", BEH, ha="left", va="center", linespacing=1.0)
     log2axis(ax, [8, 16, 32, 64]); ax.set_xlim(7, 72); ax.set_ylim(0, 1.2); ax.set_yticks([0, 0.5, 1])
-    ax.set_xlabel("training glyphs $V$"); ax.set_ylabel("$R^2$ on composites")
+    ax.set_xlabel("training glyphs $V$"); ax.set_ylabel("$R^2$ on wholes")
     panel(ax, "b", "The state outlasts the decoder")
 
     ax = fig.add_subplot(gs[1, 1])
@@ -150,9 +150,9 @@ if mode in ("all", "strong_only"):
     t = s.groupby("depth")["pop_r2"].agg(["mean", "sem"]); band(ax, t.index, t["mean"], t["sem"], REP, marker="o", ms=2.8)
     t = s.groupby("depth")["fresh_r2"].agg(["mean", "sem"]); band(ax, t.index, t["mean"].clip(lower=-0.5), t["sem"], BEH, marker="o", ms=2.8)
     bd = s.groupby("depth")["bound"].mean(); ax.plot(bd.index, bd.values, color=DGREY, ls=":", lw=0.9)
-    tag(ax, 3.2, 0.85, "readout", REP, ha="left", va="top"); tag(ax, 3.1, 0.42, "own decomposer", BEH, ha="left", va="center")
+    tag(ax, 3.2, 0.85, "probe", REP, ha="left", va="top"); tag(ax, 3.1, 0.42, "own decomposer", BEH, ha="left", va="center")
     tag(ax, 3.9, 1.04, "bound", DGREY, ha="left", va="bottom"); tag(ax, 1.5, -0.42, "trained\ndepths", DGREY, ha="center", va="bottom", linespacing=1.0)
-    ax.set_ylim(-0.5, 1.2); ax.set_yticks([-0.5, 0, 0.5, 1]); ax.set_xticks([1, 2, 3, 4, 5]); ax.set_xlabel("tree depth $n$ ($w = 256$)"); ax.set_ylabel("held-out leaves ($R^2$)")
+    ax.set_ylim(-0.5, 1.2); ax.set_yticks([-0.5, 0, 0.5, 1]); ax.set_xticks([1, 2, 3, 4, 5]); ax.set_xlabel("tree depth $n$ ($w = 256$)"); ax.set_ylabel("new leaves ($R^2$)")
     panel(ax, "c", "Depth: the state keeps the leaves")
 
     ax = fig.add_subplot(gs[1, 2])
@@ -169,7 +169,7 @@ if mode in ("all", "strong_only"):
             ax.plot([enc[em], gq.loc[gm, "kappa"]], [yy, yy], color=LGREY, lw=1.2, zorder=1)
     ax.set_yticks(Y6); ax.set_yticklabels([e[2] for e in ENC], fontsize=6.2); ax.tick_params(axis="y", pad=1)
     ax.set_ylim(-0.6, 7.3); ax.set_xlim(0.3, 1.04); ax.set_xticks([0.5, 0.75, 1]); ax.set_xticklabels(["0.5", "0.75", "1"])
-    ax.set_xlabel("score on held-out photographs")
+    ax.set_xlabel("score on new photographs")
     tag(ax, 0.32, 6.65, "caption places (chance 0.5)", BEH, va="center", fontsize=6.0); tag(ax, 0.32, 6.05, r"$\kappa$ of the quadrant state", REP, va="center", fontsize=6.0)
     panel(ax, "d", "Images: states hold places that matching misses")
     save(fig, "fig_strong_only")
@@ -183,7 +183,7 @@ if mode in ("all", "decomp"):
     fig = plt.figure(figsize=(6.5, 3.35))
     gs = fig.add_gridspec(2, 3, height_ratios=[1.1, 1.05], width_ratios=[1.05, 1, 1.05], hspace=0.62, wspace=0.55, bottom=0.11, top=0.93, left=0.08, right=0.99)
     ax = fig.add_subplot(gs[0, :]); ax.axis("off")
-    panel(ax, "a", "One MLP: writing a donor's code into role 1 swaps that glyph and keeps the other")
+    panel(ax, "a", "One MLP: writing a donor's vector into role 1 swaps that glyph and keeps the other")
     COLS = [("swap_orig", "output before", DGREY), ("swap_donor", "donor glyph", DGREY), ("swap_edit", "after the edit", FIX),
             ("swap_target", "target", DGREY), ("swap_nat", "natural direction", GREY)]
     W_ = 0.165
@@ -206,7 +206,7 @@ if mode in ("all", "decomp"):
 
     ax = fig.add_subplot(gs[1, 0])
     s = d64
-    conds = [("replay0", "fine-\ntuned", BEH, BEH2), ("replay1", "with\nreplay", GREY, LGREY), ("before", "code\nwritten", FIX, FIX2)]
+    conds = [("replay0", "fine-\ntuned", BEH, BEH2), ("replay1", "with\nreplay", GREY, LGREY), ("before", "vector\nwritten", FIX, FIX2)]
     for i, (k, lab, c1, c2) in enumerate(conds):
         for j, (part, c) in enumerate((("heldout", c1), ("role2", c2))):
             v = s[f"newpart_{part}_{k}"]
@@ -214,7 +214,7 @@ if mode in ("all", "decomp"):
     ax.set_xticks(range(3)); ax.set_xticklabels([c[1] for c in conds], fontsize=6.4, linespacing=1.0)
     ax.set_ylim(0.4, 1.22); ax.set_yticks([0.4, 0.6, 0.8, 1.0]); ax.set_ylabel("decoder's output $R^2$")
     tag(ax, -0.45, 1.16, "dark: old pairs", DGREY, va="center", fontsize=6.0); tag(ax, -0.45, 1.08, "light: new glyph, other role", DGREY, va="center", fontsize=6.0)
-    panel(ax, "b", "A written code adds a part")
+    panel(ax, "b", "A written vector adds a part")
 
     ax = fig.add_subplot(gs[1, 1])
     EDITS = [("swap", "role-1 edit", FIX), ("natural1", "own response", BEH), ("natural", "natural direction", GREY), ("rand", "random", LGREY)]
@@ -266,7 +266,7 @@ if mode in ("all", "origins"):
             ax.plot(v, yy + dy, "o", color=c, ms=4.6, zorder=3, mec=DGREY if c == LGREY else "white", mew=0.5)
         print("E20", lab, [round(v[0], 3) for v in vals])
     ax.set_yticks([1, 0]); ax.set_yticklabels(["plain", "entangled"], fontsize=6.6); ax.set_ylim(-0.6, 2.2)
-    ax.set_xlim(0.2, 1.0); ax.set_xticks([0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["", "0.5", "", "1"]); ax.set_xlabel("readout $R^2$, held-out glyphs")
+    ax.set_xlim(0.2, 1.0); ax.set_xticks([0.25, 0.5, 0.75, 1]); ax.set_xticklabels(["", "0.5", "", "1"]); ax.set_xlabel("probe $R^2$, new glyphs")
     tag(ax, 0.22, 1.85, "input", GREY, va="center"); tag(ax, 0.42, 1.85, "untrained", DGREY, va="center"); tag(ax, 0.7, 1.85, "trained", REP, va="center")
     panel(ax, "a", "Glyphs: the input holds the parts")
 
@@ -291,7 +291,7 @@ if mode in ("all", "origins"):
         ax.plot([ia, max(ic, st)], [yy, yy], color=LGREY, lw=1.0, zorder=1)
         ax.plot(ia, yy, "o", mfc="white", mec=GREY, ms=4.2, zorder=3); ax.plot(ic, yy, "o", color=GREY, ms=4.2, zorder=3); ax.plot(st, yy, "o", color=REP, ms=4.2, zorder=4)
     ax.set_yticks(Y); ax.set_yticklabels([NM.get(r[0], r[0]) for r in rows], fontsize=6.0); ax.tick_params(axis="y", pad=1)
-    ax.set_xlim(-0.6, 1.0); ax.set_xticks([-0.5, 0, 0.5, 1]); ax.set_ylim(-0.6, len(rows) + 1.2); ax.set_xlabel(r"$\kappa$, held-out nouns")
+    ax.set_xlim(-0.6, 1.0); ax.set_xticks([-0.5, 0, 0.5, 1]); ax.set_ylim(-0.6, len(rows) + 1.2); ax.set_xlabel(r"$\kappa$, new nouns")
     from matplotlib.lines import Line2D
     ax.legend(handles=[Line2D([], [], marker="o", ls="", mfc="white", mec=GREY, ms=4, label="mean input"),
                        Line2D([], [], marker="o", ls="", color=GREY, ms=4, label="two inputs"),
@@ -320,7 +320,7 @@ if mode in ("all", "origins"):
         for v, c in zip(vals, (GREY, LGREY, REP)):
             ax.plot(v, yy, "o", color=c, ms=4.2, zorder=3, mec=DGREY if c == LGREY else "white", mew=0.5)
     ax.set_yticks(Y6); ax.set_yticklabels([e[1] for e in ENC], fontsize=6.0); ax.tick_params(axis="y", pad=1)
-    ax.set_xlim(-1.0, 1.05); ax.set_xticks([-1, -0.5, 0, 0.5, 1]); ax.set_xticklabels(["−1", "", "0", "", "1"]); ax.set_ylim(-0.6, 7.2); ax.set_xlabel(r"$\kappa$, held-out photographs")
+    ax.set_xlim(-1.0, 1.05); ax.set_xticks([-1, -0.5, 0, 0.5, 1]); ax.set_xticklabels(["−1", "", "0", "", "1"]); ax.set_ylim(-0.6, 7.2); ax.set_xlabel(r"$\kappa$, new photographs")
     tag(ax, -0.98, 6.55, "pixels", GREY, va="center", fontsize=6.0); tag(ax, 0.06, 6.55, "random", DGREY, va="center", fontsize=6.0); tag(ax, 0.62, 6.55, "trained", REP, va="center", fontsize=6.0)
     panel(ax, "c", "Images: the encoder builds them")
     print("pixels", {k: round(v, 3) for k, v in pix.items()})
@@ -348,7 +348,7 @@ if mode in ("all", "origins"):
         ax.plot([b, a], [yy, yy], color=LGREY, lw=1.0, zorder=1)
         ax.plot(b, yy, "o", color=LGREY, ms=4, zorder=3, mec=DGREY, mew=0.5); ax.plot(a, yy, "o", color=REP, ms=4, zorder=3, mec="white", mew=0.4)
     ax.set_yticks(Y11); ax.set_yticklabels(list(TN.values()), fontsize=5.6); ax.tick_params(axis="y", pad=1)
-    ax.set_xlim(-0.3, 1.0); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(-0.6, 12.4); ax.set_xlabel(r"$\kappa$, held-out nouns")
+    ax.set_xlim(-0.3, 1.0); ax.set_xticks([0, 0.5, 1]); ax.set_ylim(-0.6, 12.4); ax.set_xlabel(r"$\kappa$, new nouns")
     tag(ax, -0.28, 11.6, "random", DGREY, va="center", fontsize=6.0); tag(ax, 0.2, 11.6, "trained", REP, va="center", fontsize=6.0)
     panel(ax, "d", "Training raises it")
 
@@ -362,7 +362,7 @@ if mode in ("all", "origins"):
         ax.plot(n, msem(e6, m)[0], "s", color=REP2, ms=3.2, zorder=4)
     tag(ax, 0.13, 0.66, "Pythia", REP, ha="left"); tag(ax, 18, 0.2, "other\nmodels", REP2, ha="right", va="top", linespacing=1.0)
     ax.set_xscale("log"); ax.set_xticks([0.1, 1, 10]); ax.set_xticklabels(["0.1", "1", "10"]); ax.minorticks_off()
-    ax.set_xlabel("parameters (billions)"); ax.set_ylabel(r"$\kappa$, held-out nouns"); ax.set_ylim(-0.3, 1.05); ax.set_yticks([0, 0.5, 1]); ref_lines(ax)
+    ax.set_xlabel("parameters (billions)"); ax.set_ylabel(r"$\kappa$, new nouns"); ax.set_ylim(-0.3, 1.05); ax.set_yticks([0, 0.5, 1]); ref_lines(ax)
     panel(ax, "e", "Scale stalls")
 
     ax = axs[1, 2]
@@ -375,7 +375,7 @@ if mode in ("all", "origins"):
     mu, se = zip(*[msem(e6, m) for m, _ in ST]); band(ax, np.array([max(s, 100) for _, s in ST]), np.array(mu), np.array(se), REP, marker="o", ms=2.6)
     tag(ax, 3000, 0.77, "1.4b", REP, ha="left"); tag(ax, 6000, 0.17, "410m, six runs", REP2, ha="center")
     ax.set_xscale("log"); ax.set_xticks([100, 1e3, 1e4, 1e5]); ax.set_xticklabels(["0", "$10^3$", "$10^4$", "$10^5$"]); ax.minorticks_off()
-    ax.set_xlabel("training step"); ax.set_ylabel(r"$\kappa$, held-out nouns"); ax.set_ylim(-0.3, 1.05); ax.set_yticks([0, 0.5, 1]); ref_lines(ax)
+    ax.set_xlabel("training step"); ax.set_ylabel(r"$\kappa$, new nouns"); ax.set_ylim(-0.3, 1.05); ax.set_yticks([0, 0.5, 1]); ref_lines(ax)
     panel(ax, "f", "It peaks early in training")
     save(fig, "fig_origins")
 # ================================================================== beat 3: both kinds, weak only, neither
@@ -418,7 +418,7 @@ if mode in ("all", "both"):
     tag(ax, 0.42, 1.0, f"$r$ = {r:.2f}", INK, ha="left", va="top"); tag(ax, 0.42, 0.88, "7 models, 4 prompts", DGREY, ha="left", va="top")
     tag(ax, 0.6, 0.02, "word order", RED, ha="left", va="bottom")
     ax.set_xlim(0.38, 1.03); ax.set_ylim(-0.04, 1.05); ax.set_xticks([0.5, 0.75, 1]); ax.set_yticks([0, 0.5, 1])
-    ax.set_xlabel("answer accuracy (weak)", color=BEH); ax.set_ylabel("readout transfer (strong)", color=REP)
+    ax.set_xlabel("answer accuracy (weak)", color=BEH); ax.set_ylabel("role transfer (strong)", color=REP)
     panel(ax, "b", "Answers follow the state")
     print("r", round(r, 3))
 
@@ -445,7 +445,7 @@ if mode in ("all", "both"):
     ax.set_xscale("log", base=2); ax.set_xticks([16, 64, 256]); ax.set_xticklabels(["16", "64", "256"]); ax.minorticks_off()
     ax.set_xlim(12, 1300); ax.set_ylim(-0.03, 1.05); ax.set_yticks([0, 0.5, 1])
     d, r_, p_, q = sweep("diff", (16, 64, 256)), sweep("readout", (16, 64, 128)), sweep("pc", (16, 64, 256)), sweep("random", (16, 64, 256))
-    tag(ax, 300, d[2], "source minus\ntarget", FIX, va="center", linespacing=1.0); tag(ax, 148, r_[2] - 0.03, "readout", REP, va="center")
+    tag(ax, 300, d[2], "source minus\ntarget", FIX, va="center", linespacing=1.0); tag(ax, 148, r_[2] - 0.03, "probe", REP, va="center")
     tag(ax, 300, p_[2] - 0.15, "top\ncomponents", DGREY, va="center", linespacing=1.0); tag(ax, 300, q[2] + 0.03, "random", GREY, va="center")
     ax.set_xlabel("dimensions patched"); ax.set_ylabel("answers flipped")
     panel(ax, "d", "A subspace carries it")
@@ -464,13 +464,13 @@ if mode in ("all", "weak"):
     best_late = max(np.mean([x[k] for x in q]) for q in lays for k in ("ridge_conv", "kernel_conv", "mlp_conv"))
     oracle = max(np.mean([x[k] for x in q]) for q in lays for k in ("kernel_oracle_conv", "mlp_oracle_conv"))
     BARS = [("answers", e9.loc["OLMo-2-1124-7B", "choice"], BEH), ("patch, layer 16", base, FIX2), ("patch, layers 24, 32", max(flips.values()), FIX),
-            ("ridge readout", np.mean([x["ridge_conv"] for x in q16]), REP), ("best readout, any layer", best_late, REP), ("tuned on test", oracle, GREY)]
+            ("ridge probe", np.mean([x["ridge_conv"] for x in q16]), REP), ("best probe, any layer", best_late, REP), ("tuned on test", oracle, GREY)]
     for i, (lab, v, c) in enumerate(BARS):
         ax.barh(-i, v, 0.62, color=c)
         ax.text(v + 0.02, -i, f"{v:.2f}", fontsize=5.8, va="center", color=DGREY)
     ax.set_yticks(-np.arange(len(BARS))); ax.set_yticklabels([b[0] for b in BARS], fontsize=6.0)
-    ax.set_xlim(0, 1.12); ax.set_xticks([0, 0.5, 1]); ax.set_xlabel("share of held-out pairs")
-    panel(ax, "a", "OLMo-2 7B outruns its readouts")
+    ax.set_xlim(0, 1.12); ax.set_xticks([0, 0.5, 1]); ax.set_xlabel("share of new pairs")
+    panel(ax, "a", "OLMo-2 7B outruns its probes")
     print("OLMo-7B", [(b[0], round(float(b[1]), 3)) for b in BARS], flips)
 
     ax = fig.add_subplot(gs[0, 1:]); ax.axis("off")
@@ -488,7 +488,7 @@ if mode in ("all", "weak"):
         ax.plot(len(M) + k + 0.21, pr[m, "main"][1], "o", color=REP, ms=3.4, mec="white", mew=0.3)
     ax.axhline(0.5, color=LGREY, lw=0.8, ls=":")
     ax.set_xticks(list(x) + [len(M), len(M) + 1]); ax.set_xticklabels([l for _, l in M] + ["Pythia-1.4b", "GPT-2 large"], fontsize=6.2)
-    ax.set_ylim(-0.04, 1.25); ax.set_yticks([0, 0.5, 1]); ax.set_ylabel("figure readout on converse")
+    ax.set_ylim(-0.04, 1.25); ax.set_yticks([0, 0.5, 1]); ax.set_ylabel("figure probe on converse")
     from matplotlib.lines import Line2D
     ax.legend(handles=[Line2D([], [], marker="o", ls="", color=RED, ms=3.4, label="sentence average"), Line2D([], [], marker="o", ls="", color=REP, ms=3.4, label="question state"),
                        Line2D([], [], marker="o", ls="", color=DGREY, ms=3.2, label="ridge"), Line2D([], [], marker="s", ls="", color=DGREY, ms=3.2, label="kernel"),
@@ -518,10 +518,10 @@ if mode in ("all", "map"):
     X0, X1, Y0, Y1, W, H = 0.115, 0.56, 0.47, 0.03, 0.435, 0.405
     ax.text(X0 + W / 2, 0.955, "own procedure succeeds", color=BEH, ha="center", va="center", fontsize=8, fontweight="bold")
     ax.text(X1 + W / 2, 0.955, "own procedure fails", color=BEH, ha="center", va="center", fontsize=8, fontweight="bold")
-    ax.text(0.5, 0.995, "weak composition: the system's own procedure on held-out parts", color=BEH, ha="center", va="top", fontsize=6.6)
-    ax.text(0.035, Y0 + H / 2, "readout recovers\nthe parts", color=REP, ha="center", va="center", fontsize=8, fontweight="bold", rotation=90, linespacing=1.0)
-    ax.text(0.035, Y1 + H / 2, "readout misses\nthe parts", color=REP, ha="center", va="center", fontsize=8, fontweight="bold", rotation=90, linespacing=1.0)
-    ax.text(0.085, 0.5, "strong composition: a declared readout of the state", color=REP, ha="center", va="center", fontsize=6.6, rotation=90)
+    ax.text(0.5, 0.995, "weak composition: the system's own procedure on new parts", color=BEH, ha="center", va="top", fontsize=6.6)
+    ax.text(0.035, Y0 + H / 2, "probe recovers\nthe parts", color=REP, ha="center", va="center", fontsize=8, fontweight="bold", rotation=90, linespacing=1.0)
+    ax.text(0.035, Y1 + H / 2, "probe misses\nthe parts", color=REP, ha="center", va="center", fontsize=8, fontweight="bold", rotation=90, linespacing=1.0)
+    ax.text(0.085, 0.5, "strong composition: a linear probe of the state", color=REP, ha="center", va="center", fontsize=6.6, rotation=90)
     CELLS = [(X0, Y0, "Both kinds", "phi-4"), (X1, Y0, "Strong without weak", "MLP trained on 8 glyphs"),
              (X0, Y1, "Weak without strong", "OLMo-2 7B"), (X1, Y1, "Neither", "Pythia-1.4b")]
     for x, y, t, sub in CELLS:
@@ -544,19 +544,19 @@ if mode in ("all", "map"):
                 ax.text(xx, yy, ret, fontsize=7, color=col if ok else RED, fontweight="bold" if ok else "normal", va="center")
         ax.text(x + 0.015, y + 0.045, foot, fontsize=6.3, color=DGREY, va="center")
 
-    cell_lm(X0, Y0, "phi-4", ["a cake on a plate", "a plate under a cake"], "held-out nouns: answers 0.99, readout transfer 0.98")
-    cell_lm(X0, Y1, "OLMo-2 7B", ["a cake on a plate", "a plate under a cake"], "answers 0.77, readout transfer 0.20, patches flip 0.85")
-    cell_lm(X1, Y1, "Pythia-1.4b", ["a cake on a plate", "a plate under a cake"], "answers 0.41–0.56, readout transfer 0.07–0.10")
+    cell_lm(X0, Y0, "phi-4", ["a cake on a plate", "a plate under a cake"], "new nouns: answers 0.99, role transfer 0.98")
+    cell_lm(X0, Y1, "OLMo-2 7B", ["a cake on a plate", "a plate under a cake"], "answers 0.77, role transfer 0.20, patches flip 0.85")
+    cell_lm(X1, Y1, "Pythia-1.4b", ["a cake on a plate", "a plate under a cake"], "answers 0.41–0.56, role transfer 0.07–0.10")
     # glyph cell
     tgt, net, rd = case["V8_target"], case["V8_net"], case["V8_readout"]
     var = ((tgt[:4] - tgt[:4].mean(0)) ** 2).sum((1, 2)).mean()
-    for j, (im, lab, col) in enumerate(((tgt, "target", DGREY), (net, "own decoder", BEH), (rd, "readout", REP))):
+    for j, (im, lab, col) in enumerate(((tgt, "target", DGREY), (net, "own decoder", BEH), (rd, "probe", REP))):
         for k in range(2):
             ia = fig.add_axes([X1 + 0.02 + j * 0.138, Y0 + H - 0.2 - k * 0.1, 0.12, 0.085])
             ia.imshow(im[k], cmap="Greys", vmin=0, vmax=1, interpolation="nearest", aspect="auto"); ia.set_xticks([]); ia.set_yticks([])
             for sp in ia.spines.values():
                 sp.set_color(col if j else LGREY); sp.set_linewidth(1.1 if j else 0.6)
         ax.text(X1 + 0.08 + j * 0.138, Y0 + H - 0.1, lab, fontsize=6.4, color=col, ha="center", va="center")
-    ax.text(X1 + 0.015, Y0 + 0.045, "held-out glyphs: own decoder 0.20–0.34, readout 0.83–0.86", fontsize=6.3, color=DGREY, va="center")
+    ax.text(X1 + 0.015, Y0 + 0.045, "new glyphs: own decoder 0.20–0.34, probe 0.83–0.86", fontsize=6.3, color=DGREY, va="center")
     save(fig, "fig_map")
 print("done", mode)
