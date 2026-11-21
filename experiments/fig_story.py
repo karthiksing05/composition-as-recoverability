@@ -363,7 +363,7 @@ if mode in ("all", "origins"):
     tag(ax, 0.13, 0.66, "Pythia", REP, ha="left"); tag(ax, 18, 0.2, "other\nmodels", REP2, ha="right", va="top", linespacing=1.0)
     ax.set_xscale("log"); ax.set_xticks([0.1, 1, 10]); ax.set_xticklabels(["0.1", "1", "10"]); ax.minorticks_off()
     ax.set_xlabel("parameters (billions)"); ax.set_ylabel(r"$\kappa$, new nouns"); ax.set_ylim(-0.3, 1.05); ax.set_yticks([0, 0.5, 1]); ref_lines(ax)
-    panel(ax, "e", "Scale stalls")
+    panel(ax, "e", "Scale helps up to 7B")
 
     ax = axs[1, 2]
     S410 = (0, 512, 1000, 2000, 4000, 8000, 16000, 32000, 143000)
@@ -463,7 +463,7 @@ if mode in ("all", "weak"):
     lays = [q16] + [[x for x in jsons(d_) if x["model"].endswith("OLMo-2-1124-7B") and x["state"] == "query"] for d_ in ("e26L24", "e26L32")]
     best_late = max(np.mean([x[k] for x in q]) for q in lays for k in ("ridge_conv", "kernel_conv", "mlp_conv"))
     oracle = max(np.mean([x[k] for x in q]) for q in lays for k in ("kernel_oracle_conv", "mlp_oracle_conv"))
-    BARS = [("answers", e9.loc["OLMo-2-1124-7B", "choice"], BEH), ("patch, layer 16", base, FIX2), ("patch, layers 24, 32", max(flips.values()), FIX),
+    BARS = [("answers", e9.loc["OLMo-2-1124-7B", "choice"], BEH), ("patch, layer 16", base, FIX2), ("patch, layer 32", max(flips.values()), FIX),
             ("ridge probe", np.mean([x["ridge_conv"] for x in q16]), REP), ("best probe, any layer", best_late, REP), ("tuned on test", oracle, GREY)]
     for i, (lab, v, c) in enumerate(BARS):
         ax.barh(-i, v, 0.62, color=c)

@@ -7,14 +7,14 @@ NOTES = "/coc/flash10/ksingara3/compositionality-theory/notes/audit/figs"
 NAVY = "#1b2a49"
 RUNGS = [
     ("Blend", LOST, "No procedure returns\nthe parts",
-     ["Conceptual blending", "Pet fish, red hair"],
-     ["$x+y$: $R^2$ 0.50", "HRR pairs: $R^2$ 0.44", "Sentence states:", "  transfer $\\leq$ 0.05"]),
+     ["Conceptual blending", "Pet fish, red hair", "Composable diffusion"],
+     ["$x+y$: $R^2$ 0.50", "HRR pairs: $R^2$ 0.44"]),
     ("Weak", BEH, "The system acts on new\ncombinations of known parts",
-     ["Frege, Montague", "SCAN, COGS, Hupkes", "Text-to-image, diffusion", "RAAM, VSA clean-up"],
+     ["Frege, Montague", "SCAN, COGS, Winoground", "Text-to-image evaluation", "RAAM, VSA clean-up"],
      ["Glyph decoders, V = 8:", "  new pairs 0.85–1.00,", "  new glyphs 0.20–0.34"]),
     ("Strong", REP, "A linear probe fixed in\nadvance returns new parts",
      ["Functional compositionality", "Reverse compositionality", "Context-dependent", "  constituents"],
-     ["Glyph states: $R^2$ 0.83–0.86", "Image quadrants: κ ≥ 0.81", "phi-4 question state:", "  transfer 0.98"]),
+     ["Glyph states: $R^2$ 0.83–0.86", "Image patch states: κ ≥ 0.81", "phi-4 question state:", "  transfer 0.98"]),
     ("Shared role codes", REP2, "One vector per part,\nchanged only by its role",
      ["Tensor products", "Disentanglement", "Additive decoders", "TRE, Kolmogorov scores"],
      ["Glyph states, OVER:", "  δ 0.02–0.04"]),
