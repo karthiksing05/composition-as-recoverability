@@ -15,6 +15,7 @@ ap.add_argument("--seeds", type=int, default=4)
 ap.add_argument("--bs", type=int, default=4)
 ap.add_argument("--swapcheck", action="store_true")
 ap.add_argument("--dtype", default="fp16")
+ap.add_argument("--rel", default="left")
 a = ap.parse_args()
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
 dt = torch.float16 if a.dtype == "fp16" else torch.float32
@@ -47,7 +48,9 @@ def sample(concepts, seeds, w):
 
 
 def prompts(mode, x, y):
-    return [f"a {x}", f"a {y}"] if mode == "and" else [f"a {x} on the left", f"a {y} on the right"]
+    if mode == "and": return [f"a {x}", f"a {y}"]
+    if mode == "posv": return [f"a {x} at the top", f"a {y} at the bottom"]
+    return [f"a {x} on the left", f"a {y} on the right"]
 
 
 @torch.no_grad()
@@ -57,7 +60,7 @@ def decode(lat):
 
 
 im = imageable()
-prs = sample_pairs(im["new"], a.npairs, 100 + list(RELS).index("left"))
+prs = sample_pairs(im["new"], 150, 100 + list(RELS).index(a.rel))[:a.npairs]
 if a.swapcheck:
     res = []
     for mode in ("and", "pos"):
@@ -71,8 +74,8 @@ if a.swapcheck:
             print(res[-1], flush=True)
     json.dump(res, open(f"{R32}/swapcheck_{a.dtype}.json", "w", encoding="utf-8"), indent=1)
     raise SystemExit
-tag = f"{a.mode}_w{a.w:g}"
-recs = [dict(file=f"{tag}/p{pi:03d}_canon_s{s}", rel="left", axis="h", pair=pi, phr="canon", seed=s, x=x, y=y, first=x, caption=" + ".join(prompts(a.mode, x, y)),
+tag = f"{a.mode}_w{a.w:g}" + ("" if a.rel == "left" else f"_{a.rel}") + ("" if a.npairs == 150 else f"_n{a.npairs}") + ("" if a.seeds == 4 else f"_s{a.seeds}")
+recs = [dict(file=f"{tag}/p{pi:03d}_canon_s{s}", rel=a.rel, axis=RELS[a.rel][2], pair=pi, phr="canon", seed=s, x=x, y=y, first=x, caption=" + ".join(prompts(a.mode, x, y)),
              kind=a.mode, model="sd15") for pi, (x, y) in enumerate(prs) for s in range(a.seeds)]
 os.makedirs(f"{R32}/index", exist_ok=True)
 json.dump(recs, open(f"{R32}/index/{tag}.json", "w", encoding="utf-8"))

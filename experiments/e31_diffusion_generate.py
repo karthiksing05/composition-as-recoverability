@@ -15,6 +15,7 @@ ap.add_argument("--seeds", type=int, default=4)
 ap.add_argument("--bs", type=int, default=8)
 ap.add_argument("--limit", type=int, default=0)
 ap.add_argument("--tag", default="")
+ap.add_argument("--sseed", type=int, default=0)
 a = ap.parse_args()
 
 MID = {"sd15": "runwayml/stable-diffusion-v1-5", "sdxl": "stabilityai/stable-diffusion-xl-base-1.0"}[a.model]
@@ -34,7 +35,7 @@ sp = split(0)
 recs = []
 if a.mode == "singles":
     for i, x in enumerate(sp["all"]):
-        recs.append(dict(file=f"singles/{x}_s0", x=x, caption=f"a {x}", seed=0, kind="single"))
+        recs.append(dict(file=f"singles/{x}_s{a.sseed}", x=x, caption=f"a {x}", seed=a.sseed, kind="single"))
 else:
     im = imageable()
     if a.mode == "pairs":
