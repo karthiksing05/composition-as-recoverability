@@ -27,7 +27,7 @@ if a.model == "sd15":
     pipe = P.from_pretrained(MID, torch_dtype=torch.float16, safety_checker=None).to("cuda")
 else:
     from diffusers import StableDiffusionXLPipeline as P
-    pipe = P.from_pretrained(MID, torch_dtype=torch.float16, variant="fp16").to("cuda")
+    pipe = P.from_pretrained(MID, torch_dtype=torch.float16).to("cuda")
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 pipe.set_progress_bar_config(disable=True)
 
