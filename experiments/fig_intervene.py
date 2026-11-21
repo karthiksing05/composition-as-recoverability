@@ -3,7 +3,7 @@ import glob, json
 import numpy as np
 from figstyle import *
 
-FIGDIR = "../recoverability-theory/figures"
+FIGDIR = "../icml2027/figures"
 NOTES = "../notes/audit/figs"
 
 

@@ -15,7 +15,7 @@ GREY, LGREY, DGREY = "#929292", "#d5d5d5", "#5e5e5e"
 REP, BEH, CTRL, LOST, FIX = BLUE, ORANGE, GREY, RED, GREEN  # readout of the state; own procedure; control; blend or word order; repair or intervention
 REP2, BEH2 = "#2f4b7c", "#eebfa0"  # a second series of the same kind
 INK = "#262626"
-FIGDIR = "/coc/flash10/ksingara3/compositionality-theory/recoverability-theory/figures"
+FIGDIR = "/coc/flash10/ksingara3/compositionality-theory/icml2027/figures"
 
 plt.rcParams.update({
     "font.family": "sans-serif",

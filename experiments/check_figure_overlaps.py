@@ -5,8 +5,9 @@ text box or a fill that only partly covers it is a hit.  Exits 1 on any hit."""
 import re, sys, glob, os
 import fitz
 
-ROOT = "/coc/flash10/ksingara3/compositionality-theory/recoverability-theory"
-tex = open(f"{ROOT}/main.tex", encoding="utf-8").read()
+ROOT = "/coc/flash10/ksingara3/compositionality-theory/icml2027"
+import glob
+tex = "".join(open(p, encoding="utf-8").read() for p in [f"{ROOT}/main.tex"] + sorted(glob.glob(f"{ROOT}/parts/*.tex")))
 names = sorted(set(re.findall(r"\\includegraphics\[[^\]]*\]\{([^}]+\.pdf)\}", tex)))
 PADX, TRIM = 0.2, 0.22
 
