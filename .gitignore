@@ -34,3 +34,4 @@ experiments/results/smoke*/
 experiments/e35/frozen/
 experiments/e35/*.png
 experiments/e35/site_check/
+icml2027/parts.bak_pretrim/

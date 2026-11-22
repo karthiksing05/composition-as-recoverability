@@ -404,8 +404,8 @@ def case_panel(ax, which):
 
 
 if mode in ("all", "both"):
-    fig = plt.figure(figsize=(6.5, 3.7))
-    gs = fig.add_gridspec(2, 3, height_ratios=[0.7, 1.0], hspace=0.5, wspace=0.5, bottom=0.1, top=0.95, left=0.08, right=0.99)
+    fig = plt.figure(figsize=(6.5, 3.15))
+    gs = fig.add_gridspec(2, 3, height_ratios=[0.5, 1.0], hspace=0.42, wspace=0.5, bottom=0.12, top=0.96, left=0.08, right=0.99)
     ax = fig.add_subplot(gs[0, :]); ax.axis("off")
     case_panel(ax, "both")
     ax = fig.add_subplot(gs[1, 0])

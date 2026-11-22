@@ -13,7 +13,6 @@ Let $\varphi_i(x_i)$ place $x_i$ in the $i$-th block of $\R^{kd}$ and zeros else
 \end{proof}
 
 \noindent
-Intuitively, separability in arbitrary coordinates says only that the parts can be recovered, so it cannot add anything to invertibility. Definition~\ref{def:factor} therefore fixes the coordinates to be a linear map plus a constant (Eq.~\ref{eq:factor}).
 
 \begin{lemma}[Lookup decodes any relation that is injective on a vocabulary]
 \label{lem:lookup}
@@ -25,7 +24,6 @@ Each state in the table has exactly one preimage in $\Voc^k$.
 \end{proof}
 
 \noindent
-Every relation except those with collisions on the vocabulary passes this test, including random codes that have no structure at all (Figure~\ref{fig:measure}a).
 
 
 
@@ -67,7 +65,7 @@ $x$ and $z$ are jointly Gaussian with $\mathrm{Cov}(x, z) = A^{\top}$ and $\math
 \end{proof}
 
 \noindent
-Intuitively, a blend keeps only the components of its parts that lie in the row space of the relation. For $x + \alpha y$ the ceiling is $1/(1 + \alpha^2)$ for role~1 and $\alpha^2/(1 + \alpha^2)$ for role~2; for $x + y$ it is $1/2$ for each; for HRR or MAP binding of two parts in $d$ dimensions with fixed roles it averages $1/2$; and for a generic projection into $m < kd$ dimensions it is close to $m/(kd)$ for each role. Figure~\ref{fig:measure}b compares these values with fitted probes. For Gaussian part vectors with covariance $\Sigma$, the same argument gives $R^2_i = \mathrm{tr}(\Sigma_i A_i^{\top}(A\Sigma A^{\top})^{+}A_i\Sigma_i)/\mathrm{tr}\,\Sigma_i$, where $\Sigma_i$ is the covariance of role $i$ and the roles are independent.
+For $x + \alpha y$ the ceiling is $1/(1 + \alpha^2)$ for role~1 and $\alpha^2/(1 + \alpha^2)$ for role~2; for $x + y$ it is $1/2$ for each; for HRR or MAP binding of two parts in $d$ dimensions with fixed roles it averages $1/2$; and for a generic projection into $m < kd$ dimensions it is close to $m/(kd)$ for each role. Figure~\ref{fig:measure}b compares these values with fitted probes. For Gaussian part vectors with covariance $\Sigma$, the same argument gives $R^2_i = \mathrm{tr}(\Sigma_i A_i^{\top}(A\Sigma A^{\top})^{+}A_i\Sigma_i)/\mathrm{tr}\,\Sigma_i$, where $\Sigma_i$ is the covariance of role $i$ and the roles are independent.
 
 \begin{proposition}[Ceiling for any relation under linear probes]
 \label{prop:ey}
@@ -111,7 +109,7 @@ Let $g(x_1, \ldots, x_k) = c + \sum_i B_i e(x_i)$ with $B = [B_1 \cdots B_k]$ of
 \end{proof}
 
 \noindent
-Intuitively, reading one whole yields every part's vector, and the shared role maps say where each vector goes in any other arrangement. The proposition restates the unbinding property of tensor-product representations \citep{smolensky1990} for any relation with shared role codes. It describes the information in the states, and the code swaps of Section~\ref{sec:states} test separately whether a system uses that information when it acts. The residual $\delta$ plays the role of the reconstruction error of a tensor-product decomposition network \citep{mccoy2019}. When the relation has shared role codes only approximately, the quantities of Definitions~\ref{def:recoverable} and~\ref{def:factor} jointly bound the error of the prediction, as the next result states.
+The proposition restates the unbinding property of tensor-product representations \citep{smolensky1990} for any relation with shared role codes, and the residual $\delta$ plays the role of the reconstruction error of a tensor-product decomposition network \citep{mccoy2019}. The code swaps of Section~\ref{sec:states} test separately whether a system uses that information when it acts.
 
 \begin{proposition}[Approximate unbinding]
 \label{prop:approx}
@@ -138,7 +136,6 @@ The map is linear from $\R^{2^n d}$ to $\R^w$, so its rank is at most $\min(w, 2
 \end{proof}
 
 \noindent
-The bound for linear probes covers a learned nonlinear composer, and Section~\ref{sec:states} compares a broad probe of the composer's state with the composer's own decomposer.
 
 \noindent
 \textbf{Crosstalk in recursive HRR.} The prediction $1 - (2^n - 1)d/w$ of Section~\ref{sec:states} follows from a short calculation. Leaves $x \in \R^d$ are lifted to $xP$ by $P \in \R^{d \times w}$ with i.i.d.\ $\mathcal{N}(0, 1/w)$ entries, and two subtrees $a, b$ at height $h$ are composed as $(a \circledast \rho^h_1 + b \circledast \rho^h_2)/\sqrt{2}$, with unitary role vectors, for which circular convolution is an orthogonal map that circular correlation inverts exactly. Unbinding one path from the root, by correlation with that path's role vectors and multiplication by $\sqrt{2}$ at each level, returns the target leaf's lift plus, for each of the other $2^n - 1$ leaves, its lift transformed by a product of convolutions with unitary vectors. Each of these crosstalk terms has the norm of the leaf's lift, and the role vectors randomize the phases of its spectrum. The spectrum of a lifted Gaussian leaf is close to flat, so each term is close to isotropic and uncorrelated with the target and with the other terms. The probe applies the pseudo-inverse of $P$, which for $w \gg d$ is close to an isometry composed with the orthogonal projection onto the $d$-dimensional row space of $P$, and that projection keeps on average a share $d/w$ of an isotropic vector's squared norm. With leaf variance $d$, the expected squared error is therefore $(2^n - 1)d \cdot d/w$, and $R^2 \approx 1 - (2^n - 1)d/w$. The calculation ignores the departure of $P$ from orthonormal rows, of relative order $\sqrt{d/w}$, and is least accurate at small $w$, where the observed values fall below it.
