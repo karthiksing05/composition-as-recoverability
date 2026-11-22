@@ -1,0 +1,4 @@
+srun: job 4829967 queued and waiting for resources
+srun: job 4829967 has been allocated resources
+Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]Fetching 20 files:   5%|▌         | 1/20 [00:00<00:03,  5.90it/s]Fetching 20 files:  10%|█         | 2/20 [00:01<00:13,  1.37it/s]Fetching 20 files:  35%|███▌      | 7/20 [00:55<01:56,  8.98s/it]Fetching 20 files:  80%|████████  | 16/20 [01:23<00:19,  4.96s/it]Fetching 20 files: 100%|██████████| 20/20 [01:23<00:00,  4.16s/it]
+OK Alpha-VLLM/Lumina-Image-2.0 /nethome/ksingara3/.cache/huggingface/hub/models--Alpha-VLLM--Lumina-Image-2.0/snapshots/53504abd8178b30685b6c4c7a4cd181ff78b73e9

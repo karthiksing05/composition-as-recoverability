@@ -1,0 +1,15 @@
+compliance above|A 0.943 438
+compliance above|B 0.938 435
+compliance left|A 0.886 360
+compliance left|B 0.889 377
+compliance on|A 0.944 432
+compliance on|B 0.935 428
+oracle                           above|canon:0.95(1.00) above|conv:0.94(1.00) left|canon:0.89(1.00) left|conv:0.88(1.00) on|canon:0.95(1.00) on|conv:0.94(1.00) ALL:0.93(1.00)
+lexicon                          above|canon:0.95(1.00) above|conv:0.94(1.00) left|canon:0.89(1.00) left|conv:0.88(1.00) on|canon:0.95(1.00) on|conv:0.94(1.00) ALL:0.93(1.00)
+position                         above|canon:0.95(1.00) above|conv:0.06(0.00) left|canon:0.89(1.00) left|conv:0.11(0.00) on|canon:0.95(1.00) on|conv:0.06(0.00) ALL:0.50(0.50)
+EleutherAI/pythia-1.4b           above|canon:0.28(0.25) above|conv:0.82(0.87) left|canon:0.17(0.05) left|conv:0.81(0.93) on|canon:0.19(0.13) on|conv:0.81(0.85) ALL:0.51(0.51)
+Qwen/Qwen3-8B                    above|canon:0.95(1.00) above|conv:0.94(1.00) left|canon:0.89(1.00) left|conv:0.88(1.00) on|canon:0.92(0.97) on|conv:0.94(1.00) ALL:0.92(1.00)
+allenai/OLMo-2-1124-7B           above|canon:0.84(0.89) above|conv:0.90(0.94) left|canon:0.78(0.85) left|conv:0.69(0.76) on|canon:0.65(0.69) on|conv:0.71(0.71) ALL:0.77(0.81)
+gpt2-large                       above|canon:0.08(0.03) above|conv:0.91(0.97) left|canon:0.16(0.05) left|conv:0.87(0.99) on|canon:0.19(0.16) on|conv:0.88(0.94) ALL:0.51(0.52)
+microsoft/phi-4                  above|canon:0.95(1.00) above|conv:0.94(1.00) left|canon:0.89(1.00) left|conv:0.88(1.00) on|canon:0.95(1.00) on|conv:0.94(1.00) ALL:0.93(1.00)
+sd15 unplanned {'above|canon': 0.471, 'above|conv': 0.476, 'left|canon': 0.552, 'left|conv': 0.51, 'on|canon': 0.585, 'on|conv': 0.527, 'ALL': 0.522}

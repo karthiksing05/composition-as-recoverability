@@ -30,3 +30,7 @@ notes/audit/ws/*.png
 notes/audit/figs/mont_*.png
 experiments/slurm-*.out
 experiments/results/smoke*/
+# E35 frozen code copies, page renders and artifact checks
+experiments/e35/frozen/
+experiments/e35/*.png
+experiments/e35/site_check/

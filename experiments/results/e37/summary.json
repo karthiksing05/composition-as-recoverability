@@ -1,0 +1,355 @@
+{
+ "compliance": {
+  "above|A": {
+   "rate": 0.9429223744292238,
+   "n": 438
+  },
+  "above|B": {
+   "rate": 0.9379310344827586,
+   "n": 435
+  },
+  "left|A": {
+   "rate": 0.8861111111111111,
+   "n": 360
+  },
+  "left|B": {
+   "rate": 0.8885941644562334,
+   "n": 377
+  },
+  "on|A": {
+   "rate": 0.9444444444444444,
+   "n": 432
+  },
+  "on|B": {
+   "rate": 0.9345794392523364,
+   "n": 428
+  }
+ },
+ "planners": {
+  "oracle": {
+   "above|canon": {
+    "placement": 0.9452054794520548,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "above|conv": {
+    "placement": 0.9406392694063926,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "left|canon": {
+    "placement": 0.8888888888888888,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "left|conv": {
+    "placement": 0.8833333333333333,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "on|canon": {
+    "placement": 0.9457013574660633,
+    "n": 221,
+    "planner_role_acc": 1.0
+   },
+   "on|conv": {
+    "placement": 0.943127962085308,
+    "n": 211,
+    "planner_role_acc": 1.0
+   },
+   "ALL": {
+    "placement": 0.926829268292683,
+    "n": 1230,
+    "planner_role_acc": 1.0
+   }
+  },
+  "lexicon": {
+   "above|canon": {
+    "placement": 0.9452054794520548,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "above|conv": {
+    "placement": 0.9406392694063926,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "left|canon": {
+    "placement": 0.8888888888888888,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "left|conv": {
+    "placement": 0.8833333333333333,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "on|canon": {
+    "placement": 0.9457013574660633,
+    "n": 221,
+    "planner_role_acc": 1.0
+   },
+   "on|conv": {
+    "placement": 0.943127962085308,
+    "n": 211,
+    "planner_role_acc": 1.0
+   },
+   "ALL": {
+    "placement": 0.926829268292683,
+    "n": 1230,
+    "planner_role_acc": 1.0
+   }
+  },
+  "position": {
+   "above|canon": {
+    "placement": 0.9452054794520548,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "above|conv": {
+    "placement": 0.06451612903225806,
+    "n": 217,
+    "planner_role_acc": 0.0
+   },
+   "left|canon": {
+    "placement": 0.8888888888888888,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "left|conv": {
+    "placement": 0.10695187165775401,
+    "n": 187,
+    "planner_role_acc": 0.0
+   },
+   "on|canon": {
+    "placement": 0.9457013574660633,
+    "n": 221,
+    "planner_role_acc": 1.0
+   },
+   "on|conv": {
+    "placement": 0.06422018348623854,
+    "n": 218,
+    "planner_role_acc": 0.0
+   },
+   "ALL": {
+    "placement": 0.5024154589371981,
+    "n": 1242,
+    "planner_role_acc": 0.5
+   }
+  },
+  "EleutherAI/pythia-1.4b": {
+   "above|canon": {
+    "placement": 0.2824074074074074,
+    "n": 216,
+    "planner_role_acc": 0.24666666666666667
+   },
+   "above|conv": {
+    "placement": 0.8240740740740741,
+    "n": 216,
+    "planner_role_acc": 0.8666666666666667
+   },
+   "left|canon": {
+    "placement": 0.171875,
+    "n": 192,
+    "planner_role_acc": 0.05333333333333334
+   },
+   "left|conv": {
+    "placement": 0.8118279569892473,
+    "n": 186,
+    "planner_role_acc": 0.9333333333333333
+   },
+   "on|canon": {
+    "placement": 0.1943127962085308,
+    "n": 211,
+    "planner_role_acc": 0.12666666666666668
+   },
+   "on|conv": {
+    "placement": 0.8076923076923077,
+    "n": 208,
+    "planner_role_acc": 0.8466666666666667
+   },
+   "ALL": {
+    "placement": 0.5142392188771359,
+    "n": 1229,
+    "planner_role_acc": 0.5122222222222222
+   }
+  },
+  "Qwen/Qwen3-8B": {
+   "above|canon": {
+    "placement": 0.9452054794520548,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "above|conv": {
+    "placement": 0.9406392694063926,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "left|canon": {
+    "placement": 0.8888888888888888,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "left|conv": {
+    "placement": 0.8833333333333333,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "on|canon": {
+    "placement": 0.9227272727272727,
+    "n": 220,
+    "planner_role_acc": 0.9733333333333334
+   },
+   "on|conv": {
+    "placement": 0.943127962085308,
+    "n": 211,
+    "planner_role_acc": 1.0
+   },
+   "ALL": {
+    "placement": 0.9227013832384052,
+    "n": 1229,
+    "planner_role_acc": 0.9955555555555555
+   }
+  },
+  "allenai/OLMo-2-1124-7B": {
+   "above|canon": {
+    "placement": 0.8392857142857143,
+    "n": 224,
+    "planner_role_acc": 0.8866666666666667
+   },
+   "above|conv": {
+    "placement": 0.9041095890410958,
+    "n": 219,
+    "planner_role_acc": 0.94
+   },
+   "left|canon": {
+    "placement": 0.7771428571428571,
+    "n": 175,
+    "planner_role_acc": 0.8533333333333334
+   },
+   "left|conv": {
+    "placement": 0.6871508379888268,
+    "n": 179,
+    "planner_role_acc": 0.76
+   },
+   "on|canon": {
+    "placement": 0.6545454545454545,
+    "n": 220,
+    "planner_role_acc": 0.6933333333333334
+   },
+   "on|conv": {
+    "placement": 0.7114427860696517,
+    "n": 201,
+    "planner_role_acc": 0.7066666666666667
+   },
+   "ALL": {
+    "placement": 0.7651888341543513,
+    "n": 1218,
+    "planner_role_acc": 0.8066666666666666
+   }
+  },
+  "gpt2-large": {
+   "above|canon": {
+    "placement": 0.0776255707762557,
+    "n": 219,
+    "planner_role_acc": 0.02666666666666667
+   },
+   "above|conv": {
+    "placement": 0.9095022624434389,
+    "n": 221,
+    "planner_role_acc": 0.9733333333333334
+   },
+   "left|canon": {
+    "placement": 0.15508021390374332,
+    "n": 187,
+    "planner_role_acc": 0.05333333333333334
+   },
+   "left|conv": {
+    "placement": 0.8729281767955801,
+    "n": 181,
+    "planner_role_acc": 0.9933333333333333
+   },
+   "on|canon": {
+    "placement": 0.18627450980392157,
+    "n": 204,
+    "planner_role_acc": 0.16
+   },
+   "on|conv": {
+    "placement": 0.8820754716981132,
+    "n": 212,
+    "planner_role_acc": 0.94
+   },
+   "ALL": {
+    "placement": 0.5147058823529411,
+    "n": 1224,
+    "planner_role_acc": 0.5244444444444445
+   }
+  },
+  "microsoft/phi-4": {
+   "above|canon": {
+    "placement": 0.9452054794520548,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "above|conv": {
+    "placement": 0.9406392694063926,
+    "n": 219,
+    "planner_role_acc": 1.0
+   },
+   "left|canon": {
+    "placement": 0.8888888888888888,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "left|conv": {
+    "placement": 0.8833333333333333,
+    "n": 180,
+    "planner_role_acc": 1.0
+   },
+   "on|canon": {
+    "placement": 0.9457013574660633,
+    "n": 221,
+    "planner_role_acc": 1.0
+   },
+   "on|conv": {
+    "placement": 0.943127962085308,
+    "n": 211,
+    "planner_role_acc": 1.0
+   },
+   "ALL": {
+    "placement": 0.926829268292683,
+    "n": 1230,
+    "planner_role_acc": 1.0
+   }
+  }
+ },
+ "sd15_unplanned": {
+  "above|canon": {
+   "placement": 0.47058823529411764,
+   "n": 102
+  },
+  "above|conv": {
+   "placement": 0.47619047619047616,
+   "n": 84
+  },
+  "left|canon": {
+   "placement": 0.5523809523809524,
+   "n": 105
+  },
+  "left|conv": {
+   "placement": 0.5096153846153846,
+   "n": 104
+  },
+  "on|canon": {
+   "placement": 0.5849056603773585,
+   "n": 106
+  },
+  "on|conv": {
+   "placement": 0.5267857142857143,
+   "n": 112
+  },
+  "ALL": {
+   "placement": 0.5220228384991843
+  }
+ }
+}

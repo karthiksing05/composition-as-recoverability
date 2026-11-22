@@ -231,7 +231,7 @@ def run_system(name, seed, images, labels, outdir, D=None):
     thr = np.sort(cx); acc_loc = max(max(((cx < t) == lab).mean(), ((cx >= t) == lab).mean()) for t in thr[::max(1, len(thr) // 400)])
     meta_loc = dict(loc_only_role_acc=float(acc_loc), mean_gap=float(np.mean([p[1] - p[0] - PH for p in pl])))
     # part codes and which layers
-    if name == "sd15":
+    if D is not None:  # a diffusion model (sd15 here; E35 passes its transformer denoisers)
         ts = (300,) if SMOKE else E30.TS
         alone = {"center": [V.canvas([(pil[i], 112, (56, 56))]) for i in used], "full": [pil[i].resize((224, 224), Image.BICUBIC) for i in used]}
         codes = {}

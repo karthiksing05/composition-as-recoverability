@@ -1,0 +1,75 @@
+EleutherAI/pythia-1.4b|new|all                          direct=0.510 verify=0.390 parse=0.510 parse_fallback=1.000 copy_exact=0.978 rel_exact=0.995
+EleutherAI/pythia-1.4b|new|canonical                    direct=0.521 verify=0.374 parse=0.521 parse_fallback=1.000 copy_exact=0.983 rel_exact=1.000
+EleutherAI/pythia-1.4b|new|converse                     direct=0.499 verify=0.407 parse=0.499 parse_fallback=1.000 copy_exact=0.973 rel_exact=0.991
+EleutherAI/pythia-1.4b|new|rel:atop                     parse=0.527 direct=0.527 rel_exact=1.000
+EleutherAI/pythia-1.4b|new|rel:higher                   parse=0.502 direct=0.502 rel_exact=1.000
+EleutherAI/pythia-1.4b|new|rel:struck                   parse=0.511 direct=0.511 rel_exact=0.982
+EleutherAI/pythia-1.4b|new|rel:within                   parse=0.499 direct=0.499 rel_exact=1.000
+EleutherAI/pythia-1.4b|train|all                        direct=0.514 verify=0.427 parse=0.983 parse_fallback=0.001 copy_exact=0.984 rel_exact=0.999
+EleutherAI/pythia-1.4b|train|canonical                  direct=0.508 verify=0.373 parse=0.981 parse_fallback=0.001 copy_exact=0.982 rel_exact=0.998
+EleutherAI/pythia-1.4b|train|converse                   direct=0.520 verify=0.482 parse=0.985 parse_fallback=0.001 copy_exact=0.985 rel_exact=1.000
+EleutherAI/pythia-1.4b|train|rel:behind                 parse=0.971 direct=0.514 rel_exact=1.000
+EleutherAI/pythia-1.4b|train|rel:hit                    parse=0.985 direct=0.528 rel_exact=0.998
+EleutherAI/pythia-1.4b|train|rel:inside                 parse=0.982 direct=0.497 rel_exact=0.996
+EleutherAI/pythia-1.4b|train|rel:left                   parse=0.992 direct=0.530 rel_exact=1.000
+EleutherAI/pythia-1.4b|train|rel:on                     parse=0.987 direct=0.501 rel_exact=1.000
+Qwen/Qwen3-8B|new|all                                   direct=0.991 verify=0.997 parse=0.991 parse_fallback=1.000 copy_exact=0.999 rel_exact=1.000
+Qwen/Qwen3-8B|new|canonical                             direct=0.994 verify=0.999 parse=0.994 parse_fallback=1.000 copy_exact=0.998 rel_exact=1.000
+Qwen/Qwen3-8B|new|converse                              direct=0.989 verify=0.996 parse=0.989 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+Qwen/Qwen3-8B|new|rel:atop                              parse=0.990 direct=0.990 rel_exact=1.000
+Qwen/Qwen3-8B|new|rel:higher                            parse=0.988 direct=0.988 rel_exact=1.000
+Qwen/Qwen3-8B|new|rel:struck                            parse=1.000 direct=1.000 rel_exact=1.000
+Qwen/Qwen3-8B|new|rel:within                            parse=0.988 direct=0.988 rel_exact=1.000
+Qwen/Qwen3-8B|train|all                                 direct=0.986 verify=0.995 parse=1.000 parse_fallback=0.008 copy_exact=0.992 rel_exact=1.000
+Qwen/Qwen3-8B|train|canonical                           direct=0.976 verify=0.990 parse=1.000 parse_fallback=0.009 copy_exact=0.991 rel_exact=1.000
+Qwen/Qwen3-8B|train|converse                            direct=0.995 verify=0.999 parse=1.000 parse_fallback=0.006 copy_exact=0.994 rel_exact=1.000
+Qwen/Qwen3-8B|train|rel:behind                          parse=1.000 direct=0.955 rel_exact=1.000
+Qwen/Qwen3-8B|train|rel:hit                             parse=1.000 direct=1.000 rel_exact=1.000
+Qwen/Qwen3-8B|train|rel:inside                          parse=1.000 direct=0.994 rel_exact=1.000
+Qwen/Qwen3-8B|train|rel:left                            parse=1.000 direct=0.998 rel_exact=1.000
+Qwen/Qwen3-8B|train|rel:on                              parse=1.000 direct=0.982 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|all                          direct=0.797 verify=0.938 parse=0.797 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|canonical                    direct=0.890 verify=0.936 parse=0.890 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|converse                     direct=0.704 verify=0.939 parse=0.704 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|rel:atop                     parse=0.825 direct=0.825 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|rel:higher                   parse=0.757 direct=0.757 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|rel:struck                   parse=0.860 direct=0.860 rel_exact=1.000
+allenai/OLMo-2-1124-7B|new|rel:within                   parse=0.746 direct=0.746 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|all                        direct=0.773 verify=0.947 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|canonical                  direct=0.776 verify=0.914 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|converse                   direct=0.769 verify=0.980 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|rel:behind                 parse=1.000 direct=0.672 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|rel:hit                    parse=1.000 direct=0.886 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|rel:inside                 parse=1.000 direct=0.760 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|rel:left                   parse=1.000 direct=0.763 rel_exact=1.000
+allenai/OLMo-2-1124-7B|train|rel:on                     parse=1.000 direct=0.784 rel_exact=1.000
+gpt2-large|new|all                                      direct=0.501 verify=0.466 parse=0.501 parse_fallback=1.000 copy_exact=0.970 rel_exact=0.773
+gpt2-large|new|canonical                                direct=0.507 verify=0.539 parse=0.507 parse_fallback=1.000 copy_exact=0.967 rel_exact=0.782
+gpt2-large|new|converse                                 direct=0.494 verify=0.394 parse=0.494 parse_fallback=1.000 copy_exact=0.973 rel_exact=0.763
+gpt2-large|new|rel:atop                                 parse=0.502 direct=0.502 rel_exact=0.599
+gpt2-large|new|rel:higher                               parse=0.505 direct=0.505 rel_exact=1.000
+gpt2-large|new|rel:struck                               parse=0.510 direct=0.510 rel_exact=0.712
+gpt2-large|new|rel:within                               parse=0.486 direct=0.486 rel_exact=0.780
+gpt2-large|train|all                                    direct=0.513 verify=0.461 parse=0.819 parse_fallback=0.038 copy_exact=0.967 rel_exact=0.824
+gpt2-large|train|canonical                              direct=0.505 verify=0.501 parse=0.822 parse_fallback=0.038 copy_exact=0.961 rel_exact=0.835
+gpt2-large|train|converse                               direct=0.520 verify=0.422 parse=0.816 parse_fallback=0.038 copy_exact=0.974 rel_exact=0.813
+gpt2-large|train|rel:behind                             parse=0.828 direct=0.503 rel_exact=0.834
+gpt2-large|train|rel:hit                                parse=0.810 direct=0.527 rel_exact=0.819
+gpt2-large|train|rel:inside                             parse=0.793 direct=0.492 rel_exact=0.793
+gpt2-large|train|rel:left                               parse=0.989 direct=0.539 rel_exact=1.000
+gpt2-large|train|rel:on                                 parse=0.673 direct=0.503 rel_exact=0.672
+microsoft/phi-4|new|all                                 direct=0.995 verify=0.999 parse=0.995 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|new|canonical                           direct=0.996 verify=0.999 parse=0.996 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|new|converse                            direct=0.995 verify=0.998 parse=0.995 parse_fallback=1.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|new|rel:atop                            parse=1.000 direct=1.000 rel_exact=1.000
+microsoft/phi-4|new|rel:higher                          parse=0.999 direct=0.999 rel_exact=1.000
+microsoft/phi-4|new|rel:struck                          parse=1.000 direct=1.000 rel_exact=1.000
+microsoft/phi-4|new|rel:within                          parse=0.983 direct=0.983 rel_exact=1.000
+microsoft/phi-4|train|all                               direct=0.987 verify=1.000 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|train|canonical                         direct=0.989 verify=1.000 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|train|converse                          direct=0.985 verify=1.000 parse=1.000 parse_fallback=0.000 copy_exact=1.000 rel_exact=1.000
+microsoft/phi-4|train|rel:behind                        parse=1.000 direct=0.993 rel_exact=1.000
+microsoft/phi-4|train|rel:hit                           parse=1.000 direct=0.983 rel_exact=1.000
+microsoft/phi-4|train|rel:inside                        parse=1.000 direct=0.973 rel_exact=1.000
+microsoft/phi-4|train|rel:left                          parse=1.000 direct=1.000 rel_exact=1.000
+microsoft/phi-4|train|rel:on                            parse=1.000 direct=0.985 rel_exact=1.000

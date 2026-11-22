@@ -1,0 +1,200 @@
+srun: job 4831039 queued and waiting for resources
+srun: job 4831039 has been allocated resources
+=== pixart-t5
+             val_r2  new_canon_share_nearer_figure  new_conv_share_nearer_figure  new_canon_id_figure  new_conv_id_figure  new_conv_id_ground
+layer rel                                                                                                                                    
+L12   above   0.908                          0.748                         0.270                0.062               0.011               0.061
+      left    0.907                          0.740                         0.291                0.077               0.010               0.066
+      on      0.903                          0.733                         0.265                0.064               0.009               0.072
+L18   above   0.893                          0.741                         0.283                0.127               0.009               0.124
+      left    0.908                          0.724                         0.278                0.152               0.013               0.138
+      on      0.900                          0.723                         0.279                0.131               0.012               0.115
+L23   above   0.894                          0.732                         0.278                0.217               0.007               0.166
+      left    0.902                          0.731                         0.274                0.240               0.009               0.239
+      on      0.891                          0.719                         0.285                0.213               0.010               0.159
+L24   above   0.599                          0.922                         0.103                0.518               0.027               0.437
+      left    0.600                          0.925                         0.079                0.518               0.025               0.501
+      on      0.622                          0.942                         0.131                0.577               0.040               0.428
+L6    above   0.755                          0.994                         0.019                0.902               0.011               0.829
+      left    0.748                          0.988                         0.028                0.875               0.021               0.775
+      on      0.750                          0.992                         0.046                0.901               0.026               0.669
+      new_canon_share_nearer_figure               new_conv_share_nearer_figure              
+                               mean    min    max                         mean    min    max
+layer                                                                                       
+L12                           0.741  0.706  0.794                        0.275  0.245  0.324
+L18                           0.729  0.703  0.764                        0.280  0.251  0.325
+L23                           0.728  0.706  0.757                        0.279  0.237  0.327
+L24                           0.930  0.896  0.956                        0.104  0.054  0.155
+L6                            0.991  0.985  0.995                        0.031  0.013  0.049
+=== lumina-gemma
+             val_r2  new_canon_share_nearer_figure  new_conv_share_nearer_figure  new_canon_id_figure  new_conv_id_figure  new_conv_id_ground
+layer rel                                                                                                                                    
+L13   above   0.897                          1.000                         0.002                0.985               0.001               0.934
+      left    0.895                          1.000                         0.000                0.991               0.000               0.981
+      on      0.884                          1.000                         0.009                0.964               0.003               0.893
+L19   above   0.862                          0.999                         0.005                0.964               0.004               0.926
+      left    0.876                          1.000                         0.001                0.974               0.001               0.975
+      on      0.851                          0.998                         0.030                0.941               0.014               0.666
+L25   above   0.852                          1.000                         0.000                0.959               0.002               0.945
+      left    0.853                          0.999                         0.002                0.943               0.001               0.945
+      on      0.833                          0.998                         0.052                0.912               0.015               0.509
+L26   above   0.726                          0.983                         0.021                0.807               0.007               0.825
+      left    0.726                          0.981                         0.029                0.787               0.006               0.773
+      on      0.710                          0.970                         0.091                0.752               0.022               0.491
+L6    above   0.820                          0.999                         0.003                0.977               0.004               0.916
+      left    0.835                          1.000                         0.001                0.985               0.002               0.977
+      on      0.828                          0.999                         0.023                0.968               0.014               0.824
+      new_canon_share_nearer_figure               new_conv_share_nearer_figure              
+                               mean    min    max                         mean    min    max
+layer                                                                                       
+L13                           1.000  0.999  1.000                        0.004  0.000  0.016
+L19                           0.999  0.997  1.000                        0.012  0.000  0.033
+L25                           0.999  0.996  1.000                        0.018  0.000  0.055
+L26                           0.978  0.962  0.988                        0.047  0.016  0.139
+L6                            0.999  0.997  1.000                        0.009  0.000  0.033
+{'kind': 'pairs', 'rel': 'above', 'phr': 'canon', 'n': 300, 'both': 0.493, 'n_both': 148, 'rel_acc': 0.507, 'word_order': 0.507, 'conv_agree_same_layout': 0.786, 'conv_both_correct': 0.429, 'n_conv_pairs': 98}
+{'kind': 'pairs', 'rel': 'above', 'phr': 'conv', 'n': 300, 'both': 0.463, 'n_both': 139, 'rel_acc': 0.525, 'word_order': 0.475, 'conv_agree_same_layout': 0.786, 'conv_both_correct': 0.429, 'n_conv_pairs': 98}
+{'kind': 'pairs', 'rel': 'left', 'phr': 'canon', 'n': 300, 'both': 0.677, 'n_both': 203, 'rel_acc': 0.507, 'word_order': 0.507, 'conv_agree_same_layout': 0.675, 'conv_both_correct': 0.313, 'n_conv_pairs': 166}
+{'kind': 'pairs', 'rel': 'left', 'phr': 'conv', 'n': 300, 'both': 0.713, 'n_both': 214, 'rel_acc': 0.444, 'word_order': 0.556, 'conv_agree_same_layout': 0.675, 'conv_both_correct': 0.313, 'n_conv_pairs': 166}
+{'kind': 'pairs', 'rel': 'on', 'phr': 'canon', 'n': 300, 'both': 0.523, 'n_both': 157, 'rel_acc': 0.599, 'word_order': 0.599, 'conv_agree_same_layout': 0.713, 'conv_both_correct': 0.487, 'n_conv_pairs': 115}
+{'kind': 'pairs', 'rel': 'on', 'phr': 'conv', 'n': 300, 'both': 0.537, 'n_both': 161, 'rel_acc': 0.565, 'word_order': 0.435, 'conv_agree_same_layout': 0.713, 'conv_both_correct': 0.487, 'n_conv_pairs': 115}
+=== kappa on fresh photographs (selection on validation parts)
+lumina  latent trained    G     lat   full@100_mid  beside -0.062      0.458         1.0    0.490    0.453        3      0.316        NaN
+lumina  latent trained    G     lat   full@100_mid     ALL -0.062      0.458         1.0    0.490    0.453        3      0.316      0.017
+lumina  latent trained    M     lat center@100_mid  beside -0.508      0.235         1.0    0.493    0.237        3      0.032        NaN
+lumina  latent trained    M     lat center@100_mid     ALL -0.508      0.235         1.0    0.493    0.237        3      0.032      0.028
+lumina  latent trained    Q     lat   full@100_mid  beside  0.053      0.517         1.0    0.490    0.506        3      1.000        NaN
+lumina  latent trained    Q     lat   full@100_mid     ALL  0.053      0.517         1.0    0.490    0.506        3      1.000      0.037
+lumina  latent trained    R     lat   full@100_mid  beside -0.074      0.452         1.0    0.490    0.428        3     31.623        NaN
+lumina  latent trained    R     lat   full@100_mid     ALL -0.074      0.452         1.0    0.490    0.428        3     31.623      0.033
+lumina  latent trained    S     lat   full@500_mid  beside -0.263      0.356         1.0    0.490    0.360        3   3162.278        NaN
+lumina  latent trained    S     lat   full@500_mid     ALL -0.263      0.356         1.0    0.490    0.360        3   3162.278      0.016
+lumina trained     own    G 100_up1   full@100_up1  beside  0.886      0.942         1.0    0.487    0.942        3     31.623        NaN
+lumina trained     own    G 100_up1   full@100_up1     ALL  0.886      0.942         1.0    0.487    0.942        3     31.623      0.007
+lumina trained     own    M 500_mid   full@500_mid  beside  0.462      0.726         1.0    0.490    0.710        3      0.010        NaN
+lumina trained     own    M 500_mid   full@500_mid     ALL  0.462      0.726         1.0    0.490    0.710        3      0.010      0.013
+pixart  latent trained    G     lat   full@500_mid   above -0.456      0.255         1.0    0.488    0.247        3     10.000        NaN
+pixart  latent trained    G     lat   full@500_mid  beside -0.368      0.305         1.0    0.492    0.300        3      3.162        NaN
+pixart  latent trained    G     lat   full@500_mid overlap -0.422      0.272         1.0    0.488    0.266        3     31.623        NaN
+pixart  latent trained    G     lat   full@500_mid     ALL -0.415      0.278         1.0    0.490    0.271        3     31.623      0.025
+pixart  latent trained    M     lat   full@300_up2   above -0.713      0.122         1.0    0.488    0.116        3      0.316        NaN
+pixart  latent trained    M     lat   full@300_up2  beside -0.718      0.126         1.0    0.491    0.119        3      1.000        NaN
+pixart  latent trained    M     lat   full@300_up2 overlap -0.712      0.123         1.0    0.488    0.116        3      1.000        NaN
+pixart  latent trained    M     lat   full@300_up2     ALL -0.714      0.124         1.0    0.489    0.117        3      1.000      0.014
+pixart  latent trained    Q     lat   full@500_mid   above -0.194      0.389         1.0    0.488    0.396        3      0.032        NaN
+pixart  latent trained    Q     lat   full@500_mid  beside -0.183      0.399         1.0    0.492    0.396        3      0.100        NaN
+pixart  latent trained    Q     lat   full@500_mid overlap -0.180      0.396         1.0    0.488    0.385        3      0.032        NaN
+pixart  latent trained    Q     lat   full@500_mid     ALL -0.186      0.395         1.0    0.490    0.392        3      0.100      0.027
+pixart  latent trained    R     lat   full@500_mid   above -0.158      0.408         1.0    0.488    0.418        3      0.316        NaN
+pixart  latent trained    R     lat   full@500_mid  beside -0.173      0.404         1.0    0.492    0.412        3      0.316        NaN
+pixart  latent trained    R     lat   full@500_mid overlap -0.247      0.362         1.0    0.488    0.364        3   1000.000        NaN
+pixart  latent trained    R     lat   full@500_mid     ALL -0.193      0.391         1.0    0.490    0.398        3   1000.000      0.024
+pixart  latent trained    S     lat   full@500_mid   above -0.222      0.375         1.0    0.488    0.384        3   1000.000        NaN
+pixart  latent trained    S     lat   full@500_mid  beside -0.228      0.376         1.0    0.492    0.377        3   1000.000        NaN
+pixart  latent trained    S     lat   full@500_mid overlap -0.255      0.358         1.0    0.488    0.366        3   3162.278        NaN
+pixart  latent trained    S     lat   full@500_mid     ALL -0.235      0.370         1.0    0.490    0.376        3   3162.278      0.036
+pixart  random     own    G 100_mid center@100_mid   above  0.769      0.883         1.0    0.494    0.874        3      0.032        NaN
+pixart  random     own    G 100_mid center@100_mid  beside  0.772      0.885         1.0    0.494    0.878        3      0.032        NaN
+pixart  random     own    G 100_mid center@100_mid     ALL  0.771      0.884         1.0    0.494    0.876        3      0.032      0.003
+pixart  random     own    M 100_up2 center@100_up2   above  0.535      0.765         1.0    0.495    0.755        3      0.001        NaN
+pixart  random     own    M 100_up2 center@100_up2  beside  0.536      0.765         1.0    0.494    0.759        3      0.001        NaN
+pixart  random     own    M 100_up2 center@100_up2     ALL  0.536      0.765         1.0    0.494    0.757        3      0.001      0.008
+pixart  random trained    G 100_mid center@100_mid   above  0.620      0.806         1.0    0.489    0.802        3      0.001        NaN
+pixart  random trained    G 100_mid center@100_mid  beside  0.632      0.813         1.0    0.491    0.815        3      0.001        NaN
+pixart  random trained    G 100_mid center@100_mid     ALL  0.626      0.809         1.0    0.490    0.808        3      0.001      0.007
+pixart  random trained    M 100_mid center@100_mid   above  0.316      0.651         1.0    0.489    0.646        3      0.001        NaN
+pixart  random trained    M 100_mid center@100_mid  beside  0.317      0.653         1.0    0.491    0.644        3      0.001        NaN
+pixart  random trained    M 100_mid center@100_mid     ALL  0.317      0.652         1.0    0.490    0.645        3      0.001      0.012
+pixart trained     own    G 100_mid center@100_mid   above  0.826      0.911         1.0    0.489    0.906        3      3.162        NaN
+pixart trained     own    G 100_mid center@100_mid  beside  0.828      0.912         1.0    0.491    0.909        3      3.162        NaN
+pixart trained     own    G 100_mid center@100_mid overlap  0.595      0.794         1.0    0.491    0.785        3     31.623        NaN
+pixart trained     own    G 100_mid center@100_mid     ALL  0.750      0.873         1.0    0.490    0.867        3     31.623      0.005
+pixart trained     own    M 500_mid   full@500_mid   above  0.425      0.706         1.0    0.488    0.707        3      0.032        NaN
+pixart trained     own    M 500_mid   full@500_mid  beside  0.397      0.694         1.0    0.492    0.692        3      0.032        NaN
+pixart trained     own    M 500_mid   full@500_mid overlap  0.436      0.712         1.0    0.488    0.702        3      0.100        NaN
+pixart trained     own    M 500_mid   full@500_mid     ALL  0.419      0.704         1.0    0.490    0.700        3      0.100      0.011
+=== reference R2 (fresh)
+lumina  trained  ref_concat    1.000
+pixart  random   ref_concat    1.000
+=== diffusion classifier (n seeds: {('lumina', 'above'): 3, ('lumina', 'beside'): 3, ('pixart', 'above'): 3, ('pixart', 'beside'): 3, ('sd15', 'above'): 3, ('sd15', 'beside'): 3, ('sdxl', 'above'): 3, ('sdxl', 'beside'): 3} )
+model  rel                                                                        
+            model  cond readout  kappa  kappa_sd  kappa_fig  kappa_gnd  role_acc  id_acc  n           layer
+     clip-b32-img fixed      G2  0.810     0.005      0.808      0.812     1.000   0.998  3              L3
+     clip-b32-img fixed       M  0.211     0.004      0.216      0.207     0.967   0.736  3              L3
+     clip-b32-img fixed    OBJr  0.343     0.004      0.348      0.338     0.990   0.843  3              L3
+     clip-b32-img fixed    OBJs  0.855     0.007      0.854      0.857     1.000   0.999  3              L3
+     clip-b32-img fixed      Q4  0.801     0.005      0.802      0.800     1.000   0.999  3              L3
+     clip-b32-img fixed      Q8  0.836     0.006      0.836      0.837     1.000   1.000  3              L3
+     clip-b32-img  rand      G2  0.244     0.008      0.241      0.247     0.919   0.772  3              L6
+     clip-b32-img  rand       M -0.105     0.014     -0.091     -0.120     0.745   0.442  3              L6
+     clip-b32-img  rand    OBJr -0.167     0.009     -0.158     -0.175     0.584   0.366  3              L6
+     clip-b32-img  rand    OBJs  0.664     0.020      0.661      0.667     0.999   0.975  3              L3
+     clip-b32-img  rand      Q4  0.175     0.007      0.174      0.176     0.940   0.752  3              L6
+     clip-b32-img  rand      Q8  0.075     0.008      0.076      0.074     0.906   0.666  3              L6
+         dinov2-l fixed      G2  0.906     0.004      0.908      0.904     1.000   1.000  3             L12
+         dinov2-l fixed       M  0.238     0.023      0.240      0.235     0.976   0.762  3             L12
+         dinov2-l fixed    OBJr  0.150     0.018      0.151      0.149     0.950   0.684  3             L12
+         dinov2-l fixed    OBJs  0.921     0.004      0.922      0.920     1.000   1.000  3             L12
+         dinov2-l fixed      Q4  0.905     0.004      0.906      0.903     1.000   1.000  3             L12
+         dinov2-l fixed      Q8  0.851     0.001      0.853      0.849     1.000   1.000  3             L12
+         dinov2-l  rand      G2  0.415     0.006      0.420      0.410     0.973   0.895  3             L12
+         dinov2-l  rand       M  0.021     0.002      0.034      0.009     0.864   0.600  3             L12
+         dinov2-l  rand    OBJr -0.082     0.009     -0.078     -0.087     0.655   0.428  3             L12
+         dinov2-l  rand    OBJs  0.800     0.005      0.802      0.798     1.000   1.000  3             L12
+         dinov2-l  rand      Q4  0.365     0.008      0.369      0.362     0.976   0.887  3             L12
+         dinov2-l  rand      Q8  0.271     0.004      0.275      0.267     0.955   0.828  3             L12
+           lumina fixed      G2  0.882     0.008      0.881      0.883     1.000   0.998  3         100_up1
+           lumina fixed       M  0.443     0.033      0.444      0.442     0.996   0.869  3         500_mid
+           lumina fixed    OBJr  0.279     0.036      0.286      0.273     0.986   0.771  3         500_mid
+           lumina fixed    OBJs  0.900     0.005      0.901      0.900     1.000   1.000  3         100_up1
+           lumina fixed      Q4  0.870     0.014      0.870      0.869     1.000   0.996  3         100_up1
+           lumina  rand      G2  0.205     0.016      0.205      0.206     0.904   0.670  3         500_mid
+           lumina  rand       M -0.032     0.005     -0.032     -0.032     0.836   0.473  3         500_mid
+           lumina  rand    OBJr -0.194     0.022     -0.192     -0.197     0.698   0.354  3         500_mid
+           lumina  rand    OBJs  0.676     0.028      0.682      0.670     1.000   0.968  3 100_up0,500_mid
+           lumina  rand      Q4  0.043     0.012      0.046      0.040     0.892   0.578  3 300_up0,500_mid
+           pixart fixed      G2  0.827     0.006      0.827      0.828     1.000   0.999  3         100_mid
+           pixart fixed       M  0.390     0.021      0.395      0.385     0.993   0.790  3         500_mid
+           pixart fixed    OBJr  0.339     0.021      0.352      0.327     0.990   0.749  3         500_mid
+           pixart fixed    OBJs  0.818     0.009      0.818      0.818     1.000   0.999  3         100_mid
+           pixart fixed      Q4  0.805     0.005      0.806      0.805     1.000   0.999  3         100_mid
+           pixart  rand      G2 -0.073     0.030     -0.073     -0.072     0.843   0.450  3         100_mid
+           pixart  rand       M -0.274     0.028     -0.272     -0.276     0.684   0.280  3         100_mid
+           pixart  rand    OBJr -0.376     0.029     -0.379     -0.373     0.526   0.212  3         100_mid
+           pixart  rand    OBJs  0.313     0.042      0.316      0.309     0.982   0.719  3         100_mid
+           pixart  rand      Q4 -0.231     0.041     -0.232     -0.231     0.827   0.345  3 100_mid,100_up0
+rand-clip-b32-img fixed      G2  0.683     0.018      0.684      0.682     1.000   0.981  3          L12,L6
+rand-clip-b32-img fixed       M  0.052     0.032      0.055      0.050     0.933   0.613  3              L3
+rand-clip-b32-img fixed    OBJr  0.211     0.035      0.200      0.222     0.980   0.726  3             L12
+rand-clip-b32-img fixed    OBJs  0.772     0.008      0.769      0.775     1.000   0.993  3          L12,L6
+rand-clip-b32-img fixed      Q4  0.632     0.021      0.635      0.629     0.999   0.967  3          L12,L6
+rand-clip-b32-img fixed      Q8  0.784     0.004      0.790      0.779     1.000   0.995  3              L3
+rand-clip-b32-img  rand      G2 -0.662     0.024     -0.662     -0.663     0.643   0.067  3             L12
+rand-clip-b32-img  rand       M -0.711     0.026     -0.704     -0.718     0.499   0.055  3             L12
+rand-clip-b32-img  rand    OBJr -0.713     0.023     -0.702     -0.726     0.503   0.048  3             L12
+rand-clip-b32-img  rand    OBJs -0.356     0.065     -0.343     -0.370     0.812   0.159  3             L12
+rand-clip-b32-img  rand      Q4 -0.711     0.033     -0.717     -0.706     0.619   0.052  3             L12
+rand-clip-b32-img  rand      Q8 -0.752     0.035     -0.759     -0.746     0.610   0.040  3             L12
+    rand-dinov2-l fixed      G2  0.628     0.017      0.624      0.632     1.000   0.899  3              L6
+    rand-dinov2-l fixed       M -0.223     0.013     -0.224     -0.222     0.500   0.218  3              L6
+    rand-dinov2-l fixed    OBJr -0.243     0.010     -0.254     -0.233     0.493   0.215  3              L6
+    rand-dinov2-l fixed    OBJs  0.663     0.013      0.663      0.664     1.000   0.916  3              L6
+    rand-dinov2-l fixed      Q4  0.607     0.013      0.605      0.610     1.000   0.886  3              L6
+    rand-dinov2-l fixed      Q8  0.515     0.008      0.511      0.518     0.996   0.779  3              L6
+    rand-dinov2-l  rand      G2 -0.165     0.011     -0.174     -0.157     0.787   0.279  3              L6
+    rand-dinov2-l  rand       M -0.473     0.004     -0.484     -0.461     0.501   0.121  3              L6
+    rand-dinov2-l  rand    OBJr -0.389     0.018     -0.400     -0.377     0.500   0.161  3              L6
+    rand-dinov2-l  rand    OBJs  0.344     0.018      0.343      0.345     0.979   0.584  3              L6
+    rand-dinov2-l  rand      Q4 -0.241     0.017     -0.248     -0.233     0.778   0.222  3              L6
+    rand-dinov2-l  rand      Q8 -0.379     0.014     -0.385     -0.374     0.725   0.158  3              L6
+             sd15 fixed      G2  0.730     0.007      0.732      0.728     1.000   0.984  3         100_up3
+             sd15 fixed       M  0.074     0.007      0.070      0.078     0.896   0.567  3         100_up3
+             sd15 fixed    OBJr  0.022     0.009      0.016      0.027     0.876   0.527  3         100_up3
+             sd15 fixed    OBJs  0.724     0.005      0.720      0.729     1.000   0.982  3         100_up3
+             sd15 fixed      Q4  0.713     0.008      0.711      0.715     1.000   0.983  3         100_up3
+             sd15  rand      G2 -0.056     0.020     -0.050     -0.062     0.844   0.546  3         100_up3
+             sd15  rand       M -0.321     0.012     -0.316     -0.326     0.545   0.252  3         100_up3
+             sd15  rand    OBJr -0.361     0.015     -0.354     -0.368     0.511   0.218  3         100_up3
+             sd15  rand    OBJs  0.345     0.023      0.350      0.341     0.992   0.808  3         100_up3
+             sd15  rand      Q4 -0.143     0.016     -0.128     -0.158     0.847   0.451  3 100_up2,100_up3
+    siglip-so400m fixed      G2  0.933     0.001      0.935      0.931     1.000   1.000  3              L6

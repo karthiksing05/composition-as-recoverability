@@ -1,0 +1,6 @@
+srun: job 4829956 queued and waiting for resources
+srun: job 4829956 has been allocated resources
+Fetching 18 files:   0%|          | 0/18 [00:00<?, ?it/s]Fetching 18 files:   6%|▌         | 1/18 [00:00<00:03,  5.62it/s]Fetching 18 files:  17%|█▋        | 3/18 [00:00<00:04,  3.59it/s]Fetching 18 files:  50%|█████     | 9/18 [00:58<01:06,  7.41s/it]Fetching 18 files: 100%|██████████| 18/18 [00:58<00:00,  3.26s/it]
+OK PixArt-alpha/PixArt-Sigma-XL-2-1024-MS /nethome/ksingara3/.cache/huggingface/hub/models--PixArt-alpha--PixArt-Sigma-XL-2-1024-MS/snapshots/e102b3591cc82e97071b8b4cb90d834d0c487207
+Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]Fetching 26 files:   0%|          | 0/26 [00:00<?, ?it/s]
+FAIL black-forest-labs/FLUX.1-schnell GatedRepoError('403 Client Error. (Request ID: Root=1-6b0259ec-3ebf4b6e3dccf0ea40e596db;c9942efa-891c-4e12-bb18-81865cd16683)\n\nCannot access gated repo for url https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/169573f54945f633efbe126a40a5676b4228363c/.gitattributes.\nAccess to model black-forest-labs/FLUX.1-schnell is restricted and you are not in the authorized list. Visit https:/

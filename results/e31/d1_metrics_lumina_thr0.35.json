@@ -1,0 +1,83 @@
+{
+ "thr": 0.35,
+ "rows": [
+  {
+   "kind": "pairs",
+   "rel": "above",
+   "phr": "canon",
+   "n": 300,
+   "both": 0.7333333333333333,
+   "n_both": 220,
+   "rel_acc": 0.7318181818181818,
+   "word_order": 0.7318181818181818,
+   "conv_agree_same_layout": 0.7640449438202247,
+   "conv_both_correct": 0.5393258426966292,
+   "n_conv_pairs": 178
+  },
+  {
+   "kind": "pairs",
+   "rel": "above",
+   "phr": "conv",
+   "n": 300,
+   "both": 0.7333333333333333,
+   "n_both": 220,
+   "rel_acc": 0.5409090909090909,
+   "word_order": 0.4590909090909091,
+   "conv_agree_same_layout": 0.7640449438202247,
+   "conv_both_correct": 0.5393258426966292,
+   "n_conv_pairs": 178
+  },
+  {
+   "kind": "pairs",
+   "rel": "left",
+   "phr": "canon",
+   "n": 300,
+   "both": 0.7933333333333333,
+   "n_both": 238,
+   "rel_acc": 0.7394957983193278,
+   "word_order": 0.7394957983193278,
+   "conv_agree_same_layout": 0.6915887850467289,
+   "conv_both_correct": 0.5654205607476636,
+   "n_conv_pairs": 214
+  },
+  {
+   "kind": "pairs",
+   "rel": "left",
+   "phr": "conv",
+   "n": 300,
+   "both": 0.81,
+   "n_both": 243,
+   "rel_acc": 0.691358024691358,
+   "word_order": 0.30864197530864196,
+   "conv_agree_same_layout": 0.6915887850467289,
+   "conv_both_correct": 0.5654205607476636,
+   "n_conv_pairs": 214
+  },
+  {
+   "kind": "pairs",
+   "rel": "on",
+   "phr": "canon",
+   "n": 300,
+   "both": 0.6933333333333334,
+   "n_both": 208,
+   "rel_acc": 0.6923076923076923,
+   "word_order": 0.6923076923076923,
+   "conv_agree_same_layout": 0.689873417721519,
+   "conv_both_correct": 0.4936708860759494,
+   "n_conv_pairs": 158
+  },
+  {
+   "kind": "pairs",
+   "rel": "on",
+   "phr": "conv",
+   "n": 300,
+   "both": 0.6533333333333333,
+   "n_both": 196,
+   "rel_acc": 0.6122448979591837,
+   "word_order": 0.3877551020408163,
+   "conv_agree_same_layout": 0.689873417721519,
+   "conv_both_correct": 0.4936708860759494,
+   "n_conv_pairs": 158
+  }
+ ]
+}
