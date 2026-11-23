@@ -1,7 +1,7 @@
 """Body figure for the image systems and harnesses (sec:diffusion, sec:harness), read from the result files.
   a  quadrant-state kappa (E34 protocol, readout G2), fixed quadrants vs photographs moved along one row
   b  the system's own judgment: swapped-place caption vs wrong-object caption (E17 matching; E30 diffusion classifier,
-     U-Nets at 512 px, transformer denoisers at their native 1,024 px), mean over seeds and relations
+     every denoiser at its native resolution (SD 1.5 at 512 px, the others at 1,024 px)), mean over seeds and relations
   c  E36 text harness: direct answer vs parse + lexicon, training relations and held-out relation phrases
   d  E37 layout harness: figure in its place, canonical vs converse captions, per planner (SD 1.5 = no planner)
 usage: fig_places.py"""
@@ -28,7 +28,7 @@ def mean_of(pattern, key):
 
 B = [("CLIP-B/32", f"{R}/e17/clip-b32_s*.json"), ("CLIP-H/14", f"{R}/e17/clip-h14_s*.json"),
      ("SigLIP", f"{R}/e17/siglip-so400m_s*.json"), ("SD 1.5", f"{R}/e30/sd15_classifier_s*.json"),
-     ("SDXL", f"{R}/e30/sdxl_classifier_s*.json"), ("PixArt-Σ", f"{R}/e30/pixart-1024_classifier_s*.json"),
+     ("SDXL", f"{R}/e30/sdxl-1024_classifier_s*.json"), ("PixArt-Σ", f"{R}/e30/pixart-1024_classifier_s*.json"),
      ("Lumina 2.0", f"{R}/e30/lumina-1024_classifier_s*.json")]
 # c: E36
 s36 = json.load(open(f"{R}/e36/summary.json", encoding="utf-8"))
