@@ -21,7 +21,25 @@ Networks trained on 64 glyphs meet one new glyph in role~1 (Figure~\ref{fig:deco
 \subsection{Recursive composers show the same gap at depth}
 \label{app:depth}
 
-Within its training depths, a recursive composer's decomposer recovers new leaves almost perfectly for $w \ge 32$. At depth 3 it falls to $R^2 = 0.26$ at $w = 256$ after 6{,}000 steps, while a broad probe recovers the same leaves at 0.99 (Figure~\ref{fig:strong}c). At depths 4 and 5 the probe stays within 0.14 of the ceiling of Proposition~\ref{prop:depth}. HRR shows the same pattern by design: recursive unbinding loses about $(2^n - 1)d/w$ of the variance to crosstalk and falls from 0.96 at depth 1 to $-0.13$ at depth 5, while a probe recovers the leaves exactly whenever $w \ge 2^n d$. A decomposer trained jointly with its composer on trees of depth 3 to 5 recovers new leaves at 1.00, 1.00 and 0.97 at width 256, the values of the probe. Trained alone on the composer's states, it reaches 0.74, 0.29 and 0.09, and no condition transfers to depth 6.
+Within its training depths, a recursive composer's decomposer recovers new leaves almost perfectly for $w \ge 32$. At depth 3 it falls to $R^2 = 0.26$ at $w = 256$ after 6{,}000 steps, while a broad probe recovers the same leaves at 0.99 (Figure~\ref{fig:strong}c). At width 256 the bound of Proposition~\ref{prop:depth} equals 1 through depth 5, so the test of the bound comes from smaller widths, where it binds. Table~\ref{tab:depth} gives the probe's $R^2$ against the bound, over 5 seeds at $V = 16$.
+
+\begin{table}[h]
+  \caption{\textbf{A probe of the root state meets the depth bound wherever the bound binds.} Broad-probe $R^2$ on new leaves / bound of Proposition~\ref{prop:depth}, recursive composer, $V = 16$, 5 seeds.}
+  \label{tab:depth}
+  \centering\footnotesize
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    Width & Depth 1 & Depth 2 & Depth 3 & Depth 4 & Depth 5 \\
+    \midrule
+    16 & 0.87 / 1 & 0.50 / 0.50 & 0.24 / 0.25 & 0.12 / 0.13 & 0.06 / 0.06 \\
+    32 & 1.00 / 1 & 1.00 / 1 & 0.49 / 0.50 & 0.24 / 0.25 & 0.12 / 0.13 \\
+    64 & 1.00 / 1 & 1.00 / 1 & 0.97 / 1 & 0.49 / 0.50 & 0.24 / 0.25 \\
+    128 & 1.00 / 1 & 1.00 / 1 & 1.00 / 1 & 0.96 / 1 & 0.49 / 0.50 \\
+    256 & 1.00 / 1 & 1.00 / 1 & 0.99 / 1 & 0.99 / 1 & 0.90 / 1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+ HRR shows the same pattern by design: recursive unbinding loses about $(2^n - 1)d/w$ of the variance to crosstalk and falls from 0.96 at depth 1 to $-0.13$ at depth 5, while a probe recovers the leaves exactly whenever $w \ge 2^n d$. A decomposer trained jointly with its composer on trees of depth 3 to 5 recovers new leaves at 1.00, 1.00 and 0.97 at width 256, the values of the probe. Trained alone on the composer's states, it reaches 0.74, 0.29 and 0.09, and no condition transfers to depth 6.
 
 \subsection{Image encoders and diffusion models keep fixed places that their own outputs ignore}
 \label{app:images}
@@ -30,25 +48,46 @@ Within its training depths, a recursive composer's decomposer recovers new leave
 Table~\ref{tab:places} gives the scores on the two-photograph canvases of Section~\ref{sec:images}. A diffusion model's classifier picks the caption with the lower denoising error \citep{li2023diffclassifier,clark2023diffclassifier}, averaged over 25 timesteps from 50 to 950. The state is the denoiser's feature map, read with an empty caption and a fixed noise draw, and validation photographs choose the block and timestep. SD 1.5 and SDXL run at 512 pixels, below SDXL's native resolution, and the transformer denoisers PixArt-$\Sigma$ \citep{chen2024pixartsigma} and Lumina-Image 2.0 \citep{qin2025lumina2} run at 1{,}024 pixels, because PixArt-$\Sigma$ at 512 tells captions apart at only 0.54 for a wrong object.
 
 \begin{table}[t]
-  \caption{\textbf{Every model keeps fixed places in its state and scores lower on them through its own output.} Caption choice against a wrong object and against swapped places (chance 0.50); $\kappa$ of quadrant averages, of the whole-map or patch average, and of quadrant averages under moved photographs; and $\kappa$ of box features in left-to-right and in random order. Moved entries for the encoders span CLIP-B/32 (0.24), DINOv2-L (0.42) and SigLIP (0.45).}
+  \caption{\textbf{Every model keeps fixed places in its state and scores lower on them through its own output.} Caption choice against a wrong object and against swapped places (chance 0.50); $\kappa$ of quadrant averages, of the whole-map or patch average, and of quadrant averages under moved photographs; and $\kappa$ of box features in left-to-right and in random order. ``Random'' gives quadrant averages of the same model with random weights, against its own part vectors. Moved entries use quadrant averages of the relative-placement protocol and span CLIP-B/32 (0.24), DINOv2-L (0.42) and SigLIP (0.45) for the encoders.}
   \label{tab:places}
   \centering\footnotesize
-  \begin{tabularx}{\linewidth}{@{}P{0.20\linewidth}YYYYYYY@{}}
+  \begin{tabularx}{\linewidth}{@{}P{0.16\linewidth}YYYYYYYY@{}}
     \toprule
-    Model & Wrong object & Swapped & $\kappa$ quad. & $\kappa$ map & $\kappa$ moved & Boxes ordered & Boxes random \\
+    Model & Wrong object & Swapped & $\kappa$ quad. & Random & $\kappa$ map & $\kappa$ moved & Boxes ordered & Boxes random \\
     \midrule
-    CLIP, SigLIP & 0.88--0.97 & 0.50--0.51 & 0.81--0.94 & 0.17--0.49 & 0.24--0.45 & 0.66--0.80 & $-0.08$ to $-0.17$ \\
-    SD 1.5 & 0.86--0.88 & 0.49--0.50 & 0.70 & 0.13 & $-0.06$ & 0.35 & -- \\
-    SDXL & 0.69--0.71 & 0.49--0.50 & 0.43 & 0.05 & -- & -- & -- \\
-    PixArt-$\Sigma$ & 0.66--0.67 & 0.59--0.61 & 0.75 & 0.42 & $-0.07$ & 0.31 & $-0.38$ \\
-    Lumina & 0.69--0.70 & 0.66--0.68 & 0.89 & 0.54 & 0.21 & 0.68 & $-0.19$ \\
+    CLIP, SigLIP & 0.88--0.97 & 0.50--0.51 & 0.81--0.94 & 0.29--0.72 & 0.17--0.49 & 0.24--0.45 & 0.66--0.80 & $-0.08$ to $-0.17$ \\
+    SD 1.5 & 0.86--0.88 & 0.49--0.50 & 0.70 & 0.79 & 0.13 & $-0.06$ & 0.35 & -- \\
+    SDXL & 0.69--0.71 & 0.49--0.50 & 0.43 & 0.83 & 0.05 & -- & -- & -- \\
+    PixArt-$\Sigma$ & 0.66--0.67 & 0.59--0.61 & 0.75 & 0.58 & 0.42 & $-0.07$ & 0.31 & $-0.38$ \\
+    Lumina & 0.69--0.70 & 0.66--0.68 & 0.89 & 0.87 & 0.54 & 0.21 & 0.68 & $-0.19$ \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\textbf{Image encoders.} Matching reads one pooled embedding, and the patch average, the closest state we probe, keeps far less of the places than the quadrant states do. Random weights give $\kappa = 0.29$--$0.72$, and trained encoders reach 0.85--0.94 under \textsc{overlap}. A matcher built on the quadrant states should close the gap for fixed layouts, and we leave that repair untested. For relative places, both $64 \times 64$ photographs share one random row of a $448 \times 448$ canvas at random horizontal positions, and the left one is the figure. A $4 \times 4$ grid of patch averages gives 0.18--0.49, against 0.81--0.93 for the same encoders under fixed quadrants, and random weights fall from 0.63--0.68 to between $-0.17$ and $-0.71$, so their fixed-quadrant score came from location alone. A threshold on one photograph's horizontal position predicts the role at 0.84, so the remaining 0.18--0.49 may also come from position.
+\textbf{Image encoders.} Matching reads one pooled embedding, and the patch average, the closest state we probe, keeps far less of the places than the quadrant states do. Random weights give $\kappa = 0.29$--$0.72$, and trained encoders reach 0.85--0.94 under \textsc{overlap}. A matcher built on the quadrant states should close the gap for fixed layouts, and we leave that repair untested. For relative places, both $64 \times 64$ photographs share one random row of a $448 \times 448$ canvas at random horizontal positions, and the left one is the figure. Quadrant averages give 0.24--0.45, against 0.81--0.93 for the same encoders and readout under fixed quadrants, and random weights fall from 0.63--0.68 to between $-0.17$ and $-0.66$, so their fixed-quadrant score came from location alone. A threshold on one photograph's horizontal position predicts the role at 0.84, so the remaining 0.24--0.45 may also come from position.
 
-\textbf{Diffusion states.} In SD 1.5, quadrant averages give 0.73 for \textsc{beside} and \textsc{above} and 0.66 for \textsc{overlap}, and no single timestep lifts the swapped-place classifier above 0.52. The $4 \times 4$ grid gives $-0.14$ under moved photographs, so the places rest on fixed locations. The autoencoder's latent, the denoiser's input, gives $\kappa = -0.48$ in SD 1.5 and $-0.47$ in SDXL against the trained model's part vectors, and a random denoiser gives 0.12 and 0.09, so training builds recoverability beyond both. The transformer denoisers read the image-token grid of four blocks. Their architectures differ in how much of the places they supply before training. Against the trained model's part vectors, random-weight Lumina keeps 0.66 over the three relations, close to the trained model's 0.89, and 0.87 against its own part vectors, \textsc{overlap} included. Random-weight PixArt-$\Sigma$ keeps 0.54 and 0.58 against the trained model's 0.75, and falls to 0.21 under \textsc{overlap}.
+\textbf{Controls for the image results.} Three controls use the splits, part vectors, probe and $\kappa$ of the relative-placement protocol, over 3 seeds (Table~\ref{tab:imgctrl}). First, a linear probe can pass the moved test. From each photograph's own feature $f$ we build two states of fixed width: $f(p_\mathrm{left}) \otimes r_1 + f(p_\mathrm{right}) \otimes r_2$, with random unit role vectors assigned by left-to-right order, and $\sum_i f(p_i) \otimes q(x_i, y_i)$, with a Fourier code $q$ of each photograph's absolute position. Both reach $\kappa = 1.00$ on fixed canvases, and only the order code keeps 1.00 when the photographs move, while the position code falls to about 0, so the test separates the two codes. Second, the pooled embedding that matching reads (CLIP's projected embedding, SigLIP's attention-pooling head, DINOv2's class token) keeps less of the parts than their sum on fixed and on moved canvases. Third, image-only matching compares a canvas's pooled embedding with canvases built from other photographs of the same classes. It prefers the same arrangement over the swapped one at chance in every condition, also when the references sit at the canvas's own positions, while it prefers the right objects over a wrong one well above chance, so the chance-level caption matching of Section~\ref{sec:images} arises in the image tower.
+
+\begin{table}[h]
+  \caption{\textbf{Image controls.} $\kappa$ of the constructed order and position states, $\kappa$ of the pooled embedding, and image-only matching (share of 1{,}000 canvases per seed; chance 0.50). Means over 3 seeds, standard errors at most 0.026.}
+  \label{tab:imgctrl}
+  \centering\footnotesize
+  \begin{tabular}{@{}lcccccc@{}}
+    \toprule
+     & \multicolumn{2}{c}{CLIP-B/32} & \multicolumn{2}{c}{DINOv2-L} & \multicolumn{2}{c}{SigLIP} \\
+     & Fixed & Moved & Fixed & Moved & Fixed & Moved \\
+    \midrule
+    Order state, $\kappa$ & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+    Position state, $\kappa$ & 1.00 & $-0.05$ & 1.00 & 0.02 & 1.00 & $-0.03$ \\
+    Pooled embedding, $\kappa$ & $-0.26$ & $-0.67$ & $-0.30$ & $-0.37$ & $-0.15$ & $-0.29$ \\
+    Patch quadrants, $\kappa$ & 0.81 & 0.24 & 0.91 & 0.42 & 0.93 & 0.45 \\
+    Image matching, arrangement & 0.50 & 0.50 & 0.51 & 0.52 & 0.51 & 0.53 \\
+    Image matching, objects & 0.78 & 0.60 & 0.86 & 0.82 & 0.88 & 0.80 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Diffusion states.} In SD 1.5, quadrant averages give 0.73 for \textsc{beside} and \textsc{above} and 0.66 for \textsc{overlap}, and no single timestep lifts the swapped-place classifier above 0.52. The $4 \times 4$ grid gives $-0.14$ under moved photographs, so the places rest on fixed locations. Against the trained model's part vectors, the autoencoder's latent, the denoiser's input, gives $\kappa = -0.48$ in SD 1.5 and $-0.47$ in SDXL, and a random denoiser gives 0.12 and 0.09. Against its own part vectors, however, the random denoiser keeps 0.79 in SD 1.5 and 0.83 in SDXL, above the trained models' 0.70 and 0.43, so the U-Nets' convolutions lay out the fixed places before training, and training changes the code that reads them. The transformer denoisers read the image-token grid of four blocks. Their architectures differ in how much of the places they supply before training. Against the trained model's part vectors, random-weight Lumina keeps 0.66 over the three relations, close to the trained model's 0.89, and 0.87 against its own part vectors, \textsc{overlap} included. Random-weight PixArt-$\Sigma$ keeps 0.54 and 0.58 against the trained model's 0.75, and falls to 0.21 under \textsc{overlap}.
 
 \begin{table}[t]
   \caption{\textbf{Generation places the figure near chance unless the denoiser attends to the caption jointly.} Each model draws 150 pairs of new nouns per relation in both phrasings. Entries are the accuracy of the figure's place among images with both objects as separate boxes (about 200 per relation and phrasing for SD 1.5 with four seeds, 139--243 of 300 for the others), the share of pairs with both phrasings right, and the share of pairs whose phrasings give one layout under a shared seed.}
@@ -73,7 +112,26 @@ Table~\ref{tab:places} gives the scores on the two-photograph canvases of Sectio
 \subsection{Language models build the asked role where they answer by meaning}
 \label{app:behavior}
 
-A model that answers role questions by meaning must, by H1, hold the role in the state it answers from. Table~\ref{tab:lm} gives the scores. Across four prompts and seven models, role transfer correlates with answer accuracy at $r = 0.94$ (Figure~\ref{fig:both}b), and within a single model the correlation is 0.88.
+A model that answers role questions by meaning must, by H1, hold the role in the state it answers from. Table~\ref{tab:lm} gives the scores. Across four prompts and seven models, role transfer correlates with answer accuracy at $r = 0.94$ (Spearman 0.91) with each model's layer fixed on the main prompt (Figure~\ref{fig:both}b), and within a single model the correlation is 0.88. Re-selecting the layer for each prompt on validation nouns lowers $r$ to 0.77--0.83, and within the models that answer by word order transfer does not track accuracy ($r = 0.06$), so the correlation mostly separates the two groups.
+
+\textbf{Two selection rules.} The main analysis picks one layer per model by the sum of validation recovery under both phrasings, pooled over seeds and relations. A second pipeline, which also scores ground questions and the period, picks by validation recovery of the asked role. Table~\ref{tab:lmsel} gives both next to the layer that is best on test nouns, which we never use.
+
+\begin{table}[h]
+  \caption{\textbf{Role transfer of the question state under two validation rules and on the test-best layer.} Means over 3 seeds and 5 relations, standard errors 0.004--0.027. OLMo-2 7B gives 0.07 when the layer is chosen by validation recovery on converse sentences alone.}
+  \label{tab:lmsel}
+  \centering\footnotesize
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Model & Main rule & Second rule & Test-best \\
+    \midrule
+    phi-4 & 0.98 & 0.98 & 0.98 \\
+    Qwen3-8B & 0.87 & 0.81 & 0.96 \\
+    OLMo-2 13B & 0.73 & 0.66 & 0.73 \\
+    OLMo-2 7B & 0.20 & 0.35 & 0.52 \\
+    Pythia, GPT-2 & 0.07--0.10 & -- & 0.40--0.47 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \begin{table}[t]
   \caption{\textbf{Where models answer by meaning, the question state carries the role.} Answer accuracy and role transfer over new nouns and five relations, the same with invented words such as \emph{blicket}, the share of answers that flip when we patch the question state from a source with the opposite figure (at three quarters of the depth and at the last layer), and the share of pairs whose converse paraphrase lies nearer than both role reversals under the two-question embedding. OLMo-2 7B transfers at 0.20 under a ridge probe at layer 16, and flips 0.37 at layer 16 and 0.85 at layer 32.}

@@ -106,8 +106,9 @@ def cells(x, g=4):
 
 
 @torch.no_grad()
-def extract(D, ims, sources, ts, bs=32):
+def extract(D, ims, sources, ts, bs=None):
     """dict: 'lat' -> {Mlat,Glat,Qlat}; source -> {M<t>_<blk>, G<t>_<blk>}.  float32 numpy, one row per image."""
+    bs = bs or (8 if D.res > 512 else 32)  # 1,024 px runs out of A40 memory at 32
     out = {"latent": {}}
     for s in sources:
         out[s] = {}

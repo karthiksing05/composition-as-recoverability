@@ -1,0 +1,209 @@
+============================== E11 query state, xfer_role_conv (figure probe fitted on canonical, scored on converse); val = sem_rec_val+xfer_rec_val
+phi-4                              | FIXED 0.977+-0.004 [L30/phrase] | POOLED 0.977+-0.004 [L30/phrase] | PERSEED 0.975+-0.006 | TESTBEST 0.977+-0.004 [L30/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.977+-0.004 [L30/phrase] | PERSEED 0.411+-0.282 | TESTBEST 0.977+-0.004 [L30/phrase]
+Qwen3-8B                           | FIXED 0.874+-0.008 [L27/carrier] | POOLED 0.874+-0.008 [L27/carrier] | PERSEED 0.876+-0.006 | TESTBEST 0.874+-0.008 [L27/carrier]
+  (val = xfer_rec_val only)        | POOLED 0.874+-0.008 [L27/carrier] | PERSEED 0.876+-0.006 | TESTBEST 0.874+-0.008 [L27/carrier]
+OLMo-2-1124-13B                    | FIXED 0.730+-0.019 [L30/phrase] | POOLED 0.730+-0.019 [L30/phrase] | PERSEED 0.730+-0.019 | TESTBEST 0.730+-0.019 [L30/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.730+-0.019 [L30/phrase] | PERSEED 0.730+-0.019 | TESTBEST 0.730+-0.019 [L30/phrase]
+OLMo-2-1124-7B                     | FIXED 0.198+-0.009 [L16/carrier] | POOLED 0.198+-0.009 [L16/carrier] | PERSEED 0.254+-0.142 | TESTBEST 0.523+-0.004 [L24/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.071+-0.009 [L8/carrier] | PERSEED 0.071+-0.009 | TESTBEST 0.523+-0.004 [L24/phrase]
+gpt2-large                         | FIXED 0.066+-0.003 [L18/carrier] | POOLED 0.066+-0.003 [L18/carrier] | PERSEED 0.066+-0.003 | TESTBEST 0.399+-0.017 [L36/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.066+-0.003 [L18/carrier] | PERSEED 0.066+-0.003 | TESTBEST 0.399+-0.017 [L36/phrase]
+pythia-1.4b                        | FIXED 0.079+-0.007 [L12/carrier] | POOLED 0.079+-0.007 [L12/carrier] | PERSEED 0.079+-0.007 | TESTBEST 0.461+-0.004 [L24/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.079+-0.007 [L12/carrier] | PERSEED 0.079+-0.007 | TESTBEST 0.461+-0.004 [L24/phrase]
+pythia-12b                         | FIXED 0.095+-0.003 [L18/carrier] | POOLED 0.095+-0.003 [L18/carrier] | PERSEED 0.118+-0.020 | TESTBEST 0.470+-0.014 [L36/phrase]
+  (val = xfer_rec_val only)        | POOLED 0.095+-0.003 [L18/carrier] | PERSEED 0.118+-0.020 | TESTBEST 0.470+-0.014 [L36/phrase]
+
+============================== E16 prompt variants (answers = choice; transfer = xfer_role_conv)
+OLMo-2-1124-13B/ground  ans 0.912  | FIXED 0.834+-0.024 [L30/phrase] | POOLED 0.834+-0.024 [L30/phrase] | PERSEED 0.834+-0.024 | TESTBEST 0.834+-0.024 [L30/phrase]
+OLMo-2-1124-13B/reword  ans 0.761  | FIXED 0.466+-0.056 [L30/phrase] | POOLED 0.091+-0.012 [L10/carrier] | PERSEED 0.193+-0.095 | TESTBEST 0.473+-0.028 [L40/phrase]
+OLMo-2-1124-13B/zeroshot  ans 0.901 | FIXED 0.702+-0.008 [L30/phrase] | POOLED 0.702+-0.008 [L30/phrase] | PERSEED 0.574+-0.124 | TESTBEST 0.702+-0.008 [L30/phrase]
+OLMo-2-1124-7B/ground  ans 0.795   | FIXED 0.214+-0.008 [L16/carrier] | POOLED 0.519+-0.037 [L24/phrase] | PERSEED 0.519+-0.037 | TESTBEST 0.519+-0.037 [L24/phrase]
+OLMo-2-1124-7B/reword  ans 0.719   | FIXED 0.166+-0.013 [L16/carrier] | POOLED 0.076+-0.006 [L8/carrier] | PERSEED 0.076+-0.006 | TESTBEST 0.436+-0.010 [L32/carrier]
+OLMo-2-1124-7B/zeroshot  ans 0.719 | FIXED 0.180+-0.005 [L16/carrier] | POOLED 0.077+-0.006 [L8/carrier] | PERSEED 0.077+-0.006 | TESTBEST 0.410+-0.031 [L24/phrase]
+Qwen3-8B/ground  ans 0.997         | FIXED 0.885+-0.007 [L27/carrier] | POOLED 0.885+-0.007 [L27/carrier] | PERSEED 0.894+-0.003 | TESTBEST 0.910+-0.009 [L27/phrase]
+Qwen3-8B/reword  ans 0.944         | FIXED 0.767+-0.016 [L27/carrier] | POOLED 0.767+-0.016 [L27/carrier] | PERSEED 0.767+-0.016 | TESTBEST 0.809+-0.013 [L36/carrier]
+Qwen3-8B/zeroshot  ans 0.757       | FIXED 0.336+-0.010 [L27/carrier] | POOLED 0.102+-0.008 [L9/carrier] | PERSEED 0.182+-0.083 | TESTBEST 0.560+-0.004 [L36/phrase]
+gpt2-large/ground  ans 0.521       | FIXED 0.099+-0.006 [L18/carrier] | POOLED 0.116+-0.009 [L27/phrase] | PERSEED 0.116+-0.009 | TESTBEST 0.436+-0.012 [L9/phrase]
+gpt2-large/reword  ans 0.499       | FIXED 0.064+-0.011 [L18/carrier] | POOLED 0.064+-0.011 [L18/carrier] | PERSEED 0.064+-0.011 | TESTBEST 0.364+-0.055 [L36/phrase]
+gpt2-large/zeroshot  ans 0.538     | FIXED 0.094+-0.001 [L18/carrier] | POOLED 0.094+-0.001 [L18/carrier] | PERSEED 0.094+-0.001 | TESTBEST 0.362+-0.029 [L9/carrier]
+phi-4/ground  ans 0.979            | FIXED 0.939+-0.021 [L30/phrase] | POOLED 0.939+-0.021 [L30/phrase] | PERSEED 0.668+-0.287 | TESTBEST 0.939+-0.021 [L30/phrase]
+phi-4/reword  ans 0.982            | FIXED 0.943+-0.019 [L30/phrase] | POOLED 0.116+-0.011 [L10/carrier] | PERSEED 0.386+-0.260 | TESTBEST 0.943+-0.019 [L30/phrase]
+phi-4/zeroshot  ans 0.919          | FIXED 0.815+-0.005 [L30/phrase] | POOLED 0.077+-0.011 [L10/carrier] | PERSEED 0.077+-0.011 | TESTBEST 0.815+-0.005 [L30/phrase]
+pythia-1.4b/ground  ans 0.513      | FIXED 0.028+-0.009 [L12/carrier] | POOLED 0.028+-0.009 [L12/carrier] | PERSEED 0.028+-0.009 | TESTBEST 0.321+-0.005 [L24/phrase]
+pythia-1.4b/reword  ans 0.496      | FIXED 0.076+-0.007 [L12/carrier] | POOLED 0.076+-0.007 [L12/carrier] | PERSEED 0.076+-0.007 | TESTBEST 0.446+-0.012 [L24/phrase]
+pythia-1.4b/zeroshot  ans 0.489    | FIXED 0.183+-0.015 [L12/carrier] | POOLED 0.183+-0.015 [L12/carrier] | PERSEED 0.183+-0.015 | TESTBEST 0.416+-0.031 [L24/phrase]
+pythia-12b/ground  ans 0.549       | FIXED 0.046+-0.010 [L18/carrier] | POOLED 0.064+-0.020 [L18/phrase] | PERSEED 0.063+-0.021 | TESTBEST 0.243+-0.013 [L36/phrase]
+pythia-12b/reword  ans 0.522       | FIXED 0.082+-0.010 [L18/carrier] | POOLED 0.082+-0.010 [L18/carrier] | PERSEED 0.083+-0.008 | TESTBEST 0.459+-0.019 [L36/phrase]
+pythia-12b/zeroshot  ans 0.644     | FIXED 0.114+-0.003 [L18/carrier] | POOLED 0.114+-0.003 [L18/carrier] | PERSEED 0.114+-0.003 | TESTBEST 0.370+-0.014 [L36/phrase]
+
+e33v2 qf->fig:
+phi-4                              | POOLED 0.977+-0.004 [30.0/phrase] | PERSEED 0.929+-0.050 | TESTBEST 0.977+-0.004 [30.0/phrase]
+Qwen3-8B                           | POOLED 0.811+-0.020 [24.0/phrase] | PERSEED 0.811+-0.020 | TESTBEST 0.959+-0.001 [30.0/phrase]
+OLMo-2-1124-13B                    | POOLED 0.661+-0.021 [27.0/phrase] | PERSEED 0.648+-0.027 | TESTBEST 0.730+-0.019 [30.0/phrase]
+OLMo-2-1124-7B                     | POOLED 0.347+-0.023 [21.0/carrier] | PERSEED 0.325+-0.023 | TESTBEST 0.523+-0.010 [27.0/phrase]
+
+Correlation answer accuracy vs transfer, 7 models x 4 prompts (fig_both b). Transfer column per rule:
+ transfer = FIXED
+  all points                   n=28 pearson 0.939 (p=1.5e-13)  spearman 0.910 (p=1.87e-11)
+  within meaning cluster       n=16 pearson 0.960 (p=3.97e-09)  spearman 0.924 (p=3.34e-07)
+  within word-order cluster    n=12 pearson 0.058 (p=0.857)  spearman 0.210 (p=0.513)
+  main prompt only (7 models)  n= 7 pearson 0.950 (p=0.00107)  spearman 1.000 (p=0)
+ transfer = POOLED
+  all points                   n=28 pearson 0.774 (p=1.34e-06)  spearman 0.742 (p=6.3e-06)
+  within meaning cluster       n=16 pearson 0.730 (p=0.00132)  spearman 0.785 (p=0.000313)
+  within word-order cluster    n=12 pearson 0.071 (p=0.827)  spearman 0.224 (p=0.484)
+  main prompt only (7 models)  n= 7 pearson 0.950 (p=0.00107)  spearman 1.000 (p=0)
+ transfer = PERSEED
+  all points                   n=28 pearson 0.827 (p=5.98e-08)  spearman 0.792 (p=5.11e-07)
+  within meaning cluster       n=16 pearson 0.779 (p=0.000373)  spearman 0.795 (p=0.000235)
+  within word-order cluster    n=12 pearson 0.106 (p=0.743)  spearman 0.196 (p=0.542)
+  main prompt only (7 models)  n= 7 pearson 0.963 (p=0.000496)  spearman 1.000 (p=0)
+ transfer = TESTBEST
+  all points                   n=28 pearson 0.910 (p=2.04e-11)  spearman 0.863 (p=3.54e-09)
+  within meaning cluster       n=16 pearson 0.977 (p=7.47e-11)  spearman 0.924 (p=3.34e-07)
+  within word-order cluster    n=12 pearson -0.199 (p=0.535)  spearman -0.035 (p=0.914)
+  main prompt only (7 models)  n= 7 pearson 0.936 (p=0.00196)  spearman 1.000 (p=0)
+ transfer = e33v2 pooled val-selected on main prompt (others as E16 FIXED)
+  all points                   n=28 pearson 0.945 (p=3.58e-14)  spearman 0.904 (p=4.21e-11)
+  within meaning cluster       n=16 pearson 0.957 (p=6.38e-09)  spearman 0.891 (p=3.62e-06)
+  within word-order cluster    n=12 pearson 0.058 (p=0.857)  spearman 0.210 (p=0.513)
+  main prompt only             n= 7 pearson 0.975 (p=0.000183)  spearman 1.000 (p=0)
+
+Points table:
+                             ans  FIXED  POOLED  PERSEED  TESTBEST
+model           variant                                          
+OLMo-2-1124-13B ground    0.912  0.834   0.834    0.834     0.834
+                reword    0.761  0.466   0.091    0.193     0.473
+                zeroshot  0.901  0.702   0.702    0.574     0.702
+OLMo-2-1124-7B  ground    0.795  0.214   0.519    0.519     0.519
+                reword    0.719  0.166   0.076    0.076     0.436
+                zeroshot  0.719  0.180   0.077    0.077     0.410
+Qwen3-8B        ground    0.997  0.885   0.885    0.894     0.910
+                reword    0.944  0.767   0.767    0.767     0.809
+                zeroshot  0.757  0.336   0.102    0.182     0.560
+gpt2-large      ground    0.521  0.099   0.116    0.116     0.436
+                reword    0.499  0.064   0.064    0.064     0.364
+                zeroshot  0.538  0.094   0.094    0.094     0.362
+phi-4           ground    0.979  0.939   0.939    0.668     0.939
+                reword    0.982  0.943   0.116    0.386     0.943
+                zeroshot  0.919  0.815   0.077    0.077     0.815
+pythia-1.4b     ground    0.513  0.028   0.028    0.028     0.321
+                reword    0.496  0.076   0.076    0.076     0.446
+                zeroshot  0.489  0.183   0.183    0.183     0.416
+pythia-12b      ground    0.549  0.046   0.064    0.063     0.243
+                reword    0.522  0.082   0.082    0.083     0.459
+                zeroshot  0.644  0.114   0.114    0.114     0.370
+phi-4           main      0.987  0.977   0.977    0.975     0.977
+Qwen3-8B        main      0.986  0.874   0.874    0.876     0.874
+OLMo-2-1124-13B main      0.915  0.730   0.730    0.730     0.730
+OLMo-2-1124-7B  main      0.773  0.198   0.198    0.254     0.523
+gpt2-large      main      0.513  0.066   0.066    0.066     0.399
+pythia-1.4b     main      0.514  0.079   0.079    0.079     0.461
+pythia-12b      main      0.560  0.095   0.095    0.118     0.470
+
+============================== E33v2 (val = val_rec+sem_val_rec; role_conv)
+--- phi-4
+qf->fig                            | POOLED 0.977+-0.004 [30.0/phrase] | PERSEED 0.929+-0.050 | TESTBEST 0.977+-0.004 [30.0/phrase]
+qf->gnd                            | POOLED 0.086+-0.011 [10.0/carrier] | PERSEED 0.086+-0.011 | TESTBEST 0.709+-0.019 [27.0/phrase]
+qg->gnd                            | POOLED 0.978+-0.008 [30.0/phrase] | PERSEED 0.928+-0.051 | TESTBEST 0.978+-0.008 [30.0/phrase]
+qg->fig                            | POOLED 0.120+-0.003 [10.0/carrier] | PERSEED 0.120+-0.003 | TESTBEST 0.637+-0.021 [27.0/carrier]
+period->fig                        | POOLED 0.160+-0.009 [10.0/carrier] | PERSEED 0.160+-0.009 | TESTBEST 0.276+-0.015 [20.0/phrase]
+     role_can at pooled-selected layer: 0.989
+period->gnd                        | POOLED 0.015+-0.002 [10.0/carrier] | PERSEED 0.015+-0.002 | TESTBEST 0.153+-0.018 [40.0/phrase]
+last->fig                          | POOLED 0.076+-0.007 [10.0/carrier] | PERSEED 0.068+-0.006 | TESTBEST 0.239+-0.015 [37.0/carrier]
+mean->fig                          | POOLED 0.014+-0.003 [7.0/phrase] | PERSEED 0.033+-0.019 | TESTBEST 0.074+-0.006 [33.0/carrier]
+     role_can at pooled-selected layer: 1.000
+  qf unasked gnd at asked layer (np.float64(30.0), 'phrase'): conv 0.605+-0.032 can 0.837
+  qg unasked fig at asked layer (np.float64(30.0), 'phrase'): conv 0.557+-0.025 can 0.843
+--- Qwen3-8B
+qf->fig                            | POOLED 0.811+-0.020 [24.0/phrase] | PERSEED 0.811+-0.020 | TESTBEST 0.959+-0.001 [30.0/phrase]
+qf->gnd                            | POOLED 0.195+-0.019 [12.0/carrier] | PERSEED 0.186+-0.014 | TESTBEST 0.475+-0.018 [30.0/phrase]
+qg->gnd                            | POOLED 0.942+-0.014 [30.0/phrase] | PERSEED 0.887+-0.050 | TESTBEST 0.942+-0.014 [30.0/phrase]
+qg->fig                            | POOLED 0.187+-0.008 [15.0/carrier] | PERSEED 0.188+-0.007 | TESTBEST 0.500+-0.012 [30.0/phrase]
+period->fig                        | POOLED 0.229+-0.007 [12.0/carrier] | PERSEED 0.229+-0.007 | TESTBEST 0.360+-0.012 [36.0/phrase]
+     role_can at pooled-selected layer: 0.981
+period->gnd                        | POOLED 0.054+-0.003 [12.0/carrier] | PERSEED 0.054+-0.003 | TESTBEST 0.259+-0.021 [36.0/phrase]
+last->fig                          | POOLED 0.108+-0.002 [12.0/carrier] | PERSEED 0.111+-0.004 | TESTBEST 0.401+-0.010 [3.0/phrase]
+mean->fig                          | POOLED 0.039+-0.003 [9.0/phrase] | PERSEED 0.037+-0.004 | TESTBEST 0.161+-0.005 [3.0/carrier]
+     role_can at pooled-selected layer: 0.999
+  qf unasked gnd at asked layer (np.float64(24.0), 'phrase'): conv 0.439+-0.006 can 0.904
+  qg unasked fig at asked layer (np.float64(30.0), 'phrase'): conv 0.500+-0.012 can 0.880
+--- OLMo-2-1124-13B
+qf->fig                            | POOLED 0.661+-0.021 [27.0/phrase] | PERSEED 0.648+-0.027 | TESTBEST 0.730+-0.019 [30.0/phrase]
+qf->gnd                            | POOLED 0.401+-0.003 [23.0/carrier] | PERSEED 0.309+-0.090 | TESTBEST 0.409+-0.012 [3.0/phrase]
+qg->gnd                            | POOLED 0.779+-0.025 [27.0/phrase] | PERSEED 0.747+-0.007 | TESTBEST 0.815+-0.036 [30.0/phrase]
+qg->fig                            | POOLED 0.199+-0.017 [23.0/carrier] | PERSEED 0.175+-0.039 | TESTBEST 0.351+-0.018 [3.0/carrier]
+period->fig                        | POOLED 0.157+-0.001 [7.0/carrier] | PERSEED 0.157+-0.001 | TESTBEST 0.238+-0.009 [40.0/phrase]
+     role_can at pooled-selected layer: 0.987
+period->gnd                        | POOLED 0.056+-0.003 [7.0/carrier] | PERSEED 0.056+-0.003 | TESTBEST 0.145+-0.008 [20.0/carrier]
+last->fig                          | POOLED 0.032+-0.003 [17.0/phrase] | PERSEED 0.032+-0.003 | TESTBEST 0.233+-0.017 [40.0/carrier]
+mean->fig                          | POOLED 0.003+-0.001 [10.0/phrase] | PERSEED 0.002+-0.001 | TESTBEST 0.045+-0.004 [40.0/carrier]
+     role_can at pooled-selected layer: 1.000
+  qf unasked gnd at asked layer (np.float64(27.0), 'phrase'): conv 0.323+-0.010 can 0.982
+  qg unasked fig at asked layer (np.float64(27.0), 'phrase'): conv 0.161+-0.013 can 0.960
+--- OLMo-2-1124-7B
+qf->fig                            | POOLED 0.347+-0.023 [21.0/carrier] | PERSEED 0.325+-0.023 | TESTBEST 0.523+-0.010 [27.0/phrase]
+qf->gnd                            | POOLED 0.076+-0.001 [19.0/carrier] | PERSEED 0.110+-0.016 | TESTBEST 0.491+-0.004 [3.0/phrase]
+qg->gnd                            | POOLED 0.316+-0.011 [21.0/carrier] | PERSEED 0.316+-0.011 | TESTBEST 0.501+-0.011 [3.0/phrase]
+qg->fig                            | POOLED 0.089+-0.004 [11.0/carrier] | PERSEED 0.108+-0.016 | TESTBEST 0.336+-0.001 [32.0/carrier]
+period->fig                        | POOLED 0.122+-0.004 [11.0/carrier] | PERSEED 0.107+-0.018 | TESTBEST 0.312+-0.013 [3.0/phrase]
+     role_can at pooled-selected layer: 0.990
+period->gnd                        | POOLED 0.054+-0.006 [8.0/carrier] | PERSEED 0.043+-0.005 | TESTBEST 0.153+-0.008 [3.0/phrase]
+last->fig                          | POOLED 0.058+-0.009 [13.0/phrase] | PERSEED 0.054+-0.009 | TESTBEST 0.223+-0.008 [3.0/phrase]
+mean->fig                          | POOLED 0.004+-0.001 [11.0/phrase] | PERSEED 0.006+-0.001 | TESTBEST 0.079+-0.005 [3.0/carrier]
+     role_can at pooled-selected layer: 1.000
+  qf unasked gnd at asked layer (np.float64(21.0), 'carrier'): conv 0.120+-0.005 can 0.969
+  qg unasked fig at asked layer (np.float64(21.0), 'carrier'): conv 0.172+-0.007 can 0.975
+
+Seed-level check that the same layer is chosen across seeds (e33v2 qf->fig):
+phi-4 {0: (np.float64(30.0), 'phrase'), 1: (np.float64(30.0), 'phrase'), 2: (np.float64(23.0), 'carrier')}
+Qwen3-8B {0: (np.float64(24.0), 'phrase'), 1: (np.float64(24.0), 'phrase'), 2: (np.float64(24.0), 'phrase')}
+OLMo-2-1124-13B {0: (np.float64(27.0), 'phrase'), 1: (np.float64(27.0), 'phrase'), 2: (np.float64(27.0), 'carrier')}
+OLMo-2-1124-7B {0: (np.float64(21.0), 'carrier'), 1: (np.float64(19.0), 'carrier'), 2: (np.float64(21.0), 'carrier')}
+
+============================== OLMo-2 7B query probes (e19 L16, e26L24, e26L32): hyperparameters from validation vs oracle on test
+e19 {'ridge_conv': 0.198, 'kernel_conv': 0.317, 'mlp_conv': 0.21, 'kernel_oracle_conv': 0.509, 'mlp_oracle_conv': 0.391} layers ['L16'] codes ['carrier']
+e26L24 {'ridge_conv': 0.469, 'kernel_conv': 0.351, 'mlp_conv': 0.348, 'kernel_oracle_conv': 0.562, 'mlp_oracle_conv': 0.433} layers ['L24'] codes ['carrier']
+e26L32 {'ridge_conv': 0.512, 'kernel_conv': 0.419, 'mlp_conv': 0.456, 'kernel_oracle_conv': 0.549, 'mlp_oracle_conv': 0.475} layers ['L32'] codes ['carrier']
+
+============================== Patching: e21 to_answer (source=reversed, whole) and e21b flip (whole) by layer; 'picked' = E11/PICK layer
+phi-4 e21 to_answer by layer {10: 0.001, 20: 0.038, 30: 0.994, 40: 0.995} picked [np.int64(30)]
+   e21b flip by layer {10: 0.002, 20: 0.038, 30: 0.996, 40: 0.996} seeds 2
+Qwen3-8B e21 to_answer by layer {9: 0.02, 18: 0.021, 27: 0.84, 36: 0.989} picked [np.int64(27)]
+   e21b flip by layer {9: 0.022, 18: 0.024, 27: 0.83, 36: 0.988} seeds 2
+OLMo-2-1124-13B e21 to_answer by layer {10: 0.026, 20: 0.208, 30: 0.799, 40: 0.849} picked [np.int64(30)]
+   e21b flip by layer {10: 0.027, 20: 0.221, 30: 0.823, 40: 0.865} seeds 2
+OLMo-2-1124-7B e21 to_answer by layer {8: 0.306, 16: 0.373, 24: 0.767, 32: 0.846} picked [np.int64(16)]
+   e21b flip by layer {8: 0.294, 16: 0.369, 24: 0.768, 32: 0.853} seeds 2
+e21b subspace flips at each model's layer (mean over models/seeds), kinds:
+   allbut_diff_64 0.266;   allbut_readout_16 0.48;   diff_16 0.169;   diff_256 0.399;   diff_64 0.288;   pc_16 0.12;   pc_256 0.393;   pc_64 0.25;   random_16 0.086;   random_256 0.099;   random_64 0.088;   readout_128 0.301;   readout_16 0.094;   readout_64 0.165;   samefig_diff_64 0.104;   whole 0.507;
+
+============================== E23 invented words
+columns: ['model', 'seed', 'rel', 'tokens_real', 'tokens_nonce', 'test', 'layer', 'code', 'picked', 'answers', 'answers_can', 'answers_conv', 'xfer_conv', 'xfer_can', 'xfer_val', 'model_rec', 'model_val', 'ref_concat_rec', 'ref_concat_val', 'ref_sum_rec', 'ref_sum_val']
+phi-4 picked [('L30', 'phrase')] {'nonce': {'answers': 0.999, 'xfer_conv': 0.746}, 'real': {'answers': 0.997, 'xfer_conv': 0.977}}
+Qwen3-8B picked [('L27', 'carrier')] {'nonce': {'answers': 0.975, 'xfer_conv': 0.659}, 'real': {'answers': 0.977, 'xfer_conv': 0.86}}
+OLMo-2-1124-13B picked [('L30', 'phrase')] {'nonce': {'answers': 0.792, 'xfer_conv': 0.525}, 'real': {'answers': 0.913, 'xfer_conv': 0.726}}
+OLMo-2-1124-7B picked [('L16', 'carrier')] {'nonce': {'answers': 0.712, 'xfer_conv': 0.407}, 'real': {'answers': 0.732, 'xfer_conv': 0.216}}
+gpt2-large picked [('L18', 'carrier')] {'nonce': {'answers': 0.536, 'xfer_conv': 0.356}, 'real': {'answers': 0.519, 'xfer_conv': 0.06}}
+pythia-1.4b picked [('L12', 'carrier')] {'nonce': {'answers': 0.544, 'xfer_conv': 0.323}, 'real': {'answers': 0.524, 'xfer_conv': 0.088}}
+pythia-12b picked [('L18', 'carrier')] {'nonce': {'answers': 0.54, 'xfer_conv': 0.391}, 'real': {'answers': 0.552, 'xfer_conv': 0.088}}
+phi-4 all layers/codes by test (cols ['answers_conv', 'xfer_conv'] )
+                     answers_conv  xfer_conv
+test  layer code                            
+nonce L10   carrier         0.999      0.428
+            phrase          0.999      0.449
+      L20   carrier         0.999      0.491
+            phrase          0.999      0.492
+      L30   carrier         0.999      0.645
+            phrase          0.999      0.746
+      L40   carrier         0.999      0.621
+            phrase          0.999      0.644
+real  L10   carrier         0.994      0.139
+            phrase          0.994      0.206
+      L20   carrier         0.994      0.538
+            phrase          0.994      0.546
+      L30   carrier         0.994      0.970
+            phrase          0.994      0.977
+      L40   carrier         0.994      0.947
+            phrase          0.994      0.919

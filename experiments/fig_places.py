@@ -115,7 +115,7 @@ for i, (lab, key) in enumerate(D):
 ax.axvline(0.5, color=GREY, lw=0.6, ls="--")
 ax.set_yticks(range(len(D))); ax.set_yticklabels([x[0] for x in D], fontsize=FS); ax.invert_yaxis()
 ax.set_xlim(0, 1.02); ax.set_xticks([0, 0.5, 1.0]); ax.set_xlabel("figure in its place")
-ax.plot([], [], "o", color=GREY, ms=4, label="canonical"); ax.plot([], [], "o", mfc="white", mec=GREY, ms=4, label="converse")
+ax.plot([], [], "o", color=FIX, ms=4, label="canonical"); ax.plot([], [], "o", mfc="white", mec=FIX, ms=4, label="converse")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=2, fontsize=5.8, handletextpad=0.2, columnspacing=0.8)
 panel(ax, "d", "Layout harness")
 
