@@ -1,0 +1,711 @@
+\begin{thebibliography}{97}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abdin et~al.(2024)]{abdin2024phi4}
+Abdin, M. et~al.
+\newblock Phi-4 technical report.
+\newblock \emph{arXiv preprint arXiv:2412.08905}, 2024.
+
+\bibitem[Andreas(2019)]{andreas2019}
+Andreas, J.
+\newblock Measuring compositionality in representation learning.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+\newblock URL \url{https://arxiv.org/abs/1902.07181}.
+
+\bibitem[Belinkov(2022)]{belinkov2022}
+Belinkov, Y.
+\newblock Probing classifiers: Promises, shortcomings, and advances.
+\newblock \emph{Computational Linguistics}, 48\penalty0 (1):\penalty0 207--219,
+  2022.
+\newblock \doi{10.1162/coli_a_00422}.
+
+\bibitem[Bengio et~al.(2013)Bengio, Courville, and Vincent]{bengio2013}
+Bengio, Y., Courville, A., and Vincent, P.
+\newblock Representation learning: A review and new perspectives.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 35\penalty0 (8):\penalty0 1798--1828, 2013.
+\newblock \doi{10.1109/TPAMI.2013.50}.
+
+\bibitem[Biderman et~al.(2023)Biderman, Schoelkopf, Anthony, Bradley, O'Brien,
+  Hallahan, Khan, Purohit, Prashanth, Raff, Skowron, Sutawika, and van~der
+  Wal]{biderman2023pythia}
+Biderman, S., Schoelkopf, H., Anthony, Q.~G., Bradley, H., O'Brien, K.,
+  Hallahan, E., Khan, M.~A., Purohit, S., Prashanth, U.~S., Raff, E., Skowron,
+  A., Sutawika, L., and van~der Wal, O.
+\newblock Pythia: A suite for analyzing large language models across training
+  and scaling.
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning}, pp.\  2397--2430, 2023.
+
+\bibitem[Biran et~al.(2024)Biran, Gottesman, Yang, Geva, and
+  Globerson]{biran2024hopping}
+Biran, E., Gottesman, D., Yang, S., Geva, M., and Globerson, A.
+\newblock Hopping too late: Exploring the limitations of large language models
+  on multi-hop queries.
+\newblock In \emph{Proceedings of the 2024 Conference on Empirical Methods in
+  Natural Language Processing}, pp.\  14113--14130, 2024.
+
+\bibitem[Bricken et~al.(2023)Bricken, Templeton,
+  et~al.]{bricken2023monosemanticity}
+Bricken, T., Templeton, A., et~al.
+\newblock Towards monosemanticity: Decomposing language models with dictionary
+  learning.
+\newblock Transformer Circuits Thread, 2023.
+\newblock URL
+  \url{https://transformer-circuits.pub/2023/monosemantic-features/index.html}.
+
+\bibitem[Cagnetta et~al.(2024)Cagnetta, Petrini, Tomasini, Favero, and
+  Wyart]{cagnetta2024rhm}
+Cagnetta, F., Petrini, L., Tomasini, U.~M., Favero, A., and Wyart, M.
+\newblock How deep neural networks learn compositional data: The random
+  hierarchy model.
+\newblock \emph{Physical Review X}, 14\penalty0 (3):\penalty0 031001, 2024.
+
+\bibitem[Cherti et~al.(2023)Cherti, Beaumont, Wightman, Wortsman, Ilharco,
+  Gordon, Schuhmann, Schmidt, and Jitsev]{cherti2023}
+Cherti, M., Beaumont, R., Wightman, R., Wortsman, M., Ilharco, G., Gordon, C.,
+  Schuhmann, C., Schmidt, L., and Jitsev, J.
+\newblock Reproducible scaling laws for contrastive language-image learning.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}, pp.\  2818--2829, 2023.
+
+\bibitem[Chomsky(1957)]{chomsky1957}
+Chomsky, N.
+\newblock \emph{Syntactic Structures}.
+\newblock Mouton, The Hague, 1957.
+\newblock \doi{10.1515/9783112316009}.
+
+\bibitem[Clark \& Jaini(2023)Clark and Jaini]{clark2023diffclassifier}
+Clark, K. and Jaini, P.
+\newblock Text-to-image diffusion models are zero-shot classifiers.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem[Conwell \& Ullman(2022)Conwell and Ullman]{conwell2022}
+Conwell, C. and Ullman, T.
+\newblock Testing relational understanding in text-guided image generation.
+\newblock \emph{arXiv preprint arXiv:2208.00005}, 2022.
+\newblock URL \url{https://arxiv.org/abs/2208.00005}.
+
+\bibitem[Cunningham et~al.(2024)Cunningham, Ewart, Riggs, Huben, and
+  Sharkey]{cunningham2023sparse}
+Cunningham, H., Ewart, A., Riggs, L., Huben, R., and Sharkey, L.
+\newblock Sparse autoencoders find highly interpretable features in language
+  models.
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+
+\bibitem[Devlin et~al.(2019)Devlin, Chang, Lee, and Toutanova]{devlin2019bert}
+Devlin, J., Chang, M.-W., Lee, K., and Toutanova, K.
+\newblock {BERT}: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock In \emph{Proceedings of NAACL-HLT}, pp.\  4171--4186, 2019.
+
+\bibitem[Dziri et~al.(2023)Dziri, Lu, Sclar, Li, Jiang, Lin, West, Bhagavatula,
+  Le~Bras, Hwang, Sanyal, Welleck, Ren, Ettinger, Harchaoui, and
+  Choi]{dziri2023}
+Dziri, N., Lu, X., Sclar, M., Li, X.~L., Jiang, L., Lin, B.~Y., West, P.,
+  Bhagavatula, C., Le~Bras, R., Hwang, J.~D., Sanyal, S., Welleck, S., Ren, X.,
+  Ettinger, A., Harchaoui, Z., and Choi, Y.
+\newblock Faith and fate: Limits of transformers on compositionality.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+\newblock URL \url{https://arxiv.org/abs/2305.18654}.
+
+\bibitem[Eckart \& Young(1936)Eckart and Young]{eckart1936}
+Eckart, C. and Young, G.
+\newblock The approximation of one matrix by another of lower rank.
+\newblock \emph{Psychometrika}, 1\penalty0 (3):\penalty0 211--218, 1936.
+\newblock \doi{10.1007/BF02288367}.
+
+\bibitem[Elhage et~al.(2022)Elhage, Hume, Olsson, Schiefer, Henighan, Kravec,
+  Hatfield-Dodds, Lasenby, Drain, Chen, Grosse, McCandlish, Kaplan, Amodei,
+  Wattenberg, and Olah]{elhage2022}
+Elhage, N., Hume, T., Olsson, C., Schiefer, N., Henighan, T., Kravec, S.,
+  Hatfield-Dodds, Z., Lasenby, R., Drain, D., Chen, C., Grosse, R., McCandlish,
+  S., Kaplan, J., Amodei, D., Wattenberg, M., and Olah, C.
+\newblock Toy models of superposition.
+\newblock \emph{Transformer Circuits Thread}, 2022.
+\newblock arXiv:2209.10652.
+
+\bibitem[Elman(1990)]{elman1990}
+Elman, J.~L.
+\newblock Finding structure in time.
+\newblock \emph{Cognitive Science}, 14\penalty0 (2):\penalty0 179--211, 1990.
+\newblock \doi{10.1207/s15516709cog1402_1}.
+
+\bibitem[Elmoznino et~al.(2025)Elmoznino, Jiralerspong, Bengio, and
+  Lajoie]{elmoznino2024}
+Elmoznino, E., Jiralerspong, T., Bengio, Y., and Lajoie, G.
+\newblock Towards a formal theory of representational compositionality.
+\newblock In \emph{Proceedings of the 42nd International Conference on Machine
+  Learning}, volume 267 of \emph{Proceedings of Machine Learning Research},
+  pp.\  15266--15295, 2025.
+\newblock arXiv:2410.14817.
+
+\bibitem[Elmoznino et~al.(2026)Elmoznino, Kasetty, Ag{\"u}era~y Arcas, Bengio,
+  and Lajoie]{elmoznino2026}
+Elmoznino, E., Kasetty, T., Ag{\"u}era~y Arcas, B., Bengio, Y., and Lajoie, G.
+\newblock Defining and generating compositional structure.
+\newblock \emph{arXiv preprint arXiv:2610.20922}, 2026.
+
+\bibitem[Fauconnier \& Turner(2002)Fauconnier and Turner]{fauconnier2002}
+Fauconnier, G. and Turner, M.
+\newblock \emph{The Way We Think: Conceptual Blending and the Mind's Hidden
+  Complexities}.
+\newblock Basic Books, New York, 2002.
+
+\bibitem[Favero et~al.(2025)Favero, Sclocchi, Cagnetta, Frossard, and
+  Wyart]{favero2025diffusion}
+Favero, A., Sclocchi, A., Cagnetta, F., Frossard, P., and Wyart, M.
+\newblock How compositional generalization and creativity improve as diffusion
+  models are trained.
+\newblock In \emph{Proceedings of the 42nd International Conference on Machine
+  Learning}, 2025.
+\newblock arXiv:2502.12089.
+
+\bibitem[Feng \& Steinhardt(2024)Feng and Steinhardt]{feng2024}
+Feng, J. and Steinhardt, J.
+\newblock How do language models bind entities in context?
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2310.17191}.
+
+\bibitem[Fodor \& McLaughlin(1990)Fodor and McLaughlin]{fodor1990}
+Fodor, J. and McLaughlin, B.~P.
+\newblock Connectionism and the problem of systematicity: Why {Smolensky}'s
+  solution doesn't work.
+\newblock \emph{Cognition}, 35\penalty0 (2):\penalty0 183--204, 1990.
+\newblock \doi{10.1016/0010-0277(90)90014-B}.
+
+\bibitem[Fodor \& Lepore(2002)Fodor and Lepore]{fodor2002}
+Fodor, J.~A. and Lepore, E.
+\newblock \emph{The Compositionality Papers}.
+\newblock Oxford University Press, Oxford, 2002.
+
+\bibitem[Fodor \& Pylyshyn(1988)Fodor and Pylyshyn]{fodor1988}
+Fodor, J.~A. and Pylyshyn, Z.~W.
+\newblock Connectionism and cognitive architecture: A critical analysis.
+\newblock \emph{Cognition}, 28\penalty0 (1--2):\penalty0 3--71, 1988.
+\newblock \doi{10.1016/0010-0277(88)90031-5}.
+
+\bibitem[Frege(1923)]{frege1923}
+Frege, G.
+\newblock {Logische Untersuchungen. Dritter Teil: Gedankengef{\"u}ge}.
+\newblock \emph{Beitr{\"a}ge zur Philosophie des deutschen Idealismus},
+  3:\penalty0 36--51, 1923.
+
+\bibitem[Gayler(2006)]{gayler2006}
+Gayler, R.~W.
+\newblock Vector symbolic architectures are a viable alternative for
+  {Jackendoff}'s challenges.
+\newblock \emph{Behavioral and Brain Sciences}, 29\penalty0 (1):\penalty0
+  78--79, 2006.
+\newblock \doi{10.1017/S0140525X06309028}.
+
+\bibitem[Geiger et~al.(2021)Geiger, Lu, Icard, and Potts]{geiger2021}
+Geiger, A., Lu, H., Icard, T., and Potts, C.
+\newblock Causal abstractions of neural networks.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, 2021.
+
+\bibitem[Geiger et~al.(2024)Geiger, Wu, Potts, Icard, and
+  Goodman]{geiger2024das}
+Geiger, A., Wu, Z., Potts, C., Icard, T., and Goodman, N.
+\newblock Finding alignments between interpretable causal variables and
+  distributed neural representations.
+\newblock In \emph{Proceedings of the Third Conference on Causal Learning and
+  Reasoning}, volume 236 of \emph{Proceedings of Machine Learning Research},
+  pp.\  160--187, 2024.
+
+\bibitem[Ghosh et~al.(2023)Ghosh, Hajishirzi, and Schmidt]{ghosh2023geneval}
+Ghosh, D., Hajishirzi, H., and Schmidt, L.
+\newblock {GenEval}: An object-focused framework for evaluating text-to-image
+  alignment.
+\newblock In \emph{Advances in Neural Information Processing Systems, Datasets
+  and Benchmarks Track}, volume~36, 2023.
+
+\bibitem[Goodale \& Mascarenhas(2026)Goodale and Mascarenhas]{goodale2026}
+Goodale, M. and Mascarenhas, S.
+\newblock {Fodor} and {Pylyshyn}'s systematicity challenge still stands.
+\newblock \emph{Transactions of the Association for Computational Linguistics},
+  14:\penalty0 1619--1632, 2026.
+\newblock \doi{10.1162/tacl.a.743}.
+\newblock URL \url{https://aclanthology.org/2026.tacl-1.73/}.
+\newblock Preprint: arXiv:2606.14512.
+
+\bibitem[Greff et~al.(2020)Greff, van Steenkiste, and Schmidhuber]{greff2020}
+Greff, K., van Steenkiste, S., and Schmidhuber, J.
+\newblock On the binding problem in artificial neural networks.
+\newblock \emph{arXiv preprint arXiv:2012.05208}, 2020.
+\newblock URL \url{https://arxiv.org/abs/2012.05208}.
+
+\bibitem[Hewitt \& Liang(2019)Hewitt and Liang]{hewitt2019}
+Hewitt, J. and Liang, P.
+\newblock Designing and interpreting probes with control tasks.
+\newblock In \emph{Proceedings of the 2019 Conference on Empirical Methods in
+  Natural Language Processing and the 9th International Joint Conference on
+  Natural Language Processing ({EMNLP-IJCNLP})}, pp.\  2733--2743, Hong Kong,
+  China, 2019. Association for Computational Linguistics.
+\newblock \doi{10.18653/v1/D19-1275}.
+
+\bibitem[Hinton(1990)]{hinton1990}
+Hinton, G.~E.
+\newblock Mapping part-whole hierarchies into connectionist networks.
+\newblock \emph{Artificial Intelligence}, 46\penalty0 (1--2):\penalty0 47--75,
+  1990.
+\newblock \doi{10.1016/0004-3702(90)90004-J}.
+
+\bibitem[Hsieh et~al.(2023)Hsieh, Zhang, Ma, Kembhavi, and
+  Krishna]{hsieh2023sugarcrepe}
+Hsieh, C.-Y., Zhang, J., Ma, Z., Kembhavi, A., and Krishna, R.
+\newblock {SugarCrepe}: Fixing hackable benchmarks for vision-language
+  compositionality.
+\newblock In \emph{Advances in Neural Information Processing Systems, Datasets
+  and Benchmarks Track}, 2023.
+
+\bibitem[Huang et~al.(2023)Huang, Sun, Xie, Li, and Liu]{huang2023t2i}
+Huang, K., Sun, K., Xie, E., Li, Z., and Liu, X.
+\newblock {T2I-CompBench}: A comprehensive benchmark for open-world
+  compositional text-to-image generation.
+\newblock In \emph{Advances in Neural Information Processing Systems (Datasets
+  and Benchmarks Track)}, volume~36, pp.\  78723--78747, 2023.
+
+\bibitem[Hummel \& Holyoak(1997)Hummel and Holyoak]{hummel1997}
+Hummel, J.~E. and Holyoak, K.~J.
+\newblock Distributed representations of structure: A theory of analogical
+  access and mapping.
+\newblock \emph{Psychological Review}, 104\penalty0 (3):\penalty0 427--466,
+  1997.
+\newblock \doi{10.1037/0033-295X.104.3.427}.
+
+\bibitem[Hupkes et~al.(2020)Hupkes, Dankers, Mul, and Bruni]{hupkes2020}
+Hupkes, D., Dankers, V., Mul, M., and Bruni, E.
+\newblock Compositionality decomposed: How do neural networks generalise?
+\newblock \emph{Journal of Artificial Intelligence Research}, 67:\penalty0
+  757--795, 2020.
+\newblock \doi{10.1613/jair.1.11674}.
+
+\bibitem[Janssen \& Partee(1997)Janssen and Partee]{janssen1997}
+Janssen, T. M.~V. and Partee, B.~H.
+\newblock Compositionality.
+\newblock In van Benthem, J. and ter Meulen, A. (eds.), \emph{Handbook of Logic
+  and Language}, pp.\  417--473. Elsevier, Amsterdam, 1997.
+\newblock \doi{10.1016/B978-044481714-3/50011-4}.
+
+\bibitem[Kamath et~al.(2023{\natexlab{a}})Kamath, Hessel, and
+  Chang]{kamath2023textenc}
+Kamath, A., Hessel, J., and Chang, K.-W.
+\newblock Text encoders bottleneck compositionality in contrastive
+  vision-language models.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing}, 2023{\natexlab{a}}.
+
+\bibitem[Kamath et~al.(2023{\natexlab{b}})Kamath, Hessel, and
+  Chang]{kamath2023whatsup}
+Kamath, A., Hessel, J., and Chang, K.-W.
+\newblock What's ``up'' with vision-language models? investigating their
+  struggle with spatial reasoning.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing}, 2023{\natexlab{b}}.
+
+\bibitem[Kamp \& Partee(1995)Kamp and Partee]{kamp1995}
+Kamp, H. and Partee, B.
+\newblock Prototype theory and compositionality.
+\newblock \emph{Cognition}, 57:\penalty0 129--191, 1995.
+
+\bibitem[Kanerva(2009)]{kanerva2009}
+Kanerva, P.
+\newblock Hyperdimensional computing: An introduction to computing in
+  distributed representation with high-dimensional random vectors.
+\newblock \emph{Cognitive Computation}, 1\penalty0 (2):\penalty0 139--159,
+  2009.
+\newblock \doi{10.1007/s12559-009-9009-8}.
+
+\bibitem[Keysers et~al.(2020)Keysers, Sch{\"a}rli, Scales, Buisman, Furrer,
+  Kashubin, Momchev, Sinopalnikov, Stafiniak, Tihon, Tsarkov, Wang, van Zee,
+  and Bousquet]{keysers2020}
+Keysers, D., Sch{\"a}rli, N., Scales, N., Buisman, H., Furrer, D., Kashubin,
+  S., Momchev, N., Sinopalnikov, D., Stafiniak, L., Tihon, T., Tsarkov, D.,
+  Wang, X., van Zee, M., and Bousquet, O.
+\newblock Measuring compositional generalization: A comprehensive method on
+  realistic data.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+\newblock URL \url{https://arxiv.org/abs/1912.09713}.
+
+\bibitem[Kim \& Linzen(2020)Kim and Linzen]{kim2020cogs}
+Kim, N. and Linzen, T.
+\newblock {COGS}: A compositional generalization challenge based on semantic
+  interpretation.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing}, pp.\  9087--9105, 2020.
+
+\bibitem[Lachapelle et~al.(2023)Lachapelle, Mahajan, Mitliagkas, and
+  Lacoste-Julien]{lachapelle2023}
+Lachapelle, S., Mahajan, D., Mitliagkas, I., and Lacoste-Julien, S.
+\newblock Additive decoders for latent variables identification and
+  {Cartesian}-product extrapolation.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem[Lake \& Baroni(2018)Lake and Baroni]{lake2018}
+Lake, B.~M. and Baroni, M.
+\newblock Generalization without systematicity: On the compositional skills of
+  sequence-to-sequence recurrent networks.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning}, volume~80 of \emph{Proceedings of Machine Learning Research}, pp.\
+   2873--2882, 2018.
+\newblock URL \url{https://proceedings.mlr.press/v80/lake18a.html}.
+
+\bibitem[Lake \& Baroni(2023)Lake and Baroni]{lake2023}
+Lake, B.~M. and Baroni, M.
+\newblock Human-like systematic generalization through a meta-learning neural
+  network.
+\newblock \emph{Nature}, 623:\penalty0 115--121, 2023.
+\newblock \doi{10.1038/s41586-023-06668-3}.
+
+\bibitem[Lake et~al.(2017)Lake, Ullman, Tenenbaum, and Gershman]{lake2017}
+Lake, B.~M., Ullman, T.~D., Tenenbaum, J.~B., and Gershman, S.~J.
+\newblock Building machines that learn and think like people.
+\newblock \emph{Behavioral and Brain Sciences}, 40:\penalty0 e253, 2017.
+\newblock \doi{10.1017/S0140525X16001837}.
+
+\bibitem[Le \& Yang(2015)Le and Yang]{le2015tiny}
+Le, Y. and Yang, X.
+\newblock Tiny {ImageNet} visual recognition challenge.
+\newblock Technical report, Stanford University, CS 231N, 2015.
+
+\bibitem[Lepori et~al.(2023)Lepori, Serre, and Pavlick]{lepori2023}
+Lepori, M.~A., Serre, T., and Pavlick, E.
+\newblock Break it down: Evidence for structural compositionality in neural
+  networks.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem[Lewis et~al.(2024)Lewis, Nayak, Yu, Yu, Merullo, Bach, and
+  Pavlick]{lewis2024clip}
+Lewis, M., Nayak, N.~V., Yu, P., Yu, Q., Merullo, J., Bach, S.~H., and Pavlick,
+  E.
+\newblock Does {CLIP} bind concepts? probing compositionality in large image
+  models.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EACL 2024}, pp.\  1487--1500, 2024.
+
+\bibitem[Li et~al.(2023{\natexlab{a}})Li, Prabhudesai, Duggal, Brown, and
+  Pathak]{li2023diffclassifier}
+Li, A.~C., Prabhudesai, M., Duggal, S., Brown, E., and Pathak, D.
+\newblock Your diffusion model is secretly a zero-shot classifier.
+\newblock In \emph{Proceedings of the IEEE/CVF International Conference on
+  Computer Vision}, pp.\  2206--2217, 2023{\natexlab{a}}.
+
+\bibitem[Li et~al.(2023{\natexlab{b}})Li, Donatelli, Koller, Linzen, Yao, and
+  Kim]{li2023slog}
+Li, B., Donatelli, L., Koller, A., Linzen, T., Yao, Y., and Kim, N.
+\newblock {SLOG}: A structural generalization benchmark for semantic parsing.
+\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing}, pp.\  3213--3232. Association for Computational
+  Linguistics, 2023{\natexlab{b}}.
+\newblock \doi{10.18653/v1/2023.emnlp-main.194}.
+
+\bibitem[Liu et~al.(2021)Liu, Li, Du, Tenenbaum, and
+  Torralba]{liu2021relations}
+Liu, N., Li, S., Du, Y., Tenenbaum, J.~B., and Torralba, A.
+\newblock Learning to compose visual relations.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2021.
+
+\bibitem[Liu et~al.(2022)Liu, Li, Du, Torralba, and
+  Tenenbaum]{liu2022composable}
+Liu, N., Li, S., Du, Y., Torralba, A., and Tenenbaum, J.~B.
+\newblock Compositional visual generation with composable diffusion models.
+\newblock In \emph{Proceedings of the European Conference on Computer Vision
+  (ECCV)}. Springer, 2022.
+\newblock \doi{10.1007/978-3-031-19790-1_26}.
+
+\bibitem[Liu et~al.(2024)Liu, Zeng, Ren, Li, Zhang, Yang, Jiang, Li, Yang, Su,
+  Zhu, and Zhang]{liu2024groundingdino}
+Liu, S., Zeng, Z., Ren, T., Li, F., Zhang, H., Yang, J., Jiang, Q., Li, C.,
+  Yang, J., Su, H., Zhu, J., and Zhang, L.
+\newblock Grounding {DINO}: Marrying {DINO} with grounded pre-training for
+  open-set object detection.
+\newblock In \emph{European Conference on Computer Vision (ECCV)}, 2024.
+
+\bibitem[Locatello et~al.(2019)Locatello, Bauer, Lucic, R{\"a}tsch, Gelly,
+  Sch{\"o}lkopf, and Bachem]{locatello2019}
+Locatello, F., Bauer, S., Lucic, M., R{\"a}tsch, G., Gelly, S., Sch{\"o}lkopf,
+  B., and Bachem, O.
+\newblock Challenging common assumptions in the unsupervised learning of
+  disentangled representations.
+\newblock In \emph{Proceedings of the 36th International Conference on Machine
+  Learning}, volume~97 of \emph{PMLR}, pp.\  4114--4124, 2019.
+
+\bibitem[Locatello et~al.(2020)Locatello, Weissenborn, Unterthiner, Mahendran,
+  Heigold, Uszkoreit, Dosovitskiy, and Kipf]{locatello2020slot}
+Locatello, F., Weissenborn, D., Unterthiner, T., Mahendran, A., Heigold, G.,
+  Uszkoreit, J., Dosovitskiy, A., and Kipf, T.
+\newblock Object-centric learning with slot attention.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2020.
+
+\bibitem[Marcus(1998)]{marcus1998}
+Marcus, G.~F.
+\newblock Rethinking eliminative connectionism.
+\newblock \emph{Cognitive Psychology}, 37\penalty0 (3):\penalty0 243--282,
+  1998.
+\newblock \doi{10.1006/cogp.1998.0694}.
+
+\bibitem[McCloskey \& Cohen(1989)McCloskey and Cohen]{mccloskey1989}
+McCloskey, M. and Cohen, N.~J.
+\newblock Catastrophic interference in connectionist networks: The sequential
+  learning problem.
+\newblock In Bower, G.~H. (ed.), \emph{Psychology of Learning and Motivation},
+  volume~24, pp.\  109--165. Academic Press, 1989.
+\newblock \doi{10.1016/S0079-7421(08)60536-8}.
+
+\bibitem[McCoy et~al.(2019)McCoy, Linzen, Dunbar, and Smolensky]{mccoy2019}
+McCoy, R.~T., Linzen, T., Dunbar, E., and Smolensky, P.
+\newblock {RNNs} implicitly implement tensor product representations.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+\newblock URL \url{https://arxiv.org/abs/1812.08718}.
+
+\bibitem[Montague(1970)]{montague1970}
+Montague, R.
+\newblock Universal grammar.
+\newblock \emph{Theoria}, 36\penalty0 (3):\penalty0 373--398, 1970.
+\newblock \doi{10.1111/j.1755-2567.1970.tb00434.x}.
+
+\bibitem[Montero et~al.(2021)Montero, Ludwig, Costa, Malhotra, and
+  Bowers]{montero2021}
+Montero, M.~L., Ludwig, C. J.~H., Costa, R.~P., Malhotra, G., and Bowers, J.
+\newblock The role of disentanglement in generalisation.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+
+\bibitem[Okawa et~al.(2023)Okawa, Lubana, Dick, and Tanaka]{okawa2023}
+Okawa, M., Lubana, E.~S., Dick, R.~P., and Tanaka, H.
+\newblock Compositional abilities emerge multiplicatively: Exploring diffusion
+  models on a synthetic task.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+
+\bibitem[{OpenAI}(2021)]{openai2021dalle}
+{OpenAI}.
+\newblock {DALL}{\textperiodcentered}{E}: Creating images from text.
+\newblock Blog post, January 5, 2021, 2021.
+\newblock URL \url{https://openai.com/index/dall-e/}.
+
+\bibitem[Oquab et~al.(2024)Oquab, Darcet, Moutakanni, Vo, Szafraniec, Khalidov,
+  Fernandez, Haziza, Massa, El-Nouby, et~al.]{oquab2024dinov2}
+Oquab, M., Darcet, T., Moutakanni, T., Vo, H.~V., Szafraniec, M., Khalidov, V.,
+  Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., et~al.
+\newblock {DINOv2}: Learning robust visual features without supervision.
+\newblock \emph{Transactions on Machine Learning Research}, 2024.
+
+\bibitem[Osherson \& Smith(1981)Osherson and Smith]{osherson1981}
+Osherson, D.~N. and Smith, E.~E.
+\newblock On the adequacy of prototype theory as a theory of concepts.
+\newblock \emph{Cognition}, 9\penalty0 (1):\penalty0 35--58, 1981.
+
+\bibitem[Park et~al.(2024{\natexlab{a}})Park, Okawa, Lee, Lubana, and
+  Tanaka]{park2024hidden}
+Park, C.~F., Okawa, M., Lee, A., Lubana, E.~S., and Tanaka, H.
+\newblock Emergence of hidden capabilities: Exploring learning dynamics in
+  concept space.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~37, 2024{\natexlab{a}}.
+
+\bibitem[Park et~al.(2024{\natexlab{b}})Park, Choe, and Veitch]{park2024linear}
+Park, K., Choe, Y.~J., and Veitch, V.
+\newblock The linear representation hypothesis and the geometry of large
+  language models.
+\newblock In \emph{International Conference on Machine Learning},
+  2024{\natexlab{b}}.
+
+\bibitem[Pinker \& Prince(1988)Pinker and Prince]{pinker1988}
+Pinker, S. and Prince, A.
+\newblock On language and connectionism: Analysis of a parallel distributed
+  processing model of language acquisition.
+\newblock \emph{Cognition}, 28\penalty0 (1--2):\penalty0 73--193, 1988.
+\newblock \doi{10.1016/0010-0277(88)90032-7}.
+
+\bibitem[Plate(1995)]{plate1995}
+Plate, T.~A.
+\newblock Holographic reduced representations.
+\newblock \emph{IEEE Transactions on Neural Networks}, 6\penalty0 (3):\penalty0
+  623--641, 1995.
+\newblock \doi{10.1109/72.377968}.
+
+\bibitem[Pollack(1990)]{pollack1990}
+Pollack, J.~B.
+\newblock Recursive distributed representations.
+\newblock \emph{Artificial Intelligence}, 46\penalty0 (1--2):\penalty0 77--105,
+  1990.
+\newblock \doi{10.1016/0004-3702(90)90005-K}.
+
+\bibitem[Press et~al.(2023)Press, Zhang, Min, Schmidt, Smith, and
+  Lewis]{press2023}
+Press, O., Zhang, M., Min, S., Schmidt, L., Smith, N., and Lewis, M.
+\newblock Measuring and narrowing the compositionality gap in language models.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EMNLP 2023}, pp.\  5687--5711, 2023.
+\newblock \doi{10.18653/v1/2023.findings-emnlp.378}.
+
+\bibitem[Radford et~al.(2019)Radford, Wu, Child, Luan, Amodei, and
+  Sutskever]{radford2019gpt2}
+Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., and Sutskever, I.
+\newblock Language models are unsupervised multitask learners.
+\newblock Technical report, OpenAI, 2019.
+
+\bibitem[Radford et~al.(2021)Radford, Kim, Hallacy, Ramesh, Goh, Agarwal,
+  Sastry, Askell, Mishkin, Clark, Krueger, and Sutskever]{radford2021clip}
+Radford, A., Kim, J.~W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry,
+  G., Askell, A., Mishkin, P., Clark, J., Krueger, G., and Sutskever, I.
+\newblock Learning transferable visual models from natural language
+  supervision.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, pp.\  8748--8763, 2021.
+
+\bibitem[Raffel et~al.(2020)Raffel, Shazeer, Roberts, Lee, Narang, Matena,
+  Zhou, Li, and Liu]{raffel2020t5}
+Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., Zhou,
+  Y., Li, W., and Liu, P.~J.
+\newblock Exploring the limits of transfer learning with a unified text-to-text
+  transformer.
+\newblock \emph{Journal of Machine Learning Research}, 21\penalty0
+  (140):\penalty0 1--67, 2020.
+
+\bibitem[Ramesh et~al.(2021)Ramesh, Pavlov, Goh, Gray, Voss, Radford, Chen, and
+  Sutskever]{ramesh2021}
+Ramesh, A., Pavlov, M., Goh, G., Gray, S., Voss, C., Radford, A., Chen, M., and
+  Sutskever, I.
+\newblock Zero-shot text-to-image generation.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, volume 139 of \emph{Proceedings of Machine Learning Research},
+  pp.\  8821--8831, 2021.
+
+\bibitem[Rassin et~al.(2022)Rassin, Ravfogel, and Goldberg]{rassin2022}
+Rassin, R., Ravfogel, S., and Goldberg, Y.
+\newblock {DALLE-2} is seeing double: Flaws in word-to-concept mapping in
+  {Text2Image} models.
+\newblock In \emph{Proceedings of the Fifth BlackboxNLP Workshop on Analyzing
+  and Interpreting Neural Networks for NLP}, pp.\  335--345, Abu Dhabi, United
+  Arab Emirates, 2022. Association for Computational Linguistics.
+\newblock URL \url{https://aclanthology.org/2022.blackboxnlp-1.28}.
+
+\bibitem[Rombach et~al.(2022)Rombach, Blattmann, Lorenz, Esser, and
+  Ommer]{rombach2022}
+Rombach, R., Blattmann, A., Lorenz, D., Esser, P., and Ommer, B.
+\newblock High-resolution image synthesis with latent diffusion models.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}, pp.\  10684--10695, 2022.
+
+\bibitem[Rumelhart et~al.(1986)Rumelhart, McClelland, and {PDP Research
+  Group}]{rumelhart1986}
+Rumelhart, D.~E., McClelland, J.~L., and {PDP Research Group}.
+\newblock \emph{Parallel Distributed Processing: Explorations in the
+  Microstructure of Cognition, Volume 1: Foundations}.
+\newblock MIT Press, Cambridge, MA, 1986.
+
+\bibitem[Smolensky(1988{\natexlab{a}})]{smolensky1987}
+Smolensky, P.
+\newblock The constituent structure of connectionist mental states: A reply to
+  {Fodor} and {Pylyshyn}.
+\newblock \emph{The Southern Journal of Philosophy}, 26\penalty0 (S1):\penalty0
+  137--161, 1988{\natexlab{a}}.
+\newblock \doi{10.1111/j.2041-6962.1988.tb00470.x}.
+
+\bibitem[Smolensky(1988{\natexlab{b}})]{smolensky1988}
+Smolensky, P.
+\newblock On the proper treatment of connectionism.
+\newblock \emph{Behavioral and Brain Sciences}, 11\penalty0 (1):\penalty0
+  1--23, 1988{\natexlab{b}}.
+\newblock \doi{10.1017/S0140525X00052432}.
+
+\bibitem[Smolensky(1990)]{smolensky1990}
+Smolensky, P.
+\newblock Tensor product variable binding and the representation of symbolic
+  structures in connectionist systems.
+\newblock \emph{Artificial Intelligence}, 46\penalty0 (1--2):\penalty0
+  159--216, 1990.
+\newblock \doi{10.1016/0004-3702(90)90007-M}.
+
+\bibitem[{Team OLMo} et~al.(2024){Team OLMo}, Walsh, Soldaini, Groeneveld, Lo,
+  et~al.]{olmo2024olmo2}
+{Team OLMo}, Walsh, P., Soldaini, L., Groeneveld, D., Lo, K., et~al.
+\newblock 2 {OLMo} 2 furious.
+\newblock \emph{arXiv preprint arXiv:2501.00656}, 2024.
+
+\bibitem[Thrush et~al.(2022)Thrush, Jiang, Bartolo, Singh, Williams, Kiela, and
+  Ross]{thrush2022winoground}
+Thrush, T., Jiang, R., Bartolo, M., Singh, A., Williams, A., Kiela, D., and
+  Ross, C.
+\newblock Winoground: Probing vision and language models for visio-linguistic
+  compositionality.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}, pp.\  5238--5248, 2022.
+
+\bibitem[Timkey \& van Schijndel(2021)Timkey and van Schijndel]{timkey2021}
+Timkey, W. and van Schijndel, M.
+\newblock All bark and no bite: Rogue dimensions in transformer language models
+  obscure representational quality.
+\newblock In \emph{Proceedings of the 2021 Conference on Empirical Methods in
+  Natural Language Processing}, pp.\  4527--4546, 2021.
+\newblock \doi{10.18653/v1/2021.emnlp-main.372}.
+
+\bibitem[Treisman \& Gelade(1980)Treisman and Gelade]{treisman1980}
+Treisman, A.~M. and Gelade, G.
+\newblock A feature-integration theory of attention.
+\newblock \emph{Cognitive Psychology}, 12\penalty0 (1):\penalty0 97--136, 1980.
+\newblock \doi{10.1016/0010-0285(80)90005-5}.
+
+\bibitem[van~der Wal et~al.(2025)van~der Wal, Lesci, M{\"u}ller-Eberstein,
+  Saphra, Schoelkopf, Zuidema, and Biderman]{vanderwal2025polypythias}
+van~der Wal, O., Lesci, P., M{\"u}ller-Eberstein, M., Saphra, N., Schoelkopf,
+  H., Zuidema, W., and Biderman, S.
+\newblock {PolyPythias}: Stability and outliers across fifty language model
+  pre-training runs.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+
+\bibitem[van Gelder(1990)]{vangelder1990}
+van Gelder, T.
+\newblock Compositionality: A connectionist variation on a classical theme.
+\newblock \emph{Cognitive Science}, 14\penalty0 (3):\penalty0 355--384, 1990.
+\newblock \doi{10.1207/s15516709cog1403_2}.
+
+\bibitem[Wiedemer et~al.(2024)Wiedemer, Brady, Panfilov, Juhos, Bethge, and
+  Brendel]{wiedemer2024}
+Wiedemer, T., Brady, J., Panfilov, A., Juhos, A., Bethge, M., and Brendel, W.
+\newblock Provable compositional generalization for object-centric learning.
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+
+\bibitem[Yang et~al.(2025)]{yang2025qwen3}
+Yang, A. et~al.
+\newblock Qwen3 technical report.
+\newblock \emph{arXiv preprint arXiv:2505.09388}, 2025.
+
+\bibitem[Yang et~al.(2024)Yang, Gribovskaya, Kassner, Geva, and
+  Riedel]{yang2024latent}
+Yang, S., Gribovskaya, E., Kassner, N., Geva, M., and Riedel, S.
+\newblock Do large language models latently perform multi-hop reasoning?
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics}, 2024.
+
+\bibitem[Yuksekgonul et~al.(2023)Yuksekgonul, Bianchi, Kalluri, Jurafsky, and
+  Zou]{yuksekgonul2023}
+Yuksekgonul, M., Bianchi, F., Kalluri, P., Jurafsky, D., and Zou, J.
+\newblock When and why vision-language models behave like bags-of-words, and
+  what to do about it?
+\newblock In \emph{International Conference on Learning Representations}, 2023.
+
+\bibitem[Zadrozny(1994)]{zadrozny1994}
+Zadrozny, W.
+\newblock From compositional to systematic semantics.
+\newblock \emph{Linguistics and Philosophy}, 17\penalty0 (4):\penalty0
+  329--342, 1994.
+
+\bibitem[Zhai et~al.(2023)Zhai, Mustafa, Kolesnikov, and Beyer]{zhai2023siglip}
+Zhai, X., Mustafa, B., Kolesnikov, A., and Beyer, L.
+\newblock Sigmoid loss for language image pre-training.
+\newblock In \emph{Proceedings of the IEEE/CVF International Conference on
+  Computer Vision}, pp.\  11975--11986, 2023.
+
+\end{thebibliography}

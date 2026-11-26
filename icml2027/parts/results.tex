@@ -91,24 +91,24 @@ Table~\ref{tab:places} gives the scores on the two-photograph canvases of Sectio
 
 \textbf{Controls for the image results.} Three controls use the splits, part vectors, probe and $\kappa$ of the relative-placement protocol, over 3 seeds (Table~\ref{tab:imgctrl}). First, a linear probe can pass the moved test. From each photograph's own feature $f$ we build two states of fixed width: $f(p_\mathrm{left}) \otimes r_1 + f(p_\mathrm{right}) \otimes r_2$, with random unit role vectors assigned by left-to-right order, and $\sum_i f(p_i) \otimes q(x_i, y_i)$, with a Fourier code $q$ of each photograph's absolute position. Both reach $\kappa = 1.00$ on fixed canvases, and only the order code keeps 1.00 when the photographs move, while the position code falls to about 0, so the test separates the two codes. Second, the pooled embedding that matching reads (CLIP's projected embedding, SigLIP's attention-pooling head, DINOv2's class token) keeps less of the parts than their sum on fixed and on moved canvases. Third, image-only matching compares a canvas's pooled embedding with canvases built from other photographs of the same classes. It prefers the same arrangement over the swapped one at chance in every condition, also when the references sit at the canvas's own positions, while it prefers the right objects over a wrong one well above chance, so the chance-level caption matching of Section~\ref{sec:images} arises in the image tower.
 
-\begin{table}[h]
+\begin{table*}[t]
   \caption{\textbf{Image controls.} $\kappa$ of the constructed order and position states, $\kappa$ of the pooled embedding, and image-only matching (share of 1{,}000 canvases per seed; chance 0.50). Means over 3 seeds, standard errors at most 0.026.}
   \label{tab:imgctrl}
   \centering\footnotesize
-  \begin{tabular}{@{}lcccccc@{}}
+  \begin{tabular}{@{}lcccccccc@{}}
     \toprule
-     & \multicolumn{2}{c}{CLIP-B/32} & \multicolumn{2}{c}{DINOv2-L} & \multicolumn{2}{c}{SigLIP} \\
-     & Fixed & Moved & Fixed & Moved & Fixed & Moved \\
+     & \multicolumn{2}{c}{CLIP-B/32} & \multicolumn{2}{c}{CLIP-H/14} & \multicolumn{2}{c}{DINOv2-L} & \multicolumn{2}{c}{SigLIP} \\
+     & Fixed & Moved & Fixed & Moved & Fixed & Moved & Fixed & Moved \\
     \midrule
-    Order state, $\kappa$ & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
-    Position state, $\kappa$ & 1.00 & $-0.05$ & 1.00 & 0.02 & 1.00 & $-0.03$ \\
-    Pooled embedding, $\kappa$ & $-0.26$ & $-0.67$ & $-0.30$ & $-0.37$ & $-0.15$ & $-0.29$ \\
-    Patch quadrants, $\kappa$ & 0.81 & 0.24 & 0.91 & 0.42 & 0.93 & 0.45 \\
-    Image matching, arrangement & 0.50 & 0.50 & 0.51 & 0.52 & 0.51 & 0.53 \\
-    Image matching, objects & 0.78 & 0.60 & 0.86 & 0.82 & 0.88 & 0.80 \\
+    Order state, $\kappa$ & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+    Position state, $\kappa$ & 1.00 & $-0.05$ & 1.00 & $-0.03$ & 1.00 & 0.02 & 1.00 & $-0.03$ \\
+    Pooled embedding, $\kappa$ & $-0.26$ & $-0.67$ & $-0.45$ & $-0.57$ & $-0.30$ & $-0.37$ & $-0.15$ & $-0.29$ \\
+    Patch quadrants, $\kappa$ & 0.81 & 0.24 & 0.89 & 0.24 & 0.91 & 0.42 & 0.93 & 0.45 \\
+    Image matching, arrangement & 0.50 & 0.50 & 0.51 & 0.53 & 0.51 & 0.52 & 0.51 & 0.53 \\
+    Image matching, objects & 0.78 & 0.60 & 0.70 & 0.56 & 0.86 & 0.82 & 0.88 & 0.80 \\
     \bottomrule
   \end{tabular}
-\end{table}
+\end{table*}
 
 \textbf{Diffusion states.} In SD 1.5, quadrant averages give 0.73 for \textsc{beside} and \textsc{above} and 0.66 for \textsc{overlap}, and no single timestep lifts the swapped-place classifier above 0.52. The $4 \times 4$ grid gives $-0.14$ under moved photographs, so the places rest on fixed locations. Against the trained model's part vectors, the autoencoder's latent, the denoiser's input, gives $\kappa = -0.48$ in SD 1.5 and $-0.47$ in SDXL, and a random denoiser gives 0.12 and 0.09. Against its own part vectors, however, the random denoiser keeps 0.79 in SD 1.5 and 0.83 in SDXL, above the trained models' 0.70 and 0.43, so the U-Nets' convolutions lay out the fixed places before training, and training changes the code that reads them. The transformer denoisers read the image-token grid of four blocks. Their architectures differ in how much of the places they supply before training. Against the trained model's part vectors, random-weight Lumina keeps 0.66 over the three relations, close to the trained model's 0.89, and 0.87 against its own part vectors, \textsc{overlap} included. Random-weight PixArt-$\Sigma$ keeps 0.54 and 0.58 against the trained model's 0.75, and falls to 0.21 under \textsc{overlap}.
 

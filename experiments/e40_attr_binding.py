@@ -198,7 +198,7 @@ def run(name, seed, dev, small=False, outfn=None):
             with open(outfn + ".part", "w", encoding="utf-8") as f:
                 json.dump(dict(rows=res, behavior=beh), f)
     # behavior needs the LM head: E.load gives the base model, so reload as a causal LM after freeing it
-    del mod; torch.cuda.empty_cache()
+    import gc; mod.to("cpu"); del mod; gc.collect(); torch.cuda.empty_cache()
     from transformers import AutoModelForCausalLM
     repo = name.partition("@")[0]
     lm = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16).to(dev).eval()

@@ -1,0 +1,360 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\citation{frege1923,janssen1997}
+\citation{chomsky1957}
+\citation{lake2018}
+\citation{fodor1988}
+\citation{lake2017}
+\citation{lake2018,keysers2020,hupkes2020}
+\citation{thrush2022winoground,yuksekgonul2023}
+\citation{ramesh2021,huang2023t2i}
+\citation{press2023}
+\citation{conwell2022,rassin2022}
+\HyPL@Entry{0<</S/D>>}
+\newlabel{sec:intro}{{1}{1}{}{section.1}{}}
+\citation{hewitt2019}
+\citation{frege1923,montague1970,janssen1997}
+\citation{zadrozny1994}
+\citation{fodor1988}
+\citation{smolensky1990}
+\citation{fodor1990}
+\citation{smolensky1988}
+\citation{vangelder1990}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:ladder}{{1}{2}{\textbf {Behavior lags the decomposition that the state supports.} Each point scores one system on parts new to the probe, by a linear probe of its state (horizontal) and by its own output (vertical), each scaled from a blend, chance or word order (0) to exact recovery (1). Bars span models, architectures or relations. Glyph networks, recursive composers, image encoders and diffusion models sit below the diagonal, and a new decoder on a frozen glyph state lifts behavior (green). Image and diffusion points use fixed quadrants, and open circles move the photographs. Language models that answer by meaning sit near the diagonal, and OLMo-2 7B answers beyond our linear probes.\relax }{figure.caption.1}{}}
+\newlabel{sec:related}{{2}{2}{}{section.2}{}}
+\citation{lake2018,keysers2020,hupkes2020,lake2023}
+\citation{okawa2023,favero2025diffusion}
+\citation{belinkov2022}
+\citation{geiger2021,mccoy2019}
+\citation{montero2021}
+\citation{andreas2019,elmoznino2024,elmoznino2026}
+\citation{smolensky1990}
+\citation{marcus1998}
+\citation{hewitt2019}
+\newlabel{sec:definition}{{3}{3}{}{section.3}{}}
+\newlabel{def:behcomp}{{1}{3}{Weak compositionality}{tcb@cnt@defbox.1}{}}
+\newlabel{def:decomp}{{2}{3}{Decomposition and strong compositionality}{tcb@cnt@defbox.2}{}}
+\citation{fodor1988}
+\citation{smolensky1990}
+\citation{pollack1990}
+\citation{radford2021clip,cherti2023,oquab2024dinov2,zhai2023siglip,rombach2022,le2015tiny}
+\citation{abdin2024phi4,yang2025qwen3,olmo2024olmo2,biderman2023pythia,radford2019gpt2}
+\newlabel{sec:repcomp}{{4}{4}{}{section.4}{}}
+\newlabel{def:recoverable}{{3}{4}{Recoverable relations}{tcb@cnt@defbox.3}{}}
+\newlabel{eq:recover}{{1}{4}{Recoverable relations}{equation.4.1}{}}
+\newlabel{def:repcomp}{{4}{4}{Recoverability}{tcb@cnt@defbox.4}{}}
+\newlabel{eq:kappa}{{2}{4}{Recoverability}{equation.4.2}{}}
+\newlabel{def:factor}{{5}{4}{Shared role codes}{tcb@cnt@defbox.5}{}}
+\newlabel{eq:factor}{{3}{4}{Shared role codes}{equation.4.3}{}}
+\newlabel{sec:experiments}{{5}{4}{}{section.5}{}}
+\citation{timkey2021}
+\citation{fodor1990}
+\citation{mccloskey1989}
+\newlabel{sec:results}{{6}{5}{}{section.6}{}}
+\newlabel{sec:states}{{6.1}{5}{}{subsection.6.1}{}}
+\newlabel{sec:depth}{{6.2}{5}{}{subsection.6.2}{}}
+\newlabel{sec:images}{{6.3}{5}{}{subsection.6.3}{}}
+\citation{li2023diffclassifier,clark2023diffclassifier}
+\citation{liu2024groundingdino}
+\newlabel{fig:strong}{{2}{6}{\textbf {States decompose where the system's own outputs stay weak.} \textbf {a.} Trained on 8 glyphs, an MLP renders wholes of new glyphs poorly (orange frames), while a linear probe of its state recovers them (blue frames); trained on 64 glyphs, it does both. Numbers give $R^2$ to the target. \textbf {b.} Own decoders reproduce new pairs of training glyphs (dashed, open) but fail on new glyphs at small $V$ (solid), while a probe of the state stays high ($m = 64$). \textbf {c.} A recursive composer's own decomposer fails beyond its training depths (shaded), where a probe of the same root state follows the bound of Proposition~\ref {prop:depth} (dotted). \textbf {d.} Image--text encoders match captions with swapped places at chance, while their quadrant states recover both photographs in their fixed places. Means over 3--9 seeds, with standard errors.\relax }{figure.caption.2}{}}
+\newlabel{sec:diffusion}{{6.4}{6}{}{subsection.6.4}{}}
+\newlabel{sec:behavior}{{6.5}{6}{}{subsection.6.5}{}}
+\citation{fodor1988}
+\newlabel{fig:both}{{3}{7}{\textbf {Where a model answers by meaning, the answer runs through a recoverable question state.} \textbf {a.} Answers (orange), the figure probe of the question state (blue) and of the average over tokens (grey) for two pairs of new nouns; bold marks the figure and red the ground. \textbf {b.} Answer accuracy against the role transfer of the question state for seven language models on the main prompt (large dots) and three others (small dots); models that answer by word order sit at the lower left (red). \textbf {c.} Patching the whole question state from a source with the opposite figure flips the answer from the later layers on. \textbf {d.} Patching a subspace at each model's selected layer (phi-4, Qwen3-8B, OLMo-2 13B): the top directions of the source--target difference flip more answers than the figure probe or the top principal components, and random directions flip almost none. Means over 3 seeds, and 2 in \textbf {d}.\relax }{figure.caption.3}{}}
+\newlabel{sec:origins}{{6.6}{7}{}{subsection.6.6}{}}
+\citation{fodor2002,vangelder1990}
+\citation{bengio2013,lachapelle2023}
+\citation{cunningham2023sparse,locatello2020slot}
+\citation{lake2018,kim2020cogs,keysers2020}
+\citation{thrush2022winoground,yuksekgonul2023}
+\citation{huang2023t2i,ghosh2023geneval}
+\citation{press2023}
+\citation{yang2024latent,biran2024hopping}
+\citation{geiger2021,mccoy2019,lepori2023}
+\citation{feng2024}
+\newlabel{fig:spectrum}{{4}{8}{\textbf {Accounts of compositionality differ in the capabilities they ask for.} Each card names a set of capabilities, its demand on decomposition, the accounts that ask for it and the systems of this paper that meet it. A blend loses its parts, and weak compositionality asks only that the system act on new combinations. Strong compositionality adds decomposition by a linear probe fixed in advance, and two stricter sets also fix the form of that decomposition.\relax }{figure.caption.4}{}}
+\newlabel{sec:spectrum}{{7}{8}{}{section.7}{}}
+\bibdata{references}
+\bibcite{abdin2024phi4}{{1}{2024}{{Abdin et~al.}}{{}}}
+\newlabel{tab:tested}{{1}{9}{\textbf {Each system receives a pair of placements, one under roles by position and one under roles by meaning.} Image and denoiser entries under meaning give $\kappa $ under moved photographs. No tested system reaches explicit copies.\relax }{table.caption.5}{}}
+\newlabel{sec:discussion}{{8}{9}{}{section.8}{}}
+\bibcite{andreas2019}{{2}{2019}{{Andreas}}{{}}}
+\bibcite{belinkov2022}{{3}{2022}{{Belinkov}}{{}}}
+\bibcite{bengio2013}{{4}{2013}{{Bengio et~al.}}{{Bengio, Courville, and Vincent}}}
+\bibcite{biderman2023pythia}{{5}{2023}{{Biderman et~al.}}{{Biderman, Schoelkopf, Anthony, Bradley, O'Brien, Hallahan, Khan, Purohit, Prashanth, Raff, Skowron, Sutawika, and van~der Wal}}}
+\bibcite{biran2024hopping}{{6}{2024}{{Biran et~al.}}{{Biran, Gottesman, Yang, Geva, and Globerson}}}
+\bibcite{bricken2023monosemanticity}{{7}{2023}{{Bricken et~al.}}{{Bricken, Templeton, et~al.}}}
+\bibcite{cagnetta2024rhm}{{8}{2024}{{Cagnetta et~al.}}{{Cagnetta, Petrini, Tomasini, Favero, and Wyart}}}
+\bibcite{cherti2023}{{9}{2023}{{Cherti et~al.}}{{Cherti, Beaumont, Wightman, Wortsman, Ilharco, Gordon, Schuhmann, Schmidt, and Jitsev}}}
+\bibcite{chomsky1957}{{10}{1957}{{Chomsky}}{{}}}
+\bibcite{clark2023diffclassifier}{{11}{2023}{{Clark \& Jaini}}{{Clark and Jaini}}}
+\bibcite{conwell2022}{{12}{2022}{{Conwell \& Ullman}}{{Conwell and Ullman}}}
+\bibcite{cunningham2023sparse}{{13}{2024}{{Cunningham et~al.}}{{Cunningham, Ewart, Riggs, Huben, and Sharkey}}}
+\bibcite{devlin2019bert}{{14}{2019}{{Devlin et~al.}}{{Devlin, Chang, Lee, and Toutanova}}}
+\bibcite{dziri2023}{{15}{2023}{{Dziri et~al.}}{{Dziri, Lu, Sclar, Li, Jiang, Lin, West, Bhagavatula, Le~Bras, Hwang, Sanyal, Welleck, Ren, Ettinger, Harchaoui, and Choi}}}
+\bibcite{eckart1936}{{16}{1936}{{Eckart \& Young}}{{Eckart and Young}}}
+\bibcite{elhage2022}{{17}{2022}{{Elhage et~al.}}{{Elhage, Hume, Olsson, Schiefer, Henighan, Kravec, Hatfield-Dodds, Lasenby, Drain, Chen, Grosse, McCandlish, Kaplan, Amodei, Wattenberg, and Olah}}}
+\bibcite{elman1990}{{18}{1990}{{Elman}}{{}}}
+\bibcite{elmoznino2024}{{19}{2025}{{Elmoznino et~al.}}{{Elmoznino, Jiralerspong, Bengio, and Lajoie}}}
+\bibcite{elmoznino2026}{{20}{2026}{{Elmoznino et~al.}}{{Elmoznino, Kasetty, Ag{\"u}era~y Arcas, Bengio, and Lajoie}}}
+\bibcite{fauconnier2002}{{21}{2002}{{Fauconnier \& Turner}}{{Fauconnier and Turner}}}
+\bibcite{favero2025diffusion}{{22}{2025}{{Favero et~al.}}{{Favero, Sclocchi, Cagnetta, Frossard, and Wyart}}}
+\bibcite{feng2024}{{23}{2024}{{Feng \& Steinhardt}}{{Feng and Steinhardt}}}
+\bibcite{fodor1990}{{24}{1990}{{Fodor \& McLaughlin}}{{Fodor and McLaughlin}}}
+\bibcite{fodor2002}{{25}{2002}{{Fodor \& Lepore}}{{Fodor and Lepore}}}
+\bibcite{fodor1988}{{26}{1988}{{Fodor \& Pylyshyn}}{{Fodor and Pylyshyn}}}
+\bibcite{frege1923}{{27}{1923}{{Frege}}{{}}}
+\bibcite{gayler2006}{{28}{2006}{{Gayler}}{{}}}
+\bibcite{geiger2021}{{29}{2021}{{Geiger et~al.}}{{Geiger, Lu, Icard, and Potts}}}
+\bibcite{geiger2024das}{{30}{2024}{{Geiger et~al.}}{{Geiger, Wu, Potts, Icard, and Goodman}}}
+\bibcite{ghosh2023geneval}{{31}{2023}{{Ghosh et~al.}}{{Ghosh, Hajishirzi, and Schmidt}}}
+\bibcite{goodale2026}{{32}{2026}{{Goodale \& Mascarenhas}}{{Goodale and Mascarenhas}}}
+\bibcite{greff2020}{{33}{2020}{{Greff et~al.}}{{Greff, van Steenkiste, and Schmidhuber}}}
+\bibcite{hewitt2019}{{34}{2019}{{Hewitt \& Liang}}{{Hewitt and Liang}}}
+\bibcite{hinton1990}{{35}{1990}{{Hinton}}{{}}}
+\bibcite{hsieh2023sugarcrepe}{{36}{2023}{{Hsieh et~al.}}{{Hsieh, Zhang, Ma, Kembhavi, and Krishna}}}
+\bibcite{huang2023t2i}{{37}{2023}{{Huang et~al.}}{{Huang, Sun, Xie, Li, and Liu}}}
+\bibcite{hummel1997}{{38}{1997}{{Hummel \& Holyoak}}{{Hummel and Holyoak}}}
+\bibcite{hupkes2020}{{39}{2020}{{Hupkes et~al.}}{{Hupkes, Dankers, Mul, and Bruni}}}
+\bibcite{janssen1997}{{40}{1997}{{Janssen \& Partee}}{{Janssen and Partee}}}
+\bibcite{kamath2023textenc}{{41}{2023{a}}{{Kamath et~al.}}{{Kamath, Hessel, and Chang}}}
+\bibcite{kamath2023whatsup}{{42}{2023{b}}{{Kamath et~al.}}{{Kamath, Hessel, and Chang}}}
+\bibcite{kamp1995}{{43}{1995}{{Kamp \& Partee}}{{Kamp and Partee}}}
+\bibcite{kanerva2009}{{44}{2009}{{Kanerva}}{{}}}
+\bibcite{keysers2020}{{45}{2020}{{Keysers et~al.}}{{Keysers, Sch{\"a}rli, Scales, Buisman, Furrer, Kashubin, Momchev, Sinopalnikov, Stafiniak, Tihon, Tsarkov, Wang, van Zee, and Bousquet}}}
+\bibcite{kim2020cogs}{{46}{2020}{{Kim \& Linzen}}{{Kim and Linzen}}}
+\bibcite{lachapelle2023}{{47}{2023}{{Lachapelle et~al.}}{{Lachapelle, Mahajan, Mitliagkas, and Lacoste-Julien}}}
+\bibcite{lake2018}{{48}{2018}{{Lake \& Baroni}}{{Lake and Baroni}}}
+\bibcite{lake2023}{{49}{2023}{{Lake \& Baroni}}{{Lake and Baroni}}}
+\bibcite{lake2017}{{50}{2017}{{Lake et~al.}}{{Lake, Ullman, Tenenbaum, and Gershman}}}
+\bibcite{le2015tiny}{{51}{2015}{{Le \& Yang}}{{Le and Yang}}}
+\bibcite{lepori2023}{{52}{2023}{{Lepori et~al.}}{{Lepori, Serre, and Pavlick}}}
+\bibcite{lewis2024clip}{{53}{2024}{{Lewis et~al.}}{{Lewis, Nayak, Yu, Yu, Merullo, Bach, and Pavlick}}}
+\bibcite{li2023diffclassifier}{{54}{2023{a}}{{Li et~al.}}{{Li, Prabhudesai, Duggal, Brown, and Pathak}}}
+\bibcite{li2023slog}{{55}{2023{b}}{{Li et~al.}}{{Li, Donatelli, Koller, Linzen, Yao, and Kim}}}
+\bibcite{liu2021relations}{{56}{2021}{{Liu et~al.}}{{Liu, Li, Du, Tenenbaum, and Torralba}}}
+\bibcite{liu2022composable}{{57}{2022}{{Liu et~al.}}{{Liu, Li, Du, Torralba, and Tenenbaum}}}
+\bibcite{liu2024groundingdino}{{58}{2024}{{Liu et~al.}}{{Liu, Zeng, Ren, Li, Zhang, Yang, Jiang, Li, Yang, Su, Zhu, and Zhang}}}
+\bibcite{locatello2019}{{59}{2019}{{Locatello et~al.}}{{Locatello, Bauer, Lucic, R{\"a}tsch, Gelly, Sch{\"o}lkopf, and Bachem}}}
+\bibcite{locatello2020slot}{{60}{2020}{{Locatello et~al.}}{{Locatello, Weissenborn, Unterthiner, Mahendran, Heigold, Uszkoreit, Dosovitskiy, and Kipf}}}
+\bibcite{marcus1998}{{61}{1998}{{Marcus}}{{}}}
+\bibcite{mccloskey1989}{{62}{1989}{{McCloskey \& Cohen}}{{McCloskey and Cohen}}}
+\bibcite{mccoy2019}{{63}{2019}{{McCoy et~al.}}{{McCoy, Linzen, Dunbar, and Smolensky}}}
+\bibcite{montague1970}{{64}{1970}{{Montague}}{{}}}
+\bibcite{montero2021}{{65}{2021}{{Montero et~al.}}{{Montero, Ludwig, Costa, Malhotra, and Bowers}}}
+\bibcite{okawa2023}{{66}{2023}{{Okawa et~al.}}{{Okawa, Lubana, Dick, and Tanaka}}}
+\bibcite{openai2021dalle}{{67}{2021}{{OpenAI}}{{}}}
+\bibcite{oquab2024dinov2}{{68}{2024}{{Oquab et~al.}}{{Oquab, Darcet, Moutakanni, Vo, Szafraniec, Khalidov, Fernandez, Haziza, Massa, El-Nouby, et~al.}}}
+\bibcite{osherson1981}{{69}{1981}{{Osherson \& Smith}}{{Osherson and Smith}}}
+\bibcite{park2024hidden}{{70}{2024{a}}{{Park et~al.}}{{Park, Okawa, Lee, Lubana, and Tanaka}}}
+\bibcite{park2024linear}{{71}{2024{b}}{{Park et~al.}}{{Park, Choe, and Veitch}}}
+\bibcite{pinker1988}{{72}{1988}{{Pinker \& Prince}}{{Pinker and Prince}}}
+\bibcite{plate1995}{{73}{1995}{{Plate}}{{}}}
+\bibcite{pollack1990}{{74}{1990}{{Pollack}}{{}}}
+\bibcite{press2023}{{75}{2023}{{Press et~al.}}{{Press, Zhang, Min, Schmidt, Smith, and Lewis}}}
+\bibcite{radford2019gpt2}{{76}{2019}{{Radford et~al.}}{{Radford, Wu, Child, Luan, Amodei, and Sutskever}}}
+\bibcite{radford2021clip}{{77}{2021}{{Radford et~al.}}{{Radford, Kim, Hallacy, Ramesh, Goh, Agarwal, Sastry, Askell, Mishkin, Clark, Krueger, and Sutskever}}}
+\bibcite{raffel2020t5}{{78}{2020}{{Raffel et~al.}}{{Raffel, Shazeer, Roberts, Lee, Narang, Matena, Zhou, Li, and Liu}}}
+\bibcite{ramesh2021}{{79}{2021}{{Ramesh et~al.}}{{Ramesh, Pavlov, Goh, Gray, Voss, Radford, Chen, and Sutskever}}}
+\bibcite{rassin2022}{{80}{2022}{{Rassin et~al.}}{{Rassin, Ravfogel, and Goldberg}}}
+\bibcite{rombach2022}{{81}{2022}{{Rombach et~al.}}{{Rombach, Blattmann, Lorenz, Esser, and Ommer}}}
+\bibcite{rumelhart1986}{{82}{1986}{{Rumelhart et~al.}}{{Rumelhart, McClelland, and {PDP Research Group}}}}
+\bibcite{smolensky1987}{{83}{1988{a}}{{Smolensky}}{{}}}
+\bibcite{smolensky1988}{{84}{1988{b}}{{Smolensky}}{{}}}
+\bibcite{smolensky1990}{{85}{1990}{{Smolensky}}{{}}}
+\bibcite{olmo2024olmo2}{{86}{2024}{{{Team OLMo} et~al.}}{{{Team OLMo}, Walsh, Soldaini, Groeneveld, Lo, et~al.}}}
+\bibcite{thrush2022winoground}{{87}{2022}{{Thrush et~al.}}{{Thrush, Jiang, Bartolo, Singh, Williams, Kiela, and Ross}}}
+\bibcite{timkey2021}{{88}{2021}{{Timkey \& van Schijndel}}{{Timkey and van Schijndel}}}
+\bibcite{treisman1980}{{89}{1980}{{Treisman \& Gelade}}{{Treisman and Gelade}}}
+\bibcite{vanderwal2025polypythias}{{90}{2025}{{van~der Wal et~al.}}{{van~der Wal, Lesci, M{\"u}ller-Eberstein, Saphra, Schoelkopf, Zuidema, and Biderman}}}
+\bibcite{vangelder1990}{{91}{1990}{{van Gelder}}{{}}}
+\bibcite{wiedemer2024}{{92}{2024}{{Wiedemer et~al.}}{{Wiedemer, Brady, Panfilov, Juhos, Bethge, and Brendel}}}
+\bibcite{yang2025qwen3}{{93}{2025}{{Yang et~al.}}{{}}}
+\bibcite{yang2024latent}{{94}{2024}{{Yang et~al.}}{{Yang, Gribovskaya, Kassner, Geva, and Riedel}}}
+\bibcite{yuksekgonul2023}{{95}{2023}{{Yuksekgonul et~al.}}{{Yuksekgonul, Bianchi, Kalluri, Jurafsky, and Zou}}}
+\bibcite{zadrozny1994}{{96}{1994}{{Zadrozny}}{{}}}
+\bibcite{zhai2023siglip}{{97}{2023}{{Zhai et~al.}}{{Zhai, Mustafa, Kolesnikov, and Beyer}}}
+\bibstyle{icml2027}
+\citation{openai2021dalle}
+\citation{le2015tiny}
+\citation{openai2021dalle}
+\citation{le2015tiny}
+\citation{frege1923}
+\citation{montague1970}
+\citation{janssen1997}
+\citation{zadrozny1994}
+\citation{osherson1981}
+\citation{fauconnier2002}
+\citation{rumelhart1986,pinker1988,elman1990}
+\citation{marcus1998}
+\citation{lake2018,keysers2020}
+\citation{hupkes2020}
+\citation{lake2023}
+\citation{ramesh2021,huang2023t2i}
+\citation{okawa2023}
+\citation{favero2025diffusion}
+\citation{fodor1988}
+\citation{smolensky1990}
+\citation{fodor1990}
+\citation{goodale2026}
+\citation{smolensky1988}
+\citation{smolensky1987}
+\citation{kamp1995}
+\citation{vangelder1990}
+\citation{hinton1990}
+\citation{pollack1990}
+\citation{plate1995,gayler2006,kanerva2009}
+\citation{hummel1997}
+\citation{treisman1980,greff2020}
+\newlabel{fig:intro}{{5}{15}{\textbf {Some wholes give their parts back, and others blend them.} Each column composes two parts into a whole. Placing an avocado on an armchair, setting two photographs side by side and naming two nouns in a sentence keep each part in its role, so the whole comes apart again (blue). An avocado-shaped armchair and the pixel average of two photographs merge the parts, and many pairs of parts give the same whole (red). Canva's text-to-image tool generated the avocado and armchair images \citep [after][]{openai2021dalle}, and the photographs come from Tiny-ImageNet \citep {le2015tiny}.\relax }{figure.caption.9}{}}
+\newlabel{app:related}{{A}{15}{AI Use Statement}{appendix.A}{}}
+\citation{belinkov2022}
+\citation{mccoy2019}
+\citation{geiger2021}
+\citation{elhage2022}
+\citation{bengio2013,locatello2019}
+\citation{lachapelle2023,wiedemer2024}
+\citation{montero2021}
+\citation{andreas2019}
+\citation{elmoznino2024}
+\citation{elmoznino2026}
+\newlabel{app:proofs}{{B}{16}{AI Use Statement}{appendix.B}{}}
+\newlabel{lem:psi}{{1}{16}{Unrestricted coordinates reduce separability to injectivity}{lemma.1}{}}
+\newlabel{lem:lookup}{{2}{16}{Lookup decodes any relation that is injective on a vocabulary}{lemma.2}{}}
+\newlabel{prop:subset}{{1}{16}{Behavior entails recoverability, and the converse fails}{proposition.1}{}}
+\citation{eckart1936}
+\newlabel{prop:fiber}{{2}{17}{Non-identifiability of linear blends}{proposition.2}{}}
+\newlabel{prop:ceiling}{{3}{17}{Ceiling on new-part recovery}{proposition.3}{}}
+\newlabel{prop:ey}{{4}{17}{Ceiling for any relation under linear probes}{proposition.4}{}}
+\newlabel{prop:span}{{5}{17}{Fitted linear procedures are determined only on the span of the fitted wholes}{proposition.5}{}}
+\citation{smolensky1990}
+\citation{mccoy2019}
+\newlabel{prop:systematic}{{6}{18}{Unbinding with shared role codes}{proposition.6}{}}
+\newlabel{prop:approx}{{7}{18}{Approximate unbinding}{proposition.7}{}}
+\citation{smolensky1990}
+\newlabel{prop:depth}{{8}{19}{Depth}{proposition.8}{}}
+\newlabel{app:defs}{{C}{19}{AI Use Statement}{appendix.C}{}}
+\newlabel{app:extra}{{C}{19}{AI Use Statement}{appendix.C}{}}
+\newlabel{def:informative}{{6}{19}{Informative part vectors and productivity}{tcb@cnt@defbox.6}{}}
+\citation{cagnetta2024rhm}
+\citation{plate1995,gayler2006,kanerva2009}
+\newlabel{tab:objective}{{2}{20}{\textbf {A recovery objective over many parts improves the state and the network's own decoder, whereas one over training parts leaves the state unchanged.} Values are $R^2$ on new glyphs at $V = 8$, averaged over MLP, CNN and role--filler networks with 5 seeds. The fixed renderer draws the glyphs that the linear head predicts.\relax }{table.caption.10}{}}
+\newlabel{app:setup}{{D}{20}{AI Use Statement}{appendix.D}{}}
+\newlabel{app:calibration}{{D.2}{20}{AI Use Statement}{subsection.D.2}{}}
+\newlabel{tab:capabilities}{{3}{21}{\textbf {The strong form supports every weak capability and adds those that need decomposition.} Each row names a capability, the weakest set of the spectrum that supports it in our tests and the test of this paper that scores it on new parts. Five sets order the spectrum: a blend that keeps no decomposition, then weak, strong, shared role codes and explicit copies (Section~\ref {sec:sets}). Shared role codes give each part one vector per role (Section~\ref {sec:mechanics}), so a written vector or an edit acts on one role alone. No system we tested reaches explicit copies.\relax }{table.caption.11}{}}
+\newlabel{fig:measure}{{6}{21}{\textbf {Training parts hide blends, and new parts expose them.} \textbf {a.} Given the candidates, a lookup over wholes built from 32 training parts (open orange) identifies the role-1 part of every operator except the symmetric blend, while a linear probe separates the operators on new parts (filled; red marks the blend $x + y$). \textbf {b.} Linear recovery of new parts meets the ceiling of Proposition~\ref {prop:ceiling} across operators. Means over 5 seeds.\relax }{figure.caption.12}{}}
+\citation{pollack1990}
+\citation{le2015tiny}
+\citation{radford2021clip}
+\citation{rombach2022}
+\citation{raffel2020t5}
+\citation{devlin2019bert}
+\citation{radford2019gpt2}
+\citation{radford2021clip,cherti2023}
+\citation{oquab2024dinov2}
+\citation{zhai2023siglip}
+\citation{rombach2022}
+\citation{yang2025qwen3}
+\citation{olmo2024olmo2}
+\citation{abdin2024phi4}
+\citation{biderman2023pythia}
+\citation{vanderwal2025polypythias}
+\citation{timkey2021}
+\newlabel{tab:systems}{{4}{22}{\textbf {Every system supplies parts, wholes and a state, and each supplies an output of its own.} Parts new to the system never entered its training, whereas parts new to the probe entered pretraining while staying out of the probe's fit. Invented words extend the language models' test to parts new to the model itself.\relax }{table.caption.13}{}}
+\newlabel{fig:protocol}{{7}{23}{\textbf {One protocol reads the same new parts through three procedures.} \textbf {a.} We split the parts before fitting anything (1). The system encodes wholes of two parts (2, 3), and linear probes fitted on the probe's training parts return each role's part from the state, with error $\varepsilon $ on new parts (4). The same steps, run on the concatenation and on the sum of the same part vectors, calibrate $\varepsilon $ into recoverability $\kappa $ (5). \textbf {b.} A probe trained on many parts measures the representation, a probe trained on the system's training parts stands in for a typical probe, and the system's own output measures behavior. \textbf {c.} A converse paraphrase keeps the figure and reverses the order of mention. A probe of the figure fitted on one phrasing therefore returns the tulip on the other if roles follow meaning, and the barrel if they follow word order. Colors keep one meaning in every figure. Orange marks the system's own output and blue a probe of its state. Green marks a procedure that reads through the state, such as a new decoder, an edit or a patch, grey marks controls and references, and red marks a blend or an answer by word order. Filled markers denote new parts and open markers training parts.\relax }{figure.caption.14}{}}
+\newlabel{app:metrics}{{D.5}{23}{AI Use Statement}{subsection.D.5}{}}
+\citation{fodor1990}
+\citation{mccloskey1989}
+\citation{fodor1988}
+\newlabel{app:results}{{E}{24}{AI Use Statement}{appendix.E}{}}
+\newlabel{app:states}{{E.1}{24}{AI Use Statement}{subsection.E.1}{}}
+\newlabel{fig:decomp}{{8}{25}{\textbf {Procedures that read through role codes reuse the parts.} Role maps $h \approx c + B_1 e(x) + B_2 e(y)$, fitted on many glyphs, predict and edit states that each network's own decoder renders (\textsc {over}, $V = 64$). \textbf {a.} A code swap replaces the role-1 vector with a donor's vector, and the decoder renders the donor in role 1 while keeping the role-2 glyph. The natural direction $h(a', b') - h(a, b)$, scaled to the same norm, lands far from the target. Numbers give $R^2$ to the target. \textbf {b.} Writing a new glyph's vector through $B_2$ keeps old pairs (dark) and renders the new glyph in a role it never filled (light), with no gradient step, whereas fine-tuning damages both and replay needs stored data. \textbf {c.} A role-1 swap changes the role-2 half of the output less than other changes of the state do. \textbf {d.} In language models that answer by meaning, the state at two role questions places a sentence's converse paraphrase nearer than both role reversals, with no fitted probe, whereas the average over tokens never does; chance is $1/3$ (dotted). Means over 3--5 seeds, with standard errors.\relax }{figure.caption.15}{}}
+\newlabel{app:depth}{{E.2}{25}{AI Use Statement}{subsection.E.2}{}}
+\newlabel{app:images}{{E.3}{25}{AI Use Statement}{subsection.E.3}{}}
+\citation{li2023diffclassifier,clark2023diffclassifier}
+\citation{liu2024groundingdino}
+\newlabel{app:diffusion}{{E.4}{26}{AI Use Statement}{subsection.E.4}{}}
+\newlabel{app:behavior}{{E.5}{27}{AI Use Statement}{subsection.E.5}{}}
+\newlabel{fig:weak}{{9}{28}{\textbf {Behavior can outrun a linear probe, and sentence states fail both tests.} \textbf {a.} OLMo-2 7B answers by meaning (orange), and its question state carries the answer under patching (green), while ridge, kernel and MLP probes of that state miss the role (blue), even with hyperparameters chosen on the test set (grey). \textbf {b.} Pythia-1.4b and GPT-2 large answer with the last-mentioned noun, and probes of their question states return the first-mentioned noun. Bold marks the figure and red the ground. \textbf {c.} A figure probe of the average over tokens returns the noun in the figure's word position (red) in every language model and for every probe, while the same probe at the question returns the figure (blue). \textbf {d.} Text encoders tell a sentence's nouns from others (grey), yet they prefer a sentence's converse paraphrase over the same paraphrase with the nouns exchanged on only 0.02--0.15 of pairs (orange), where matching meaning scores 1. New nouns; means over 3 seeds.\relax }{figure.caption.16}{}}
+\newlabel{tab:remedies}{{5}{29}{\textbf {Reading through the state repairs the failing procedures of glyph networks and recursive composers, and gives language models a sentence embedding that carries the role.} Values are $R^2$ of the system's output for the glyph and recursive networks, and the share of pairs of new nouns whose converse paraphrase is nearer than both role reversals for the language models. Each row compares runs within one experiment. Glyph values average MLP, CNN and role--filler networks over 5--9 seeds, and the sequence of 32 glyphs starts from networks trained on 16 glyphs. Recursive values use width 256, 5 seeds and 20{,}000 training steps, which give 0.27 at depth 3 against 0.26 after 6{,}000 steps in the text, and language-model values use 3 seeds.\relax }{table.caption.17}{}}
+\newlabel{app:origins}{{E.6}{29}{AI Use Statement}{subsection.E.6}{}}
+\citation{fauconnier2002,osherson1981,kamp1995}
+\citation{liu2022composable}
+\citation{frege1923,montague1970}
+\citation{lake2018,kim2020cogs,keysers2020,hupkes2020,lake2023}
+\citation{thrush2022winoground,yuksekgonul2023}
+\citation{ramesh2021,huang2023t2i,ghosh2023geneval}
+\citation{okawa2023,park2024hidden,favero2025diffusion}
+\citation{dziri2023,press2023}
+\citation{pollack1990}
+\citation{plate1995,gayler2006,kanerva2009}
+\citation{fodor2002}
+\citation{vangelder1990}
+\citation{smolensky1988}
+\citation{montero2021}
+\citation{lepori2023,geiger2021,geiger2024das,mccoy2019}
+\citation{cunningham2023sparse,bricken2023monosemanticity,park2024linear}
+\citation{locatello2020slot}
+\citation{smolensky1990}
+\citation{bengio2013,lachapelle2023,wiedemer2024}
+\citation{andreas2019,elmoznino2024,elmoznino2026}
+\citation{feng2024}
+\citation{fodor1988}
+\citation{belinkov2022,hewitt2019}
+\citation{zadrozny1994}
+\citation{fodor1988}
+\newlabel{fig:origins}{{10}{30}{\textbf {The input supplies recoverability in the glyph networks, whereas pretrained models build it beyond their inputs.} Each row compares a trained state (blue) with its input (grey) and with random weights (light grey). \textbf {a.} Probes of new glyphs at $V = 8$, on plain inputs and on inputs entangled by a fixed random map. \textbf {b.} Language models against the average and the concatenation of the two nouns' input embeddings. \textbf {c.} Image encoders against raw pixels, scored with each encoder's own part vectors. \textbf {d.} Text encoders. \textbf {e.} Pythia models of growing size, whose scale trend is Pythia's alone, and four other language models (squares). \textbf {f.} Training of Pythia-1.4b, where step 0 is the initialization, and of Pythia-410m from six random seeds (line and range). Probes in \textbf {b} and \textbf {d}--\textbf {f} recover the nouns in their order of mention. $\kappa $ is 1 for the concatenation of the part vectors (dotted) and 0 for their sum. Means over 3--5 seeds.\relax }{figure.caption.18}{}}
+\newlabel{app:spectrum}{{F}{30}{AI Use Statement}{appendix.F}{}}
+\newlabel{tab:spectrum}{{6}{31}{\textbf {Each account asks for the set of capabilities that its demand on decomposition sets.} The middle column gives the demand in the terms of this paper, and the last column gives the set of Figure~\ref {fig:spectrum}.\relax }{table.caption.19}{}}
+\citation{fodor2002}
+\citation{vangelder1990}
+\citation{andreas2019,elmoznino2024,elmoznino2026}
+\citation{hupkes2020}
+\citation{lake2018,kim2020cogs,keysers2020,li2023slog}
+\newlabel{app:sets}{{F.1}{32}{AI Use Statement}{subsection.F.1}{}}
+\newlabel{app:modern}{{F.2}{32}{AI Use Statement}{subsection.F.2}{}}
+\citation{thrush2022winoground,yuksekgonul2023}
+\citation{yuksekgonul2023}
+\citation{kamath2023textenc}
+\citation{kamath2023whatsup}
+\citation{lewis2024clip}
+\citation{hsieh2023sugarcrepe}
+\citation{huang2023t2i,ghosh2023geneval}
+\citation{conwell2022,rassin2022}
+\citation{liu2022composable}
+\citation{okawa2023,park2024hidden}
+\citation{favero2025diffusion}
+\citation{liu2021relations}
+\citation{park2024hidden}
+\newlabel{tab:modern}{{7}{33}{\textbf {Four families of behavioral tests score the weak form, one composition method marks no roles, and mechanistic tests can reach the strong form.} The second column names the behavior each family scores, the third the part of the strong form it cannot see, and the last the change that would test it.\relax }{table.caption.20}{}}
+\citation{dziri2023,press2023}
+\citation{press2023}
+\citation{yang2024latent,biran2024hopping}
+\citation{lepori2023}
+\citation{geiger2021,geiger2024das,mccoy2019}
+\citation{feng2024}
+\citation{feng2024}
+\citation{huang2023t2i,rassin2022}
+\citation{mccoy2019}
+\newlabel{app:claims}{{F.3}{34}{AI Use Statement}{subsection.F.3}{}}
+\newlabel{app:limits}{{G}{34}{AI Use Statement}{appendix.G}{}}
+\newlabel{app:protocol}{{H}{35}{AI Use Statement}{appendix.H}{}}
+\citation{cagnetta2024rhm}
+\newlabel{app:e19}{{H}{36}{AI Use Statement}{appendix.H}{}}
+\gdef \@abspage@last{37}
