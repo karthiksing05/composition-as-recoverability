@@ -14,7 +14,7 @@ RUNGS = [
      ["Glyph decoders, V=8:", "new pairs 0.85–1.00", "LM answers: 0.92–0.99"]),
     ("Strong", REP, ["A probe fixed in", "advance reads new parts"],
      ["Reverse compositionality", "Context-dependent"],
-     ["Glyph states: R² .83–.86", "Image places: κ ≥ 0.81", "Tree roots: R² 0.99"]),
+     ["Glyph states: R² .83–.86", "Fixed places: κ ≥ 0.81", "Tree roots: R² 0.99"]),
     ("Shared role codes", REP2, ["One vector per part,", "changed only by its role"],
      ["Tensor products", "Additive decoders"],
      ["Glyph states, OVER:", "δ 0.02–0.04"]),
