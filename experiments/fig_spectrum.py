@@ -6,21 +6,21 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 NOTES = "/coc/flash10/ksingara3/compositionality-theory/notes/audit/figs"
 NAVY = "#1b2a49"
 RUNGS = [
-    ("Blend", LOST, "No procedure returns\nthe parts",
-     ["Conceptual blending", "Pet fish, red hair", "Composable diffusion"],
-     ["$x+y$: $R^2$ 0.50", "HRR pairs: $R^2$ 0.44"]),
-    ("Weak", BEH, "The system acts on new\ncombinations of known parts",
-     ["Frege, Montague", "SCAN, COGS, Winoground", "Text-to-image evaluation", "RAAM, VSA clean-up"],
-     ["Glyph decoders, V = 8:", "  new pairs 0.85–1.00,", "  new glyphs 0.20–0.34"]),
-    ("Strong", REP, "A linear probe fixed in\nadvance returns new parts",
-     ["Functional compositionality", "Reverse compositionality", "Context-dependent", "  constituents"],
-     ["Glyph states: $R^2$ 0.83–0.86", "Image, fixed places: κ ≥ 0.81", "phi-4, asked role: 0.98"]),
-    ("Shared role codes", REP2, "One vector per part,\nchanged only by its role",
-     ["Tensor products", "Disentanglement", "Additive decoders", "TRE, Kolmogorov scores"],
-     ["Glyph states, OVER:", "  δ 0.02–0.04"]),
-    ("Explicit copies", NAVY, "The part itself is\ncopied into the whole",
-     ["Classical architecture", "  (Fodor and Pylyshyn)"],
-     ["Concatenation", "  reference: κ = 1"]),
+    ("Blend", LOST, ["No procedure", "returns the parts"],
+     ["Conceptual blending", "Composable diffusion"],
+     ["x+y: R² 0.50", "HRR pairs: R² 0.44"]),
+    ("Weak", BEH, ["The system acts on", "new part combinations"],
+     ["Frege, Montague", "SCAN, COGS"],
+     ["Glyph decoders, V=8:", "new pairs 0.85–1.00", "new glyphs 0.20–0.34"]),
+    ("Strong", REP, ["A probe fixed in", "advance reads new parts"],
+     ["Reverse compositionality", "Context-dependent"],
+     ["Glyph states: R² .83–.86", "Image places: κ ≥ 0.81", "phi-4 asked role: 0.98"]),
+    ("Shared role codes", REP2, ["One vector per part,", "changed only by its role"],
+     ["Tensor products", "Additive decoders"],
+     ["Glyph states, OVER:", "δ 0.02–0.04"]),
+    ("Explicit copies", NAVY, ["The part itself is", "copied into the whole"],
+     ["Classical architecture"],
+     ["Concatenation", "reference: κ = 1"]),
 ]
 
 
@@ -30,39 +30,56 @@ def tint(hexcol, a):
     return "#%02x%02x%02x" % tuple(int(255 - a * (255 - c)) for c in (r, g, b))
 
 
-fig = plt.figure(figsize=(7.0, 3.35))
+H = 1.58
+fig = plt.figure(figsize=(5.4, H))
 ax = fig.add_axes([0, 0, 1, 1])
-ax.set_xlim(0, 7.0); ax.set_ylim(0, 3.35); ax.axis("off")
-W, G, X0 = 1.3, 0.1, 0.05
-TOP, BOT = 2.82, 0.62
+ax.set_xlim(0, 5.4); ax.set_ylim(0, H); ax.axis("off")
+W, G, X0 = 1.02, 0.07, 0.01
+TOP, BOT = 1.38, 0.27
+FS = 6.0
 xs = [X0 + i * (W + G) for i in range(5)]
+rend = fig.canvas.get_renderer()
+texts = []
+
+
+def T(x, y, s, **kw):
+    t = ax.text(x, y, s, va="center", **kw)
+    texts.append((t, x))
+    return t
+
+
 for x, (name, col, demand, fw, ours) in zip(xs, RUNGS):
-    ax.add_patch(FancyBboxPatch((x, BOT), W, TOP - BOT, boxstyle="round,pad=0,rounding_size=0.06",
+    ax.add_patch(FancyBboxPatch((x, BOT), W, TOP - BOT, boxstyle="round,pad=0,rounding_size=0.05",
                                 fc=tint(col, 0.09), ec=col, lw=0.9))
-    ax.text(x + 0.08, TOP - 0.13, name, fontsize=7.8, fontweight="bold", color=col, va="center")
-    ax.text(x + 0.08, TOP - 0.40, demand, fontsize=6.3, color=INK, va="center", linespacing=1.15)
-    ax.text(x + 0.08, TOP - 0.70, "Frameworks", fontsize=6.0, fontweight="bold", color=DGREY, va="center")
+    tx = x + 0.05
+    T(tx, TOP - 0.09, name, fontsize=7.0, fontweight="bold", color=col)
+    for j, d in enumerate(demand):
+        T(tx, TOP - 0.20 - 0.095 * j, d, fontsize=FS, color=INK)
+    T(tx, TOP - 0.42, "Frameworks", fontsize=FS, fontweight="bold", color=DGREY)
     for j, f in enumerate(fw):
-        ax.text(x + 0.08, TOP - 0.86 - 0.135 * j, f, fontsize=6.2, color=INK, va="center")
-    y_ours = TOP - 1.50
-    ax.text(x + 0.08, y_ours, "In this paper", fontsize=6.0, fontweight="bold", color=DGREY, va="center")
+        T(tx, TOP - 0.515 - 0.095 * j, f, fontsize=FS, color=INK)
+    T(tx, TOP - 0.75, "In this paper", fontsize=FS, fontweight="bold", color=DGREY)
     for j, s in enumerate(ours):
-        ax.text(x + 0.08, y_ours - 0.16 - 0.135 * j, s, fontsize=6.2, color=col if col != NAVY else INK, va="center")
+        T(tx, TOP - 0.845 - 0.095 * j, s, fontsize=FS, color=col if col != NAVY else INK)
 
 
 def bracket(x0, x1, y, label, col):
-    ax.plot([x0, x0, x1, x1], [y - 0.06, y, y, y - 0.06], color=col, lw=0.8)
-    ax.text((x0 + x1) / 2, y + 0.11, label, fontsize=6.8, color=col, ha="center", va="center")
+    ax.plot([x0, x0, x1, x1], [y - 0.05, y, y, y - 0.05], color=col, lw=0.8)
+    T((x0 + x1) / 2, y + 0.06, label, fontsize=FS, color=col, ha="center")
 
 
-bracket(xs[0] + 0.05, xs[0] + W - 0.05, TOP + 0.13, "composition that loses parts", LOST)
-bracket(xs[1] + 0.05, xs[1] + W - 0.05, TOP + 0.13, "composition", BEH)
-bracket(xs[2] + 0.05, xs[4] + W - 0.05, TOP + 0.13, "composition and decomposition", REP)
-ax.add_patch(FancyArrowPatch((xs[1] + 0.05, BOT - 0.17), (xs[4] + W - 0.05, BOT - 0.17), arrowstyle="-|>",
-                             mutation_scale=8, color=DGREY, lw=0.8))
-ax.text((xs[1] + xs[4] + W) / 2, BOT - 0.31, "each set fixes more of the decomposition in advance",
-        fontsize=6.6, color=DGREY, ha="center", va="center")
-ax.text(xs[0] + 0.02, 0.15, "Outside the spectrum: unrestricted probes, recodings of the parts and probes scored on training parts,\nwhich every injective system passes.", linespacing=1.2, fontsize=6.4, color=GREY, va="center")
-fig.savefig(f"{FIGDIR}/fig_spectrum.pdf")
-fig.savefig(f"{NOTES}/fig_spectrum.png", dpi=170)
+bracket(xs[0] + 0.03, xs[0] + W - 0.03, TOP + 0.08, "composition that loses parts", LOST)
+bracket(xs[1] + 0.03, xs[1] + W - 0.03, TOP + 0.08, "composition", BEH)
+bracket(xs[2] + 0.03, xs[4] + W - 0.03, TOP + 0.08, "composition and decomposition", REP)
+ax.add_patch(FancyArrowPatch((xs[1] + 0.03, 0.17), (xs[4] + W - 0.03, 0.17), arrowstyle="-|>",
+                             mutation_scale=7, color=DGREY, lw=0.8))
+T((xs[1] + xs[4] + W) / 2, 0.06, "each set fixes more of the decomposition in advance",
+  fontsize=FS, color=DGREY, ha="center")
+fig.canvas.draw()
+for t, x in texts:
+    bb = t.get_window_extent(rend).transformed(ax.transData.inverted())
+    if t.get_ha() == "left" and bb.x1 > x - 0.05 + W - 0.02:
+        print("OVERFLOW", t.get_text(), round(bb.x1 - (x - 0.05 + W), 3))
+fig.savefig(f"{FIGDIR}/fig_spectrum.pdf", bbox_inches=None, pad_inches=0)
+fig.savefig(f"{NOTES}/fig_spectrum.png", dpi=170, bbox_inches=None, pad_inches=0)
 print("saved")

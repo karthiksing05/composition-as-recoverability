@@ -15,7 +15,7 @@ NOTES = "/coc/flash10/ksingara3/compositionality-theory/notes/audit/figs"
 # a: E34 quadrant kappa
 k34 = {(r["model"], r["cond"]): float(r["kappa"]) for r in csv.DictReader(open(f"{R}/e34/agg_kappa.csv", encoding="utf-8"))
        if r["readout"] == "G2"}
-A = [("CLIP-B/32", "clip-b32-img"), ("DINOv2-L", "dinov2-l"), ("SigLIP", "siglip-so400m"),
+A = [("CLIP-B/32", "clip-b32-img"), ("CLIP-H/14", "clip-h14-img"), ("DINOv2-L", "dinov2-l"), ("SigLIP", "siglip-so400m"),
      ("SD 1.5", "sd15"), ("PixArt-Σ", "pixart"), ("Lumina 2.0", "lumina"), ("random CLIP-B/32", "rand-clip-b32-img")]
 
 
@@ -63,7 +63,7 @@ ax.set_yticks(range(len(A))); ax.set_yticklabels([a[0] for a in A], fontsize=FS)
 ax.set_xlim(-0.8, 1.02); ax.set_xticks([-0.5, 0, 0.5, 1]); ax.set_xlabel("quadrant-state κ")
 ax.plot([], [], "o", color=REP, ms=4, label="fixed places"); ax.plot([], [], "o", mfc="white", mec=REP, ms=4, label="moved")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=2, fontsize=5.8, handletextpad=0.2, columnspacing=0.8)
-ax.axhline(2.5, color=LGREY, lw=0.5)
+ax.axhline(3.5, color=LGREY, lw=0.5)
 panel(ax, "a", "Places in the state")
 
 # b

@@ -1,0 +1,6 @@
+B = "/coc/flash10/ksingara3/compositionality-theory/icml2027/main.tex"
+t = open(B, encoding="utf-8").read()
+a = r"""\caption{\textbf{Behavior lags the decomposition that the state supports.} Each system is scored on parts new to the probe, by a linear probe of its state (horizontal) and by its own output (vertical), from a blend, chance or word order (0) to exact recovery (1). For role transfer, 0 marks word order and 0.5 chance. Image and diffusion points use fixed quadrants, and open circles move the photographs while keeping the fixed-place behavior. A new decoder lifts glyph behavior (green).}"""
+b = r"""\caption{\textbf{Behavior lags the state in toy and image systems and outruns the linear probe in language models.} Each system is scored on parts new to the probe, by a linear probe of its state (horizontal) and by its own output (vertical), on one scale per system: $R^2$ for glyphs and trees; $\kappa$ against $2a - 1$ for image and diffusion systems at fixed places (0 for a blend or chance); role transfer against $2a - 1$ for language models, both the share of converse sentences handled by meaning (0 for word order). A new decoder lifts glyph behavior (green); the blue arrow marks the best probe at other layers for OLMo-2 7B.}"""
+assert t.count(a) == 1; t = t.replace(a, b)
+open(B, "w", encoding="utf-8").write(t); print("ok")
