@@ -418,7 +418,7 @@ if mode in ("all", "both"):
     tag(ax, 0.42, 1.0, f"$r$ = {r:.2f}", INK, ha="left", va="top"); tag(ax, 0.42, 0.88, "7 models, 4 prompts", DGREY, ha="left", va="top")
     tag(ax, 0.6, 0.02, "word order", RED, ha="left", va="bottom")
     ax.set_xlim(0.38, 1.03); ax.set_ylim(-0.04, 1.05); ax.set_xticks([0.5, 0.75, 1]); ax.set_yticks([0, 0.5, 1])
-    ax.set_xlabel("answer accuracy (weak)", color=BEH); ax.set_ylabel("role transfer (strong)", color=REP)
+    ax.set_xlabel("answer accuracy (weak)", color=BEH); ax.set_ylabel("role transfer, question state", color=REP)
     panel(ax, "b", "Answers follow the state")
     print("r", round(r, 3))
 

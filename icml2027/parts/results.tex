@@ -13,8 +13,8 @@ We test the three hypotheses and H4 system by system, from toy networks, where p
     Image encoders & Vacuous on swapped places & Holds; the pooled embedding loses the places & Holds: linear quadrant matcher 1.00 fixed, 0.89--0.95 moved & Holds: 0.81--0.94 against 0.29--0.72 \\
     U-Net denoisers & Vacuous & Holds: chance against $\kappa$ 0.43--0.70 & Untested & Fails: random 0.79--0.91 \\
     Transformer denoisers & Holds weakly: 0.59--0.68 on average, above chance only at high noise, with $\kappa$ 0.75--0.89 & Holds & Untested & PixArt-$\Sigma$ holds (0.58 against 0.75), Lumina fails (0.87 against 0.89) \\
-    LMs answering by meaning & Holds at main-prompt layers; fails for linear probes in OLMo-2 7B and where validation picks early layers & Not observed & Untested; the harnesses read the text and leave the state unread & Holds: trained $\kappa$ above random (positional roles) \\
-    LMs answering by word order & Vacuous & Not observed & Untested; a parse harness lifts answers from 0.51 to 0.98 from the text & Holds: Pythia $\kappa$ grows with scale \\
+    LMs answering by meaning & Holds for the question state at main-prompt layers; the pre-question state transfers at 0.12--0.23, which places the decomposition in the procedure; fails for linear probes in OLMo-2 7B and where validation picks early layers & Not observed & Untested; the harnesses read the text and leave the state unread & Holds: trained $\kappa$ above random (positional roles) \\
+    LMs answering by word order & Vacuous & Not observed & Untested; a parse harness lifts answers from 0.51 to 0.98 from the text & Mixed: above random weights and growing with Pythia scale, yet Pythia-1.4b and GPT-2 large only match their input embeddings \\
     \bottomrule
   \end{tabularx}
 \end{table*}
@@ -172,7 +172,7 @@ A model that answers role questions by meaning must, by H1, hold the role in the
   \end{tabularx}
 \end{table}
 
-\textbf{The question builds the shared role code.} At the period that ends the sentence, before any question, a figure probe transfers the role at only 0.12--0.23 (at most 0.36 at the best layer), although it returns the figure of canonical sentences at 0.96--1.00. From the question state, a probe for the role left unasked transfers at 0.56--0.61 in phi-4, 0.44--0.50 in Qwen3-8B and 0.12--0.32 in the OLMo-2 models. A score below 0.5 means that the probe returns the asked noun, which in the converse phrasing is also the noun in the ground's word position. The asked role transfers at 0.81--0.98 in phi-4 and Qwen3-8B.
+\textbf{The question builds the asked part.} At the period that ends the sentence, before any question, a figure probe transfers the role at only 0.12--0.23 (at most 0.36 at the best layer), although it returns the figure of canonical sentences at 0.96--1.00. From the question state, a probe for the role left unasked transfers at 0.56--0.61 in phi-4, 0.44--0.50 in Qwen3-8B and 0.12--0.32 in the OLMo-2 models. A score below 0.5 means that the probe returns the asked noun, which in the converse phrasing is also the noun in the ground's word position. The asked role transfers at 0.81--0.98 in phi-4 and Qwen3-8B.
 
 \textbf{Patching moves the answer.} A source with the same figure leaves the answer in place on 0.78--1.00 of pairs, and patches in the first half of the layers flip at most 0.21. Patching the probe's 16 dimensions flips at most 0.06 of answers, and 64 and 128 dimensions flip 0.21 and 0.53 on average (Figure~\ref{fig:both}d). The top 64 directions of the source--target difference, fitted on other nouns, flip 0.76, 0.75 and 0.51 of answers in phi-4, Qwen3-8B and OLMo-2 13B, against at most 0.03 for 64 random directions.
 
