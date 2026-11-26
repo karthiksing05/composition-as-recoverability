@@ -11,10 +11,10 @@ RUNGS = [
      ["x+y: R² 0.50", "HRR pairs: R² 0.44"]),
     ("Weak", BEH, ["The system acts on", "new part combinations"],
      ["Frege, Montague", "SCAN, COGS"],
-     ["Glyph decoders, V=8:", "new pairs 0.85–1.00", "new glyphs 0.20–0.34"]),
+     ["Glyph decoders, V=8:", "new pairs 0.85–1.00", "LM answers: 0.92–0.99"]),
     ("Strong", REP, ["A probe fixed in", "advance reads new parts"],
      ["Reverse compositionality", "Context-dependent"],
-     ["Glyph states: R² .83–.86", "Image places: κ ≥ 0.81", "phi-4 asked role: 0.98"]),
+     ["Glyph states: R² .83–.86", "Image places: κ ≥ 0.81", "Tree roots: R² 0.99"]),
     ("Shared role codes", REP2, ["One vector per part,", "changed only by its role"],
      ["Tensor products", "Additive decoders"],
      ["Glyph states, OVER:", "δ 0.02–0.04"]),
@@ -34,7 +34,7 @@ H = 1.58
 fig = plt.figure(figsize=(5.4, H))
 ax = fig.add_axes([0, 0, 1, 1])
 ax.set_xlim(0, 5.4); ax.set_ylim(0, H); ax.axis("off")
-W, G, X0 = 1.02, 0.07, 0.01
+W, G, X0 = 1.04, 0.045, 0.01
 TOP, BOT = 1.38, 0.27
 FS = 6.0
 xs = [X0 + i * (W + G) for i in range(5)]

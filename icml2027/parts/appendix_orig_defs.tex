@@ -1,6 +1,17 @@
 
+\begin{defbox}{Shared role codes}{factor}
+A relation $r$ has \emph{shared role codes} with residual $\delta$ if, for some vector $e'$ of which $e$ is a linear function, some $c \in \R^m$ and injective matrices $B_1, \ldots, B_k$, one per role and shared by all parts,
+\begin{equation}
+  g_r(x_1, \ldots, x_k) = c + \textstyle\sum_{i} B_i\, e'(x_i) + \eta,
+  \label{eq:factor}
+\end{equation}
+with $\mathbb{E}\,\lVert \eta \rVert^2 \le \delta\, \mathbb{E}\,\lVert g_r - \mathbb{E}\,g_r \rVert^2$.
+\end{defbox}
+
+A system is \emph{representationally compositional} at tolerance $\tau$ if $\kappa \ge 1 - \tau$ (Definition~\ref{def:repcomp}) for an informative part vector.
+
 \begin{defbox}{Informative part vectors and productivity}{informative}
-A part vector $e$ is \emph{informative} at tolerance $\tau$ if a linear probe of $e$ recovers a description $z(x)$ of the parts that does not depend on the system, with $R^2 \ge 1 - \tau$ on new parts. A relation is \emph{productive to depth $n$} if Definition~\ref{def:repcomp} holds when the parts are themselves wholes of depth up to $n - 1$, with the state of each whole as its part vector.
+A part vector $e$ is \emph{informative} at tolerance $\tau$ if a linear probe of $e$ recovers a description $z(x)$ of the parts that does not depend on the system, with $R^2 \ge 1 - \tau$ on new parts. A relation is \emph{productive to depth $n$} if $\kappa \ge 1 - \tau$ holds when the parts are themselves wholes of depth up to $n - 1$, with the state of each whole as its part vector.
 \end{defbox}
 
 The informative requirement closes the loophole of Section~\ref{sec:repcomp}. The blend $(Px, Py)$, with $P$ a projection of rank $r < d$, discards $d - r$ dimensions of each part, yet it is exactly recoverable with the part vector $e(x) = Px$. An informative part vector rules this case out, because $Px$ fails to recover a description of $x$ itself. We report informativeness wherever such a description exists apart from the system, which holds for the glyph latents.
