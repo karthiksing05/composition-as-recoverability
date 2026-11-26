@@ -1,7 +1,7 @@
 We test the three hypotheses and H4 system by system, from toy networks, where parts can be new to the system, to pretrained models, where they are new only to the probe. Table~\ref{tab:remedies} collects the repairs, and Figure~\ref{fig:ladder} summarizes the first three hypotheses.
 
 \begin{table*}[t]
-  \caption{\textbf{One verdict per hypothesis and system.} H1: correct behavior on new parts implies a linearly recoverable state; a failure places the decomposition inside the system's own procedure, the weak form. H2: behavior lags the state. H3: a procedure that reads the state lifts behavior. H4: training builds recoverability beyond the input and the random-weight architecture, each model scored against its own part vectors. ``Vacuous'': the system's own procedure never succeeds, so H1 has nothing to test.}
+  \caption{\textbf{One verdict per hypothesis and system.} H1: correct behavior on new parts implies that a linear probe of the state the procedure reads returns them; a failure places the decomposition inside the system's own procedure, the weak form. H2: behavior lags the state. H3: a procedure that reads the state lifts behavior. H4: training builds recoverability beyond the input and the random-weight architecture, each model scored against its own part vectors. ``Vacuous'': the system's own procedure never succeeds, so H1 has nothing to test.}
   \label{tab:verdicts}
   \centering\footnotesize
   \begin{tabularx}{\textwidth}{@{}lYYYY@{}}
@@ -9,11 +9,11 @@ We test the three hypotheses and H4 system by system, from toy networks, where p
     System & H1 & H2 & H3 & H4 \\
     \midrule
     Glyph networks & Holds: $V = 64$ decoders 0.85--0.91, probe 0.89 & Holds: $V = 8$ decoders 0.20--0.34, probe 0.83--0.86 & Holds: new decoder 0.75 & Fails: input pixels 0.91, untrained encoders 0.82--0.83 \\
-    Recursive composers & Holds: decomposers trained deeper match the probe & Holds: depth 3, 0.26 against 0.99 & Holds: decomposer trained with the composer, 0.97--1.00 & Untested \\
+    Recursive composers & Holds: decomposers trained deeper reach 0.97--1.00, the probe 0.90--0.99 & Holds: depth 3, 0.26 against 0.99 & Holds: decomposer trained with the composer, 0.97--1.00 & Untested \\
     Image encoders & Vacuous on swapped places & Holds; the pooled embedding loses the places & Holds: linear quadrant matcher 1.00 fixed, 0.89--0.95 moved & Holds: 0.81--0.94 against 0.29--0.72 \\
     U-Net denoisers & Vacuous & Holds: chance against $\kappa$ 0.43--0.70 & Untested & Fails: random 0.79--0.91 \\
     Transformer denoisers & Holds weakly: 0.59--0.68 on average, above chance only at high noise, with $\kappa$ 0.75--0.89 & Holds & Untested & PixArt-$\Sigma$ holds (0.58 against 0.75), Lumina fails (0.87 against 0.89) \\
-    LMs answering by meaning & Holds for the question state at main-prompt layers; the pre-question state transfers at 0.12--0.23, which places the decomposition in the procedure; fails for linear probes in OLMo-2 7B and where validation picks early layers & Not observed & Untested; the harnesses read the text and leave the state unread & Holds: trained $\kappa$ above random (positional roles) \\
+    LMs answering by meaning & Holds for the asked part in the question state at main-prompt layers; the pre-question state transfers at 0.12--0.23, which places the decomposition in the procedure; fails for linear probes in OLMo-2 7B and where validation picks early layers & Not observed & Untested; the harnesses read the text and leave the state unread & Holds: trained $\kappa$ above random (positional roles) \\
     LMs answering by word order & Vacuous & Not observed & Untested; a parse harness lifts answers from 0.51 to 0.98 from the text & Mixed: above random weights and growing with Pythia scale, yet Pythia-1.4b and GPT-2 large only match their input embeddings \\
     \bottomrule
   \end{tabularx}
@@ -59,7 +59,7 @@ Within its training depths, a recursive composer's decomposer recovers new leave
     \bottomrule
   \end{tabular}
 \end{table}
- HRR shows the same pattern by design: recursive unbinding loses about $(2^n - 1)d/w$ of the variance to crosstalk and falls from 0.96 at depth 1 to $-0.13$ at depth 5, while a probe recovers the leaves exactly whenever $w \ge 2^n d$. A decomposer trained jointly with its composer on trees of depth 3 to 5 recovers new leaves at 1.00, 1.00 and 0.97 at width 256, the values of the probe. Trained alone on the composer's states, it reaches 0.74, 0.29 and 0.09, and no condition transfers to depth 6.
+ HRR shows the same pattern by design: recursive unbinding loses about $(2^n - 1)d/w$ of the variance to crosstalk and falls from 0.96 at depth 1 to $-0.13$ at depth 5, while a probe recovers the leaves exactly whenever $w \ge 2^n d$. A decomposer trained jointly with its composer on trees of depth 3 to 5 recovers new leaves at 1.00, 1.00 and 0.97 at width 256, against 0.99, 0.99 and 0.90 for the probe. Trained alone on the composer's states, it reaches 0.74, 0.29 and 0.09, and no condition transfers to depth 6.
 
 \subsection{Image encoders and diffusion models keep fixed places that their own outputs ignore}
 \label{app:images}

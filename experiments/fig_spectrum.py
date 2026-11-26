@@ -9,7 +9,7 @@ RUNGS = [
     ("Blend", LOST, ["No procedure", "returns the parts"],
      ["Conceptual blending", "Composable diffusion"],
      ["x+y: R² 0.50", "HRR pairs: R² 0.44"]),
-    ("Weak", BEH, ["The system acts on", "new part combinations"],
+    ("Weak", BEH, ["The system acts on", "new wholes"],
      ["Frege, Montague", "SCAN, COGS"],
      ["Glyph decoders, V=8:", "new pairs 0.85–1.00", "LM answers: 0.92–0.99"]),
     ("Strong", REP, ["A probe fixed in", "advance reads new parts"],
