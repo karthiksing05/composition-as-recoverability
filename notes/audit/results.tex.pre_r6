@@ -1,0 +1,267 @@
+We test the three hypotheses and H4 system by system, from toy networks, where parts can be new to the system, to pretrained models, where they are new only to the probe. Table~\ref{tab:remedies} collects the repairs, and Figure~\ref{fig:ladder} summarizes the first three hypotheses.
+
+\begin{table*}[t]
+  \caption{\textbf{One verdict per hypothesis and system.} H1: correct behavior on new parts implies a linearly recoverable state; a failure places the decomposition inside the system's own procedure, the weak form. H2: behavior lags the state. H3: a procedure that reads the state lifts behavior. H4: training builds recoverability beyond the input and the random-weight architecture, each model scored against its own part vectors. ``Vacuous'': the system's own procedure never succeeds, so H1 has nothing to test.}
+  \label{tab:verdicts}
+  \centering\footnotesize
+  \begin{tabularx}{\textwidth}{@{}lYYYY@{}}
+    \toprule
+    System & H1 & H2 & H3 & H4 \\
+    \midrule
+    Glyph networks & Holds: $V = 64$ decoders 0.85--0.91, probe 0.89 & Holds: $V = 8$ decoders 0.20--0.34, probe 0.83--0.86 & Holds: new decoder 0.75 & Fails: input pixels 0.91, untrained encoders 0.82--0.83 \\
+    Recursive composers & Holds: decomposers trained deeper match the probe & Holds: depth 3, 0.26 against 0.99 & Holds: decomposer trained with the composer, 0.97--1.00 & Untested \\
+    Image encoders & Vacuous on swapped places & Holds; the pooled embedding loses the places & Holds: linear quadrant matcher 1.00 fixed, 0.89--0.95 moved & Holds: 0.81--0.94 against 0.29--0.72 \\
+    U-Net denoisers & Vacuous & Holds: chance against $\kappa$ 0.43--0.70 & Untested & Fails: random 0.79--0.83 \\
+    Transformer denoisers & Holds weakly: 0.59--0.68 on average, above chance only at high noise, with $\kappa$ 0.75--0.89 & Holds & Untested & PixArt-$\Sigma$ holds (0.58 against 0.75), Lumina fails (0.87 against 0.89) \\
+    LMs answering by meaning & Holds at main-prompt layers; fails for linear probes in OLMo-2 7B and where validation picks early layers & Not observed & Untested; the harnesses read the text and leave the state unread & Holds: trained $\kappa$ above random (positional roles) \\
+    LMs answering by word order & Vacuous & Not observed & Untested; a parse harness lifts answers from 0.51 to 0.98 from the text & Holds: Pythia $\kappa$ grows with scale \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+
+\subsection{Glyph networks keep new glyphs their decoders cannot draw}
+\label{app:states}
+
+Only glyph networks let a glyph be new to the network itself, so only here can we tell a decoder that lost a glyph from one that left it unread. Every architecture reproduces new pairs of training glyphs with output $R^2$ of 0.85--1.00, except the transformer at $V = 8$. On new glyphs, output $R^2$ rises from 0.20--0.34 at $V = 8$ to 0.85--0.91 at $V = 64$ (Figure~\ref{fig:strong}b). One MLP trained on 8 glyphs renders five wholes of new glyphs at a mean $R^2$ of $-0.15$, while a linear probe of its state recovers them at 0.76 (Figure~\ref{fig:strong}a). Across the MLP, CNN and role--filler networks, the broad probe recovers 0.83--0.86 at $V = 8$ and 0.89 at $V = 64$ ($\kappa = 0.73$ and 0.83), and the transformer reaches 0.59 at $V = 8$. The vocabulary probe recovers only 0.23--0.29 of new glyphs at $V = 8$ and tracks each network's output better than the broad probe does, as Proposition~\ref{prop:span} predicts.
+
+\textbf{A new decoder reads the state.} We freeze the encoder of each network trained on 8 glyphs and train a new decoder of the same architecture on wholes of 64 other glyphs. It renders new glyphs at 0.75, against 0.25 for the network's own decoder and 0.88 for networks trained end to end on 64 glyphs. Untrained encoders support an equally good new decoder (Section~\ref{app:origins}), so the gap sits in the decoder. Adding 64 other glyphs shown alone, each in one role, lets networks trained on all pairs of 8 glyphs render a new glyph alone at $R^2 = 0.88$, against $-0.30$ without them, and new pairs at 0.47, against 0.26.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_decomp.pdf}
+  \caption{\textbf{Procedures that read through role codes reuse the parts.} Role maps $h \approx c + B_1 e(x) + B_2 e(y)$ predict and edit states that each network's decoder renders (\textsc{over}, $V = 64$). \textbf{a.} A code swap renders a donor in role 1. \textbf{b.} A written vector keeps old pairs and renders a new glyph in a new role, while fine-tuning damages both. \textbf{c.} A swap spills little into the other role. \textbf{d.} In language models that answer by meaning, two question states place the converse paraphrase nearest (chance $1/3$). Means over 3--5 seeds.}
+  \label{fig:decomp}
+\end{figure}
+
+\textbf{Role codes and additions.} Under \textsc{over}, the role residual $\delta$ is 0.02--0.04 for the MLP, CNN and role--filler networks and 0.06--0.13 for the transformer. A code swap writes a donor's vector into role 1, and the decoder renders the donor at $R^2 = 0.78$, against 0.81 when the network sees the donor itself (Figure~\ref{fig:decomp}a). The swap spills 0.16 into the untouched half of the output, against 0.90 for the natural direction $h(a', b') - h(a, b)$ (Figure~\ref{fig:decomp}c), so the decoders use the role codes, which answers \citet{fodor1990} for these systems.
+
+Networks trained on 64 glyphs meet one new glyph in role~1 (Figure~\ref{fig:decomp}b). Fine-tuning lowers the glyph in role~2 from 0.75 to 0.62 and pairs of training glyphs from 0.98 to 0.90. Writing the glyph's vector into role~2 through $B_2$ takes no gradient step, keeps the old pairs at 0.98 and renders the glyph in a new role at 0.75, and replay reaches 0.77 at the cost of stored data. When networks trained on 16 glyphs receive 32 new glyphs in sequence, fine-tuning drops their old pairs to 0.18 \citep{mccloskey1989}, while written vectors keep them at 0.99 and render each new glyph in a new role at 0.71. A training objective that asks the state to give back many glyphs also helps the network's own decoder (Appendix~\ref{app:extra}).
+
+\subsection{Recursive composers show the same gap at depth}
+\label{app:depth}
+
+Within its training depths, a recursive composer's decomposer recovers new leaves almost perfectly for $w \ge 32$. At depth 3 it falls to $R^2 = 0.26$ at $w = 256$ after 6{,}000 steps, while a broad probe recovers the same leaves at 0.99 (Figure~\ref{fig:strong}c). At width 256 the bound of Proposition~\ref{prop:depth} equals 1 through depth 5, so the test of the bound comes from smaller widths, where it binds. Table~\ref{tab:depth} gives the probe's $R^2$ against the bound, over 5 seeds at $V = 16$.
+
+\begin{table}[h]
+  \caption{\textbf{A probe of the root state meets the depth bound wherever the bound binds.} Broad-probe $R^2$ on new leaves / bound of Proposition~\ref{prop:depth}, recursive composer, $V = 16$, 5 seeds.}
+  \label{tab:depth}
+  \centering\footnotesize
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    Width & Depth 1 & Depth 2 & Depth 3 & Depth 4 & Depth 5 \\
+    \midrule
+    16 & 0.87 / 1 & 0.50 / 0.50 & 0.24 / 0.25 & 0.12 / 0.13 & 0.06 / 0.06 \\
+    32 & 1.00 / 1 & 1.00 / 1 & 0.49 / 0.50 & 0.24 / 0.25 & 0.12 / 0.13 \\
+    64 & 1.00 / 1 & 1.00 / 1 & 0.97 / 1 & 0.49 / 0.50 & 0.24 / 0.25 \\
+    128 & 1.00 / 1 & 1.00 / 1 & 1.00 / 1 & 0.96 / 1 & 0.49 / 0.50 \\
+    256 & 1.00 / 1 & 1.00 / 1 & 0.99 / 1 & 0.99 / 1 & 0.90 / 1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+ HRR shows the same pattern by design: recursive unbinding loses about $(2^n - 1)d/w$ of the variance to crosstalk and falls from 0.96 at depth 1 to $-0.13$ at depth 5, while a probe recovers the leaves exactly whenever $w \ge 2^n d$. A decomposer trained jointly with its composer on trees of depth 3 to 5 recovers new leaves at 1.00, 1.00 and 0.97 at width 256, the values of the probe. Trained alone on the composer's states, it reaches 0.74, 0.29 and 0.09, and no condition transfers to depth 6.
+
+\subsection{Image encoders and diffusion models keep fixed places that their own outputs ignore}
+\label{app:images}
+\label{app:diffusion}
+
+Table~\ref{tab:places} gives the scores on the two-photograph canvases of Section~\ref{sec:images}. A diffusion model's classifier picks the caption with the lower denoising error \citep{li2023diffclassifier,clark2023diffclassifier}, averaged over 25 timesteps from 50 to 950. The state is the denoiser's feature map, read with an empty caption and a fixed noise draw, and validation photographs choose the block and timestep. SD 1.5 runs at its native 512 pixels and SDXL at 512 and at its native 1{,}024 pixels, and the transformer denoisers PixArt-$\Sigma$ \citep{chen2024pixartsigma} and Lumina-Image 2.0 \citep{qin2025lumina2} run at 1{,}024 pixels, because PixArt-$\Sigma$ at 512 tells captions apart at only 0.54 for a wrong object. At 1{,}024 pixels, SDXL keeps more in its state, $\kappa = 0.66$ under quadrant averages and 0.29 for the whole map against 0.43 and 0.05 at 512, while its classifier still scores 0.51 against swapped places; random weights at 1{,}024 pixels remain untested. The transformer classifiers change with the timestep. Lumina prefers the wrong caption in both tests at $t \le 575$ (0.31--0.43 against swapped places, 0.34--0.45 against a wrong object) and the right one from $t = 688$ on (0.54--0.65 and 0.56--0.72), and PixArt-$\Sigma$ rises from 0.47 to 0.59 against swapped places, so the means over 25 timesteps mix a caption bias at low noise with the judgment at high noise.
+
+\begin{table}[t]
+  \caption{\textbf{Every model keeps fixed places in its state and scores lower on them through its own output.} Caption choice against a wrong object and against swapped places (chance 0.50); $\kappa$ of quadrant averages, of the whole-map or patch average, and of quadrant averages under moved photographs; and $\kappa$ of box features in left-to-right and in random order. ``Random'' gives quadrant averages of the same model with random weights, against its own part vectors. Moved entries use quadrant averages of the relative-placement protocol and span CLIP-B/32 (0.24), CLIP-H/14 (0.24), DINOv2-L (0.42) and SigLIP (0.45) for the encoders.}
+  \label{tab:places}
+  \centering\footnotesize
+  \begin{tabularx}{\linewidth}{@{}P{0.16\linewidth}YYYYYYYY@{}}
+    \toprule
+    Model & Wrong object & Swapped & $\kappa$ quad. & Random & $\kappa$ map & $\kappa$ moved & Boxes ordered & Boxes random \\
+    \midrule
+    CLIP, SigLIP & 0.88--0.97 & 0.50--0.51 & 0.81--0.94 & 0.29--0.72 & 0.26--0.49 & 0.24--0.45 & 0.66--0.80 & $-0.08$ to $-0.17$ \\
+    SD 1.5 & 0.86--0.88 & 0.49--0.50 & 0.70 & 0.79 & 0.13 & $-0.06$ & 0.35 & $-0.36$ \\
+    SDXL & 0.69--0.71 & 0.49--0.50 & 0.43 & 0.83 & 0.05 & -- & -- & -- \\
+    SDXL, 1{,}024 px & 0.67--0.69 & 0.51 & 0.66 & -- & 0.29 & -- & -- & -- \\
+    PixArt-$\Sigma$ & 0.66--0.67 & 0.59--0.61 & 0.75 & 0.58 & 0.42 & $-0.07$ & 0.31 & $-0.38$ \\
+    Lumina & 0.69--0.70 & 0.66--0.68 & 0.89 & 0.87 & 0.54 & 0.21 & 0.68 & $-0.19$ \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\textbf{Image encoders.} Matching reads one pooled embedding, and the patch average, the closest state we probe, keeps far less of the places than the quadrant states do. Random weights give $\kappa = 0.29$--$0.72$, and trained encoders reach 0.85--0.94 under \textsc{overlap}. A matcher that reads the quadrant states with the fixed linear probe and assigns each new photograph to the role whose readout lies nearer picks the correct assignment on 1.00 of fixed canvases and 0.89--0.95 of moved ones (CLIP-B/32, CLIP-H/14 and SigLIP, 3 seeds), against 1.00 and 0.64 for random CLIP-B/32 weights, so at fixed places the repair needs no reader beyond the probe. For relative places, both $64 \times 64$ photographs share one random row of a $448 \times 448$ canvas at random horizontal positions, and the left one is the figure. Quadrant averages give 0.24--0.45, against 0.81--0.93 for the same encoders and readout under fixed quadrants, and random weights fall from 0.63--0.68 to between $-0.17$ and $-0.66$, so their fixed-quadrant score came from location alone. A threshold on one photograph's horizontal position predicts the role at 0.84, so the remaining 0.24--0.45 may also come from position.
+
+\textbf{Nonlinear probes on moved photographs.} We refit the readouts of the relative-placement protocol with an MLP probe (one hidden layer of 256 units, weight decay chosen on validation) and score it against the linear references, at the selected layer, over 3 seeds. For quadrant averages the MLP adds nothing: moved $\kappa$ stays at 0.08--0.36 for the trained encoders. For box features in random order it lifts moved $\kappa$ from $-0.17$ to $-0.08$ (linear) to 0.43 for CLIP-B/32 and 0.67--0.68 for DINOv2-L and SigLIP, below the 0.76--0.86 that it reaches at fixed places, while random CLIP-B/32 and DINOv2-L weights stay at $-0.63$ and $-0.29$. Three constructed states with shuffled slots calibrate the reading. Without any order or position tag, both probes stay at 0.02--0.07. With an additive left-to-right tag, the linear probe stays at chance and the MLP reaches 1.00. With an additive code of each photograph's absolute horizontal position, the linear probe stays at chance and the MLP reaches 0.40--0.49, with role accuracy 0.92--0.94. CLIP-B/32's recovery therefore matches what absolute position alone gives a nonlinear reader, while DINOv2-L and SigLIP exceed it, and in every encoder only a trained nonlinear reader finds the order, a decomposer of the weak form. At the final layer every encoder keeps less: fixed quadrants fall to 0.45--0.64 and moved ones to $-0.46$ to 0.16, so the selected middle layers give the upper end of Table~\ref{tab:places}.
+
+\textbf{Controls for the image results.} Three controls use the splits, part vectors, probe and $\kappa$ of the relative-placement protocol, over 3 seeds (Table~\ref{tab:imgctrl}). First, a linear probe can pass the moved test. From each photograph's own feature $f$ we build two states of fixed width: $f(p_\mathrm{left}) \otimes r_1 + f(p_\mathrm{right}) \otimes r_2$, with random unit role vectors assigned by left-to-right order, and $\sum_i f(p_i) \otimes q(x_i, y_i)$, with a Fourier code $q$ of each photograph's absolute position. Both reach $\kappa = 1.00$ on fixed canvases, and only the order code keeps 1.00 when the photographs move, while the position code falls to about 0, so the test separates the two codes. Second, the pooled embedding that matching reads (CLIP's projected embedding, SigLIP's attention-pooling head, DINOv2's class token) keeps less of the parts than their sum on fixed and on moved canvases. Third, image-only matching compares a canvas's pooled embedding with canvases built from other photographs of the same classes. It prefers the same arrangement over the swapped one at chance in every condition, also when the references sit at the canvas's own positions, while it prefers the right objects over a wrong one well above chance, so the chance-level caption matching of Section~\ref{sec:images} arises in the image tower.
+
+\begin{table*}[t]
+  \caption{\textbf{Image controls.} $\kappa$ of the constructed order and position states, $\kappa$ of the pooled embedding, and image-only matching (share of 1{,}000 canvases per seed; chance 0.50). Means over 3 seeds, standard errors at most 0.026.}
+  \label{tab:imgctrl}
+  \centering\footnotesize
+  \begin{tabular}{@{}lcccccccc@{}}
+    \toprule
+     & \multicolumn{2}{c}{CLIP-B/32} & \multicolumn{2}{c}{CLIP-H/14} & \multicolumn{2}{c}{DINOv2-L} & \multicolumn{2}{c}{SigLIP} \\
+     & Fixed & Moved & Fixed & Moved & Fixed & Moved & Fixed & Moved \\
+    \midrule
+    Order state, $\kappa$ & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+    Position state, $\kappa$ & 1.00 & $-0.05$ & 1.00 & $-0.03$ & 1.00 & 0.02 & 1.00 & $-0.03$ \\
+    Pooled embedding, $\kappa$ & $-0.26$ & $-0.67$ & $-0.45$ & $-0.57$ & $-0.30$ & $-0.37$ & $-0.15$ & $-0.29$ \\
+    Patch quadrants, $\kappa$ & 0.81 & 0.24 & 0.89 & 0.24 & 0.91 & 0.42 & 0.93 & 0.45 \\
+    Image matching, arrangement & 0.50 & 0.50 & 0.51 & 0.53 & 0.51 & 0.52 & 0.51 & 0.53 \\
+    Image matching, objects & 0.78 & 0.60 & 0.70 & 0.56 & 0.86 & 0.82 & 0.88 & 0.80 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\textbf{Diffusion states.} In SD 1.5, quadrant averages give 0.73 for \textsc{beside} and \textsc{above} and 0.66 for \textsc{overlap}, and no single timestep lifts the swapped-place classifier above 0.52. The $4 \times 4$ grid gives $-0.14$ under moved photographs, so the places rest on fixed locations. Against the trained model's part vectors, the autoencoder's latent, the denoiser's input, gives $\kappa = -0.48$ in SD 1.5 and $-0.47$ in SDXL, and a random denoiser gives 0.12 and 0.09. Against its own part vectors, however, the random denoiser keeps 0.79 in SD 1.5 and 0.83 in SDXL, above the trained models' 0.70 and 0.43, so the U-Nets' convolutions lay out the fixed places before training, and training changes the code that reads them. The transformer denoisers read the image-token grid of four blocks. Their architectures differ in how much of the places they supply before training. Against the trained model's part vectors, random-weight Lumina keeps 0.66 over the three relations, close to the trained model's 0.89, and 0.87 against its own part vectors, \textsc{overlap} included. Random-weight PixArt-$\Sigma$ keeps 0.54 and 0.58 against the trained model's 0.75, and falls to 0.21 under \textsc{overlap}.
+
+\begin{table}[t]
+  \caption{\textbf{Generation places the figure near chance unless the denoiser attends to the caption jointly.} Each model draws 150 pairs of new nouns per relation in both phrasings. Entries are the accuracy of the figure's place among images with both objects as separate boxes (about 200 per relation and phrasing for SD 1.5 with four seeds, 139--243 of 300 for the others), the share of pairs with both phrasings right, and the share of pairs whose phrasings give one layout under a shared seed.}
+  \label{tab:generation}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.18\linewidth}YYY@{}}
+    \toprule
+    Model & Figure in place & Both right & Same layout \\
+    \midrule
+    SD 1.5 & 0.47--0.56 & -- & 0.63--0.75 \\
+    SDXL, 1{,}024 px & 0.46--0.55; \textsc{on} 0.62--0.63 & -- & -- \\
+    PixArt-$\Sigma$ & 0.44--0.60 & 0.31--0.49 & 0.67--0.79 \\
+    Lumina & 0.69--0.74 canonical; 0.54--0.69 converse & 0.49--0.57 & 0.67--0.79 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\textbf{Generation and caption encoders.} A detector locates the objects \citep{liu2024groundingdino}, and Table~\ref{tab:generation} gives the results. In SD 1.5 the first-mentioned noun takes the first place equally often at all three detector thresholds we tried, and because the two phrasings share a layout under one seed, the noise and the nouns set the layout. Within each detected box of SD 1.5's own images, the denoiser's features name the noun weakly, at $\kappa = 0.14$--$0.15$ against 0.71 for single objects. A figure probe of CLIP-L's averaged caption state returns the figure for 0.95 of canonical captions of new noun pairs at the last layer and 0.08 of their converses. In T5-XXL the probe returns it for 0.70--1.00 and 0.01--0.33, and in Gemma-2-2B for 0.96--1.00 and 0.00--0.14, at every layer from a quarter of the depth to the last, so Lumina's partial success may come from the joint attention of its denoiser, which can read the relation word between the two nouns; we leave the ablation untested. FLUX, the other widely used joint-attention model, requires a gated license and remains untested.
+
+\textbf{Composable diffusion.} Swapping the two concepts of a composable-diffusion sum leaves every generated latent identical to the last bit, which the arithmetic of the sum guarantees. A place added to each prompt, as in ``a tiger on the left'' and ``a glass on the right'', gives accuracy 0.51, ``at the top'' and ``at the bottom'' give 0.53 for \textsc{above} nouns and 0.42 for \textsc{on} nouns, and guidance weights from 3 to 12 leave left/right at 0.36--0.48, from only 39--47 images per weight with both objects.
+
+\subsection{Language models build the asked role where they answer by meaning}
+\label{app:behavior}
+
+A model that answers role questions by meaning must, by H1, hold the role in the state it answers from. Table~\ref{tab:lm} gives the scores. Across four prompts and seven models, role transfer correlates with answer accuracy at $r = 0.94$ (Spearman 0.91) with each model's layer fixed on the main prompt (Figure~\ref{fig:both}b), and within the models that answer by meaning it is 0.96 (16 model--prompt pairs). Re-selecting the layer for each prompt on validation nouns lowers $r$ to 0.77--0.83, because validation then picks layers 9--10 for phi-4 on the reworded and zero-shot prompts and for Qwen3-8B zero-shot, where transfer is 0.08--0.12 although layer 30 transfers at 0.82--0.94; under that rule H1 fails for linear probes in those cells. Within the models that answer by word order transfer does not track accuracy ($r = 0.06$).
+
+\textbf{Two selection rules.} The main analysis picks one layer per model by the sum of validation recovery under both phrasings, pooled over seeds and relations. A second pipeline, which also scores ground questions and the period, picks by validation recovery of the asked role. Table~\ref{tab:lmsel} gives both next to the layer that is best on test nouns, which we never use.
+
+\begin{table}[h]
+  \caption{\textbf{Role transfer of the question state under two validation rules and on the test-best layer.} Means over 3 seeds and 5 relations, standard errors 0.004--0.027. OLMo-2 7B gives 0.07 when the layer is chosen by validation recovery on converse sentences alone.}
+  \label{tab:lmsel}
+  \centering\footnotesize
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Model & Main rule & Second rule & Test-best \\
+    \midrule
+    phi-4 & 0.98 & 0.98 & 0.98 \\
+    Qwen3-8B & 0.87 & 0.81 & 0.96 \\
+    OLMo-2 13B & 0.73 & 0.66 & 0.73 \\
+    OLMo-2 7B & 0.20 & 0.35 & 0.52 \\
+    Pythia, GPT-2 & 0.07--0.10 & -- & 0.40--0.47 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[t]
+  \caption{\textbf{Where models answer by meaning, the question state carries the role.} Answer accuracy and role transfer over new nouns and five relations, the same with invented words such as \emph{blicket}, the share of answers that flip when we patch the question state from a source with the opposite figure (at three quarters of the depth and at the last layer), and the share of pairs whose converse paraphrase lies nearer than both role reversals under the two-question embedding. OLMo-2 7B transfers at 0.20 under a ridge probe at layer 16, and flips 0.37 at layer 16 and 0.85 at layer 32.}
+  \label{tab:lm}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.18\linewidth}YYYYYYY@{}}
+    \toprule
+    Model & Answer & Transfer & Invented answer & Invented transfer & Flip 3/4 & Flip last & Embedding \\
+    \midrule
+    phi-4 & 0.99 & 0.98 & 1.00 & 0.75 & 0.99 & 0.99 & 1.00 \\
+    Qwen3-8B & 0.99 & 0.87 & 0.98 & 0.66 & 0.84 & 0.99 & 0.92 \\
+    OLMo-2 13B & 0.92 & 0.73 & 0.79 & 0.53 & 0.80 & 0.85 & 0.83 \\
+    OLMo-2 7B & 0.77 & 0.20 & 0.71 & 0.41 & -- & -- & -- \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\textbf{The question builds the shared role code.} At the period that ends the sentence, before any question, a figure probe transfers the role at only 0.12--0.23 (at most 0.36 at the best layer), although it returns the figure of canonical sentences at 0.96--1.00. From the question state, a probe for the role left unasked transfers at 0.56--0.61 in phi-4, 0.44--0.50 in Qwen3-8B and 0.12--0.32 in the OLMo-2 models. A score below 0.5 means that the probe returns the asked noun, which in the converse phrasing is also the noun in the ground's word position. The asked role transfers at 0.81--0.98 in phi-4 and Qwen3-8B.
+
+\textbf{Patching moves the answer.} A source with the same figure leaves the answer in place on 0.78--1.00 of pairs, and patches in the first half of the layers flip at most 0.21. Patching the probe's 16 dimensions flips at most 0.06 of answers, and 64 and 128 dimensions flip 0.21 and 0.53 on average (Figure~\ref{fig:both}d). The top 64 directions of the source--target difference, fitted on other nouns, flip 0.76, 0.75 and 0.51 of answers in phi-4, Qwen3-8B and OLMo-2 13B, against at most 0.03 for 64 random directions.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_weak.pdf}
+  \caption{\textbf{Behavior can outrun a linear probe, and sentence states fail both tests.} \textbf{a.} OLMo-2 7B answers by meaning (orange) and its question state carries the answer under patching (green), while ridge, kernel and MLP probes miss the role (blue). \textbf{b.} Pythia-1.4b and GPT-2 large answer with the last-mentioned noun. \textbf{c.} A figure probe of the token average returns the noun in the figure's word position (red), while the probe at the question returns the figure (blue). \textbf{d.} Text encoders prefer a sentence's converse paraphrase over the noun-swapped paraphrase on only 0.02--0.15 of pairs (orange). New nouns; means over 3 seeds.}
+  \label{fig:weak}
+\end{figure}
+
+\textbf{Models that answer by word order fail in both places.} Pythia-1.4b answers with the last-mentioned noun, and a probe of its question state returns the first-mentioned noun
+ (Figure~\ref{fig:weak}b). Every Pythia and GPT-2 model, from 160 million to 12 billion parameters and at every checkpoint of Pythia-1.4b, answers at 0.41--0.56 and transfers the role at 0.07--0.10. A figure probe of the average over tokens transfers at 0.00--0.05 in every language model, against 0.15 at initialization, and kernel and MLP probes reach 0.00--0.06 (Figure~\ref{fig:weak}c). Text encoders tell a sentence's nouns from other nouns at 0.89--1.00 (Figure~\ref{fig:weak}d). The two-question embedding fails in Pythia-1.4b and GPT-2 large.
+
+\textbf{On error items the question state follows order of mention.} For phi-4, Qwen3-8B and OLMo-2 7B and 13B we score the figure question on 1{,}000 new-noun pairs per relation and phrasing, over 3 seeds, and read the figure probe of the question state at the layer of Table~\ref{tab:lm}. Where the model answers wrongly on a canonical sentence, it names the ground, while the probe still returns the figure, the first-mentioned noun, on 0.88 (Qwen3-8B, 199 items), 0.82 (OLMo-2 13B, 84) and 0.99 (OLMo-2 7B, 2{,}811) of these items, and phi-4 errs on one canonical sentence. Where it answers wrongly on a converse sentence, it names the first-mentioned ground, and the probe follows it on 0.69 (phi-4, 48 items), 0.66 (Qwen3-8B, 64), 0.81 (OLMo-2 13B, 1{,}245) and 0.85 (OLMo-2 7B, 1{,}386). On correct items the probe returns the figure on 0.98--0.99 (phi-4), 0.88--0.98 (Qwen3-8B) and 0.84--0.99 (OLMo-2 13B) of items, while in OLMo-2 7B it returns the figure on only 0.21 of correct converse items, so the layer that its validation picks reads order of mention even where the model answers by meaning. In error items, order of mention and the wrong answer coincide on converse sentences and diverge on canonical ones, and the probe follows order of mention in both.
+
+\textbf{OLMo-2 7B decomposes inside its answering layers.} It answers by meaning on 0.77 of pairs, while a ridge probe of its question state transfers the role at only 0.20 (Figure~\ref{fig:weak}a). Ridge, kernel and MLP probes at layers 16 to 32 reach at most 0.51, and 0.56 with hyperparameters chosen on the test set, although patches show that the state carries the answer. H1 therefore fails for these probes in OLMo-2 7B, and Observation~\ref{prop:subset} still holds for a probe that contains the model's own later layers, so the decomposition happens in the procedure that answers, the weak form of Definition~\ref{def:behcomp}.
+
+\begin{table}[t]
+  \caption{\textbf{Reading through the state repairs the failing procedures of glyph networks and recursive composers, and gives language models a sentence embedding that carries the role.} Values are $R^2$ of the output (glyph and recursive networks) or the share of pairs whose converse paraphrase lies nearest (language models). Glyph values average three architectures over 5--9 seeds, starting from 16 glyphs for the sequence of 32. Recursive values use width 256, 5 seeds and 20{,}000 steps (0.27 at depth 3, against 0.26 after 6{,}000 steps in the text).}
+  \label{tab:remedies}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.25\linewidth}P{0.24\linewidth}YY@{}}
+    \toprule
+    Repair & Failure it targets & Without & With \\
+    \midrule
+    Train a new decoder on a frozen state & Decoder fails on new glyphs & 0.25 & 0.75 \\
+    Learn parts from single parts & Decoder fails on new glyphs & New glyph alone $-0.30$, new pair 0.26 & 0.88 and 0.47 \\
+    Add parts by writing vectors & Fine-tuning forgets old pairs & Old pairs 0.18 after 32 glyphs & Old pairs 0.99; new glyph in a new role 0.71 \\
+    Train the decomposer with its composer at each depth & Decomposer fails one level deeper & $0.27$, $-0.08$, $-0.29$ at depths 3--5 & 1.00, 1.00, 0.97 \\
+    Read the role from two question states & Token-averaged sentence state follows word order & Paraphrase nearest for no pair & 1.00 phi-4, 0.92 Qwen3-8B, 0.83 OLMo-2 13B \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Harnesses repair behavior where their code assigns the roles}
+\label{app:harness}
+
+A test-time harness lets code decompose a task and hands the model calls that stay close to its training distribution \citep{zhang2025rlm,zhang2026harness}. Table~\ref{tab:harness} gives the results for three harnesses.
+
+\textbf{Relation questions.} Items, held-out nouns, four demonstrations and draws follow Section~\ref{app:behavior}. The \emph{verify} harness asks one yes-or-no question per noun, such as ``Is the cake on top?'', in its own call and returns the noun with the larger $\log P(\text{yes}) - \log P(\text{no})$, so the network still assigns the roles. The \emph{parse} harness has the model copy the sentence into first object, relation and second object with greedy decoding, and code assigns the roles from a lexicon, fixed in advance, that lists the figure for each of the ten training relation phrases. An unparsed output or a phrase missing from the lexicon falls back to the direct answer. Four held-out relation pairs test the lexicon: \emph{atop}/\emph{beneath}, \emph{within}/\emph{holding}, \emph{struck}/\emph{was struck by} and \emph{higher than}/\emph{lower than}. All five models copy the nouns on 0.97--1.00 of items and the relation phrase on 0.77--0.82 in GPT-2 Large and 0.99--1.00 in the others. On held-out relations the parse harness falls back on every item. The verify harness helps only OLMo-2 7B, whose converse items rise from 0.70--0.77 to 0.94--0.98, and leaves Pythia and GPT-2 at 0.37--0.54.
+
+\textbf{A layout harness for generation.} For every caption of Appendix~\ref{app:diffusion} and seeds 0 and 1, GLIGEN, SD 1.5 with box grounding \citep{li2023gligen}, draws both layouts from SD 1.5's initial noise, with the figure or the ground in the first slot (top or left). A planner picks one layout per caption, so planners differ only in their role assignment \citep{lian2024llmgrounded}. GLIGEN puts the first-slot noun where the layout asks on 0.94 of images for \textsc{on} and \textsc{above} and 0.89 for \textsc{left of}, which bounds every planner. The lexicon, phi-4 and Qwen3-8B name the figure for 0.97--1.00 of captions and reach that bound on 0.92--0.93 of images in both phrasings, against 0.52 for SD 1.5 alone. Planners that take the first-mentioned noun, or that follow word order as Pythia-1.4B and GPT-2 Large do, average 0.50--0.51, and OLMo-2 7B names the figure for 0.81 of captions.
+
+\textbf{Where each harness sits.} For held-out nouns, the plan holds each noun as an explicit copy in its role, the strongest set of the spectrum, and the copy step needs no binding by meaning. The lexicon is a lookup over relation words, weak by Lemma~\ref{lem:lookup} for the relations it lists and unable to act on others. A harness that leaves the roles to the network, as the verify harness and the language-model planners do, inherits its binding. The decomposition of the whole system is as strong as the component that assigns the roles, and our test applies to that component, whether it is a network or code. A harness whose decomposer learns relation words and must recover them on held-out relations would test the strong form for relations too.
+
+\begin{table}[t]
+  \caption{\textbf{Harnesses on relation questions and on generation.} Top: answer accuracy on held-out nouns for training relations (train) and held-out relation phrases (new), means over 3 seeds and both phrasings. On new relations the parse harness falls back to the direct answer. Bottom: share of images whose figure lands in its place, for canonical and converse captions (ranges over three relations), and the planner's role accuracy. SD 1.5 in the bottom block uses the harness prompts (about 102 per cell), so its range differs from Table~\ref{tab:generation}.}
+  \label{tab:harness}
+  \centering\small
+  \begin{tabularx}{\linewidth}{@{}P{0.26\linewidth}YYYYY@{}}
+    \toprule
+    Model & Direct train & Direct new & Verify train & Verify new & Parse train \\
+    \midrule
+    Pythia-1.4B & 0.51 & 0.51 & 0.43 & 0.39 & 0.98 \\
+    GPT-2 Large & 0.51 & 0.50 & 0.46 & 0.47 & 0.82 \\
+    OLMo-2 7B & 0.77 & 0.80 & 0.95 & 0.94 & 1.00 \\
+    Qwen3-8B & 0.99 & 0.99 & 0.99 & 1.00 & 1.00 \\
+    phi-4 & 0.99 & 1.00 & 1.00 & 1.00 & 1.00 \\
+    \midrule
+    Planner & Canonical & Converse & All & Role acc. & \\
+    \midrule
+    SD 1.5, no planner & 0.47--0.59 & 0.48--0.53 & 0.52 & -- & \\
+    First-mentioned noun & 0.89--0.95 & 0.06--0.11 & 0.50 & 0.50 & \\
+    Lexicon & 0.89--0.95 & 0.88--0.94 & 0.93 & 1.00 & \\
+    phi-4 & 0.89--0.95 & 0.88--0.94 & 0.93 & 1.00 & \\
+    Qwen3-8B & 0.89--0.95 & 0.88--0.94 & 0.92 & 1.00 & \\
+    OLMo-2 7B & 0.65--0.84 & 0.69--0.90 & 0.77 & 0.81 & \\
+    Pythia-1.4B & 0.17--0.28 & 0.81--0.82 & 0.51 & 0.51 & \\
+    GPT-2 Large & 0.08--0.19 & 0.87--0.91 & 0.51 & 0.52 & \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Where recoverability comes from}
+\label{app:origins}
+
+A state can hold its parts because the input held them, because the architecture keeps them apart, or because training put them there. We compare each state with its input and with random weights (Figure~\ref{fig:origins}). For glyph networks we add \emph{entangled inputs}, which pass each whole through a fixed random map of three rounds of an orthogonal rotation and $\tanh$ at gain 4.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig_origins.pdf}
+  \caption{\textbf{The input supplies recoverability in the glyph networks, whereas pretrained models build it beyond their inputs.} Each row compares a trained state (blue) with its input (grey) and random weights (light grey). \textbf{a.} New glyphs at $V = 8$, on plain and entangled inputs. \textbf{b.} Language models against the average and the concatenation of the two nouns' input embeddings. \textbf{c.} Image encoders against raw pixels. \textbf{d.} Text encoders. \textbf{e.} Pythia models of growing size and four other language models (squares). \textbf{f.} Training of Pythia-1.4b and of Pythia-410m from six seeds. $\kappa$ is 1 for the concatenation of the part vectors (dotted) and 0 for their sum. Means over 3--5 seeds.}
+  \label{fig:origins}
+\end{figure}
+
+\textbf{Glyph networks inherit recoverability from their input.} The input pixels reach $R^2 = 0.91$ and untrained networks 0.82--0.83, and a frozen untrained encoder supports an equally good new decoder at 0.75 (Figure~\ref{fig:origins}a), so training in these small networks mostly shapes the decoder. Entangling the input lowers the input's own probe to 0.68, and the MLP, CNN and role--filler networks reach 0.54--0.55, which is 0.06--0.08 above untrained encoders and 0.13--0.15 below the input. No condition we tried lifts a state above its input, and recovery predicts a new decoder's output at $r = 0.98$ on entangled inputs.
+
+\textbf{Pretrained models build recoverability beyond their input.} Averaging a sentence's input embeddings gives $\kappa = -0.21$ to $-0.49$ across seven language models (phi-4, Qwen3-8B, OLMo-2 13B and 7B, Pythia-12b, Pythia-1.4b and GPT-2 large), and concatenating the two nouns' input embeddings, which grants each noun's location, gives $-0.12$ to 0.49. States averaged over tokens exceed this baseline in five of the seven models and match it in GPT-2 large and Pythia-1.4b (Figure~\ref{fig:origins}b). Raw pixels give $\kappa = -0.61$ to $-0.69$ against the image encoders' part vectors, far below the quadrant states at 0.81--0.94 and below random weights at 0.29--0.72 (Figure~\ref{fig:origins}c). Because raw pixels cannot reach semantic part vectors by construction, the comparison with random weights carries the claim for images.
+
+\textbf{Training builds recoverability of the nouns in their positions.} Among the text encoders, the GPT-2 models reach $\kappa = 0.44$--$0.50$, CLIP-H 0.36 and the others 0.06--0.26, against $-0.11$ to $0.15$ under random weights (Figure~\ref{fig:origins}d). Within Pythia, $\kappa$ rises from 0.27 at 160 million parameters to 0.56--0.58 at 6.9 and 12 billion and levels off between those sizes, while Qwen3-8B, OLMo-2 and phi-4 reach 0.40--0.49 (Figure~\ref{fig:origins}e). Pythia-1.4b peaks at 0.71 after 1{,}000 steps, 0.7\% of training, keeps 0.70 at 2{,}000 and declines to 0.47, and six runs of Pythia-410m peak at about the same point (Figure~\ref{fig:origins}f).
+
+\textbf{Word order and architecture supply part of it.} Causal attention keeps the tokens of the first noun from seeing the second, so random weights in GPT-2 and CLIP already recover the first-mentioned noun alone at $\kappa = 0.50$--$0.58$, while the second falls to $-0.26$ to $-0.75$ and the average over roles stays at $-0.11$ to $0.15$. The control ``a $x$ and a $y$'' gives the same $\kappa$ as the asymmetric relations in every encoder, so these probes score positional binding and leave the role by meaning to Section~\ref{sec:behavior}. In image encoders the choice of state decides recovery, because the patch states keep two photographs apart while their average blends them.
